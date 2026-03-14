@@ -631,6 +631,27 @@ Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism beh
 \label{fig:cosine_pipeline}
 \end{figure}
 
+\textbf{Finding 57: Comprehensive comparison confirms cosine distance dominance (AUROC = 0.984).} Table~\ref{tab:main_comparison} presents a head-to-head comparison of six OOD detection methods evaluated on the same 150 samples (60 easy, 90 OOD across 6 types) with 10-fold bootstrap evaluation. Cosine distance achieves \textbf{AUROC = 0.984 $\pm$ 0.010}, beating all alternatives by a wide margin: 28 points above action mass (0.704), 36 above MC Entropy (0.626). Cosine distance achieves $\geq$0.970 on \emph{every} OOD type---no other method approaches this consistency. Notably, combining cosine distance with entropy \emph{hurts} performance (0.945), confirming the repeated finding that signal combination dilutes the best individual signal. MC Dropout at $10\times$ computational cost achieves only 0.626, and entropy is near-random at 0.527. The cost-benefit analysis is unambiguous: cosine distance requires a single forward pass, 25 calibration images, and one dot product per inference---making it the practical method of choice for VLA OOD detection.
+
+\begin{table}[t]
+\centering
+\caption{Comprehensive OOD detection comparison on real OpenVLA-7B (150 samples, 10-fold bootstrap). Cosine distance dominates all methods with minimal computational overhead.}
+\label{tab:main_comparison}
+\small
+\begin{tabular}{lcccccccc}
+\toprule
+\textbf{Method} & \textbf{Passes} & \textbf{Cal.} & \textbf{Overall} & \textbf{Noise} & \textbf{Blank} & \textbf{Indoor} & \textbf{Inverted} & \textbf{Blackout} \\
+\midrule
+\textbf{Cosine Dist} & \textbf{1} & \textbf{Yes} & \textbf{.984$\pm$.010} & .992 & .970 & \textbf{.975} & \textbf{.979} & \textbf{1.00} \\
+Cos + Ent & 1 & Yes & .945$\pm$.018 & .964 & \textbf{.991} & .899 & .928 & 1.00 \\
+kNN ($k$=3) & 1 & Yes & .855$\pm$.050 & .932 & .734 & .965 & .963 & .657 \\
+Action Mass & 1 & No & .704$\pm$.028 & .878 & .873 & .553 & .172 & .927 \\
+MC Entropy & 10 & No & .626$\pm$.038 & .938 & .873 & .527 & .334 & .554 \\
+Entropy & 1 & No & .527$\pm$.029 & .413 & .957 & .272 & .336 & 1.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \textbf{Finding 51: Action mass fails for semantic OOD but excels for pixel-level OOD.} Testing 7 diverse OOD types (110 samples) reveals a critical limitation. Indoor scenes achieve action mass = 0.996---\emph{higher} than highway (0.948)---with AUROC = 0.463 (below random). Inverted highways (0.984) and text-only images (0.941) are similarly undetectable. In contrast, blackout (AUROC = 0.938), blank (0.938), and random noise (0.850) are well-detected. Overall AUROC drops from 0.838 (noise+blank only) to 0.731 (all 7 types). This reveals that action mass detects inputs lacking visual structure (pixel-level OOD) but \emph{not} inputs that are semantically wrong for driving (domain-level OOD). Indoor scenes produce confident action predictions because they contain recognizable spatial patterns (floors, walls) that trigger the model's pattern-matching without any domain verification. This limitation motivates future work on combining output-level signals (action mass) with vision encoder features for comprehensive OOD detection.
 
 \textbf{Finding 52: Hidden states detect semantic OOD that action mass misses.} Extracting the last-layer hidden state (4096-d) from OpenVLA-7B's LLM backbone during generation and computing L2 distance to the in-distribution centroid yields a powerful complementary signal (Figure~\ref{fig:hidden_state_ood}). On the semantic OOD types where action mass fails, hidden state distance achieves AUROC = \textbf{0.998} (indoor), \textbf{0.973} (inverted), and \textbf{0.973} (checker)---all near-perfect. Cosine similarity between scenario centroids reveals clear clustering: highway$\leftrightarrow$urban cos = 0.546, while highway$\leftrightarrow$blackout cos = 0.089 and highway$\leftrightarrow$checker cos = 0.173. A combined signal ($w_{\text{dist}}=0.25$, $w_{\text{mass}}=0.75$) achieves overall AUROC = \textbf{0.862}, beating either signal alone (action mass: 0.747, distance: 0.805). Hidden state norm also discriminates blackout (norm = 39.9 vs.\ easy = 107, AUROC = 1.000) and blank (norm = 81.4, AUROC = 0.980). This establishes a three-signal recommendation: action mass for pixel-level OOD, hidden state distance for semantic OOD, and entropy for difficulty detection.

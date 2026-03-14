@@ -1294,3 +1294,38 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Blackout is most robustly detected by cosine**: Range = 0.092 vs 0.854 for mass. Action mass varies from detecting blackout well to failing completely depending on prompt.
 
 5. **Practical implication**: Always calibrate the centroid with the same prompt that will be used at inference time. Cross-prompt transfer is unreliable.
+
+---
+
+## Finding 26: Comprehensive Method Comparison — Cosine Distance Dominates (Real OpenVLA-7B, Experiment 32)
+
+### Setup
+- **Model**: OpenVLA-7B
+- **Samples**: 150 across 8 scenarios (60 easy, 90 OOD: 6 types × 15)
+- **Methods**: 6 OOD detection methods tested on identical samples
+- **Evaluation**: 10 bootstrap splits, per-type and overall AUROC
+
+### Main Results Table
+
+| Method | Passes | Cal | Overall AUROC | Noise | Blank | Indoor | Inverted | Checker | Blackout |
+|--------|--------|-----|--------------|-------|-------|--------|----------|---------|----------|
+| **Cosine Dist** | **1** | **Yes** | **0.984±0.010** | 0.992 | 0.970 | **0.975** | **0.979** | **0.987** | **1.000** |
+| Cos + Ent | 1 | Yes | 0.945±0.018 | 0.964 | **0.991** | 0.899 | 0.928 | 0.886 | **1.000** |
+| kNN (k=3) | 1 | Yes | 0.855±0.050 | 0.932 | 0.734 | 0.965 | 0.963 | 0.877 | 0.657 |
+| Action Mass | 1 | No | 0.704±0.028 | 0.878 | 0.873 | 0.553 | 0.172 | 0.823 | 0.927 |
+| MC Entropy | 10 | No | 0.626±0.038 | **0.938** | 0.873 | 0.527 | 0.334 | 0.530 | 0.554 |
+| Entropy | 1 | No | 0.527±0.029 | 0.413 | 0.957 | 0.272 | 0.336 | 0.183 | **1.000** |
+
+### Key Insights
+
+1. **Cosine distance is the definitive best method (AUROC=0.984)**: 28 percentage points above action mass (0.704), 36 above MC entropy (0.626), with the lowest variance (±0.010).
+
+2. **Adding entropy to cosine hurts (0.945 vs 0.984)**: Signal combination again reduces performance, confirming the pattern seen throughout the experiments.
+
+3. **kNN is a reasonable alternative (0.855)**: Better than action mass but worse than cosine, with higher variance (±0.050) and 25× higher computational cost.
+
+4. **MC Dropout is surprisingly poor (0.626)**: 10× computational cost for lower AUROC than single-pass action mass (0.704). MC Dropout struggles with semantic OOD (indoor 0.527, inverted 0.334).
+
+5. **Entropy is near-random overall (0.527)**: While it excels on blackout (1.000) and blank (0.957), it fails on indoor (0.272) and checker (0.183).
+
+6. **Cosine distance dominates on ALL OOD types**: ≥0.970 on every type. No other method comes close to this consistency.

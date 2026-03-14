@@ -1,0 +1,1431 @@
+{
+  "timestamp": "20260314_152922",
+  "n_bootstrap": 10,
+  "n_mc": 10,
+  "results": {
+    "Action Mass": {
+      "mean": 0.7044074074074074,
+      "std": 0.0278125461421297,
+      "per_type": {
+        "ood_noise": 0.8779999999999999,
+        "ood_blank": 0.8733333333333333,
+        "ood_indoor": 0.5533333333333333,
+        "ood_inverted": 0.17222222222222222,
+        "ood_checker": 0.8226666666666667,
+        "ood_blackout": 0.926888888888889
+      }
+    },
+    "Entropy": {
+      "mean": 0.5267037037037037,
+      "std": 0.028650703757303272,
+      "per_type": {
+        "ood_noise": 0.41288888888888886,
+        "ood_blank": 0.957111111111111,
+        "ood_indoor": 0.27155555555555555,
+        "ood_inverted": 0.33577777777777784,
+        "ood_checker": 0.1828888888888889,
+        "ood_blackout": 1.0
+      }
+    },
+    "MC Entropy": {
+      "mean": 0.625925925925926,
+      "std": 0.03831140901032813,
+      "per_type": {
+        "ood_noise": 0.9380000000000001,
+        "ood_blank": 0.8733333333333333,
+        "ood_indoor": 0.5266666666666666,
+        "ood_inverted": 0.33355555555555555,
+        "ood_checker": 0.5304444444444444,
+        "ood_blackout": 0.5535555555555555
+      }
+    },
+    "Cosine Dist": {
+      "mean": 0.9838148148148148,
+      "std": 0.009973971613122268,
+      "per_type": {
+        "ood_noise": 0.992,
+        "ood_blank": 0.9702222222222222,
+        "ood_indoor": 0.9746666666666666,
+        "ood_inverted": 0.9793333333333333,
+        "ood_checker": 0.9866666666666667,
+        "ood_blackout": 1.0
+      }
+    },
+    "kNN (k=3)": {
+      "mean": 0.8548148148148149,
+      "std": 0.05041582916013558,
+      "per_type": {
+        "ood_noise": 0.9322222222222223,
+        "ood_blank": 0.7344444444444445,
+        "ood_indoor": 0.9651111111111114,
+        "ood_inverted": 0.9626666666666666,
+        "ood_checker": 0.8771111111111111,
+        "ood_blackout": 0.6573333333333333
+      }
+    },
+    "Cos + Ent": {
+      "mean": 0.9447407407407408,
+      "std": 0.018327758224517016,
+      "per_type": {
+        "ood_noise": 0.9642222222222223,
+        "ood_blank": 0.9911111111111112,
+        "ood_indoor": 0.8993333333333332,
+        "ood_inverted": 0.9277777777777778,
+        "ood_checker": 0.8859999999999999,
+        "ood_blackout": 1.0
+      }
+    }
+  },
+  "samples": [
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 0,
+      "action_mass": 0.9971988797187805,
+      "entropy": 1.5364595311028617,
+      "mc_entropy": 1.312505070611833,
+      "mc_entropy_std": 0.1786157125082697
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 1,
+      "action_mass": 0.9958820172718593,
+      "entropy": 1.5028764137199946,
+      "mc_entropy": 1.174155647989706,
+      "mc_entropy_std": 0.33527407679879034
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 2,
+      "action_mass": 0.861524412142379,
+      "entropy": 1.576745135443551,
+      "mc_entropy": 1.083473145184122,
+      "mc_entropy_std": 0.21689251781460842
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 3,
+      "action_mass": 0.9977016704423087,
+      "entropy": 1.2904977202415466,
+      "mc_entropy": 1.2344531373002892,
+      "mc_entropy_std": 0.3706015833870712
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 4,
+      "action_mass": 0.9990173918860299,
+      "entropy": 1.4270422501223428,
+      "mc_entropy": 1.2123907256893156,
+      "mc_entropy_std": 0.11606145146076847
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 5,
+      "action_mass": 0.9971600260053363,
+      "entropy": 1.5284413823059626,
+      "mc_entropy": 1.1750236662338447,
+      "mc_entropy_std": 0.2898710020619521
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 6,
+      "action_mass": 0.9976289612906319,
+      "entropy": 1.2383590638637543,
+      "mc_entropy": 1.1546330747614646,
+      "mc_entropy_std": 0.2103202823219959
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 7,
+      "action_mass": 0.8245248440653086,
+      "entropy": 1.2206434953758227,
+      "mc_entropy": 1.1743874896524777,
+      "mc_entropy_std": 0.3091118688477956
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 8,
+      "action_mass": 0.8462554056729589,
+      "entropy": 1.4000829716636818,
+      "mc_entropy": 1.145538922827877,
+      "mc_entropy_std": 0.18800017262372723
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 9,
+      "action_mass": 0.9972843527793884,
+      "entropy": 1.4641442809786116,
+      "mc_entropy": 1.1991424787514917,
+      "mc_entropy_std": 0.2732242397503211
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 10,
+      "action_mass": 0.9457830360957554,
+      "entropy": 1.5141442247799464,
+      "mc_entropy": 1.117507909843391,
+      "mc_entropy_std": 0.2509616784497678
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 11,
+      "action_mass": 0.9982645681926182,
+      "entropy": 1.4990758853299277,
+      "mc_entropy": 1.0998310073509796,
+      "mc_entropy_std": 0.3313811441826682
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 12,
+      "action_mass": 0.9969477142606463,
+      "entropy": 1.4080443160076226,
+      "mc_entropy": 1.0749074710932325,
+      "mc_entropy_std": 0.2686422313974606
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 13,
+      "action_mass": 0.9845592294420514,
+      "entropy": 1.159652961684125,
+      "mc_entropy": 0.9883633145513677,
+      "mc_entropy_std": 0.25332432039830716
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 14,
+      "action_mass": 0.9984397547585624,
+      "entropy": 1.67601392524583,
+      "mc_entropy": 1.1032550640713423,
+      "mc_entropy_std": 0.22086711999317127
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 15,
+      "action_mass": 0.9964608635221209,
+      "entropy": 1.4951634194169725,
+      "mc_entropy": 1.1122000487132546,
+      "mc_entropy_std": 0.22705113330031743
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 16,
+      "action_mass": 0.9969846435955593,
+      "entropy": 1.4024916120937891,
+      "mc_entropy": 1.285371223105384,
+      "mc_entropy_std": 0.21681499670393406
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 17,
+      "action_mass": 0.9959288324628558,
+      "entropy": 1.440319584948676,
+      "mc_entropy": 1.1104603528352457,
+      "mc_entropy_std": 0.33368139152273424
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 18,
+      "action_mass": 0.9993619067328317,
+      "entropy": 1.5776319588933672,
+      "mc_entropy": 1.091336832825163,
+      "mc_entropy_std": 0.310665806537377
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 19,
+      "action_mass": 0.8680218117577689,
+      "entropy": 1.3789821762059415,
+      "mc_entropy": 1.148632385349916,
+      "mc_entropy_std": 0.38607809979965496
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 20,
+      "action_mass": 0.9984917385237557,
+      "entropy": 1.542451554111072,
+      "mc_entropy": 1.085052494195725,
+      "mc_entropy_std": 0.26509133835886517
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 21,
+      "action_mass": 0.9969324725014823,
+      "entropy": 1.4268697244780404,
+      "mc_entropy": 1.165750374186635,
+      "mc_entropy_std": 0.22051914006746837
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 22,
+      "action_mass": 0.9944483382361275,
+      "entropy": 1.3418104307992118,
+      "mc_entropy": 1.174078647735288,
+      "mc_entropy_std": 0.26003430835710933
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 23,
+      "action_mass": 0.9940207600593567,
+      "entropy": 1.4411012487752097,
+      "mc_entropy": 1.058245807950882,
+      "mc_entropy_std": 0.20053674014573925
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 24,
+      "action_mass": 0.6806208415489111,
+      "entropy": 1.5373133644461632,
+      "mc_entropy": 1.1966251879165304,
+      "mc_entropy_std": 0.22735025190101954
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 25,
+      "action_mass": 0.9967355217252459,
+      "entropy": 1.4533894062042236,
+      "mc_entropy": 1.0072113151051636,
+      "mc_entropy_std": 0.24356827569892156
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 26,
+      "action_mass": 0.9995800256729126,
+      "entropy": 1.4559051820210047,
+      "mc_entropy": 1.3074830814131668,
+      "mc_entropy_std": 0.3187122384984635
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 27,
+      "action_mass": 0.9975295066833496,
+      "entropy": 1.458698836820466,
+      "mc_entropy": 1.2407506433361966,
+      "mc_entropy_std": 0.25825481897485864
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 28,
+      "action_mass": 0.8668612284319741,
+      "entropy": 1.4913128465414047,
+      "mc_entropy": 1.2540823077038934,
+      "mc_entropy_std": 0.1790998538193998
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 29,
+      "action_mass": 0.999229976109096,
+      "entropy": 1.605980281318937,
+      "mc_entropy": 1.2177086838215474,
+      "mc_entropy_std": 0.15402698669487883
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 0,
+      "action_mass": 0.9693166443279811,
+      "entropy": 1.7213391413993548,
+      "mc_entropy": 1.3384541646973205,
+      "mc_entropy_std": 0.22338616553591714
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 1,
+      "action_mass": 0.9940859590257917,
+      "entropy": 1.0783659730638777,
+      "mc_entropy": 1.0991261535696601,
+      "mc_entropy_std": 0.2593465362335713
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 2,
+      "action_mass": 0.9888858199119568,
+      "entropy": 1.0027323152337755,
+      "mc_entropy": 1.087516583180245,
+      "mc_entropy_std": 0.2320118014644278
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 3,
+      "action_mass": 0.9904735514095852,
+      "entropy": 1.4433942692620414,
+      "mc_entropy": 1.227530867340176,
+      "mc_entropy_std": 0.21399998309422913
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 4,
+      "action_mass": 0.9960817950112479,
+      "entropy": 1.3249328477042062,
+      "mc_entropy": 1.1711465687291398,
+      "mc_entropy_std": 0.21736155549289454
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 5,
+      "action_mass": 0.8694292040807861,
+      "entropy": 1.1729097334401948,
+      "mc_entropy": 1.3621756144204629,
+      "mc_entropy_std": 0.14394062218667097
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 6,
+      "action_mass": 0.9845547505787441,
+      "entropy": 1.3244852665864155,
+      "mc_entropy": 1.1760533892676384,
+      "mc_entropy_std": 0.26042631371827857
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 7,
+      "action_mass": 0.9967551401683262,
+      "entropy": 0.5747422863330159,
+      "mc_entropy": 1.184008455798637,
+      "mc_entropy_std": 0.17164181699128792
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 8,
+      "action_mass": 0.9960832851273673,
+      "entropy": 1.3837825741086687,
+      "mc_entropy": 1.1121158917671292,
+      "mc_entropy_std": 0.20106250477300647
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 9,
+      "action_mass": 0.9983350379126412,
+      "entropy": 0.6838635099785668,
+      "mc_entropy": 1.1368770136399688,
+      "mc_entropy_std": 0.2446053291386084
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 10,
+      "action_mass": 0.9975665552275521,
+      "entropy": 0.598194536886045,
+      "mc_entropy": 1.2417514425930731,
+      "mc_entropy_std": 0.17657692390349447
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 11,
+      "action_mass": 0.9974009224346706,
+      "entropy": 0.7319465040096215,
+      "mc_entropy": 1.3443299234309747,
+      "mc_entropy_std": 0.278013819426213
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 12,
+      "action_mass": 0.9938941512789045,
+      "entropy": 0.833664884524686,
+      "mc_entropy": 1.0697495986563774,
+      "mc_entropy_std": 0.26290800214045296
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 13,
+      "action_mass": 0.998204231262207,
+      "entropy": 0.4965587279626301,
+      "mc_entropy": 1.240301691977519,
+      "mc_entropy_std": 0.3964892640597855
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 14,
+      "action_mass": 0.9966082998684475,
+      "entropy": 1.3649195432662964,
+      "mc_entropy": 0.9984841480201535,
+      "mc_entropy_std": 0.19350950808720865
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 15,
+      "action_mass": 0.9971946733338493,
+      "entropy": 0.6479654950754983,
+      "mc_entropy": 1.255509022139068,
+      "mc_entropy_std": 0.28124148116838266
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 16,
+      "action_mass": 0.9989954573767525,
+      "entropy": 0.7643706287656512,
+      "mc_entropy": 1.1523288247840746,
+      "mc_entropy_std": 0.275791717425874
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 17,
+      "action_mass": 0.995339572429657,
+      "entropy": 0.7096146196126938,
+      "mc_entropy": 1.113239665415103,
+      "mc_entropy_std": 0.16744436122986114
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 18,
+      "action_mass": 0.9969246557780674,
+      "entropy": 0.5945623953427587,
+      "mc_entropy": 1.153581185455966,
+      "mc_entropy_std": 0.2538633600415051
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 19,
+      "action_mass": 0.9955217071941921,
+      "entropy": 1.1703545493738992,
+      "mc_entropy": 1.158929764289532,
+      "mc_entropy_std": 0.4476548162639889
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 20,
+      "action_mass": 0.9940960833004543,
+      "entropy": 0.5495688505470753,
+      "mc_entropy": 1.249905690307758,
+      "mc_entropy_std": 0.22166011905605784
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 21,
+      "action_mass": 0.8991293651717049,
+      "entropy": 1.2017469399569822,
+      "mc_entropy": 1.3088161485400633,
+      "mc_entropy_std": 0.28364045558624007
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 22,
+      "action_mass": 0.992022727216993,
+      "entropy": 1.4449244226728166,
+      "mc_entropy": 1.1179693879634474,
+      "mc_entropy_std": 0.15305810327476027
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 23,
+      "action_mass": 0.859743055488382,
+      "entropy": 1.3317536929888385,
+      "mc_entropy": 1.1474427791032595,
+      "mc_entropy_std": 0.2504984192359759
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 24,
+      "action_mass": 0.8609715822551932,
+      "entropy": 1.0563489188041006,
+      "mc_entropy": 1.3684185046310142,
+      "mc_entropy_std": 0.16872874420626782
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 25,
+      "action_mass": 0.9960681029728481,
+      "entropy": 1.1647788871611868,
+      "mc_entropy": 1.3023283889010737,
+      "mc_entropy_std": 0.2414631511946005
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 26,
+      "action_mass": 0.9930073278290885,
+      "entropy": 1.3636058398655482,
+      "mc_entropy": 1.196812137526737,
+      "mc_entropy_std": 0.2695841613763602
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 27,
+      "action_mass": 0.9972697240965707,
+      "entropy": 0.5374164474861962,
+      "mc_entropy": 1.2710552719712385,
+      "mc_entropy_std": 0.2517799844636363
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 28,
+      "action_mass": 0.9965625916208539,
+      "entropy": 1.2481449374130793,
+      "mc_entropy": 1.2461537955742654,
+      "mc_entropy_std": 0.310762331214447
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 29,
+      "action_mass": 0.996675797871181,
+      "entropy": 0.573322098170008,
+      "mc_entropy": 1.1819524766120222,
+      "mc_entropy_std": 0.15738454790475187
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.8097153179322569,
+      "entropy": 1.2081869265946028,
+      "mc_entropy": 1.401198474311831,
+      "mc_entropy_std": 0.2865523283011818
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.9930008905274528,
+      "entropy": 0.983958689229829,
+      "mc_entropy": 1.3903251662318197,
+      "mc_entropy_std": 0.27058784352134896
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.9403226545878819,
+      "entropy": 1.44978124329022,
+      "mc_entropy": 1.3833615359457647,
+      "mc_entropy_std": 0.221801310716634
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.9271357910973685,
+      "entropy": 1.2597842237779073,
+      "mc_entropy": 1.286243242145999,
+      "mc_entropy_std": 0.5657526773226307
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.9607724462236676,
+      "entropy": 1.0906186401844025,
+      "mc_entropy": 1.235216112963722,
+      "mc_entropy_std": 0.23806755759328663
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.8983147357191358,
+      "entropy": 1.1616453507116862,
+      "mc_entropy": 1.2607365494061793,
+      "mc_entropy_std": 0.2700951265592557
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.9714098572731018,
+      "entropy": 1.2901106480109905,
+      "mc_entropy": 1.3432269669889594,
+      "mc_entropy_std": 0.32726596884416537
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.8902741926056998,
+      "entropy": 1.3844493300254856,
+      "mc_entropy": 1.373766913684189,
+      "mc_entropy_std": 0.19520249257055594
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.8546717011236719,
+      "entropy": 0.8550031405466143,
+      "mc_entropy": 1.4443360847887527,
+      "mc_entropy_std": 0.4970252141074568
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.9473932726042611,
+      "entropy": 1.0997534138815743,
+      "mc_entropy": 1.3011448935527887,
+      "mc_entropy_std": 0.3765150467015846
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.8941482092653003,
+      "entropy": 0.9819136285888297,
+      "mc_entropy": 1.3264845315254727,
+      "mc_entropy_std": 0.22826857763106742
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.7919085834707532,
+      "entropy": 1.4876696935721807,
+      "mc_entropy": 1.2698305306568198,
+      "mc_entropy_std": 0.2434296572175622
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.6504439945731845,
+      "entropy": 1.0670200660824776,
+      "mc_entropy": 1.3982562762261295,
+      "mc_entropy_std": 0.4118604710334918
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.9128202199935913,
+      "entropy": 1.3334695867129736,
+      "mc_entropy": 1.4491716659194434,
+      "mc_entropy_std": 0.5455562621574226
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.8499142422453068,
+      "entropy": 1.5376381107739039,
+      "mc_entropy": 1.3714159515125304,
+      "mc_entropy_std": 0.5312525172320013
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.7376137154309877,
+      "entropy": 2.1220820505196962,
+      "mc_entropy": 1.4305533235634877,
+      "mc_entropy_std": 0.3039690455322073
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.8721124614988055,
+      "entropy": 1.9797754108772747,
+      "mc_entropy": 1.2708487148129637,
+      "mc_entropy_std": 0.1600798630023734
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.6932538407189506,
+      "entropy": 2.3602468903575624,
+      "mc_entropy": 1.2223279524085229,
+      "mc_entropy_std": 0.30748600387916547
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.6497242278585743,
+      "entropy": 2.4679574034090757,
+      "mc_entropy": 1.2341356541399113,
+      "mc_entropy_std": 0.16779415808701428
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.7912249278896135,
+      "entropy": 2.2215106104101454,
+      "mc_entropy": 1.3949082020963552,
+      "mc_entropy_std": 0.16874309168974355
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.8643982942615237,
+      "entropy": 1.3113746387617928,
+      "mc_entropy": 1.2711458070505224,
+      "mc_entropy_std": 0.29204283121473623
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.86208547438894,
+      "entropy": 1.7633446625300817,
+      "mc_entropy": 1.1814966087438994,
+      "mc_entropy_std": 0.3379373570467671
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.8034096583724022,
+      "entropy": 2.05256410581725,
+      "mc_entropy": 1.3146214793066977,
+      "mc_entropy_std": 0.3187682872036023
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.7655370558079865,
+      "entropy": 2.246831163490299,
+      "mc_entropy": 1.3674210926168497,
+      "mc_entropy_std": 0.22601073739877905
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.7957051311220441,
+      "entropy": 2.0330454792295183,
+      "mc_entropy": 1.4307412170345644,
+      "mc_entropy_std": 0.3044638249816933
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.9972043292863029,
+      "entropy": 1.6686979830265045,
+      "mc_entropy": 1.4420017123029871,
+      "mc_entropy_std": 0.2884534725996993
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.7826767163351178,
+      "entropy": 1.8519922936601299,
+      "mc_entropy": 1.5279827533090222,
+      "mc_entropy_std": 0.38660401374040015
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.9965425218854632,
+      "entropy": 1.5871396107333047,
+      "mc_entropy": 1.31110333484664,
+      "mc_entropy_std": 0.17974644706690557
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.7985682078204783,
+      "entropy": 1.9925947628522798,
+      "mc_entropy": 1.1645918210568929,
+      "mc_entropy_std": 0.24475525444755167
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.9545558094978333,
+      "entropy": 2.16126702938761,
+      "mc_entropy": 1.4471585785039742,
+      "mc_entropy_std": 0.19801908912018537
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.994910444532122,
+      "entropy": 0.824594606246267,
+      "mc_entropy": 1.1081546670389149,
+      "mc_entropy_std": 0.2047170605836775
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.9972328969410488,
+      "entropy": 0.9828196146658489,
+      "mc_entropy": 1.0950332070739284,
+      "mc_entropy_std": 0.2898139416274951
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.9936501724379403,
+      "entropy": 0.9751394305910382,
+      "mc_entropy": 1.3434796090300423,
+      "mc_entropy_std": 0.19575959147105354
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.9912090301513672,
+      "entropy": 1.2642568168895585,
+      "mc_entropy": 1.181131453203622,
+      "mc_entropy_std": 0.2256002460280445
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.9956302642822266,
+      "entropy": 0.9113128536513874,
+      "mc_entropy": 1.208174504985826,
+      "mc_entropy_std": 0.2537082103912773
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.9957908987998962,
+      "entropy": 0.8800347745418549,
+      "mc_entropy": 1.2554996870304813,
+      "mc_entropy_std": 0.2677808630244287
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.9963579433304923,
+      "entropy": 1.0438643310751234,
+      "mc_entropy": 1.0558353037025143,
+      "mc_entropy_std": 0.20781528908569186
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.9940020867756435,
+      "entropy": 1.4273987071854728,
+      "mc_entropy": 1.2304687390744222,
+      "mc_entropy_std": 0.27856270208587347
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.994232211794172,
+      "entropy": 1.0222754765834128,
+      "mc_entropy": 1.1916996054811793,
+      "mc_entropy_std": 0.32546287369676574
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.9981127296175275,
+      "entropy": 0.9225976232971463,
+      "mc_entropy": 1.1092710902204348,
+      "mc_entropy_std": 0.16761667754756465
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.9967418653624398,
+      "entropy": 0.9293385318347386,
+      "mc_entropy": 1.1738104996060603,
+      "mc_entropy_std": 0.3045977535596551
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.988157502242497,
+      "entropy": 1.1828488622392928,
+      "mc_entropy": 1.1172453039354877,
+      "mc_entropy_std": 0.1366983251949907
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.9926665510450091,
+      "entropy": 0.9574276488274336,
+      "mc_entropy": 1.1219158195248773,
+      "mc_entropy_std": 0.17162637053135604
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.998418390750885,
+      "entropy": 0.9529397040605545,
+      "mc_entropy": 1.260552468521654,
+      "mc_entropy_std": 0.2549486107602963
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.9963895082473755,
+      "entropy": 1.3157789217574256,
+      "mc_entropy": 1.2484344487454104,
+      "mc_entropy_std": 0.36813285722760924
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.9991469298090253,
+      "entropy": 1.264059835246631,
+      "mc_entropy": 1.1774425874718224,
+      "mc_entropy_std": 0.3248135202285942
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.9952088935034615,
+      "entropy": 1.5273737502949578,
+      "mc_entropy": 1.0924463090698509,
+      "mc_entropy_std": 0.16504511965407004
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.9988432696887425,
+      "entropy": 0.9687526379046696,
+      "mc_entropy": 1.1169834799334564,
+      "mc_entropy_std": 0.13998624130047835
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.9987779344831195,
+      "entropy": 1.242933452129364,
+      "mc_entropy": 1.072708027623594,
+      "mc_entropy_std": 0.18697641658927763
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.9986313922064645,
+      "entropy": 1.4038976143513406,
+      "mc_entropy": 1.0606552544091605,
+      "mc_entropy_std": 0.3234456035811279
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.9841063363211495,
+      "entropy": 0.982854248456923,
+      "mc_entropy": 1.176503713036645,
+      "mc_entropy_std": 0.2691845269807877
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.9996427553040641,
+      "entropy": 1.0422467291355133,
+      "mc_entropy": 1.1169572771467056,
+      "mc_entropy_std": 0.3222324448997754
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.9983127032007489,
+      "entropy": 1.0658301176237208,
+      "mc_entropy": 1.2145623572142417,
+      "mc_entropy_std": 0.21309185293141397
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.9988838859966823,
+      "entropy": 1.2243031178201949,
+      "mc_entropy": 1.1251793007413524,
+      "mc_entropy_std": 0.33977430557107924
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.9985875827925546,
+      "entropy": 0.9699576506723783,
+      "mc_entropy": 1.1089497025111164,
+      "mc_entropy_std": 0.1757171271827914
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.9983505351202828,
+      "entropy": 1.090246961585113,
+      "mc_entropy": 1.2699527670313062,
+      "mc_entropy_std": 0.1961446352288633
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.9988487107413155,
+      "entropy": 1.2839539998344012,
+      "mc_entropy": 1.07266097702531,
+      "mc_entropy_std": 0.2571336726599096
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.9975286211286273,
+      "entropy": 1.141293730054583,
+      "mc_entropy": 1.083637146545308,
+      "mc_entropy_std": 0.25125568999327974
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.9984603949955532,
+      "entropy": 1.1229516438075475,
+      "mc_entropy": 1.0831610567136,
+      "mc_entropy_std": 0.3022008600163511
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.9995866928781781,
+      "entropy": 1.1583129848752702,
+      "mc_entropy": 1.1383532278883346,
+      "mc_entropy_std": 0.2310672915094154
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.9628764390945435,
+      "entropy": 0.8062005353692386,
+      "mc_entropy": 1.215257910166308,
+      "mc_entropy_std": 0.3039796363162736
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.9867668492453439,
+      "entropy": 0.7726373536944655,
+      "mc_entropy": 1.0835811741250967,
+      "mc_entropy_std": 0.1395218963075997
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.8659438852752958,
+      "entropy": 0.7505702758441787,
+      "mc_entropy": 1.1651605673700631,
+      "mc_entropy_std": 0.36663751753866264
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.8532696894503066,
+      "entropy": 0.8385861410893735,
+      "mc_entropy": 1.0590282201565613,
+      "mc_entropy_std": 0.30024907613635915
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.9795235650879996,
+      "entropy": 0.8193004934582859,
+      "mc_entropy": 1.209196919217772,
+      "mc_entropy_std": 0.21152302109107785
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.9934311764580863,
+      "entropy": 0.6804647537480507,
+      "mc_entropy": 1.165290217508251,
+      "mc_entropy_std": 0.29610786212873685
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.9718946644238063,
+      "entropy": 0.8024048845815871,
+      "mc_entropy": 1.2516912363257169,
+      "mc_entropy_std": 0.1702900106827945
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.9675207308360508,
+      "entropy": 0.8088920791633427,
+      "mc_entropy": 1.0665834060408608,
+      "mc_entropy_std": 0.23825705450250076
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.9796700137002128,
+      "entropy": 0.7757433579702463,
+      "mc_entropy": 1.2702773411762402,
+      "mc_entropy_std": 0.27560381420395563
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.9886894481522697,
+      "entropy": 0.7613965389651379,
+      "mc_entropy": 1.1680351143898642,
+      "mc_entropy_std": 0.35128693184696297
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.9697670681135995,
+      "entropy": 0.7777025515346655,
+      "mc_entropy": 1.3032397946243042,
+      "mc_entropy_std": 0.25941666252843926
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.9831021768706185,
+      "entropy": 0.827641150049333,
+      "mc_entropy": 1.150371318017798,
+      "mc_entropy_std": 0.20210516112311183
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.9887013861111232,
+      "entropy": 0.7280833035058875,
+      "mc_entropy": 1.2531855195100174,
+      "mc_entropy_std": 0.27227235468915667
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.9565120935440063,
+      "entropy": 0.7725580390397226,
+      "mc_entropy": 1.2264372981753198,
+      "mc_entropy_std": 0.2545999201874718
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.9660907728331429,
+      "entropy": 0.7684668762875455,
+      "mc_entropy": 1.129360190040987,
+      "mc_entropy_std": 0.21092817593211877
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.8452437094279698,
+      "entropy": 3.3071699142456055,
+      "mc_entropy": 1.1886805593971597,
+      "mc_entropy_std": 0.22142451093272128
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.838084374155317,
+      "entropy": 3.375979253223964,
+      "mc_entropy": 1.3008168564461955,
+      "mc_entropy_std": 0.2778362233451644
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.8558761392320905,
+      "entropy": 3.3193269286836897,
+      "mc_entropy": 1.2252984907511357,
+      "mc_entropy_std": 0.1436060076802711
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.8755682281085423,
+      "entropy": 3.3685202257973805,
+      "mc_entropy": 1.1463418676458654,
+      "mc_entropy_std": 0.24780174278650113
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.863092941897256,
+      "entropy": 3.302264554159982,
+      "mc_entropy": 1.1270889425104542,
+      "mc_entropy_std": 0.206973299722304
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.8477665271077838,
+      "entropy": 3.320911935397557,
+      "mc_entropy": 1.1604775002559016,
+      "mc_entropy_std": 0.1632764718202428
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.8598031061036246,
+      "entropy": 3.361151933670044,
+      "mc_entropy": 1.2153062172827647,
+      "mc_entropy_std": 0.26274634684063264
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.8679504096508026,
+      "entropy": 3.475987604686192,
+      "mc_entropy": 1.269424799731444,
+      "mc_entropy_std": 0.22714436239376318
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.864602267742157,
+      "entropy": 3.481354236602783,
+      "mc_entropy": 1.0746801242103434,
+      "mc_entropy_std": 0.18736103482815236
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.8496789313586695,
+      "entropy": 3.4375947202954973,
+      "mc_entropy": 1.1642952579189019,
+      "mc_entropy_std": 0.23948890824003535
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.8470334368092673,
+      "entropy": 3.4405648708343506,
+      "mc_entropy": 1.195706059322833,
+      "mc_entropy_std": 0.2851358276188931
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.8495328724384308,
+      "entropy": 3.315157788140433,
+      "mc_entropy": 1.1493994832329917,
+      "mc_entropy_std": 0.22349026453324355
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.8402778217568994,
+      "entropy": 3.4372337205069408,
+      "mc_entropy": 1.3244639165980652,
+      "mc_entropy_std": 0.26247849927076367
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.8590273090771267,
+      "entropy": 3.4124756370271956,
+      "mc_entropy": 1.2095818184407956,
+      "mc_entropy_std": 0.3380198846020102
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.8597036302089691,
+      "entropy": 3.301446761403765,
+      "mc_entropy": 1.066037771322096,
+      "mc_entropy_std": 0.24887027122460553
+    }
+  ]
+}
