@@ -1,0 +1,393 @@
+{
+  "timestamp": "20260314_111925",
+  "per_dim_optimal": {
+    "0": {
+      "T": 5.0,
+      "auroc": 0.9133333333333333
+    },
+    "1": {
+      "T": 5.0,
+      "auroc": 0.8166666666666667
+    },
+    "2": {
+      "T": 5.0,
+      "auroc": 0.8933333333333333
+    },
+    "3": {
+      "T": 5.0,
+      "auroc": 0.7283333333333334
+    },
+    "4": {
+      "T": 0.5,
+      "auroc": 0.6033333333333334
+    },
+    "5": {
+      "T": 5.0,
+      "auroc": 0.7133333333333334
+    },
+    "6": {
+      "T": 5.0,
+      "auroc": 0.6116666666666667
+    }
+  },
+  "calibrated_auroc": 0.8516666666666667,
+  "uncalibrated_auroc": 0.7383333333333333,
+  "scenario_calibrated": {
+    "highway": {
+      "conf": 0.0963126268257937,
+      "entropy": 3.994724717985478
+    },
+    "urban": {
+      "conf": 0.09665650073423177,
+      "entropy": 4.073259900618965
+    },
+    "night": {
+      "conf": 0.03385742429430187,
+      "entropy": 4.539449518812554
+    },
+    "rain": {
+      "conf": 0.07571071135280937,
+      "entropy": 4.153682989433686
+    },
+    "construction": {
+      "conf": 0.10883471475696631,
+      "entropy": 3.966965306090008
+    },
+    "ood_noise": {
+      "conf": 0.07544128267997732,
+      "entropy": 4.205819776042231
+    }
+  },
+  "prompt_consistency": [
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 0,
+      "mean_conf": 0.5892523074993905,
+      "conf_std": 0.046258504525594164,
+      "mean_entropy": 1.2619300677574108,
+      "entropy_std": 0.12243757389738262,
+      "token_agreement": 0.0,
+      "mean_kl": 9.136048316955566
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 1,
+      "mean_conf": 0.5554808676897895,
+      "conf_std": 0.06138258781301815,
+      "mean_entropy": 1.3332590142212917,
+      "entropy_std": 0.14755634425794645,
+      "token_agreement": 0.0,
+      "mean_kl": 8.967798233032227
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 2,
+      "mean_conf": 0.6096738223831178,
+      "conf_std": 0.05641138150267373,
+      "mean_entropy": 1.163344890580725,
+      "entropy_std": 0.17491388709397301,
+      "token_agreement": 0.0,
+      "mean_kl": 9.095484733581543
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 3,
+      "mean_conf": 0.5112573764516055,
+      "conf_std": 0.08706157692886858,
+      "mean_entropy": 1.432986380793019,
+      "entropy_std": 0.3276622289261695,
+      "token_agreement": 0.0,
+      "mean_kl": 8.660593032836914
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 4,
+      "mean_conf": 0.5496845732584095,
+      "conf_std": 0.04806835778504464,
+      "mean_entropy": 1.2096122438396395,
+      "entropy_std": 0.14301999117153774,
+      "token_agreement": 0.0,
+      "mean_kl": 8.993488311767578
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 0,
+      "mean_conf": 0.6288622749570247,
+      "conf_std": 0.0788079178184693,
+      "mean_entropy": 1.1383525862350194,
+      "entropy_std": 0.16946038294234514,
+      "token_agreement": 0.0,
+      "mean_kl": 10.203984260559082
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 1,
+      "mean_conf": 0.6039856902672515,
+      "conf_std": 0.09798754976543661,
+      "mean_entropy": 1.1601659611582624,
+      "entropy_std": 0.24097068322365373,
+      "token_agreement": 0.0,
+      "mean_kl": 9.70971393585205
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 2,
+      "mean_conf": 0.5732173049658674,
+      "conf_std": 0.05802509415345544,
+      "mean_entropy": 1.2742361716393913,
+      "entropy_std": 0.2234490525803628,
+      "token_agreement": 0.0,
+      "mean_kl": 10.372971534729004
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 3,
+      "mean_conf": 0.6071117439551641,
+      "conf_std": 0.09717476546806564,
+      "mean_entropy": 1.142758163815805,
+      "entropy_std": 0.28643601221242226,
+      "token_agreement": 0.0,
+      "mean_kl": 10.2659330368042
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 4,
+      "mean_conf": 0.6194101150422351,
+      "conf_std": 0.06902055434028681,
+      "mean_entropy": 1.1260195803396138,
+      "entropy_std": 0.1624626377026336,
+      "token_agreement": 0.0,
+      "mean_kl": 10.120878219604492
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 0,
+      "mean_conf": 0.2184536142534688,
+      "conf_std": 0.0441495259904312,
+      "mean_entropy": 2.97012217768601,
+      "entropy_std": 0.2638543342376128,
+      "token_agreement": 0.0,
+      "mean_kl": 2.834782838821411
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 1,
+      "mean_conf": 0.2549687498666734,
+      "conf_std": 0.02917818764650191,
+      "mean_entropy": 2.745951533317566,
+      "entropy_std": 0.10259568962243328,
+      "token_agreement": 0.0,
+      "mean_kl": 4.407630920410156
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 2,
+      "mean_conf": 0.21647042556146143,
+      "conf_std": 0.040291515115781294,
+      "mean_entropy": 2.935852655342647,
+      "entropy_std": 0.32426207208396735,
+      "token_agreement": 0.0,
+      "mean_kl": 3.085434913635254
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 3,
+      "mean_conf": 0.15051144046028636,
+      "conf_std": 0.02096891324956847,
+      "mean_entropy": 3.493450560740062,
+      "entropy_std": 0.1988375495943354,
+      "token_agreement": 0.0,
+      "mean_kl": 2.8701348304748535
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 4,
+      "mean_conf": 0.19350078260120002,
+      "conf_std": 0.03815728414308443,
+      "mean_entropy": 3.1039735924984733,
+      "entropy_std": 0.34211001927353185,
+      "token_agreement": 0.0,
+      "mean_kl": 2.687110424041748
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 0,
+      "mean_conf": 0.4186025662365779,
+      "conf_std": 0.060253951027794114,
+      "mean_entropy": 1.7864752200972345,
+      "entropy_std": 0.1998574458438341,
+      "token_agreement": 0.0,
+      "mean_kl": 6.845060348510742
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 1,
+      "mean_conf": 0.4922351678816202,
+      "conf_std": 0.0766631519967496,
+      "mean_entropy": 1.487730207171499,
+      "entropy_std": 0.2637287655198709,
+      "token_agreement": 0.0,
+      "mean_kl": 8.09007453918457
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 2,
+      "mean_conf": 0.5831706593066617,
+      "conf_std": 0.09295071214590175,
+      "mean_entropy": 1.2964324715763464,
+      "entropy_std": 0.32811898203203765,
+      "token_agreement": 0.0,
+      "mean_kl": 9.0426025390625
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 3,
+      "mean_conf": 0.5106687870757712,
+      "conf_std": 0.05416195810503805,
+      "mean_entropy": 1.4668277429251697,
+      "entropy_std": 0.19782508480693312,
+      "token_agreement": 0.0,
+      "mean_kl": 7.97116231918335
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 4,
+      "mean_conf": 0.5439318107753661,
+      "conf_std": 0.08310271328202694,
+      "mean_entropy": 1.3559182386047075,
+      "entropy_std": 0.25081875928962044,
+      "token_agreement": 0.0,
+      "mean_kl": 9.499388694763184
+    },
+    {
+      "scenario": "construction",
+      "difficulty": "hard",
+      "idx": 0,
+      "mean_conf": 0.6855539959343939,
+      "conf_std": 0.07532673237611136,
+      "mean_entropy": 0.9458422434143431,
+      "entropy_std": 0.20857770520225397,
+      "token_agreement": 0.0,
+      "mean_kl": 8.964261054992676
+    },
+    {
+      "scenario": "construction",
+      "difficulty": "hard",
+      "idx": 1,
+      "mean_conf": 0.5780115402639001,
+      "conf_std": 0.07927477813336437,
+      "mean_entropy": 1.1808518805704646,
+      "entropy_std": 0.2072967687642248,
+      "token_agreement": 0.0,
+      "mean_kl": 8.286615371704102
+    },
+    {
+      "scenario": "construction",
+      "difficulty": "hard",
+      "idx": 2,
+      "mean_conf": 0.6075854435287391,
+      "conf_std": 0.09035329535562767,
+      "mean_entropy": 1.1062998543402487,
+      "entropy_std": 0.23954526453993497,
+      "token_agreement": 0.14285714285714285,
+      "mean_kl": 7.591517448425293
+    },
+    {
+      "scenario": "construction",
+      "difficulty": "hard",
+      "idx": 3,
+      "mean_conf": 0.6107866439380516,
+      "conf_std": 0.06933529587107246,
+      "mean_entropy": 1.1221003768251063,
+      "entropy_std": 0.19188548581001383,
+      "token_agreement": 0.0,
+      "mean_kl": 9.534627914428711
+    },
+    {
+      "scenario": "construction",
+      "difficulty": "hard",
+      "idx": 4,
+      "mean_conf": 0.6470357414355141,
+      "conf_std": 0.09598337636346559,
+      "mean_entropy": 0.9648765999449356,
+      "entropy_std": 0.19955707696517047,
+      "token_agreement": 0.0,
+      "mean_kl": 9.044583320617676
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 0,
+      "mean_conf": 0.5144133051980966,
+      "conf_std": 0.0668000415919498,
+      "mean_entropy": 1.4083155618136516,
+      "entropy_std": 0.21507288079829426,
+      "token_agreement": 0.0,
+      "mean_kl": 9.388884544372559
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 1,
+      "mean_conf": 0.602247825018704,
+      "conf_std": 0.0577858215146681,
+      "mean_entropy": 1.2407435029412488,
+      "entropy_std": 0.19213223036608276,
+      "token_agreement": 0.0,
+      "mean_kl": 9.664027214050293
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 2,
+      "mean_conf": 0.5783861819198696,
+      "conf_std": 0.08298898119476243,
+      "mean_entropy": 1.2280631692917545,
+      "entropy_std": 0.21629159774664142,
+      "token_agreement": 0.0,
+      "mean_kl": 7.953306674957275
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 3,
+      "mean_conf": 0.49795659551595517,
+      "conf_std": 0.07906466145007876,
+      "mean_entropy": 1.4395932618050276,
+      "entropy_std": 0.28963053519565707,
+      "token_agreement": 0.0,
+      "mean_kl": 8.62492561340332
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 4,
+      "mean_conf": 0.5801880033083007,
+      "conf_std": 0.07163630457118679,
+      "mean_entropy": 1.3441057342176594,
+      "entropy_std": 0.21933973412242638,
+      "token_agreement": 0.0,
+      "mean_kl": 8.026567459106445
+    }
+  ]
+}
