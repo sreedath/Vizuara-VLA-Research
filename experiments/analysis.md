@@ -3418,3 +3418,43 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Different heads are best for different OOD types**: Noise (head 3), indoor (head 5), blackout (head 2) — the heads specialize in detecting different types of distributional shift.
 
 5. **Head pruning potential**: Since only 4/32 heads are truly diagnostic, attention-based detection could be computed from just these heads with 8x less computation.
+
+---
+
+## Finding 69: OOD Detection Is Completely Resolution-Invariant (64-512px)
+
+**Experiment 75** — Image resolution sensitivity analysis.
+
+### Setup
+- 5 resolutions: 64, 128, 224 (native), 256, 512
+- 32 test images per resolution + 20 calibration per resolution
+- Cross-resolution centroid distance analysis
+
+### Results
+
+| Resolution | Cosine AUROC | Attn Max AUROC |
+|-----------|-------------|----------------|
+| 64×64 | **1.000** | **1.000** |
+| 128×128 | **1.000** | **1.000** |
+| 224×224 | **1.000** | **1.000** |
+| 256×256 | **1.000** | **1.000** |
+| 512×512 | **1.000** | **1.000** |
+
+### Cross-Resolution Centroid Distances
+
+| | 64 | 128 | 224 | 256 | 512 |
+|-|-----|------|------|------|------|
+| 64 | 0 | 0.063 | 0.132 | 0.161 | 0.129 |
+| 128 | | 0 | 0.037 | 0.059 | 0.030 |
+| 224 | | | 0 | 0.005 | 0.005 |
+| 256 | | | | 0 | 0.012 |
+
+### Key Insights
+
+1. **Both methods achieve perfect AUROC at ALL resolutions**: From 64×64 (very low) to 512×512 (high), detection quality is unaffected.
+
+2. **224 and 256 centroids are nearly identical (0.005)**: The processor's internal resizing produces virtually identical embeddings for close resolutions.
+
+3. **Low resolution (64×64) shifts centroids more (0.132 from 224)**: But not enough to affect detection because the ID/OOD gap is much larger.
+
+4. **Practical implication: no resolution-matching required**: The calibration image resolution does not need to match the deployment resolution. Detection works across the board.

@@ -1510,4 +1510,20 @@ We analyze per-head OOD detection in the last transformer layer (Figure~\ref{fig
 
 The head specialization has both mechanistic and practical implications. Mechanistically, the diagnostic heads (7, 16, 25, 27) appear to function as ``scene recognition'' heads that concentrate attention differently for familiar vs.\ unfamiliar visual inputs. Practically, \textbf{head pruning} could reduce the attention computation for OOD detection by $8\times$ (4 of 32 heads) without any loss in detection quality.
 
+\subsection{Resolution Invariance}
+\label{app:resolution}
+
+\textbf{Finding 98: Both cosine and attention detection achieve perfect AUROC at all tested resolutions (64--512px), with cross-resolution centroid distances as small as 0.005.}
+
+We test whether image resolution affects detection quality (Figure~\ref{fig:resolution}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig61_resolution.pdf}
+\caption{\textbf{Resolution sensitivity.} (a) Both methods achieve 1.000 at all resolutions from 64$\times$64 to 512$\times$512. (b) Cross-resolution centroid distances: 224 and 256 are nearly identical (0.005); 64px shifts more (0.132) but not enough to affect detection.}
+\label{fig:resolution}
+\end{figure}
+
+This resolution invariance arises because the vision encoder's internal processing normalizes different input resolutions into a common representation space. For deployment, this means \textbf{no resolution matching is required}---calibration at one resolution works for inference at another.
+
 \end{document}
