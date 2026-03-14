@@ -1914,4 +1914,20 @@ We simulate three driving sequence scenarios to test real-time detection behavio
 
 The sequential analysis demonstrates deployment readiness. Three key properties emerge: (1) extreme early detection---5\% scene contamination is enough to trigger an alert; (2) zero-latency response---no warm-up, buffering, or temporal smoothing is needed; (3) stateless operation---each frame is evaluated independently, making the system robust to rapid ID$\leftrightarrow$OOD transitions. The single false positive (score 0.0325 vs threshold 0.0323) could be eliminated with a 2-frame sliding window, but even without smoothing, the per-frame accuracy is 95\% (19/20).
 
+\subsection{Comprehensive Ablation}
+\label{app:ablation}
+
+\textbf{Finding 123: Multi-layer PCA-8 achieves $d = 15.78$ (3$\times$ last-layer). $N = 1$ calibration achieves 0.998 AUROC. Raw norm provides 0.975 AUROC with zero calibration. Four deployment tiers span the Pareto frontier.}
+
+We perform a systematic ablation across feature sources, calibration sizes, and detection metrics (Figure~\ref{fig:ablation}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig86_comprehensive_ablation.pdf}
+\caption{\textbf{Comprehensive ablation.} (a) Feature source: multi-layer PCA-8 achieves $d=15.78$, 3$\times$ the last-layer baseline. (b) Calibration size: AUROC $\geq 0.992$ at $N=1$; Cohen's $d$ jumps from 2.5 to 5.3 at $N=20$ (mixed diversity threshold). (c) Deployment recommendation matrix with four tiers.}
+\label{fig:ablation}
+\end{figure}
+
+The ablation crystallizes our practical recommendations. For maximum detection margin, multi-layer PCA-8 provides $d=15.78$---a 3$\times$ improvement that makes threshold selection trivially easy. For simplicity, last-layer cosine distance achieves perfect AUROC at 4,096 dimensions. For minimal setup, a single calibration sample still achieves 0.998 AUROC. And for zero-calibration deployment, raw embedding norm provides 0.975 AUROC. These four tiers form a Pareto frontier where each successive simplification trades a small amount of detection margin for significant reductions in implementation complexity.
+
 \end{document}

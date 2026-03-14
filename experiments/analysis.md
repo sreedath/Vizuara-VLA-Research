@@ -4402,3 +4402,59 @@ Hidden state AUROC: **1.000** (for reference)
 5. **Frame-to-frame drift**: Abrupt transitions show max drift of 0.406 per frame; gradual transitions max at 0.112. Drift monitoring could complement threshold-based detection.
 
 6. **Deployment readiness**: The system works as a drop-in per-frame safety monitor — no temporal state, no buffering, no latency. Each inference takes ~65ms + 0.2ms detection.
+
+---
+
+## Finding 94: Comprehensive Ablation Study
+
+**Experiment 100** — Systematic ablation testing the contribution of each component across feature sources, calibration sizes, detection metrics, and categories.
+
+### Setup
+- 24 calibration, 20 ID, 32 OOD samples
+- All hidden states extracted (33 layers)
+- Feature source, calibration size, metric, and per-category ablations
+- ~76 model inferences
+
+### Feature Source Ablation
+
+| Feature | AUROC | Cohen's d | Dimensions |
+|---------|-------|-----------|------------|
+| **Multi-layer PCA-8** | **1.000** | **15.78** | **8** |
+| Last layer | 1.000 | 5.75 | 4,096 |
+| Layer 24 | 1.000 | 5.15 | 4,096 |
+| Norm only | 0.975 | — | 1 |
+
+### Calibration Size Ablation
+
+| N_cal | AUROC | Cohen's d |
+|-------|-------|-----------|
+| 1 | 0.998 | 2.57 |
+| 3 | 0.998 | 2.53 |
+| 5 | 0.992 | 2.50 |
+| 10 | 0.992 | 2.49 |
+| 20 | 1.000 | 5.30 |
+| 24 | 1.000 | 5.75 |
+
+### Per-Category (all 1.000 AUROC)
+- Noise: 1.000, Indoor: 1.000, Twilight: 1.000, Snow: 1.000
+
+### Deployment Recommendation Matrix
+
+| Goal | Method | Performance | Dims | N_cal |
+|------|--------|-------------|------|-------|
+| Maximum d | Multi-layer PCA-8 | d=15.78 | 8 | ≥20 |
+| Simplest perfect | Last-layer cosine | d=5.75 | 4,096 | ≥20 |
+| Minimum data | Last-layer cosine | AUROC=0.998 | 4,096 | 1 |
+| No calibration | L2 norm | AUROC=0.975 | 1 | 0 |
+
+### Key Insights
+
+1. **Multi-layer PCA-8 is the clear winner**: d=15.78, nearly 3× the last-layer baseline. Eight PCA dimensions from concatenated every-4th-layer features capture the full OOD discriminant.
+
+2. **The calibration size phase transition**: Below N=20, d plateaus at ~2.5 (homogeneous samples). At N=20 (mixed), d jumps to 5.30. The threshold is diversity, not quantity.
+
+3. **Four deployment tiers**: Maximum separation (PCA-8), simplest perfect (last-layer cosine), minimal data (N=1 cosine), and calibration-free (norm). Each tier trades complexity for convenience.
+
+4. **Perfect per-category detection**: All 4 OOD categories achieve 1.000 AUROC with the full calibration set — no category is left behind.
+
+5. **Cosine and Euclidean are equivalent in full dim**: Both achieve 1.000. The choice doesn't matter at 4,096 dimensions (consistent with high-dimensional geometry theory).

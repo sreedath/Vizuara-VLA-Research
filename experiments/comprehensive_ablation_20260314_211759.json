@@ -1,0 +1,90 @@
+{
+  "experiment": "comprehensive_ablation",
+  "experiment_number": 100,
+  "timestamp": "20260314_211759",
+  "n_cal": 24,
+  "n_id": 20,
+  "n_ood": 32,
+  "results": {
+    "feature_source": {
+      "last_layer": {
+        "auroc": 1.0,
+        "d": 5.745735368293368,
+        "dim": 4096
+      },
+      "layer_24": {
+        "auroc": 1.0,
+        "d": 5.146639679366437,
+        "dim": 4096
+      },
+      "multi_layer_pca8": {
+        "auroc": 1.0,
+        "d": 15.777555203765777,
+        "dim": 8
+      },
+      "norm_only": {
+        "auroc": 0.9750000000000001,
+        "d": null,
+        "dim": 1
+      }
+    },
+    "calibration_size": {
+      "n_1": {
+        "auroc": 0.9984375,
+        "d": 2.5747192097086407,
+        "n": 1
+      },
+      "n_3": {
+        "auroc": 0.9984375,
+        "d": 2.5319634289744553,
+        "n": 3
+      },
+      "n_5": {
+        "auroc": 0.9921875,
+        "d": 2.497288096468704,
+        "n": 5
+      },
+      "n_10": {
+        "auroc": 0.9921875,
+        "d": 2.488140111730792,
+        "n": 10
+      },
+      "n_20": {
+        "auroc": 1.0,
+        "d": 5.30197944531661,
+        "n": 20
+      },
+      "n_24": {
+        "auroc": 1.0,
+        "d": 5.745735368293368,
+        "n": 24
+      }
+    },
+    "detection_metric": {
+      "cosine": {
+        "auroc": 1.0
+      },
+      "euclidean": {
+        "auroc": 1.0
+      }
+    },
+    "per_category": {
+      "snow": {
+        "auroc": 1.0,
+        "n": 8
+      },
+      "twilight": {
+        "auroc": 1.0,
+        "n": 8
+      },
+      "indoor": {
+        "auroc": 1.0,
+        "n": 8
+      },
+      "noise": {
+        "auroc": 1.0,
+        "n": 8
+      }
+    }
+  }
+}
