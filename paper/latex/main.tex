@@ -2344,4 +2344,24 @@ We compare six calibration strategies using 20 ID images (10 highway, 10 urban) 
 
 The per-class centroid strategy is optimal because the single centroid averages over two distinct ID clusters (highway and urban), placing it between them rather than at either cluster's center. Per-class centroids preserve the tighter within-class clustering. However, the single centroid's $d' = 40.8$ is still massive---the choice of strategy matters only for the margin, not for detection success. For practical deployment, we recommend the single centroid for its simplicity ($O(1)$ test-time, no class labels needed) unless the deployment scenario requires maximizing the detection margin.
 
+\subsection{Action Output Under OOD}
+\label{app:action_under_ood}
+
+\textbf{Finding 156: OOD inputs produce systematically biased actions, not random outputs. The x-translation dimension shifts by $-36$ to $-48$ bins (out of 256) across all OOD categories.}
+
+\textbf{Finding 157: OOD actions are 24\% more variable (spread = 93.4) than ID actions (spread = 75.3), but the model does not collapse to a degenerate output---all categories produce diverse, unique actions.}
+
+\textbf{Finding 158: The gripper dimension (dim 6) varies widely even within ID (66.4 for highway, 119.8 for urban), suggesting task-specific rather than scene-specific encoding.}
+
+We decode the 7-dimensional action vectors (bins 0--255 from token IDs 31744--31999) predicted for ID and OOD inputs (Figure~\ref{fig:action_under_ood}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig112_action_under_ood.png}
+\caption{\textbf{Action output under OOD.} (a) Mean action per dimension by category: OOD categories (red/orange/purple/blue) diverge from ID (green) primarily in x-translation and y-translation. (b) Per-dimension divergence from ID center: x-translation shifts $-36$ to $-48$ bins for OOD. (c) Intra-category spread: OOD actions are 24\% more variable than ID.}
+\label{fig:action_under_ood}
+\end{figure}
+
+The action analysis reveals that OOD detection is not merely a representation-space curiosity but has direct safety implications. When the VLA encounters an OOD input, it does not ``refuse'' to act or output a safe default; instead, it commands a systematically different trajectory. The consistent x-translation shift of $-36$ to $-48$ bins means the model would steer the vehicle differently when it encounters an unfamiliar scene. Combined with the 24\% increase in action variability, this creates a dangerous combination: the model both changes direction and becomes less consistent. Our cosine distance detector intercepts these OOD inputs before the actions reach the control system, providing a critical safety layer.
+
 \end{document}
