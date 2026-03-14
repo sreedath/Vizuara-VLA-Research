@@ -2306,4 +2306,24 @@ We rank all 4,096 hidden-state dimensions by their individual discriminability (
 
 The distributed nature of the OOD signal explains several earlier findings. Cross-prompt calibration transfer (Experiment 122) works because the OOD signal pervades all dimensions, so prompt-induced centroid shifts in a few dimensions cannot disrupt detection. Resolution robustness (Experiment 118) holds because even coarse visual features shift the \emph{entire} representation. Single-sample calibration (Experiment 113) succeeds because the OOD signal is so distributed that even a noisy centroid estimate captures it. The max single-dimension $|d'| = 12.93$ (dimension 599) is itself a strong detector, but the key insight is redundancy: the VLA encodes scene identity across a majority of its 4,096 hidden dimensions, making the cosine distance detector inherently robust to any localized perturbation or noise in the representation.
 
+\subsection{Adversarial Evasion Robustness}
+\label{app:adversarial_evasion}
+
+\textbf{Finding 151: No natural image transform (blur, brightness, contrast) evades OOD detection. The minimum score under any transform remains $2.5\times$ the detection threshold.}
+
+\textbf{Finding 152: Pixel blending toward an ID reference image requires 70--100\% ID pixel replacement to cross the detection threshold. At these blend levels, the image is effectively ID---the OOD content has been physically removed.}
+
+\textbf{Finding 153: Some transforms \emph{increase} detection scores---Gaussian blur on random noise pushes the score from 0.436 to 0.473, making detection easier rather than harder.}
+
+We test adversarial evasion of the cosine distance detector using two attack strategies: (1) pixel-level blending of OOD images toward a reference ID (highway) image at 11 epsilon values, and (2) natural image transforms (blur, brightness, contrast) that might shift the embedding toward ID (Figure~\ref{fig:adversarial_evasion}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig110_adversarial_evasion.png}
+\caption{\textbf{Adversarial evasion analysis.} (a) Pixel blending: OOD scores decrease linearly as ID pixels replace OOD pixels, but noise and indoor require 100\% replacement to cross the threshold. Snow is closest at $\varepsilon = 0.7$. (b) Natural transforms: no transform brings any OOD category below the threshold (red dashed line). (c) Evasion difficulty: blend epsilon needed (left) and minimum transform score as ratio of threshold (right).}
+\label{fig:adversarial_evasion}
+\end{figure}
+
+The adversarial robustness of the detector follows directly from the distributed nature of the OOD signal (Experiment 123). Because 54.8\% of embedding dimensions carry OOD signal, image-space perturbations that preserve the scene's fundamental visual content cannot shift enough dimensions to evade detection. The only way to ``fool'' the detector is to replace the scene content itself---which is not evasion but scene change. This has important implications for safety-critical deployment: an attacker who compromises the camera feed cannot use image processing tricks (blur, brightness, contrast) to mask an OOD input. The detector's robustness is inherent to how the VLA encodes visual information, not an engineered feature.
+
 \end{document}
