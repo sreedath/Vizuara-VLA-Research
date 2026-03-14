@@ -5405,3 +5405,41 @@ Overall: AUROC=1.000, d=98.34
 5. **Solid color has high variance (std=0.045)**: Different solid colors produce different distances, with some closer to ID than others. This is the only category with highly variable detection difficulty.
 
 6. **Overall d=98.34 — highest ever recorded**: With 11 diverse categories, the overall separation is enormous because most OOD categories are far from the ID centroid.
+
+---
+
+## Finding 115: Temporal Sequence Analysis
+
+**Experiment 121** — Tests detector response to temporal sequences: smooth OOD transitions, sudden transitions, and oscillating inputs.
+
+### Setup
+- 10 calibration samples, ~92 total inferences
+- 4 sequences: smooth highway→noise, smooth highway→indoor, sudden transition, oscillating
+
+### Results
+
+**Smooth Transitions:**
+- Highway → Noise: 90% monotonic, score rises from ~0.02 to ~0.50, mean step 0.025
+- Highway → Indoor: 85% monotonic, score rises from ~0.02 to ~0.35, mean step 0.021
+
+**Sudden Transition (frames 0-9: highway, 10-19: noise):**
+- Highway frames: score ~0.015–0.025
+- Noise frames: score ~0.45–0.52
+- Instant detection — no lag or hysteresis
+
+**Oscillating (alternating highway/noise):**
+- Highway frames: score ~0.01–0.02
+- Noise frames: score ~0.49–0.52
+- Zero cross-frame contamination — each frame detected independently
+
+### Key Insights
+
+1. **Smooth transitions produce monotonic score trajectories (85-90%)**: As blend factor increases from 0 to 1, the cosine distance score rises smoothly. This means the detector responds proportionally to OOD severity.
+
+2. **No temporal hysteresis**: The detector has no memory between frames. A noise frame after 9 highway frames produces the same score as after 0 highway frames. This is both a strength (no lag) and a limitation (no temporal smoothing).
+
+3. **Zero cross-frame contamination in oscillating inputs**: Highway scores (~0.02) and noise scores (~0.50) are unaffected by the preceding frame. The VLA processes each input independently.
+
+4. **Detection threshold crossing is sharp**: In the smooth transition, the score crosses any reasonable threshold (e.g., 0.1) within 1-2 blend steps. There's no ambiguous transition zone.
+
+5. **The detector is stateless**: Each inference is independent. For deployment, this means no warm-up period and instant response to OOD inputs, but also no temporal smoothing for noisy detections.

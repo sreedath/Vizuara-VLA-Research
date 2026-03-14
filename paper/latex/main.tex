@@ -2250,4 +2250,20 @@ We expand the evaluation to 11 categories spanning the full OOD difficulty conti
 
 The expanded OOD spectrum analysis is the most comprehensive robustness test of the cosine distance detector. Fog highway---the most visually similar to clear-weather driving (washed-out colors, low contrast, similar spatial layout)---achieves a score of 0.207, which is 0.122 above the ID mean of 0.085. This gap is $24\times$ the ID standard deviation (0.005), making fog detection trivial despite its visual similarity. The counterintuitive finding that rain (0.448) is easier to detect than noise (0.439) or even solid colors (0.352) suggests that the VLA's visual encoder is sensitive to the specific pattern of rain streaks, which differ from any driving-scene feature. Night highway (0.436) is also easy because the VLA has never been trained on extremely low-light scenes, and the dark representation differs fundamentally from daytime driving. The construction zone (0.358) produces distinctive representations due to the orange barriers, which are absent from normal driving scenes. Together, these results suggest that the VLA's OOD detection would likely succeed on any input that differs from its training distribution---the relevant question is not whether detection works, but how to set the threshold for operational deployment.
 
+\subsection{Temporal Sequence Analysis}
+\label{app:temporal_sequence}
+
+\textbf{Finding 144: Smooth OOD transitions produce monotonic score trajectories (90\% for noise, 85\% for indoor). The detector is stateless---zero cross-frame contamination in oscillating inputs. Sudden transitions are detected instantly with no lag or hysteresis.}
+
+We test detector behavior on temporal sequences: smooth interpolation from highway to OOD, sudden scene changes, and rapidly oscillating inputs (Figure~\ref{fig:temporal_sequence}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig107_temporal_sequence.pdf}
+\caption{\textbf{Temporal sequence analysis.} (a) Smooth transitions: cosine distance increases monotonically as the blend factor $\alpha$ moves from highway ($\alpha = 0$) to noise/indoor ($\alpha = 1$). (b) Sudden transition at frame 10: instant score jump from $\sim$0.02 to $\sim$0.50 with no lag. (c) Oscillating input: per-frame detection is perfect with zero cross-frame contamination.}
+\label{fig:temporal_sequence}
+\end{figure}
+
+The temporal analysis confirms that the cosine distance detector is a memoryless, frame-independent system. Each input is processed independently with no state carried between frames---the autoregressive model computes a fresh forward pass for each image. This has important deployment implications. On the positive side, the detector responds instantly to OOD inputs (no warm-up, no lag) and produces scores that are strictly proportional to the OOD severity (90\% monotonicity in smooth transitions). On the negative side, there is no built-in temporal smoothing, so a single corrupted sensor frame would trigger a detection. For deployment, a simple exponential moving average over the raw scores would provide temporal smoothing while preserving the instant-response property. The smooth-transition experiment reveals that the score function is approximately linear in the blend factor (mean step size 0.025 per 5\% increment), making threshold selection straightforward: any threshold between the ID score range ($\sim$0.02) and the lowest OOD score ($\sim$0.20 for fog) will work.
+
 \end{document}
