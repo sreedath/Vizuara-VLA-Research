@@ -1,0 +1,160 @@
+{
+  "experiment": "action_under_ood",
+  "experiment_number": 126,
+  "timestamp": "20260314_233329",
+  "categories": {
+    "highway": {
+      "group": "ID",
+      "n_samples": 10,
+      "n_with_7_actions": 0,
+      "n_tokens_mean": 0.0,
+      "n_tokens_std": 0.0,
+      "per_dim_mean": [],
+      "per_dim_std": [],
+      "per_dim_min": [],
+      "per_dim_max": [],
+      "consistency": 0.0,
+      "raw_actions": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    "urban": {
+      "group": "ID",
+      "n_samples": 10,
+      "n_with_7_actions": 0,
+      "n_tokens_mean": 0.0,
+      "n_tokens_std": 0.0,
+      "per_dim_mean": [],
+      "per_dim_std": [],
+      "per_dim_min": [],
+      "per_dim_max": [],
+      "consistency": 0.0,
+      "raw_actions": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    "noise": {
+      "group": "OOD",
+      "n_samples": 10,
+      "n_with_7_actions": 0,
+      "n_tokens_mean": 0.0,
+      "n_tokens_std": 0.0,
+      "per_dim_mean": [],
+      "per_dim_std": [],
+      "per_dim_min": [],
+      "per_dim_max": [],
+      "consistency": 0.0,
+      "raw_actions": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    "indoor": {
+      "group": "OOD",
+      "n_samples": 10,
+      "n_with_7_actions": 0,
+      "n_tokens_mean": 0.0,
+      "n_tokens_std": 0.0,
+      "per_dim_mean": [],
+      "per_dim_std": [],
+      "per_dim_min": [],
+      "per_dim_max": [],
+      "consistency": 0.0,
+      "raw_actions": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    "twilight": {
+      "group": "OOD",
+      "n_samples": 10,
+      "n_with_7_actions": 0,
+      "n_tokens_mean": 0.0,
+      "n_tokens_std": 0.0,
+      "per_dim_mean": [],
+      "per_dim_std": [],
+      "per_dim_min": [],
+      "per_dim_max": [],
+      "consistency": 0.0,
+      "raw_actions": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    "snow": {
+      "group": "OOD",
+      "n_samples": 10,
+      "n_with_7_actions": 0,
+      "n_tokens_mean": 0.0,
+      "n_tokens_std": 0.0,
+      "per_dim_mean": [],
+      "per_dim_std": [],
+      "per_dim_min": [],
+      "per_dim_max": [],
+      "consistency": 0.0,
+      "raw_actions": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    }
+  },
+  "dim_names": [
+    "x_trans",
+    "y_trans",
+    "z_trans",
+    "x_rot",
+    "y_rot",
+    "z_rot",
+    "gripper"
+  ]
+}

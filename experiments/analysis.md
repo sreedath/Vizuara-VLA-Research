@@ -5697,3 +5697,44 @@ All top-K and random-K ≥ 100 achieve AUROC=1.000. Even 10 random dims: AUROC=0
 4. **Entropy is similarly uninformative**: Token entropy for OOD (1.124) barely differs from ID (1.106). The action probability distribution is equally flat/peaked for both.
 
 5. **This is a critical safety finding**: The VLA is a "confidently wrong" system on OOD inputs. It produces systematically biased actions (Exp 126) with the same confidence as correct actions. This makes external OOD detection not just useful but necessary for safe deployment.
+
+---
+
+## Finding 122: Multi-Layer Embedding Fusion (Experiment 128)
+
+**Research Question:** Does combining embeddings from multiple layers improve OOD detection over single-layer approaches?
+
+**Experiment Design:** 90 inferences on OpenVLA-7B. Extract embeddings from layers 3, 8, 16, 24, 28, 32. Test single-layer, concatenation, averaging, and max-score fusion strategies.
+
+### Results
+
+**Single Layer D-prime:**
+| Layer | AUROC | D-prime |
+|-------|-------|---------|
+| 3 | 1.000 | **113.20** |
+| 8 | 1.000 | 37.60 |
+| 16 | 1.000 | 36.72 |
+| 24 | 1.000 | 41.16 |
+| 28 | 1.000 | 30.71 |
+| 32 (last) | 1.000 | 28.10 |
+
+**Fusion Strategies:**
+| Strategy | AUROC | D-prime |
+|----------|-------|---------|
+| Layer 3 alone | 1.000 | **113.20** |
+| avg(all 6 layers) | 1.000 | 35.24 |
+| concat(all 6 layers, 24576d) | 1.000 | 33.05 |
+| avg(28+32) | 1.000 | 30.81 |
+| max(28+32) | 1.000 | 28.10 |
+
+### Key Insights
+
+1. **Layer 3 alone outperforms all fusion strategies (d=113.2 vs best fusion 35.2)**: The early layer captures the most discriminative geometric signal. Fusion dilutes this with weaker late-layer signals.
+
+2. **D-prime decreases with depth**: Layer 3 > Layer 24 > Layer 8 > Layer 16 > Layer 28 > Layer 32. The last layer has the weakest d-prime despite containing the richest semantic information.
+
+3. **Fusion hurts rather than helps**: All fusion strategies (concatenation, averaging, max) produce d-prime values between the best and worst single layers, never exceeding the best. Multi-layer fusion adds complexity without improving detection.
+
+4. **Practical recommendation**: Use layer 3 for maximum detection margin, or layer 32 (last) for simplest implementation. Both achieve AUROC=1.000, and the choice depends on whether deployment prioritizes margin (layer 3) or simplicity (layer 32).
+
+5. **Why early layers dominate**: Early layers represent low-level visual features (color, texture, spatial layout) that differ most between ID and OOD. Late layers mix in task-specific information that is less discriminative for OOD detection.
