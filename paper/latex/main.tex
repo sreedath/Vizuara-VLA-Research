@@ -1866,4 +1866,20 @@ We compare norm-based and distance-based detection methods (Figure~\ref{fig:norm
 
 The systematic norm inflation under OOD inputs reveals an additional geometric property: the model not only changes the \emph{direction} of its hidden states for unfamiliar inputs but also their \emph{magnitude}. This may reflect increased activation amplitudes when the model attempts to process inputs outside its training distribution. The L1 norm (0.983) slightly outperforms L2 (0.975), suggesting the OOD signal is distributed across many dimensions. For deployment scenarios without calibration data, raw norm provides a 0.975+ AUROC baseline with zero setup cost.
 
+\subsection{Action Dimension Analysis}
+\label{app:action_dims}
+
+\textbf{Finding 120: The forward ($x$) action dimension achieves 0.984 AUROC with zero ID variance---all driving images produce the identical forward token. OOD inputs disrupt this consistency, creating a per-dimension safety signal.}
+
+We analyze which of the 7 action dimensions are most affected by OOD inputs (Figure~\ref{fig:action_dims}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig83_action_dims.pdf}
+\caption{\textbf{Action dimension analysis.} (a) Per-dimension OOD sensitivity: $x$ (forward) achieves 0.984 AUROC; $y$ (lateral) reaches 0.922; roll is anti-diagnostic (0.334). (b) Token variability: OOD amplifies variance in task-relevant dimensions ($x$, $y$) but not in arbitrary-mapping dimensions (roll, yaw). (c) Variance ratio: $x$ shows infinite amplification (ID $\sigma=0$); $z$ shows 6$\times$ amplification.}
+\label{fig:action_dims}
+\end{figure}
+
+The dimension sensitivity hierarchy ($x > y > $ gripper $ > z > $ pitch $ > $ yaw $ > $ roll) matches physical intuition: forward and lateral directions are semantically tied to visual scene layout, while orientation dimensions have weaker visual grounding. The zero-variance $x$ dimension under ID is particularly striking---for the ``drive forward'' prompt, the model produces the same forward action token for every driving scene, but OOD inputs disrupt this consistency. This suggests that action consistency monitoring could serve as a lightweight, hidden-state-free OOD indicator.
+
 \end{document}

@@ -4280,3 +4280,42 @@ Hidden state AUROC: **1.000** (for reference)
 6. **Cosine × Norm catastrophically fails**: 0.255 AUROC — the product introduces sign-dependent interactions that destroy the ranking.
 
 7. **Norm provides a complementary baseline**: For systems that cannot compute centroids (no calibration), raw norm is a reasonable OOD indicator at 0.975-0.983 AUROC.
+
+---
+
+## Finding 91: Action Dimension Analysis
+
+**Experiment 97** — Examines which of the 7 action dimensions (x, y, z, roll, pitch, yaw, gripper) are most affected by OOD inputs.
+
+### Setup
+- 6 categories: highway, urban (ID), noise, indoor, twilight, snow (OOD)
+- 8 samples per category, 48 total
+- Generate 7 action tokens per sample
+- Per-dimension token value, entropy, and top-probability analysis
+- ~48 model inferences (with generation)
+
+### Per-Dimension OOD Sensitivity
+
+| Dimension | ID Token (mean±std) | OOD Token (mean±std) | Var Ratio | AUROC |
+|-----------|--------------------|--------------------|-----------|-------|
+| **x** | **31917±0.0** | **31872±19.9** | **∞** | **0.984** |
+| **y** | 31907±18.3 | 31851±42.2 | 5.32 | **0.922** |
+| gripper | 31871±29.9 | 31805±59.9 | 4.01 | 0.724 |
+| z | 31901±23.9 | 31897±58.2 | 5.95 | 0.680 |
+| pitch | 31868±29.7 | 31847±36.3 | 1.49 | 0.629 |
+| yaw | 31862±25.2 | 31853±30.4 | 1.45 | 0.533 |
+| roll | 31868±35.0 | 31877±26.8 | 0.58 | 0.334 |
+
+### Key Insights
+
+1. **x (forward) is the most OOD-sensitive dimension**: AUROC=0.984 with zero ID variance — all driving images produce the exact same forward action token. OOD inputs break this consistency.
+
+2. **y (lateral) is second**: AUROC=0.922 with 5.3× OOD variance amplification. OOD causes more variable lateral predictions.
+
+3. **Roll is anti-diagnostic**: AUROC=0.334 (<0.5), meaning OOD roll predictions are *more* consistent than ID. OOD collapses to a default roll.
+
+4. **Action dimension sensitivity hierarchy**: x > y > gripper > z > pitch > yaw > roll. This matches physical intuition — forward and lateral directions are most semantically tied to visual scene layout.
+
+5. **OOD amplifies variance in task-relevant dimensions**: Dimensions with clear scene-dependent behavior (x, y) show 5-∞× variance amplification. Dimensions with arbitrary mappings (roll, yaw) show no consistent effect.
+
+6. **Implications for safety monitoring**: Monitoring just the x-dimension action consistency could serve as a lightweight OOD indicator (0.984 AUROC) without any hidden state extraction.
