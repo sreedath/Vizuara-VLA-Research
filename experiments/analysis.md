@@ -571,3 +571,73 @@ This should give us the best of all worlds:
 5. **Full vs action entropy ratio ≈ 1.02-1.07**: Non-action tokens add little to entropy (most of the leaked mass is spread thin across 32k tokens), but the total leaked mass is highly diagnostic.
 
 6. **This discovery redefines our best UQ approach**: Action mass (AUROC=0.949) > Cumulative trajectory confidence (0.925) > Optimal dropout entropy (0.932) > Raw entropy (0.873). The simplest computation (just sum the action-bin probabilities) produces the best result.
+
+---
+
+## Finding 13: Action Mass Robustness & MC Enhancement (Real OpenVLA-7B, Experiment 19)
+
+### Setup
+- **Model**: OpenVLA-7B
+- **Samples**: 80 across 6 scenarios
+- **Phases**: (1) Single pass no dropout, (2) MC Dropout p=0.20 N=10, (3) 4 prompts no dropout
+- **Total inferences**: 1,200
+
+### Per-Scenario Action Mass
+
+| Scenario | Single | MC Mean | MC Std | Prompt Mean | Prompt Std |
+|----------|--------|---------|--------|-------------|------------|
+| Highway | 0.964 | 0.900 | 0.077 | 0.921 | 0.069 |
+| Urban | 0.977 | 0.903 | 0.079 | 0.923 | 0.064 |
+| Night | 0.924 | 0.905 | 0.066 | 0.944 | 0.044 |
+| Rain | 0.891 | 0.908 | 0.075 | 0.902 | 0.068 |
+| OOD Noise | 0.879 | 0.912 | 0.074 | 0.895 | 0.057 |
+| OOD Blank | 0.846 | 0.902 | 0.076 | 0.878 | 0.053 |
+
+### AUROC Comparison (Easy vs OOD)
+
+| Signal | AUROC |
+|--------|-------|
+| **Neg Single Action Mass** | **0.884** |
+| Neg Joint (mass × (1-ent/log256)) | 0.878 |
+| Neg Min Action Mass (worst dim) | 0.860 |
+| MC Entropy Mean | 0.843 |
+| Neg Prompt Action Mass Mean | 0.788 |
+| Single Entropy | 0.751 |
+| Neg MC Action Mass Mean | **0.471** |
+| MC Action Mass Std | 0.457 |
+| Prompt Action Mass Std | 0.359 |
+
+### Prompt Robustness
+
+| Prompt | AUROC | Easy Mass | OOD Mass |
+|--------|-------|-----------|----------|
+| Prompt 1 (default) | **0.884** | 0.970 | 0.862 |
+| Prompt 4 | 0.743 | 0.934 | 0.893 |
+| Prompt 2 | 0.623 | 0.929 | 0.903 |
+| Prompt 3 | **0.371** | 0.855 | 0.888 |
+
+### Per-Dimension Action Mass AUROC
+
+| Dim | AUROC | Easy Mass | OOD Mass |
+|-----|-------|-----------|----------|
+| 5 (yaw) | **0.810** | 0.996 | 0.984 |
+| 6 (gripper) | **0.806** | 0.865 | 0.469 |
+| 0 (lateral) | 0.784 | 0.998 | 0.983 |
+| 2 (z) | 0.726 | 0.997 | 0.910 |
+| 1 (long) | 0.718 | 0.980 | 0.872 |
+| 3 (roll) | 0.683 | 0.992 | 0.914 |
+| 4 (pitch) | 0.606 | 0.963 | 0.906 |
+
+### Key Insights
+
+1. **MC Dropout DESTROYS the action mass signal**: MC action mass mean AUROC = 0.471 (below random). Dropout noise redistributes probability across the vocabulary, homogenizing the action mass across scenarios (all converge to ~0.90). The action mass signal is inherently a single-pass signal.
+
+2. **Action mass is prompt-sensitive**: AUROC varies from 0.884 (Prompt 1) to 0.371 (Prompt 3). Prompt 3 ("Navigate safely...") inverts the signal — OOD gets HIGHER action mass than easy. This means action mass cannot be blindly applied with arbitrary prompts.
+
+3. **Joint signal (mass × entropy-correction) matches single mass**: AUROC = 0.878 vs 0.884 for single action mass. The entropy correction doesn't help because the mass is already the dominant signal.
+
+4. **Gripper dimension most discriminative per-dim**: Dim 6 AUROC = 0.806 with easy mass = 0.865 vs OOD mass = 0.469 — a massive 0.396 gap. This dimension leaks the most probability to non-action tokens on OOD inputs.
+
+5. **MC entropy remains strong at 0.843**: Despite dropout degrading action mass, the entropy signal under dropout is robust and complementary.
+
+6. **Practical recommendation**: Use single-pass action mass (AUROC ≈ 0.88-0.95) with the default prompt for OOD detection. For a more robust multi-signal approach, combine single-pass action mass with MC dropout entropy (from separate passes).
