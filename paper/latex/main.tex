@@ -1818,4 +1818,20 @@ We systematically sweep temperature from $T=0.1$ to $T=10.0$ and evaluate three 
 
 The failure of temperature scaling to improve output-based detection confirms that the limitation is structural, not calibrational. VLA action tokenization uses a 256-bin vocabulary, producing fundamentally different output distributions than classification models. OOD inputs do not reliably increase output entropy because the constrained action vocabulary limits distributional spread. Hidden states, by contrast, encode the full scene understanding of the model before the information bottleneck of token prediction.
 
+\subsection{Embedding Space Geometry}
+\label{app:embedding_geometry}
+
+\textbf{Finding 117: The ID manifold occupies 9 dimensions (90\% variance) vs 12 for OOD. Four PCA dimensions suffice for perfect separation (AUROC = 1.000). The inter-cluster to intra-cluster distance ratio is 2.22$\times$.}
+
+We analyze the geometric structure of the embedding space across six driving categories (Figure~\ref{fig:embedding_geometry}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig80_embedding_geometry.pdf}
+\caption{\textbf{Embedding space geometry.} (a) PCA-2 projection: ID categories (highway, urban) cluster tightly near the origin while OOD categories (noise, indoor, twilight, snow) scatter to distinct quadrants. Snow is nearest to ID, consistent with it being the hardest OOD. (b) Intrinsic dimensionality: ID data lives in a lower-dimensional subspace (9D at 90\% var) than OOD (12D). (c) Inter-category distance heatmap: within-group distances are small; cross-group distances are large and structured.}
+\label{fig:embedding_geometry}
+\end{figure}
+
+The geometric analysis reveals several structural properties that explain the effectiveness of cosine distance detection. First, ID embeddings are compressed to a lower-dimensional manifold than OOD, with 74.7\% of ID variance captured by just PC1. This compression creates a tight, predictable cluster that is easy to characterize with a centroid. Second, OOD embeddings have systematically higher norms ($80$--$92$ vs $75$--$76$), providing an additional discriminative signal beyond direction. Third, the compactness ratio of 2.22$\times$ means the inter-cluster gap is more than double the intra-cluster spread, explaining why even single-sample calibration (Experiment~70) achieves perfect detection.
+
 \end{document}

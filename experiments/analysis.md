@@ -4121,3 +4121,61 @@ Hidden state AUROC: **1.000** (for reference)
 5. **The fundamental limitation is VLA action tokenization**: With 256-bin discrete action tokens, the model distributes probability mass differently than classification LLMs. OOD inputs don't necessarily produce higher entropy because the action vocabulary is small and constrained.
 
 6. **This definitively confirms hidden state superiority**: Across 7 temperatures × 3 features = 21 configurations, none exceeds 0.75 AUROC. Hidden states encode structural OOD information that output probabilities fundamentally cannot access.
+
+---
+
+## Finding 88: Embedding Space Geometry Analysis
+
+**Experiment 94** — Analyzes intrinsic dimensionality, cluster structure, and geometric properties of ID vs OOD hidden state embeddings.
+
+### Setup
+- 6 categories: highway, urban (ID), noise, indoor, twilight, snow (OOD)
+- 15 samples per category, 90 total
+- PCA eigenspectrum analysis for intrinsic dimensionality
+- Inter/intra cluster distance analysis
+- ~90 model inferences
+
+### Category Statistics
+
+| Category | Group | Norm | Intra-cos Distance |
+|----------|-------|------|-------------------|
+| Highway | ID | 75.3±2.3 | 0.038±0.012 |
+| Urban | ID | 75.8±4.0 | 0.050±0.015 |
+| Noise | OOD | 88.5±3.4 | 0.093±0.022 |
+| Indoor | OOD | 92.3±3.1 | 0.049±0.010 |
+| Twilight | OOD | 80.0±3.8 | 0.081±0.031 |
+| Snow | OOD | 83.5±3.2 | 0.050±0.014 |
+
+### Intrinsic Dimensionality
+
+| Set | 90% var | 95% var | 99% var |
+|-----|---------|---------|---------|
+| ID | 9 | 16 | 25 |
+| OOD | 12 | 27 | 49 |
+| All | 14 | 34 | 51 |
+
+### PCA Separability
+
+| PCA dims | AUROC | Explained Var |
+|----------|-------|---------------|
+| 2 | 0.586 | 46.0% |
+| 3 | 0.750 | 65.6% |
+| **4** | **1.000** | **77.8%** |
+| 8 | 1.000 | 87.5% |
+| 16 | 1.000 | 90.8% |
+
+### Key Insights
+
+1. **ID manifold is lower-dimensional than OOD**: ID occupies 9 dimensions (90% var) vs OOD's 12. The model compresses in-distribution driving scenes to a tighter subspace while OOD spreads across more directions.
+
+2. **OOD embeddings have higher norms**: OOD norms (80-92) exceed ID norms (75-76). The model "pushes" unfamiliar inputs further from the origin, creating a norm-based signal.
+
+3. **ID clusters are more compact**: Highway intra-distance (0.038) is 2.4× tighter than noise (0.093). ID embeddings cluster tightly; OOD embeddings are more dispersed.
+
+4. **PCA-4 achieves perfect separation**: 4 dimensions capture 77.8% of variance and achieve AUROC=1.000, confirming the embedding space has clear geometric structure.
+
+5. **Snow is the nearest OOD to ID**: Highway-snow distance (0.284) is smallest among cross-group pairs, explaining why snow is the hardest OOD category to detect in earlier experiments.
+
+6. **Compactness ratio = 2.22**: Inter-cluster distance is 2.22× the ID intra-cluster distance, confirming well-separated, compact clusters ideal for centroid-based detection.
+
+7. **PC1 captures 74.7% of ID variance**: The ID manifold is dominated by a single principal direction, suggesting the highway↔urban variation is nearly one-dimensional.
