@@ -27,7 +27,8 @@ try:
     GPU_AVAILABLE = torch.cuda.is_available()
     if GPU_AVAILABLE:
         GPU_NAME = torch.cuda.get_device_name(0)
-        GPU_MEM = torch.cuda.get_device_properties(0).total_mem / 1e9
+        props = torch.cuda.get_device_properties(0)
+        GPU_MEM = getattr(props, 'total_memory', getattr(props, 'total_mem', 0)) / 1e9
     else:
         GPU_NAME = "None"
         GPU_MEM = 0
