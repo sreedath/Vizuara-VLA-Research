@@ -837,3 +837,59 @@ This should give us the best of all worlds:
 5. **Dim 5 (yaw) is inverted**: Easy samples leak MORE than OOD (ratio 0.61×), suggesting the model is systematically uncertain about yaw in structured scenes.
 
 6. **Leaked token identity is scenario-dependent**: This opens a potential research direction — using leaked token identity (not just mass) as an uncertainty signal.
+
+---
+
+## Finding 18: Large-Scale Action Mass Validation (Real OpenVLA-7B, Experiment 24)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, no dropout)
+- **Samples**: 200 across 6 scenarios (80 easy, 50 hard, 70 OOD)
+- **Analysis**: Bootstrap AUROC CIs, statistical tests, 5-fold cross-validated conformal
+
+### Per-Scenario Statistics
+
+| Scenario | N | Action Mass | ± | Entropy | ± | Confidence |
+|----------|---|------------|---|---------|---|-----------|
+| Highway | 40 | 0.948 | 0.077 | 1.455 | 0.199 | 0.505 |
+| Urban | 40 | **0.972** | 0.056 | 0.908 | 0.335 | **0.711** |
+| Night | 25 | 0.910 | 0.070 | **3.035** | 0.318 | 0.196 |
+| Rain | 25 | **0.875** | 0.085 | 2.254 | 0.360 | 0.349 |
+| OOD Noise | 35 | 0.890 | 0.082 | 1.357 | 0.218 | 0.554 |
+| OOD Blank | 35 | 0.861 | 0.084 | 2.069 | 0.271 | 0.380 |
+
+### AUROC with 95% Bootstrap Confidence Intervals
+
+| Signal | OOD AUROC [95% CI] | Hard AUROC [95% CI] |
+|--------|-------------------|-------------------|
+| **Neg Action Mass** | **0.838 [0.774, 0.898]** | 0.822 [0.748, 0.891] |
+| Neg Min Action Mass | 0.805 [0.731, 0.871] | 0.782 [0.700, 0.861] |
+| **Entropy** | 0.789 [0.713, 0.853] | **0.992 [0.978, 1.000]** |
+| Neg Confidence | 0.760 [0.681, 0.829] | 0.977 [0.953, 0.993] |
+
+### Statistical Tests
+
+| Comparison | Signal | t-stat | p-value | Cohen's d |
+|-----------|--------|--------|---------|-----------|
+| Easy vs OOD | Action Mass | 6.738 | <0.000001 | **1.103** |
+| Easy vs OOD | Entropy | -7.869 | <0.000001 | — |
+| Easy vs Hard | Action Mass | 5.099 | 0.000001 | **0.910** |
+| Easy vs Hard | Entropy | -18.212 | <0.000001 | — |
+
+### 5-Fold Cross-Validated Conformal (α=0.10)
+
+| Fold | Threshold | Easy Cov | OOD Flag | Hard Flag |
+|------|-----------|----------|----------|-----------|
+| Mean | 0.161 | **90.0%** | 36.9% | 26.8% |
+
+### Key Insights
+
+1. **Action mass beats entropy for OOD detection (0.838 vs 0.789)**: With bootstrap CIs, there is overlap but action mass is consistently higher across resamples.
+
+2. **Entropy beats action mass for hard scenarios (0.992 vs 0.822)**: Entropy near-perfectly separates easy from hard scenarios (night, rain). The two signals are complementary.
+
+3. **Cohen's d = 1.103 for action mass (easy vs OOD)**: A large effect size, confirming the signal is practically significant, not just statistically significant.
+
+4. **5-fold CV conformal meets exact coverage target**: Mean easy coverage = 90.0%, exactly matching α=0.10 target. Conformal prediction with action mass provides valid coverage guarantees.
+
+5. **Definitive recommendation: Use action mass for OOD, entropy for difficulty**: A two-signal system: (1) action mass for OOD detection (AUROC=0.838, single pass, $0 cost), (2) entropy for hard-but-in-distribution detection (AUROC=0.992).
