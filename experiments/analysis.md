@@ -2481,3 +2481,46 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Brightness reduction is moderately dangerous**: 0.5x brightness drops to 0.650. Dark images push the hidden state toward a different region of the representation space, causing both ID and OOD to appear anomalous. This suggests calibration should include diverse lighting conditions.
 
 5. **Practical implication**: The pipeline is robust to common deployment artifacts (JPEG compression, sensor noise) but vulnerable to hardware failures that cause blur or exposure issues. In practice, these hardware failures should be detected by separate camera health monitors before reaching the VLA.
+
+---
+
+## Finding 48: Prompt Robustness (Real OpenVLA-7B, Experiment 54)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Prompts tested**: 5 (original, speed_50, cautious, simple, different)
+- **Calibration**: 20 per prompt (10 highway + 10 urban)
+- **Test set**: 40 per prompt (16 ID + 24 OOD)
+- **Total**: 460 inferences
+
+### Self-Calibrated Results
+
+| Prompt | AUROC | ID cos | OOD cos | Separation |
+|--------|-------|--------|---------|------------|
+| **Original (25 m/s)** | **0.917** | 0.516 | 0.759 | +0.242 |
+| Speed (50 m/s) | 0.883 | 0.605 | 0.774 | +0.168 |
+| Cautious driving | 0.802 | 0.539 | 0.715 | +0.176 |
+| Simple navigate | 0.870 | 0.442 | 0.638 | +0.195 |
+| Different prediction | 0.888 | 0.493 | 0.675 | +0.182 |
+| **Mean ± std** | **0.872 ± 0.038** | | | |
+
+### Cross-Prompt Calibration Transfer
+
+| Inference Prompt | Self-calibrated | Using original centroid | Drop |
+|-----------------|-----------------|------------------------|------|
+| Speed (50 m/s) | 0.883 | 0.867 | -0.016 |
+| Cautious | 0.802 | 0.789 | -0.013 |
+| Simple | 0.870 | 0.841 | -0.029 |
+| Different | 0.888 | 0.781 | -0.107 |
+
+### Key Insights
+
+1. **OOD detection is robust across prompts** (0.872 ± 0.038): Despite different instruction wordings, cosine distance consistently separates ID from OOD. The standard deviation (0.038) is small relative to the mean AUROC.
+
+2. **Original driving prompt is optimal** (0.917): The prompt specifically mentioning driving speed provides the best OOD signal, likely because it activates the most driving-specific hidden state patterns.
+
+3. **Cautious prompt is weakest** (0.802): The vague "driving carefully" instruction produces less discriminative hidden states. This suggests that more specific prompts lead to better OOD detection.
+
+4. **Cross-prompt calibration mostly transfers well** (drops of 0.013-0.029): Using a centroid calibrated with one prompt works reasonably well for inference with a different prompt. The exception is the "different" prompt (-0.107 drop), which uses substantially different wording.
+
+5. **Prompt sensitivity is moderate but manageable**: The 0.115 AUROC range across prompts suggests that prompt selection matters but is not a critical bottleneck. Using the deployment prompt for calibration (self-calibration) is always optimal.

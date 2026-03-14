@@ -1,0 +1,91 @@
+{
+  "experiment": "prompt_robustness",
+  "experiment_number": 54,
+  "timestamp": "20260314_174822",
+  "total_inferences": 460,
+  "prompts": {
+    "original": "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:",
+    "speed_50": "In: What action should the robot take to drive forward at 50 m/s safely?\nOut:",
+    "cautious": "In: You are driving carefully. What is the safe driving action?\nOut:",
+    "simple": "In: Navigate safely. What action to take?\nOut:",
+    "different": "In: Predict the driving action to maintain safe driving at 25 m/s.\nOut:"
+  },
+  "results": {
+    "original": {
+      "auroc": 0.9166666666666666,
+      "id_cos_mean": 0.5164259821176529,
+      "ood_cos_mean": 0.7585488858943185,
+      "separation": 0.24212290377666557,
+      "per_scene": {
+        "blackout": 0.851478636264801,
+        "highway": 0.4882817305624485,
+        "indoor": 0.6763089448213577,
+        "inverted": 0.6959148546059927,
+        "noise": 0.8104931078851223,
+        "urban": 0.5445702336728573
+      }
+    },
+    "speed_50": {
+      "auroc": 0.8828125,
+      "id_cos_mean": 0.6053759697824717,
+      "ood_cos_mean": 0.7736271303147078,
+      "separation": 0.1682511605322361,
+      "per_scene": {
+        "blackout": 0.9235179200768471,
+        "highway": 0.5793477855622768,
+        "indoor": 0.6624415343006452,
+        "inverted": 0.7195261493325233,
+        "noise": 0.7890229175488154,
+        "urban": 0.6314041540026665
+      }
+    },
+    "cautious": {
+      "auroc": 0.8020833333333333,
+      "id_cos_mean": 0.5387172885239124,
+      "ood_cos_mean": 0.7145877418418726,
+      "separation": 0.17587045331796014,
+      "per_scene": {
+        "blackout": 0.8350332081317902,
+        "highway": 0.462947241961956,
+        "indoor": 0.6264117856820425,
+        "inverted": 0.6427277872959772,
+        "noise": 0.7541781862576803,
+        "urban": 0.6144873350858688
+      }
+    },
+    "simple": {
+      "auroc": 0.8697916666666666,
+      "id_cos_mean": 0.4424222894012928,
+      "ood_cos_mean": 0.637839005018274,
+      "separation": 0.19541671561698115,
+      "per_scene": {
+        "blackout": 0.7891040295362473,
+        "highway": 0.4082809127867222,
+        "indoor": 0.5567877988020579,
+        "inverted": 0.5219771067301432,
+        "noise": 0.6834870850046476,
+        "urban": 0.4765636660158634
+      }
+    },
+    "different": {
+      "auroc": 0.8880208333333333,
+      "id_cos_mean": 0.4930320121347904,
+      "ood_cos_mean": 0.6745215486735106,
+      "separation": 0.18148953653872013,
+      "per_scene": {
+        "blackout": 0.6307806372642517,
+        "highway": 0.47839803621172905,
+        "indoor": 0.6618076960245768,
+        "inverted": 0.6745938435196877,
+        "noise": 0.7309040178855261,
+        "urban": 0.5076659880578518
+      }
+    }
+  },
+  "cross_prompt": {
+    "speed_50": 0.8671875,
+    "cautious": 0.7890625,
+    "simple": 0.8411458333333334,
+    "different": 0.78125
+  }
+}
