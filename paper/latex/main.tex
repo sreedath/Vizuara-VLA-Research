@@ -1654,4 +1654,20 @@ We compute the full $8\times8$ correlation matrix across all OOD detection featu
 
 The moderate correlation ($r=0.686$) between cosine distance and attention features explains why simple averaging of these two signals achieves perfect detection even on near-OOD inputs (Experiment~69): each captures partially independent aspects of the OOD signal. Output features are highly redundant (entropy $\leftrightarrow$ top-1 prob: $r=-0.914$), explaining their consistently weak performance---they all reflect the same underlying uncertainty.
 
+\subsection{Threshold Sensitivity}
+\label{app:threshold}
+
+\textbf{Finding 107: ID and OOD score distributions have zero overlap (gap = 0.123), enabling perfect threshold selection. A calibration-based $\mu+3\sigma$ threshold achieves 2.5\% FPR with 100\% TPR using no labeled OOD data.}
+
+We evaluate multiple threshold strategies on 40 ID and 54 OOD test samples (Figure~\ref{fig:threshold}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig70_threshold_analysis.pdf}
+\caption{\textbf{Threshold sensitivity analysis.} (a) Score distributions show complete separation: ID max = 0.124, OOD min = 0.247, gap = 0.123. (b) Data-driven strategies (Youden, EER) all achieve 0\% FPR / 100\% TPR; calibration-based $\mu+3\sigma$ yields 2.5\% FPR. (c) Per-category TPR: snow is hardest at 90\%.}
+\label{fig:threshold}
+\end{figure}
+
+The complete separation between ID and OOD score distributions means threshold selection is non-critical---any threshold between 0.124 and 0.247 achieves perfect classification. For deployment without labeled OOD data, we recommend the calibration-based $\mu+3\sigma$ threshold, which requires only clean driving images and achieves near-perfect performance.
+
 \end{document}

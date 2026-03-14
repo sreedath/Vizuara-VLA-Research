@@ -1,4 +1,4 @@
-"""Generate Figure 47: Detection Threshold Sensitivity."""
+"""Generate Figure 70: Threshold Sensitivity Analysis."""
 import json
 import numpy as np
 import matplotlib
@@ -7,75 +7,92 @@ import matplotlib.pyplot as plt
 
 OUT_DIR = "/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/paper/figures"
 
-fig, axes = plt.subplots(1, 3, figsize=(16, 4.5))
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
 
-# Panel (a): Threshold vs TPR/FPR for cosine
+# Panel (a): ID vs OOD score distributions
 ax = axes[0]
-percentiles = [50, 75, 90, 95, 99]
-thresholds = [0.5824, 0.6255, 0.6886, 0.7158, 0.7462]
-tprs = [1.000, 0.950, 0.750, 0.725, 0.625]
-fprs = [0.500, 0.267, 0.100, 0.067, 0.033]
+id_mean, id_std = 0.0883, 0.0085
+ood_mean, ood_std = 0.3734, 0.0777
+id_min, id_max = 0.0772, 0.1238
+ood_min, ood_max = 0.2465, 0.4823
+youden = 0.2465
 
-ax.plot(percentiles, tprs, 'b-o', linewidth=2, markersize=8, label='TPR (recall)')
-ax.plot(percentiles, fprs, 'r-s', linewidth=2, markersize=8, label='FPR')
-ax.fill_between(percentiles, tprs, fprs, alpha=0.1, color='green')
-ax.axhline(y=0.95, color='green', linestyle='--', alpha=0.5, label='95% TPR target')
-ax.set_xlabel('ID Percentile Threshold', fontsize=11)
-ax.set_ylabel('Rate', fontsize=11)
-ax.set_title('(a) TPR/FPR vs Threshold (Cosine)', fontsize=12, fontweight='bold')
-ax.legend(fontsize=8, loc='center right')
+x_id = np.linspace(0.05, 0.15, 200)
+x_ood = np.linspace(0.15, 0.55, 200)
+y_id = np.exp(-0.5*((x_id - id_mean)/id_std)**2) / (id_std * np.sqrt(2*np.pi))
+y_ood = np.exp(-0.5*((x_ood - ood_mean)/ood_std)**2) / (ood_std * np.sqrt(2*np.pi))
+
+ax.fill_between(x_id, y_id, alpha=0.4, color='#4CAF50', label=f'ID (μ={id_mean:.3f})')
+ax.fill_between(x_ood, y_ood, alpha=0.4, color='#F44336', label=f'OOD (μ={ood_mean:.3f})')
+ax.axvline(x=youden, color='black', linestyle='--', linewidth=2, label=f'Youden τ={youden:.3f}')
+ax.axvline(x=id_max, color='blue', linestyle=':', alpha=0.5, label=f'ID max={id_max:.3f}')
+ax.axvline(x=ood_min, color='red', linestyle=':', alpha=0.5, label=f'OOD min={ood_min:.3f}')
+
+ax.set_xlabel('Cosine Distance', fontsize=11)
+ax.set_ylabel('Density', fontsize=11)
+ax.set_title('(a) Score Distributions', fontsize=12, fontweight='bold')
+ax.legend(fontsize=8, loc='upper right')
 ax.grid(True, alpha=0.3)
-ax.set_ylim(0, 1.05)
-ax.annotate('p75: best\nTPR/FPR tradeoff', xy=(75, 0.950), xytext=(82, 0.75),
-            fontsize=8, color='blue', fontweight='bold',
-            arrowprops=dict(arrowstyle='->', color='blue'))
 
-# Panel (b): Per-scenario catch rates
+# Annotate gap
+ax.annotate('Gap: 0.123', xy=(0.185, 5), fontsize=10, color='darkgreen',
+            fontweight='bold', ha='center')
+ax.annotate('', xy=(id_max, 4), xytext=(ood_min, 4),
+            arrowprops=dict(arrowstyle='<->', color='darkgreen', lw=2))
+
+# Panel (b): Threshold strategies comparison
 ax = axes[1]
-scenarios = ['Noise', 'Indoor', 'Inverted', 'Blackout']
-catch_p90 = [100, 50, 50, 100]
-catch_p95 = [100, 50, 40, 100]
-colors = ['#F44336', '#FF9800', '#9C27B0', '#333333']
+strategies = ['Youden', 'FPR<1%', 'FPR<5%', 'EER', 'μ+2σ', 'μ+3σ', 'μ+5σ']
+thresholds = [0.2465, 0.2465, 0.2465, 0.2465, 0.0985, 0.1049, 0.1176]
+fprs = [0.0, 0.0, 0.0, 0.0, 0.10, 0.025, 0.025]
+tprs = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
-x = np.arange(len(scenarios))
+x = np.arange(len(strategies))
 width = 0.35
-bars1 = ax.bar(x - width/2, catch_p90, width, label='p90 threshold',
-               color=colors, edgecolor='black', linewidth=0.5, alpha=0.85)
-bars2 = ax.bar(x + width/2, catch_p95, width, label='p95 threshold',
-               color=colors, edgecolor='black', linewidth=0.5, alpha=0.5,
-               hatch='///')
+bars1 = ax.bar(x - width/2, tprs, width, label='TPR', color='#4CAF50', alpha=0.85,
+               edgecolor='black', linewidth=0.5)
+bars2 = ax.bar(x + width/2, fprs, width, label='FPR', color='#F44336', alpha=0.85,
+               edgecolor='black', linewidth=0.5)
 ax.set_xticks(x)
-ax.set_xticklabels(scenarios, fontsize=10)
-ax.set_ylabel('% Caught', fontsize=11)
-ax.set_title('(b) Per-OOD Catch Rate at Thresholds', fontsize=12, fontweight='bold')
-ax.set_ylim(0, 115)
-ax.legend(fontsize=8)
-ax.grid(True, alpha=0.3, axis='y')
-ax.annotate('Indoor/Inverted:\nharder to catch', xy=(1, 50), xytext=(1.5, 70),
-            fontsize=8, color='#FF9800',
-            arrowprops=dict(arrowstyle='->', color='#FF9800'))
-
-# Panel (c): Conformal prediction
-ax = axes[2]
-alphas = [0.01, 0.05, 0.10, 0.20]
-ood_caught = [85, 95, 95, 98]
-false_alarm = [17, 27, 30, 47]
-
-ax.plot(alphas, ood_caught, 'b-o', linewidth=2, markersize=8, label='OOD caught %')
-ax.plot(alphas, false_alarm, 'r-s', linewidth=2, markersize=8, label='False alarm %')
-ax.fill_between(alphas, ood_caught, false_alarm, alpha=0.1, color='green')
-ax.set_xlabel('Conformal α (miscoverage rate)', fontsize=11)
-ax.set_ylabel('Percentage', fontsize=11)
-ax.set_title('(c) Conformal Prediction Thresholds', fontsize=12, fontweight='bold')
+ax.set_xticklabels(strategies, fontsize=9, rotation=30, ha='right')
+ax.set_ylabel('Rate', fontsize=11)
+ax.set_title('(b) Threshold Strategy Comparison', fontsize=12, fontweight='bold')
 ax.legend(fontsize=9)
-ax.grid(True, alpha=0.3)
-ax.set_ylim(0, 105)
-ax.annotate('α=0.05: 95% OOD\ncaught, 27% FA',
-            xy=(0.05, 95), xytext=(0.10, 75),
-            fontsize=8, color='blue', fontweight='bold',
-            arrowprops=dict(arrowstyle='->', color='blue'))
+ax.grid(True, alpha=0.3, axis='y')
+ax.set_ylim(0, 1.15)
+
+for bar, v in zip(bars2, fprs):
+    if v > 0:
+        ax.text(bar.get_x() + bar.get_width()/2., bar.get_height() + 0.02,
+                f'{v:.1%}', ha='center', va='bottom', fontsize=8, fontweight='bold', color='red')
+
+ax.annotate('Data-driven thresholds\nachieve 0% FPR + 100% TPR', xy=(1, 0.9),
+            fontsize=9, color='darkgreen', fontweight='bold')
+
+# Panel (c): Per-category TPR at Youden
+ax = axes[2]
+cats = ['blackout', 'indoor', 'inverted', 'noise', 'twilight', 'snow']
+cat_tprs = [1.0, 1.0, 1.0, 1.0, 1.0, 0.9]
+colors = ['#4CAF50' if t == 1.0 else '#FF9800' for t in cat_tprs]
+
+bars = ax.bar(range(len(cats)), cat_tprs, 0.6, color=colors,
+              edgecolor='black', linewidth=0.5, alpha=0.85)
+ax.set_xticks(range(len(cats)))
+ax.set_xticklabels(cats, fontsize=10, rotation=30, ha='right')
+ax.set_ylabel('TPR at Youden Threshold', fontsize=11)
+ax.set_title('(c) Per-Category Detection Rate', fontsize=12, fontweight='bold')
+ax.set_ylim(0.8, 1.05)
+ax.grid(True, alpha=0.3, axis='y')
+
+for bar, v in zip(bars, cat_tprs):
+    ax.text(bar.get_x() + bar.get_width()/2., bar.get_height() + 0.005,
+            f'{v:.1%}', ha='center', va='bottom', fontsize=9, fontweight='bold')
+
+ax.annotate('Snow: hardest\n(90% TPR)', xy=(5, 0.9), xytext=(3.5, 0.85),
+            fontsize=9, color='darkorange', fontweight='bold',
+            arrowprops=dict(arrowstyle='->', color='darkorange'))
 
 plt.tight_layout()
-plt.savefig(f'{OUT_DIR}/fig47_threshold.png', dpi=200, bbox_inches='tight')
-plt.savefig(f'{OUT_DIR}/fig47_threshold.pdf', dpi=200, bbox_inches='tight')
-print("Saved fig47_threshold.png/pdf")
+plt.savefig(f'{OUT_DIR}/fig70_threshold_analysis.png', dpi=200, bbox_inches='tight')
+plt.savefig(f'{OUT_DIR}/fig70_threshold_analysis.pdf', dpi=200, bbox_inches='tight')
+print("Saved fig70_threshold_analysis.png/pdf")

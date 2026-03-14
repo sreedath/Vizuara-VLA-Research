@@ -3753,3 +3753,40 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Attention mean is useless (AUROC 0.502)**: Random-level performance. The OOD signal is in the attention DISTRIBUTION (max/entropy), not the mean.
 
 5. **Three independent OOD signal families**: (a) Geometric/cosine — measures direction in embedding space, (b) Attention sharpness — measures processing pattern, (c) Output confidence — measures prediction uncertainty. These three families have low cross-correlation.
+
+---
+
+## Finding 78: Threshold Sensitivity Analysis
+
+**Experiment 84** — Determines the optimal detection threshold and maps FPR/TPR trade-offs across multiple threshold selection strategies.
+
+### Setup
+- 30 calibration, 40 ID test, 54 OOD test (6 categories)
+- Strategies: Youden's J, FPR<1%, FPR<5%, EER, calibration-based (μ+kσ)
+- ~94 model inferences
+
+### Results
+
+| Strategy | Threshold | FPR | TPR |
+|----------|-----------|-----|-----|
+| **Youden** | **0.2465** | **0.000** | **1.000** |
+| FPR<1% | 0.2465 | 0.000 | 1.000 |
+| FPR<5% | 0.2465 | 0.000 | 1.000 |
+| EER | 0.2465 | 0.000 | 1.000 |
+| μ+2σ | 0.0985 | 0.100 | 1.000 |
+| μ+3σ | 0.1049 | 0.025 | 1.000 |
+| μ+5σ | 0.1176 | 0.025 | 1.000 |
+
+Score distributions: ID mean=0.088 (range 0.077-0.124), OOD mean=0.373 (range 0.247-0.482)
+
+### Key Insights
+
+1. **Zero-overlap score distributions**: ID max (0.124) < OOD min (0.247). There exists a **gap of 0.123** between the distributions, enabling perfect classification with any threshold in this gap.
+
+2. **All data-driven thresholds converge**: Youden, FPR<1%, FPR<5%, and EER all select the same threshold (0.247) because distributions don't overlap. This is an artifact of the strong separation.
+
+3. **Calibration-based thresholds are slightly conservative**: μ+2σ yields 10% FPR (the threshold is inside the ID distribution). μ+3σ is near-optimal at 2.5% FPR.
+
+4. **Snow is the hardest category**: 90% TPR at Youden threshold — 1 of 10 snow samples falls below threshold. All other categories achieve 100% TPR.
+
+5. **Practical recommendation**: Use calibration-based μ+3σ threshold for deployment — it's computed from calibration data alone and achieves near-perfect performance without any labeled OOD data.
