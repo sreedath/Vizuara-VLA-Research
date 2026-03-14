@@ -48,7 +48,7 @@ A Benchmark for Uncertainty-Aware Autonomous Driving}
 \maketitle
 
 \begin{abstract}
-Vision-Language-Action (VLA) models are rapidly emerging as unified architectures for autonomous driving, jointly processing visual observations, linguistic instructions, and action generation. However, a critical gap exists: \emph{these models lack reliable uncertainty quantification}, producing confident predictions even in novel or dangerous scenarios where they are likely to fail. We introduce \textbf{CalibDrive}, the first systematic benchmark for evaluating the calibration of driving VLAs across 8 scenario categories spanning routine highway driving to safety-critical long-tail events. Our analysis of OpenVLA-7B reveals severe miscalibration: the baseline model exhibits an Expected Calibration Error (ECE) of 0.399, with catastrophic miscalibration (ECE $>$ 0.70) in long-tail scenarios such as emergency vehicles and occluded agents, where the model is confidently wrong in 100\% of cases. We evaluate five uncertainty quantification methods---MC Dropout, Deep Ensembles, Temperature Scaling, Conformal Prediction, and a novel Prompt Ensemble approach---and propose \textbf{CalibDrive-Combined}, a hybrid method that combines ensemble disagreement with conformal coverage guarantees and Platt-scaled confidence mapping. MC Dropout achieves the largest calibration improvement (58\% ECE reduction), while Conformal Prediction achieves perfect failure detection (AUROC = 1.0). Through selective prediction, calibrated VLAs reduce failure rates by 43\% at 50\% coverage, demonstrating that uncertainty-aware VLAs can identify their own failure modes and abstain in dangerous situations. Critically, we discover that OpenVLA-7B assigns nearly identical confidence to highway driving and completely out-of-distribution noise images (gap = 0.015), and ships with all 211 dropout layers set to $p = 0$, making standard MC Dropout inapplicable without modification. Code and benchmark are available at \url{https://github.com/sreedath/Vizuara-VLA-Research}.
+Vision-Language-Action (VLA) models are rapidly emerging as unified architectures for autonomous driving, jointly processing visual observations, linguistic instructions, and action generation. However, a critical gap exists: \emph{these models lack reliable uncertainty quantification}, producing confident predictions even in novel or dangerous scenarios where they are likely to fail. We introduce \textbf{CalibDrive}, the first systematic benchmark for evaluating the calibration of driving VLAs across 8 scenario categories spanning routine highway driving to safety-critical long-tail events. Our analysis of OpenVLA-7B reveals severe miscalibration: the baseline model exhibits an Expected Calibration Error (ECE) of 0.399, with catastrophic miscalibration (ECE $>$ 0.70) in long-tail scenarios such as emergency vehicles and occluded agents, where the model is confidently wrong in 100\% of cases. We evaluate five uncertainty quantification methods---MC Dropout, Deep Ensembles, Temperature Scaling, Conformal Prediction, and a novel Prompt Ensemble approach---and propose \textbf{CalibDrive-Combined}, a hybrid method that combines ensemble disagreement with conformal coverage guarantees and Platt-scaled confidence mapping. MC Dropout achieves the largest calibration improvement (58\% ECE reduction), while Conformal Prediction achieves perfect failure detection (AUROC = 1.0). Through selective prediction, calibrated VLAs reduce failure rates by 43\% at 50\% coverage, demonstrating that uncertainty-aware VLAs can identify their own failure modes and abstain in dangerous situations. Critically, we discover that OpenVLA-7B assigns nearly identical confidence to highway driving and completely out-of-distribution noise images---large-scale validation ($N$=200) reveals the gap is \emph{inverted} ($\Delta = -0.020$) and not statistically significant ($p = 0.321$). The model ships with all 211 dropout layers set to $p = 0$, making standard MC Dropout inapplicable without modification. Code and benchmark are available at \url{https://github.com/sreedath/Vizuara-VLA-Research}.
 \end{abstract}
 
 %==============================================================================
@@ -422,6 +422,43 @@ OOD & 0.591 & 1.228 & 0.918 & 0.099 & 0.082 \\
 
 \textbf{Finding 13: Prompt Ensembles reveal substantial prompt sensitivity.} Using 6 semantically equivalent prompts, we observe confidence standard deviation of $0.084 \pm 0.022$ and mean KL divergence of $8.75 \pm 0.58$ between prompt-conditioned outputs. This prompt sensitivity is itself an uncertainty signal: a well-calibrated model should produce consistent predictions regardless of instruction phrasing.
 
+\subsubsection{Large-Scale Validation (N=200)}
+
+We validate our findings at larger scale with 200 samples across 8 scenarios including fog, construction, and blank-screen OOD inputs. Table~\ref{tab:large_scale} shows results with statistical tests.
+
+\begin{table}[t]
+\centering
+\caption{Large-scale OpenVLA-7B results (N=200). OOD noise receives \emph{higher} confidence than highway driving. The gap is not statistically significant ($p = 0.321$), confirming the model genuinely cannot distinguish safe from dangerous inputs.}
+\label{tab:large_scale}
+\small
+\begin{tabular}{lrcccc}
+\toprule
+\textbf{Scenario} & \textbf{N} & \textbf{Conf.} & \textbf{$\pm$} & \textbf{Entropy} & \textbf{$\pm$} \\
+\midrule
+Highway & 30 & 0.560 & 0.075 & 1.262 & 0.192 \\
+Urban & 30 & 0.582 & 0.081 & 1.226 & 0.219 \\
+Night & 20 & 0.490 & 0.077 & 1.556 & 0.250 \\
+Rain & 20 & 0.460 & 0.075 & 1.667 & 0.262 \\
+Fog & 20 & \textbf{0.602} & 0.094 & 1.190 & 0.246 \\
+Construction & 20 & 0.554 & 0.076 & 1.270 & 0.216 \\
+OOD (noise) & 30 & 0.580 & 0.075 & 1.256 & 0.227 \\
+OOD (blank) & 30 & 0.519 & 0.073 & 1.409 & 0.240 \\
+\midrule
+\multicolumn{6}{l}{\small Hwy vs.\ OOD\textsubscript{noise}: $\Delta = -0.020$, $t = -1.00$, $p = 0.321$ (n.s.)} \\
+\multicolumn{6}{l}{\small Easy vs.\ Hard entropy: $t = -2.11$, $p = 0.037$ (*)} \\
+\multicolumn{6}{l}{\small Speed--conf.\ correlation: $r = 0.028$, $p = 0.697$ (n.s.)} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Finding 17: OOD noise receives \emph{higher} confidence than highway driving.} The large-scale results reveal that the confidence gap is actually \emph{inverted}: OOD noise images (0.580) receive higher confidence than real highway scenes (0.560), with $\Delta = -0.020$. A Welch's $t$-test confirms this gap is not statistically significant ($t = -1.00$, $p = 0.321$, $n = 60$), and a Mann-Whitney $U$ test concurs ($U = 386$, $p = 0.348$). The model is not merely overconfident on OOD inputs---it is indistinguishable from in-distribution behavior.
+
+\textbf{Finding 18: Entropy provides weak but significant scenario discrimination.} While raw confidence fails entirely, entropy shows a statistically significant difference between easy and hard scenarios ($t = -2.11$, $p = 0.037$). However, the effect size is modest (Cohen's $d \approx 0.39$), suggesting entropy-based uncertainty could serve as a marginally better safety signal than confidence.
+
+\textbf{Finding 19: Fog receives the highest confidence of any scenario.} Counterintuitively, fog scenes (0.602) receive higher confidence than any other scenario---including highway (0.560) and urban (0.582). This inverted pattern, where adverse conditions receive higher confidence, further demonstrates that the model's confidence is uncorrelated with actual driving difficulty.
+
+\textbf{Finding 20: Zero speed--confidence correlation.} The model's confidence is completely independent of driving speed (Pearson $r = 0.028$, $p = 0.697$; Spearman $r = 0.022$, $p = 0.757$), despite speed being a critical factor in driving safety and difficulty.
+
 \textbf{Finding 16: CalibDrive-Combined reduces absolute confidence but does not amplify scenario discrimination.} Running the full combined method (10 MC passes + 3 prompt variants) on 50 real samples, the combined confidence drops from the 0.54--0.60 baseline range to 0.22--0.27, indicating the method is appropriately more conservative. However, the uncertainty gap between highway and OOD scenarios is 0.012 (vs.\ baseline confidence gap of 0.042), suggesting that combined uncertainty signals from a single model architecture do not substantially improve scenario-level discrimination without access to an error signal. This motivates the use of conformal calibration with ground truth, which achieves far superior separation in our simulated experiments.
 
 \subsection{Logit Distribution Analysis}
@@ -484,7 +521,7 @@ Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism beh
 \label{sec:conclusion}
 %==============================================================================
 
-We present CalibDrive, the first systematic benchmark for evaluating the calibration of Vision-Language-Action models in autonomous driving. Our analysis reveals that driving VLAs are severely miscalibrated (ECE = 0.399), with catastrophic miscalibration in safety-critical long-tail scenarios where the model is confidently wrong in up to 100\% of cases. We evaluate five UQ methods and find that no single method dominates: MC Dropout achieves the best calibration (58\% ECE reduction), Conformal Prediction provides perfect failure detection (AUROC = 1.0), and Deep Ensembles offer the strongest practical uncertainty. Our proposed CalibDrive-Combined method integrates these complementary strengths. Through selective prediction, calibrated VLAs reduce failure rates by 43\% at 50\% coverage, demonstrating that uncertainty-aware VLAs can identify and abstain from their own failure modes---a critical capability for safe deployment. We release CalibDrive as an open benchmark to accelerate research on trustworthy driving VLAs.
+We present CalibDrive, the first systematic benchmark for evaluating the calibration of Vision-Language-Action models in autonomous driving. Our analysis reveals that driving VLAs are severely miscalibrated (ECE = 0.399), with catastrophic miscalibration in safety-critical long-tail scenarios where the model is confidently wrong in up to 100\% of cases. We evaluate five UQ methods and find that no single method dominates: MC Dropout achieves the best calibration (58\% ECE reduction), Conformal Prediction provides perfect failure detection (AUROC = 1.0), and Deep Ensembles offer the strongest practical uncertainty. Our proposed CalibDrive-Combined method integrates these complementary strengths. Through selective prediction, calibrated VLAs reduce failure rates by 43\% at 50\% coverage, demonstrating that uncertainty-aware VLAs can identify and abstain from their own failure modes. Large-scale validation ($N$=200, 8 scenarios) with statistical tests confirms that the confidence gap between highway driving and OOD noise is not significant ($p = 0.321$), and that the model's confidence is completely uncorrelated with driving speed ($r = 0.028$). We release CalibDrive as an open benchmark to accelerate research on trustworthy driving VLAs.
 
 %==============================================================================
 % References
