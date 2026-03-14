@@ -1492,3 +1492,45 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 5. **Monotonic quality decline by cosine distance bins**: Token agreement drops from 0.232 (cos < 0.55) → 0.013 (cos > 0.85), while action L2 increases from 62.9 → 131.8. This validates graduated safety thresholds.
 
 6. **Clean images already show moderate action variability**: Highway pairwise agreement = 0.327, urban = 0.505. The model is sensitive to minor input variations, reinforcing the need for uncertainty monitoring even on in-distribution inputs.
+
+---
+
+## Finding 30: Multi-Centroid OOD Detection (Real OpenVLA-7B, Experiment 36)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Samples**: 122 total (25 highway, 25 urban, 72 OOD across 6 types including checker)
+- **Calibration**: 25 easy (12 highway, 13 urban); Test: 25 easy + 72 OOD
+- **Methods**: 8 distance-based OOD detection approaches
+
+### Method Comparison
+
+| Method | AUROC | Easy Mean | OOD Mean | Gap |
+|--------|-------|-----------|----------|-----|
+| Per-scene (2 centroids) | **0.996** | 0.332 | 0.826 | +0.493 |
+| KMeans k=2 | 0.995 | 0.316 | 0.819 | +0.503 |
+| **Global centroid** | **0.994** | 0.398 | 0.834 | +0.436 |
+| KMeans k=3 | 0.993 | 0.269 | 0.801 | +0.533 |
+| 5th percentile dist | 0.981 | 0.249 | 0.834 | +0.586 |
+| kNN k=3 | 0.978 | 0.241 | 0.823 | +0.583 |
+| KMeans k=5 | 0.969 | 0.214 | 0.769 | +0.555 |
+| Max similarity | 0.968 | 0.193 | 0.786 | +0.593 |
+
+### Bootstrap Stability
+
+| Method | AUROC (mean ± std) |
+|--------|-------------------|
+| Per-scene (2 centroids) | 0.996 ± 0.004 |
+| KMeans k=2 | 0.995 ± 0.005 |
+| Global centroid | 0.995 ± 0.004 |
+| KMeans k=3 | 0.993 ± 0.006 |
+
+### Key Insights
+
+1. **A single global centroid is already near-optimal (AUROC = 0.994)**: Per-scene centroids (0.996) provide only +0.002 improvement — negligible and within bootstrap error.
+
+2. **More clusters = worse performance**: KMeans k=5 (0.969) is worse than k=2 (0.995) and the global centroid (0.994). More prototypes overfit to the calibration set's idiosyncrasies.
+
+3. **All top methods achieve ≥0.960 on every OOD type**: Including the newly tested checker pattern. The global centroid achieves 1.000 on noise, indoor, checker, and blackout.
+
+4. **Practical recommendation: use the simplest approach**: A single 4096-d centroid vector achieves 0.994 AUROC with minimal storage (16KB) and compute (one dot product). Multi-centroid approaches add complexity with no meaningful benefit.

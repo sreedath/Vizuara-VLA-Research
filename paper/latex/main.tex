@@ -701,6 +701,15 @@ Entropy & 1 & No & .527$\pm$.029 & .413 & .957 & .272 & .336 & 1.00 \\
 \label{fig:gradual_shift}
 \end{figure}
 
+\textbf{Finding 61: A single centroid is near-optimal---multi-centroid approaches add no benefit.} Testing 8 distance-based methods on 122 samples (Figure~\ref{fig:multi_centroid}), we find that the simplest approach---a single global centroid---achieves AUROC = \textbf{0.994}, within 0.002 of the best method (per-scene centroids at 0.996). K-means with $k$=2 (0.995) and $k$=3 (0.993) perform comparably, while $k$=5 \emph{degrades} to 0.969, showing that more prototypes overfit to calibration idiosyncrasies. All top methods achieve $\geq$0.960 on every OOD type, including the newly tested checker pattern. Bootstrap analysis confirms stability: all top-4 methods achieve $0.993$--$0.996 \pm 0.004$--$0.006$. The practical implication is clear: deploy a single 4096-d centroid vector (16\,KB storage, one dot product per inference) rather than maintaining clusters, per-scene prototypes, or kNN databases.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.99\textwidth]{figures/fig24_multi_centroid.png}
+\caption{Multi-centroid OOD detection comparison on real OpenVLA-7B (122 samples, 8 methods). (a) Overall AUROC: all centroid methods achieve $\geq$0.969; the global centroid (0.994) nearly matches the best. (b) Per-type detection: all top methods achieve $\geq$0.960 across all 6 OOD types. (c) More centroids do not help: increasing from 1 to 5 centroids \emph{reduces} AUROC from 0.994 to 0.969.}
+\label{fig:multi_centroid}
+\end{figure}
+
 \textbf{Finding 56: Cosine distance is more prompt-robust than action mass.} Testing across 4 semantically equivalent prompts ($4 \times 78 = 312$ inferences), cosine distance achieves mean AUROC = 0.881 $\pm$ 0.064 vs.\ action mass 0.546 $\pm$ 0.082. Cosine distance beats mass on \emph{every} prompt ($\Delta$ from $+$0.266 to $+$0.449), with lower variance (range 0.169 vs.\ 0.222). Cross-prompt centroid transfer is asymmetric and unreliable (e.g., p1$\to$p2 = 0.864, p2$\to$p1 = 0.400), indicating that calibration must use the same prompt as inference. However, within-prompt AUROC is consistently high, confirming that cosine distance is the superior signal regardless of prompt choice.
 
 \textbf{Finding 48: Leaked probability flows to rare Unicode ``garbage tokens.''} Decoding the non-action tokens that receive leaked probability reveals that all top recipients are rare Unicode characters: a Chinese character meaning ``loyalty'' (31\% of total leaked mass), mathematical $\top$, Korean honorifics, and Greek diacriticals. These are vocabulary entries with minimal training signal that serve as probability sinks when the model is uncertain. OOD inputs leak to \emph{different} tokens than easy inputs (Jaccard overlap = 0.25), suggesting that leaked token identity---not just total leaked mass---carries diagnostic information. The z-axis dimension (dim~2) shows the most extreme leak ratio: OOD inputs leak 62$\times$ more probability than easy inputs on this dimension.
