@@ -1,0 +1,35 @@
+{
+  "experiment": "gradient_ood",
+  "experiment_number": 76,
+  "timestamp": "20260314_194706",
+  "n_samples": 32,
+  "auroc_by_metric": {
+    "total_grad_norm": 0.37109375,
+    "mean_grad_norm": 0.37109375,
+    "max_grad_norm": 0.27734375,
+    "last_layer_grad_norm": 0.11328125,
+    "cosine": 1.0
+  },
+  "per_scenario": {
+    "highway": {
+      "total": 16002.299988978892,
+      "mean": 17.041853023406702
+    },
+    "urban": {
+      "total": 13366.960365420207,
+      "mean": 14.23531455316316
+    },
+    "noise": {
+      "total": 14209.85935822979,
+      "mean": 15.132970562545038
+    },
+    "indoor": {
+      "total": 15265.705781705212,
+      "mean": 16.257407648248364
+    },
+    "blackout": {
+      "total": 4838.6271222568175,
+      "mean": 5.152957531689902
+    }
+  }
+}

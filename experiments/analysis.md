@@ -3458,3 +3458,44 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 3. **Low resolution (64×64) shifts centroids more (0.132 from 224)**: But not enough to affect detection because the ID/OOD gap is much larger.
 
 4. **Practical implication: no resolution-matching required**: The calibration image resolution does not need to match the deployment resolution. Detection works across the board.
+
+---
+
+## Finding 70: Gradient Norms Are Anti-Diagnostic for OOD Detection (AUROC 0.113-0.371)
+
+**Experiment 76** — Gradient-based OOD detection analysis.
+
+### Setup
+- 32 test samples (16 ID, 16 OOD)
+- Gradient norms computed via backprop through predicted token loss
+- Compared: total, mean, max, last-layer gradient norms
+
+### Results
+
+| Method | AUROC |
+|--------|-------|
+| Cosine distance (baseline) | **1.000** |
+| Total gradient norm | 0.371 |
+| Mean gradient norm | 0.371 |
+| Max gradient norm | 0.277 |
+| Last-layer gradient norm | **0.113** |
+
+### Per-Scenario Gradient Norms
+
+| Scenario | Total Grad | Mean Grad |
+|----------|-----------|-----------|
+| Highway (ID) | **16,002** | **17.04** |
+| Urban (ID) | 13,367 | 14.24 |
+| Indoor (OOD) | 15,266 | 16.26 |
+| Noise (OOD) | 14,210 | 15.13 |
+| Blackout (OOD) | 4,839 | 5.15 |
+
+### Key Insights
+
+1. **Gradient norms are worse than random for OOD detection**: All gradient-based AUROCs are below 0.5, meaning they are anti-diagnostic — the model produces LARGER gradients for ID inputs than OOD.
+
+2. **ID inputs have largest gradients (16,002 vs 12,263 OOD average)**: This is counterintuitive but makes sense: the model has learned strong gradients for in-distribution inputs where it can make fine-grained action predictions. OOD inputs produce diffuse, lower-magnitude gradients.
+
+3. **Blackout has very small gradients (4,839)**: With no visual information, the model produces negligible gradients — but this is the direction OPPOSITE of the typical OOD assumption.
+
+4. **This rules out gradient-based methods for VLA OOD detection**: Unlike in classification where OOD gradients are often larger, VLAs show the reverse pattern, making gradient methods unreliable.

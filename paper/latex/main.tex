@@ -1526,4 +1526,20 @@ We test whether image resolution affects detection quality (Figure~\ref{fig:reso
 
 This resolution invariance arises because the vision encoder's internal processing normalizes different input resolutions into a common representation space. For deployment, this means \textbf{no resolution matching is required}---calibration at one resolution works for inference at another.
 
+\subsection{Gradient-Based Detection Fails}
+\label{app:gradient}
+
+\textbf{Finding 99: Gradient norms are anti-diagnostic for VLA OOD detection (AUROC 0.113--0.371). ID inputs produce larger gradients than OOD, opposite to the classification assumption.}
+
+We test gradient-based OOD detection by computing gradient norms w.r.t.\ the predicted action token (Figure~\ref{fig:gradient}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig62_gradient.pdf}
+\caption{\textbf{Gradient-based detection fails.} (a) All gradient metrics achieve AUROC $<0.5$ (worse than random), while cosine achieves 1.000. (b) ID inputs (highway: 16,002) have larger gradients than most OOD inputs (blackout: 4,839). The gradient direction is inverted from the classification assumption.}
+\label{fig:gradient}
+\end{figure}
+
+This failure has an important mechanistic implication: in VLAs, the model has learned strong, fine-grained gradients for in-distribution inputs where it can make precise action predictions. OOD inputs produce diffuse, low-confidence predictions with smaller gradients. This inverts the gradient-OOD relationship observed in classifiers, making gradient-based methods fundamentally unsuitable for VLA OOD detection.
+
 \end{document}
