@@ -4458,3 +4458,41 @@ Hidden state AUROC: **1.000** (for reference)
 4. **Perfect per-category detection**: All 4 OOD categories achieve 1.000 AUROC with the full calibration set — no category is left behind.
 
 5. **Cosine and Euclidean are equivalent in full dim**: Both achieve 1.000. The choice doesn't matter at 4,096 dimensions (consistent with high-dimensional geometry theory).
+
+---
+
+## Finding 95: Failure Mode Analysis
+
+**Experiment 101** — Systematically tests when and how the OOD detector fails using 6 adversarial-like scenarios designed to mimic ID structure.
+
+### Setup
+- 20 calibration, 20 ID test, 10 samples per failure scenario
+- μ+3σ threshold = 0.0316
+- 6 scenarios: inverted colors, green sky, red sky, textured road, shifted horizon, rotated 90°
+- ~100 model inferences
+
+### Results
+
+| Scenario | Mean Score | Detection Rate | Margin over Threshold |
+|----------|-----------|----------------|----------------------|
+| ID baseline | 0.086 | 0% (correct) | — |
+| Shifted horizon | 0.148 | **100%** | +368% |
+| Textured road | 0.176 | **100%** | +457% |
+| Rotated 90° | 0.212 | **100%** | +571% |
+| Red sky | 0.226 | **100%** | +615% |
+| Inverted colors | 0.294 | **100%** | +830% |
+| Green sky | 0.317 | **100%** | +904% |
+
+### Key Insights
+
+1. **No failure modes found**: All 6 adversarial scenarios are detected with 100% rate. Even the most ID-mimicking scenario (shifted horizon) has 368% margin above threshold.
+
+2. **Hardest scenario is structural**: Shifted horizon (0.148) preserves exact colors and only changes the horizon position. Yet it's still clearly detected — the VLA encodes spatial layout.
+
+3. **Color changes are highly detectable**: Green sky (0.317) and inverted colors (0.294) are the easiest to detect, even though they preserve road structure. The VLA heavily encodes color statistics.
+
+4. **Texture overlay is detected**: Adding random texture to a highway (0.176) is detected despite preserving the overall layout. The VLA is sensitive to low-level texture.
+
+5. **Rotation is caught**: Rotating a highway 90° (0.212) is clearly OOD. The model encodes orientation-specific features, not just content.
+
+6. **The detector appears to have no accessible failure mode** for the driving domain: any perceptible change to the driving scene triggers detection. The failure boundary, if it exists, is below the perceptual threshold of meaningful scene changes.

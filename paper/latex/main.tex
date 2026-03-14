@@ -1930,4 +1930,20 @@ We perform a systematic ablation across feature sources, calibration sizes, and 
 
 The ablation crystallizes our practical recommendations. For maximum detection margin, multi-layer PCA-8 provides $d=15.78$---a 3$\times$ improvement that makes threshold selection trivially easy. For simplicity, last-layer cosine distance achieves perfect AUROC at 4,096 dimensions. For minimal setup, a single calibration sample still achieves 0.998 AUROC. And for zero-calibration deployment, raw embedding norm provides 0.975 AUROC. These four tiers form a Pareto frontier where each successive simplification trades a small amount of detection margin for significant reductions in implementation complexity.
 
+\subsection{Failure Mode Analysis}
+\label{app:failure_modes}
+
+\textbf{Finding 124: No failure modes found across 6 adversarial scenarios---all detected at 100\% rate with $\geq$368\% margin above threshold. Even shifting the horizon by 25\% (same colors, same road) triggers detection.}
+
+We systematically construct scenarios designed to fool the detector: inverted colors, alien-colored skies, texture overlays, shifted horizons, and rotated images (Figure~\ref{fig:failure_modes}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig87_failure_modes.pdf}
+\caption{\textbf{Failure mode analysis.} (a) All 6 adversarial scenarios are detected with $\geq$368\% margin above threshold (ID baseline: 0.086). (b) Detection margins: even the closest scenario (shifted horizon) is 4.7$\times$ the threshold. (c) Difficulty ranking: structural changes (shifted horizon) are hardest, color changes (green sky) are easiest.}
+\label{fig:failure_modes}
+\end{figure}
+
+The failure to find failure modes suggests that the VLA's hidden states encode a rich, multi-faceted representation of the visual scene---one that is sensitive to color statistics, spatial layout, texture, and orientation simultaneously. Any meaningful alteration to the driving scene creates a detectable signature. The difficulty ordering (structural $<$ textural $<$ color $<$ semantic) reveals that the detector is most robust to the changes that matter most for safety: even preserving exact driving colors and road structure while only changing spatial geometry triggers detection. The failure boundary, if it exists, lies below the threshold of any perceptually meaningful scene variation.
+
 \end{document}
