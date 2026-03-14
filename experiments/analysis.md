@@ -5580,3 +5580,34 @@ All top-K and random-K ≥ 100 achieve AUROC=1.000. Even 10 random dims: AUROC=0
 4. **The detection is inherently robust to image perturbations**: Because the OOD signal is distributed across 54.8% of embedding dimensions (Experiment 123), any perturbation that doesn't fundamentally change the scene content cannot evade detection.
 
 5. **Security implication**: An attacker cannot fool the detector with image-space manipulations. Evasion would require either: (a) making the OOD image actually look like a valid driving scene, or (b) attacking the model weights directly.
+
+---
+
+## Finding 119: Calibration Strategies Comparison (Experiment 125)
+
+**Research Question:** What is the optimal way to use multiple calibration images for OOD detection?
+
+**Experiment Design:** 120 inferences. Compare 6 calibration strategies using 20 ID calibration images (10 highway, 10 urban) and 80 OOD test images (4 categories × 20 each).
+
+### Results
+
+| Strategy | AUROC | D-prime |
+|----------|-------|---------|
+| Centroid (baseline) | 1.0000 | 40.82 |
+| Nearest Neighbor | 1.0000 | 53.40 |
+| Farthest Neighbor | 1.0000 | 15.88 |
+| Average to All | 1.0000 | 35.81 |
+| Per-Class Centroid | 1.0000 | **58.22** |
+| 3-NN Distance | 1.0000 | 49.39 |
+
+### Key Insights
+
+1. **All strategies achieve perfect AUROC**: The ID/OOD gap is so large that the choice of aggregation strategy doesn't matter for binary detection. All 6 strategies achieve AUROC=1.000.
+
+2. **Per-class centroid is optimal (d=58.22)**: Maintaining separate centroids per ID class (highway, urban) and taking the minimum distance yields the best separation. This is because the single centroid is an average of two distinct clusters, diluting the signal.
+
+3. **Nearest-neighbor is second best (d=53.40)**: NN naturally handles multi-modal ID distributions without requiring class labels. 3-NN (d=49.39) smooths over noise but loses some separation.
+
+4. **Farthest-neighbor is worst (d=15.88)**: Using the farthest calibration point inflates ID distances, degrading separation. This is the worst strategy despite still achieving perfect AUROC.
+
+5. **Simple centroid (d=40.82) is competitive**: Despite being suboptimal, the centroid approach is within 2× of the best strategy and has O(1) test-time cost compared to O(n) for NN-based strategies. For deployment, centroid remains the pragmatic choice.

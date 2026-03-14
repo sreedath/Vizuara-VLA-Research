@@ -1,0 +1,33 @@
+{
+  "experiment": "calibration_strategies",
+  "experiment_number": 125,
+  "timestamp": "20260314_232850",
+  "n_cal": 20,
+  "n_test": 100,
+  "strategies": {
+    "centroid": {
+      "auroc": 1.0,
+      "d": 40.81649094156413
+    },
+    "nearest_neighbor": {
+      "auroc": 1.0,
+      "d": 53.40491781651012
+    },
+    "farthest_neighbor": {
+      "auroc": 1.0,
+      "d": 15.881534727014905
+    },
+    "average_to_all": {
+      "auroc": 1.0,
+      "d": 35.806877217334325
+    },
+    "per_class_centroid": {
+      "auroc": 1.0,
+      "d": 58.218222629525464
+    },
+    "3nn_distance": {
+      "auroc": 1.0,
+      "d": 49.39162132228355
+    }
+  }
+}

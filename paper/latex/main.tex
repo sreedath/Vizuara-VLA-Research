@@ -2326,4 +2326,22 @@ We test adversarial evasion of the cosine distance detector using two attack str
 
 The adversarial robustness of the detector follows directly from the distributed nature of the OOD signal (Experiment 123). Because 54.8\% of embedding dimensions carry OOD signal, image-space perturbations that preserve the scene's fundamental visual content cannot shift enough dimensions to evade detection. The only way to ``fool'' the detector is to replace the scene content itself---which is not evasion but scene change. This has important implications for safety-critical deployment: an attacker who compromises the camera feed cannot use image processing tricks (blur, brightness, contrast) to mask an OOD input. The detector's robustness is inherent to how the VLA encodes visual information, not an engineered feature.
 
+\subsection{Calibration Strategy Comparison}
+\label{app:calibration_strategies}
+
+\textbf{Finding 154: All six calibration strategies achieve AUROC = 1.000. Per-class centroid (separate centroids per ID class, minimum distance) achieves the highest $d' = 58.2$, outperforming single centroid ($d' = 40.8$) by 43\%.}
+
+\textbf{Finding 155: Nearest-neighbor detection ($d' = 53.4$) outperforms single centroid without requiring class labels. Farthest-neighbor ($d' = 15.9$) is worst because it inflates ID distances.}
+
+We compare six calibration strategies using 20 ID images (10 highway, 10 urban) as the calibration set (Figure~\ref{fig:calibration_strategies}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig111_calibration_strategies.png}
+\caption{\textbf{Calibration strategy comparison.} (a) D-prime by strategy: per-class centroid is optimal ($d' = 58.2$), nearest-neighbor second ($d' = 53.4$), farthest-neighbor worst ($d' = 15.9$). All achieve AUROC = 1.000. (b) Cost-effectiveness: centroid and per-class centroid have $O(1)$ test-time cost vs.\ $O(n)$ for NN-based methods.}
+\label{fig:calibration_strategies}
+\end{figure}
+
+The per-class centroid strategy is optimal because the single centroid averages over two distinct ID clusters (highway and urban), placing it between them rather than at either cluster's center. Per-class centroids preserve the tighter within-class clustering. However, the single centroid's $d' = 40.8$ is still massive---the choice of strategy matters only for the margin, not for detection success. For practical deployment, we recommend the single centroid for its simplicity ($O(1)$ test-time, no class labels needed) unless the deployment scenario requires maximizing the detection margin.
+
 \end{document}
