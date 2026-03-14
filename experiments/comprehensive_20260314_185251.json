@@ -1,0 +1,50 @@
+{
+  "experiment": "comprehensive_comparison",
+  "experiment_number": 66,
+  "timestamp": "20260314_185251",
+  "n_cal": 20,
+  "n_test": 56,
+  "aurocs": {
+    "cosine": 0.9127604166666666,
+    "norm_diff": 0.96875,
+    "1-mass": 0.74609375,
+    "1-msp": 0.7330729166666666,
+    "-energy": 0.6927083333333334,
+    "attn_max": 1.0,
+    "-attn_entropy": 0.9934895833333334,
+    "0.7cos+0.3mass": 0.9192708333333334,
+    "0.5cos+0.5attn": 0.9791666666666666,
+    "best_of_both": 0.9127604166666667,
+    "all_equal": 0.9986979166666667
+  },
+  "per_scenario": {
+    "noise": {
+      "cosine": 0.9791666666666666,
+      "attn_max": 1.0,
+      "-attn_entropy": 1.0,
+      "0.7cos+0.3mass": 1.0,
+      "best_of_both": 0.9791666666666666
+    },
+    "indoor": {
+      "cosine": 0.8489583333333334,
+      "attn_max": 1.0,
+      "-attn_entropy": 1.0,
+      "0.7cos+0.3mass": 0.8125,
+      "best_of_both": 0.8489583333333334
+    },
+    "inverted": {
+      "cosine": 0.8229166666666667,
+      "attn_max": 1.0,
+      "-attn_entropy": 0.9739583333333334,
+      "0.7cos+0.3mass": 0.8645833333333334,
+      "best_of_both": 0.8229166666666667
+    },
+    "blackout": {
+      "cosine": 1.0,
+      "attn_max": 1.0,
+      "-attn_entropy": 1.0,
+      "0.7cos+0.3mass": 1.0,
+      "best_of_both": 1.0
+    }
+  }
+}

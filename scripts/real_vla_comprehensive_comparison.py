@@ -1,402 +1,273 @@
 """
-Comprehensive Method Comparison on Real OpenVLA-7B.
+Comprehensive Method Comparison.
 
-Produces the main results table for the paper: a clean head-to-head
-comparison of ALL uncertainty/OOD detection methods evaluated on the
-same samples with the same evaluation protocol.
+Single experiment running ALL detection methods on the same test set
+for a fair, unified comparison table. Methods:
+1. Cosine distance (calibrated)
+2. Action mass (output-based)
+3. MSP - max softmax probability (output-based)
+4. Energy score (output-based)
+5. Attention max (calibration-free)
+6. Attention entropy (calibration-free)
+7. Feature norm (calibration-free)
+8. Combined: cosine + mass
+9. Combined: attention + cosine
+10. Best-of-both
 
-Methods:
-1. Action Mass (single pass, no calibration)
-2. Entropy (single pass, no calibration)
-3. MC Dropout Entropy (N=10, p=0.20)
-4. Cosine Distance (single pass, 25 cal samples)
-5. Cosine + Entropy combined
-6. kNN Distance (k=3, 25 cal samples)
-
-Evaluation:
-- Proper 50/50 train/test split of easy samples
-- Per-OOD-type and overall AUROC
-- Bootstrap CIs (10 splits)
-- Computational cost comparison
-
-Experiment 32 in the CalibDrive series.
+Experiment 66 in the CalibDrive series.
 """
 import os
 import json
-import time
 import datetime
 import numpy as np
 import torch
-from PIL import Image, ImageDraw
+from PIL import Image
+from sklearn.metrics import roc_auc_score
 
 RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
 os.makedirs(RESULTS_DIR, exist_ok=True)
-
-SCENARIOS = {
-    'highway': {'n': 30, 'speed': '30', 'difficulty': 'easy'},
-    'urban': {'n': 30, 'speed': '15', 'difficulty': 'easy'},
-    'ood_noise': {'n': 15, 'speed': '25', 'difficulty': 'ood'},
-    'ood_blank': {'n': 15, 'speed': '25', 'difficulty': 'ood'},
-    'ood_indoor': {'n': 15, 'speed': '25', 'difficulty': 'ood'},
-    'ood_inverted': {'n': 15, 'speed': '30', 'difficulty': 'ood'},
-    'ood_checker': {'n': 15, 'speed': '25', 'difficulty': 'ood'},
-    'ood_blackout': {'n': 15, 'speed': '25', 'difficulty': 'ood'},
-}
+SIZE = (256, 256)
 
 
-def create_scene_image(scenario, idx, size=(256, 256)):
-    np.random.seed(idx * 3200 + hash(scenario) % 32000)
-    if scenario == 'highway':
-        img = np.zeros((*size, 3), dtype=np.uint8)
-        img[:size[0]//2] = [135, 206, 235]
-        img[size[0]//2:] = [80, 80, 80]
-    elif scenario == 'urban':
-        img = np.zeros((*size, 3), dtype=np.uint8)
-        img[:size[0]//3] = [135, 206, 235]
-        img[size[0]//3:size[0]//2] = [139, 119, 101]
-        img[size[0]//2:] = [80, 80, 80]
-    elif scenario == 'ood_noise':
-        img = np.random.randint(0, 256, (*size, 3), dtype=np.uint8)
-    elif scenario == 'ood_blank':
-        img = np.full((*size, 3), 128, dtype=np.uint8)
-    elif scenario == 'ood_indoor':
-        img = np.zeros((*size, 3), dtype=np.uint8)
-        img[:size[0]//3] = [210, 180, 140]
-        img[size[0]//3:2*size[0]//3] = [180, 120, 80]
-        img[2*size[0]//3:] = [100, 70, 50]
-    elif scenario == 'ood_inverted':
-        img = np.zeros((*size, 3), dtype=np.uint8)
-        img[:size[0]//2] = [135, 206, 235]
-        img[size[0]//2:] = [80, 80, 80]
-        img = 255 - img
-    elif scenario == 'ood_checker':
-        img = np.zeros((*size, 3), dtype=np.uint8)
-        block = 32
-        for y in range(0, size[0], block):
-            for x in range(0, size[1], block):
-                if (y // block + x // block) % 2 == 0:
-                    img[y:y+block, x:x+block] = [255, 255, 255]
-    elif scenario == 'ood_blackout':
-        img = np.full((*size, 3), 5, dtype=np.uint8)
-    else:
-        img = np.random.randint(0, 256, (*size, 3), dtype=np.uint8)
-    noise = np.random.randint(-3, 3, img.shape, dtype=np.int16)
-    img = np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-    return Image.fromarray(img)
+def create_highway(idx):
+    rng = np.random.default_rng(idx * 5001)
+    img = np.zeros((*SIZE, 3), dtype=np.uint8)
+    img[:SIZE[0]//2] = [135, 206, 235]
+    img[SIZE[0]//2:] = [80, 80, 80]
+    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
+    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
+    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+
+def create_urban(idx):
+    rng = np.random.default_rng(idx * 5002)
+    img = np.zeros((*SIZE, 3), dtype=np.uint8)
+    img[:SIZE[0]//3] = [135, 206, 235]
+    img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]
+    img[SIZE[0]//2:] = [60, 60, 60]
+    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
+    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+
+def create_noise(idx):
+    rng = np.random.default_rng(idx * 5003)
+    return rng.integers(0, 256, (*SIZE, 3), dtype=np.uint8)
+
+def create_indoor(idx):
+    rng = np.random.default_rng(idx * 5004)
+    img = np.zeros((*SIZE, 3), dtype=np.uint8)
+    img[:] = [200, 180, 160]
+    img[SIZE[0]//2:] = [139, 90, 43]
+    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
+    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+
+def create_inverted(idx):
+    return 255 - create_highway(idx + 3000)
+
+def create_blackout(idx):
+    return np.zeros((*SIZE, 3), dtype=np.uint8)
 
 
-def compute_auroc(pos_scores, neg_scores):
-    n_correct = sum(1 for p in pos_scores for n in neg_scores if p > n)
-    n_ties = sum(0.5 for p in pos_scores for n in neg_scores if p == n)
-    n_total = len(pos_scores) * len(neg_scores)
-    return (n_correct + n_ties) / n_total if n_total > 0 else 0.5
+def extract_all(model, processor, image, prompt):
+    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    result = {}
+
+    with torch.no_grad():
+        fwd = model(**inputs, output_attentions=True, output_hidden_states=True)
+
+    if hasattr(fwd, 'attentions') and fwd.attentions:
+        attn = fwd.attentions[-1][0].float().cpu().numpy()
+        n_heads = attn.shape[0]
+        last_attn = attn[:, -1, :]
+        result['attn_max'] = float(np.mean([np.max(last_attn[h]) for h in range(n_heads)]))
+        result['attn_entropy'] = float(np.mean([
+            -np.sum((last_attn[h]+1e-10) * np.log(last_attn[h]+1e-10))
+            for h in range(n_heads)
+        ]))
+
+    if hasattr(fwd, 'hidden_states') and fwd.hidden_states:
+        result['fwd_hidden'] = fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
+        result['feature_norm'] = float(np.linalg.norm(result['fwd_hidden']))
+
+    with torch.no_grad():
+        gen = model.generate(
+            **inputs, max_new_tokens=7, do_sample=False,
+            output_scores=True, output_hidden_states=True,
+            return_dict_in_generate=True,
+        )
+
+    if hasattr(gen, 'scores') and gen.scores:
+        vocab_size = gen.scores[0].shape[-1]
+        action_start = vocab_size - 256
+        masses, msps, energies = [], [], []
+        for score in gen.scores[:7]:
+            logits = score[0].float()
+            probs = torch.softmax(logits, dim=0)
+            action_probs = probs[action_start:].cpu().numpy()
+            masses.append(float(action_probs.sum()))
+            msps.append(float(action_probs.max()))
+            energies.append(float(torch.logsumexp(logits[action_start:], dim=0).item()))
+        result['action_mass'] = float(np.mean(masses))
+        result['msp'] = float(np.mean(msps))
+        result['energy'] = float(np.mean(energies))
+
+    if hasattr(gen, 'hidden_states') and gen.hidden_states:
+        last_step = gen.hidden_states[-1]
+        if isinstance(last_step, tuple):
+            result['gen_hidden'] = last_step[-1][0, -1, :].float().cpu().numpy()
+        else:
+            result['gen_hidden'] = last_step[0, -1, :].float().cpu().numpy()
+
+    return result
 
 
-def enable_dropout(model, p=0.20):
-    """Enable dropout in eval mode."""
-    for module in model.modules():
-        if isinstance(module, torch.nn.Dropout):
-            module.p = p
-            module.train()
-
-
-def disable_dropout(model):
-    """Disable dropout."""
-    for module in model.modules():
-        if isinstance(module, torch.nn.Dropout):
-            module.p = 0.0
-            module.eval()
+def cosine_dist(a, b):
+    return 1.0 - float(np.dot(a / (np.linalg.norm(a) + 1e-10),
+                               b / (np.linalg.norm(b) + 1e-10)))
 
 
 def main():
     print("=" * 70, flush=True)
-    print("COMPREHENSIVE METHOD COMPARISON ON REAL OpenVLA-7B", flush=True)
+    print("COMPREHENSIVE METHOD COMPARISON", flush=True)
     print("=" * 70, flush=True)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
     print("Loading OpenVLA-7B...", flush=True)
     model = AutoModelForVision2Seq.from_pretrained(
-        "openvla/openvla-7b",
-        torch_dtype=torch.bfloat16,
-        device_map="auto",
-        trust_remote_code=True,
+        "openvla/openvla-7b", torch_dtype=torch.bfloat16,
+        device_map="auto", trust_remote_code=True,
     )
     processor = AutoProcessor.from_pretrained(
-        "openvla/openvla-7b",
-        trust_remote_code=True,
+        "openvla/openvla-7b", trust_remote_code=True,
     )
     model.eval()
     print("Model loaded.", flush=True)
 
-    total = sum(s['n'] for s in SCENARIOS.values())
-    print(f"Total samples: {total}", flush=True)
+    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
 
-    prompt = "In: What action should the robot take to drive forward at {speed} m/s safely?\nOut:"
+    print("\nCalibrating...", flush=True)
+    cal_data = []
+    for fn in [create_highway, create_urban]:
+        for i in range(10):
+            signals = extract_all(model, processor,
+                                  Image.fromarray(fn(i + 9000)), prompt)
+            cal_data.append(signals)
+    print(f"  Calibration: {len(cal_data)} samples", flush=True)
 
-    # ===================================================================
-    # Phase 1: Single-pass inference (action mass, entropy, hidden states)
-    # ===================================================================
-    print("\n--- Phase 1: Single-pass inference ---", flush=True)
-    all_samples = []
-    all_hidden = []
-    sample_idx = 0
+    centroid = np.mean([d['gen_hidden'] for d in cal_data if 'gen_hidden' in d], axis=0)
+    cal_norms = [d['feature_norm'] for d in cal_data if 'feature_norm' in d]
 
-    for scenario, config in SCENARIOS.items():
-        for i in range(config['n']):
-            sample_idx += 1
-            image = create_scene_image(scenario, i)
-            p = prompt.format(speed=config['speed'])
-            inputs = processor(p, image).to(model.device, dtype=torch.bfloat16)
+    print("\nCollecting test set...", flush=True)
+    test_fns = {
+        'highway': (create_highway, False, 12),
+        'urban': (create_urban, False, 12),
+        'noise': (create_noise, True, 8),
+        'indoor': (create_indoor, True, 8),
+        'inverted': (create_inverted, True, 8),
+        'blackout': (create_blackout, True, 8),
+    }
 
-            t0 = time.time()
-            with torch.no_grad():
-                outputs = model.generate(
-                    **inputs,
-                    max_new_tokens=7,
-                    do_sample=False,
-                    output_scores=True,
-                    output_hidden_states=True,
-                    return_dict_in_generate=True,
-                )
+    test_data = []
+    test_labels = []
+    test_scenarios = []
+    cnt = 0
+    total = sum(v[2] for v in test_fns.values())
+    for scene, (fn, is_ood, n) in test_fns.items():
+        for i in range(n):
+            cnt += 1
+            signals = extract_all(model, processor,
+                                  Image.fromarray(fn(i + 200)), prompt)
+            test_data.append(signals)
+            test_labels.append(1 if is_ood else 0)
+            test_scenarios.append(scene)
+            if cnt % 10 == 0:
+                print(f"  [{cnt}/{total}] {scene}", flush=True)
 
-            # Hidden state
-            if hasattr(outputs, 'hidden_states') and outputs.hidden_states:
-                last_step = outputs.hidden_states[-1]
-                if isinstance(last_step, tuple):
-                    hidden = last_step[-1][0, -1, :].float().cpu().numpy()
-                else:
-                    hidden = last_step[0, -1, :].float().cpu().numpy()
-            else:
-                hidden = np.zeros(4096)
+    test_labels = np.array(test_labels)
 
-            # Action mass and entropy
-            vocab_size = outputs.scores[0].shape[-1]
-            action_start = vocab_size - 256
-            dim_masses = []
-            dim_entropies = []
-            for score in outputs.scores[:7]:
-                full_logits = score[0].float()
-                full_probs = torch.softmax(full_logits, dim=0).cpu().numpy()
-                action_probs = full_probs[action_start:]
-                dim_masses.append(float(action_probs.sum()))
-                action_norm = action_probs / (action_probs.sum() + 1e-10)
-                dim_entropies.append(float(-(action_norm * np.log(action_norm + 1e-10)).sum()))
-
-            elapsed = time.time() - t0
-
-            sample = {
-                'scenario': scenario,
-                'difficulty': config['difficulty'],
-                'idx': i,
-                'action_mass': float(np.mean(dim_masses)),
-                'entropy': float(np.mean(dim_entropies)),
-            }
-            all_samples.append(sample)
-            all_hidden.append(hidden)
-
-            if sample_idx % 20 == 0 or sample_idx == total:
-                print(f"  [{sample_idx}/{total}] {scenario}_{i}: "
-                      f"mass={sample['action_mass']:.4f}, ent={sample['entropy']:.3f} "
-                      f"({elapsed:.1f}s)", flush=True)
-
-    # ===================================================================
-    # Phase 2: MC Dropout (N=10, p=0.20)
-    # ===================================================================
-    print("\n--- Phase 2: MC Dropout (N=10, p=0.20) ---", flush=True)
-    N_MC = 10
-    enable_dropout(model, p=0.20)
-
-    mc_entropies = []
-    sample_idx = 0
-
-    for scenario, config in SCENARIOS.items():
-        for i in range(config['n']):
-            sample_idx += 1
-            image = create_scene_image(scenario, i)
-            p = prompt.format(speed=config['speed'])
-            inputs = processor(p, image).to(model.device, dtype=torch.bfloat16)
-
-            mc_ents = []
-            for mc_i in range(N_MC):
-                with torch.no_grad():
-                    outputs = model.generate(
-                        **inputs,
-                        max_new_tokens=7,
-                        do_sample=False,
-                        output_scores=True,
-                        return_dict_in_generate=True,
-                    )
-
-                vocab_size = outputs.scores[0].shape[-1]
-                action_start = vocab_size - 256
-                dim_ents = []
-                for score in outputs.scores[:7]:
-                    full_logits = score[0].float()
-                    full_probs = torch.softmax(full_logits, dim=0).cpu().numpy()
-                    action_probs = full_probs[action_start:]
-                    action_norm = action_probs / (action_probs.sum() + 1e-10)
-                    dim_ents.append(float(-(action_norm * np.log(action_norm + 1e-10)).sum()))
-                mc_ents.append(float(np.mean(dim_ents)))
-
-            mc_entropy_mean = float(np.mean(mc_ents))
-            mc_entropy_std = float(np.std(mc_ents))
-            mc_entropies.append(mc_entropy_mean)
-            all_samples[sample_idx - 1]['mc_entropy'] = mc_entropy_mean
-            all_samples[sample_idx - 1]['mc_entropy_std'] = mc_entropy_std
-
-            if sample_idx % 20 == 0 or sample_idx == total:
-                print(f"  [{sample_idx}/{total}] {scenario}_{i}: "
-                      f"mc_ent={mc_entropy_mean:.3f} ± {mc_entropy_std:.3f}", flush=True)
-
-    disable_dropout(model)
-
-    # ===================================================================
-    # Analysis
-    # ===================================================================
     print("\n" + "=" * 70, flush=True)
-    print("COMPREHENSIVE COMPARISON", flush=True)
+    print("RESULTS", flush=True)
     print("=" * 70, flush=True)
 
-    hidden_arr = np.array(all_hidden)
-    easy_idxs = [i for i, s in enumerate(all_samples) if s['difficulty'] == 'easy']
-    ood_idxs = [i for i, s in enumerate(all_samples) if s['difficulty'] == 'ood']
+    methods = {}
+    methods['cosine'] = [cosine_dist(d['gen_hidden'], centroid) for d in test_data]
+    methods['norm_diff'] = [abs(d['feature_norm'] - np.mean(cal_norms)) for d in test_data]
+    methods['1-mass'] = [1 - d['action_mass'] for d in test_data]
+    methods['1-msp'] = [1 - d['msp'] for d in test_data]
+    methods['-energy'] = [-d['energy'] for d in test_data]
+    methods['attn_max'] = [d['attn_max'] for d in test_data]
+    methods['-attn_entropy'] = [-d['attn_entropy'] for d in test_data]
 
-    # Bootstrap evaluation
-    n_bootstrap = 10
-    method_aurocs = {}
-    ood_types = [s for s in SCENARIOS if s.startswith('ood_')]
+    def normalize(scores):
+        arr = np.array(scores)
+        return (arr - arr.min()) / (arr.max() - arr.min() + 1e-10)
 
-    for boot_i in range(n_bootstrap):
-        np.random.seed(boot_i * 42)
-        shuffled = np.random.permutation(easy_idxs)
-        cal_idxs = shuffled[:len(shuffled)//2]
-        test_easy_idxs = shuffled[len(shuffled)//2:]
+    cos_n = normalize(methods['cosine'])
+    mass_n = normalize(methods['1-mass'])
+    attn_n = normalize(methods['attn_max'])
+    ent_n = normalize(methods['-attn_entropy'])
 
-        # Compute calibration statistics
-        cal_mean = np.mean(hidden_arr[cal_idxs], axis=0)
-        cal_norm = cal_mean / (np.linalg.norm(cal_mean) + 1e-10)
-        cal_hidden = hidden_arr[cal_idxs]
-
-        # Compute all scores
-        for s_idx in range(len(all_samples)):
-            h = hidden_arr[s_idx]
-            h_norm = h / (np.linalg.norm(h) + 1e-10)
-            all_samples[s_idx][f'cos_dist_{boot_i}'] = 1.0 - float(np.dot(h_norm, cal_norm))
-
-            # kNN (k=3)
-            dists = np.linalg.norm(cal_hidden - h, axis=1)
-            all_samples[s_idx][f'knn3_{boot_i}'] = float(np.mean(np.sort(dists)[:3]))
-
-        methods = {
-            'Action Mass': lambda i: -all_samples[i]['action_mass'],
-            'Entropy': lambda i: all_samples[i]['entropy'],
-            'MC Entropy': lambda i: all_samples[i]['mc_entropy'],
-            'Cosine Dist': lambda i: all_samples[i][f'cos_dist_{boot_i}'],
-            'kNN (k=3)': lambda i: all_samples[i][f'knn3_{boot_i}'],
-        }
-
-        # Also add cosine + entropy combined
-        # Normalize for combination
-        cos_vals = [all_samples[i][f'cos_dist_{boot_i}'] for i in range(len(all_samples))]
-        ent_vals = [all_samples[i]['entropy'] for i in range(len(all_samples))]
-        c_min, c_max = min(cos_vals), max(cos_vals)
-        e_min, e_max = min(ent_vals), max(ent_vals)
-
-        for s_idx in range(len(all_samples)):
-            c_norm = (all_samples[s_idx][f'cos_dist_{boot_i}'] - c_min) / (c_max - c_min + 1e-10)
-            e_norm = (all_samples[s_idx]['entropy'] - e_min) / (e_max - e_min + 1e-10)
-            all_samples[s_idx][f'cos_ent_{boot_i}'] = 0.5 * c_norm + 0.5 * e_norm
-
-        methods['Cos + Ent'] = lambda i: all_samples[i][f'cos_ent_{boot_i}']
-
-        for method_name, score_fn in methods.items():
-            test_easy_scores = [score_fn(i) for i in test_easy_idxs]
-            ood_scores = [score_fn(i) for i in ood_idxs]
-            overall_auroc = compute_auroc(ood_scores, test_easy_scores)
-
-            if method_name not in method_aurocs:
-                method_aurocs[method_name] = {'overall': [], 'per_type': {t: [] for t in ood_types}}
-
-            method_aurocs[method_name]['overall'].append(overall_auroc)
-
-            for ood_type in ood_types:
-                type_idxs = [i for i in ood_idxs if all_samples[i]['scenario'] == ood_type]
-                type_scores = [score_fn(i) for i in type_idxs]
-                type_auroc = compute_auroc(type_scores, test_easy_scores)
-                method_aurocs[method_name]['per_type'][ood_type].append(type_auroc)
-
-    # Print main results table
-    print("\n=== MAIN RESULTS TABLE ===", flush=True)
-    print("-" * 100, flush=True)
-
-    header = f"{'Method':<15} {'Passes':>6} {'Cal':>4} | {'Overall':>8}"
-    for ood_type in ood_types:
-        short_name = ood_type.replace('ood_', '')[:6]
-        header += f" {short_name:>8}"
-    print(header, flush=True)
-    print("-" * 100, flush=True)
+    methods['0.7cos+0.3mass'] = list(0.7 * cos_n + 0.3 * mass_n)
+    methods['0.5cos+0.5attn'] = list(0.5 * cos_n + 0.5 * attn_n)
+    methods['best_of_both'] = list(np.maximum(cos_n, attn_n))
+    methods['all_equal'] = list(0.25 * cos_n + 0.25 * mass_n + 0.25 * attn_n + 0.25 * ent_n)
 
     method_meta = {
-        'Action Mass': (1, 'No'),
-        'Entropy': (1, 'No'),
-        'MC Entropy': (10, 'No'),
-        'Cosine Dist': (1, 'Yes'),
-        'kNN (k=3)': (1, 'Yes'),
-        'Cos + Ent': (1, 'Yes'),
+        'cosine': ('Yes', 'Hidden'),
+        'norm_diff': ('Yes', 'Hidden'),
+        '1-mass': ('No', 'Output'),
+        '1-msp': ('No', 'Output'),
+        '-energy': ('No', 'Output'),
+        'attn_max': ('No', 'Attention'),
+        '-attn_entropy': ('No', 'Attention'),
+        '0.7cos+0.3mass': ('Yes', 'Combined'),
+        '0.5cos+0.5attn': ('Yes', 'Combined'),
+        'best_of_both': ('Yes', 'Combined'),
+        'all_equal': ('Yes', 'Combined'),
     }
 
-    for method_name in ['Cosine Dist', 'Cos + Ent', 'kNN (k=3)', 'MC Entropy', 'Action Mass', 'Entropy']:
-        passes, cal = method_meta[method_name]
-        mean_overall = np.mean(method_aurocs[method_name]['overall'])
-        std_overall = np.std(method_aurocs[method_name]['overall'])
+    print(f"\n  {'Method':<25} {'AUROC':>8} {'Cal?':>6} {'Type':>15}", flush=True)
+    print("  " + "-" * 56, flush=True)
 
-        row = f"{method_name:<15} {passes:>6} {cal:>4} | {mean_overall:>5.3f}±{std_overall:.3f}"
+    aurocs = {}
+    for name, scores in methods.items():
+        auroc = roc_auc_score(test_labels, scores)
+        aurocs[name] = auroc
+        cal, typ = method_meta.get(name, ('?', '?'))
+        print(f"  {name:<25} {auroc:>8.3f} {cal:>6} {typ:>15}", flush=True)
 
-        for ood_type in ood_types:
-            mean_type = np.mean(method_aurocs[method_name]['per_type'][ood_type])
-            row += f" {mean_type:>8.3f}"
+    # Per-scenario
+    print("\n  Per-scenario AUROC:", flush=True)
+    top_methods = ['cosine', 'attn_max', '-attn_entropy', '0.7cos+0.3mass', 'best_of_both']
+    header = f"    {'OOD Type':<12}" + "".join(f"{m:>18}" for m in top_methods)
+    print(header, flush=True)
 
+    id_mask = test_labels == 0
+    per_scenario = {}
+    for ood_type in ['noise', 'indoor', 'inverted', 'blackout']:
+        mask = np.array([s == ood_type for s in test_scenarios])
+        type_labels = np.concatenate([np.zeros(id_mask.sum()), np.ones(mask.sum())])
+        per_scenario[ood_type] = {}
+        row = f"    {ood_type:<12}"
+        for m_name in top_methods:
+            type_scores = np.concatenate([
+                np.array(methods[m_name])[id_mask],
+                np.array(methods[m_name])[mask]
+            ])
+            auroc = roc_auc_score(type_labels, type_scores)
+            per_scenario[ood_type][m_name] = float(auroc)
+            row += f"{auroc:>18.3f}"
         print(row, flush=True)
 
-    print("-" * 100, flush=True)
-
-    # Computational cost comparison
-    print("\n=== COMPUTATIONAL COST ===", flush=True)
-    print(f"{'Method':<15} {'Passes':>6} {'Cal Data':>8} {'Storage':>8} {'Cost/sample':>11}", flush=True)
-    print("-" * 55, flush=True)
-    costs = [
-        ('Cosine Dist', 1, '25 imgs', '16 KB', '1 dot prod'),
-        ('Cos + Ent', 1, '25 imgs', '16 KB', '1 dot + ent'),
-        ('kNN (k=3)', 1, '25 imgs', '400 KB', '25 L2 dists'),
-        ('MC Entropy', 10, 'None', '0', '10 passes'),
-        ('Action Mass', 1, 'None', '0', 'Free'),
-        ('Entropy', 1, 'None', '0', 'Free'),
-    ]
-    for name, passes, cal, storage, cost in costs:
-        print(f"{name:<15} {passes:>6} {cal:>8} {storage:>8} {cost:>11}", flush=True)
-
-    # Save
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    results_summary = {}
-    for method_name in method_aurocs:
-        results_summary[method_name] = {
-            'mean': float(np.mean(method_aurocs[method_name]['overall'])),
-            'std': float(np.std(method_aurocs[method_name]['overall'])),
-            'per_type': {t: float(np.mean(v)) for t, v in
-                        method_aurocs[method_name]['per_type'].items()},
-        }
-
     output = {
+        'experiment': 'comprehensive_comparison',
+        'experiment_number': 66,
         'timestamp': timestamp,
-        'n_bootstrap': n_bootstrap,
-        'n_mc': N_MC,
-        'results': results_summary,
-        'samples': [{k: v for k, v in s.items()
-                    if not k.startswith('cos_dist_') and not k.startswith('knn3_')
-                    and not k.startswith('cos_ent_')} for s in all_samples],
+        'n_cal': len(cal_data),
+        'n_test': len(test_data),
+        'aurocs': {k: float(v) for k, v in aurocs.items()},
+        'per_scenario': per_scenario,
     }
-
-    output_path = os.path.join(RESULTS_DIR, f"comprehensive_comparison_{timestamp}.json")
+    output_path = os.path.join(RESULTS_DIR, f"comprehensive_{timestamp}.json")
     with open(output_path, 'w') as f:
         json.dump(output, f, indent=2)
     print(f"\nSaved to {output_path}", flush=True)

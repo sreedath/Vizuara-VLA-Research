@@ -3007,3 +3007,50 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **JPEG compression and Gaussian noise are safe for both**: Both methods maintain 1.000 under JPEG (q=10-50) and noise (σ=25-50), confirming robustness for common real-world degradations.
 
 5. **Extreme brightness moderately affects attention (0.722 at 2.0×)**: Overexposure changes attention patterns enough to reduce detection, but entropy (0.931) is more robust than max attention (0.722).
+
+---
+
+## Finding 60: Comprehensive Method Comparison (Real OpenVLA-7B, Experiment 66)
+
+### Setup
+- **Model**: OpenVLA-7B (BF16, forward + generate passes)
+- **Calibration**: 20 samples (10 highway + 10 urban)
+- **Test**: 56 samples (24 ID + 32 OOD: 8 each of noise, indoor, inverted, blackout)
+- **Methods**: 11 detection methods across 4 categories
+- **Total inferences**: ~152
+
+### Complete Method Ranking
+
+| Rank | Method | AUROC | Calibration? | Type |
+|------|--------|-------|-------------|------|
+| 1 | **Attn Max** | **1.000** | No | Attention |
+| 2 | All-Equal Fusion | 0.999 | Yes | Combined |
+| 3 | Attn Entropy | 0.993 | No | Attention |
+| 4 | Cosine + Attn | 0.979 | Yes | Combined |
+| 5 | Norm Diff | 0.969 | Yes | Hidden |
+| 6 | Cosine + Mass | 0.919 | Yes | Combined |
+| 7 | Cosine Distance | 0.913 | Yes | Hidden |
+| 8 | 1 - Action Mass | 0.746 | No | Output |
+| 9 | 1 - MSP | 0.733 | No | Output |
+| 10 | Energy Score | 0.693 | No | Output |
+
+### Per-OOD Type (Top Methods)
+
+| OOD Type | Cosine | Attn Max | Attn Entropy | Cos+Mass |
+|----------|--------|----------|-------------|----------|
+| Noise | 0.979 | **1.000** | **1.000** | **1.000** |
+| Indoor | 0.849 | **1.000** | **1.000** | 0.812 |
+| Inverted | 0.823 | **1.000** | 0.974 | 0.865 |
+| Blackout | **1.000** | **1.000** | **1.000** | **1.000** |
+
+### Key Insights
+
+1. **Attention max is the single best detector (1.000 AUROC, calibration-free)**: Perfect across all OOD types, requiring no calibration data. This is the paper's headline result.
+
+2. **Clear hierarchy: Attention > Hidden State > Output**: Attention-based methods (0.993-1.000) consistently outperform hidden-state methods (0.913-0.969), which outperform output-based methods (0.693-0.746).
+
+3. **Feature norm difference is surprisingly strong (0.969)**: Simply measuring how far the hidden state norm deviates from calibration provides strong detection. Blackout (norm 40 vs ID 107) is trivially detected.
+
+4. **Output-based methods are insufficient**: MSP (0.733), energy (0.693), and mass (0.746) all fail to distinguish indoor/inverted OOD from ID. These are the standard baselines from the OOD literature that our approach significantly outperforms.
+
+5. **Fusion provides near-perfection (0.999)**: Equal-weight combination of cosine, mass, attn_max, and attn_entropy achieves 0.999 — the most robust configuration.

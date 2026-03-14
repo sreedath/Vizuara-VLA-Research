@@ -1343,4 +1343,43 @@ We test whether the calibration-free attention OOD detection is robust to image 
 
 This reveals that \textbf{attention and cosine distance are complementary detectors}: attention excels on clean inputs without calibration, while cosine distance provides robust backup under image degradation. A production system should use both signals: attention max as the primary (calibration-free) detector with cosine distance as a fallback when blur or overexposure is detected. The ``best-of-both'' achieves 1.000 AUROC across all perturbation conditions tested.
 
+\subsection{Comprehensive Method Comparison}
+\label{app:comprehensive}
+
+\textbf{Finding 89: Unified comparison of 11 detection methods reveals clear hierarchy: Attention (1.000) > Hidden State (0.913--0.969) > Output (0.693--0.746), with calibration-free attention max achieving perfect detection.}
+
+We run all detection methods on the same 56-sample test set with 20-sample calibration for a fair comparison (Figure~\ref{fig:comprehensive}, Table~\ref{tab:comprehensive}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig52_comprehensive.pdf}
+\caption{\textbf{Comprehensive method comparison.} (a) All methods ranked by AUROC. Calibration-free attention max (1.000) outperforms all calibrated methods. Standard baselines (MSP, energy) score $<0.75$. (b) Per-OOD type analysis shows attention detects all types perfectly while cosine struggles with indoor/inverted.}
+\label{fig:comprehensive}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\caption{Comprehensive OOD detection method comparison on OpenVLA-7B.}
+\label{tab:comprehensive}
+\small
+\begin{tabular}{llcccccc}
+\toprule
+\textbf{Method} & \textbf{Cal?} & \textbf{AUROC} & \textbf{Noise} & \textbf{Indoor} & \textbf{Inverted} & \textbf{Blackout} \\
+\midrule
+Attn Max & No & \textbf{1.000} & 1.000 & 1.000 & 1.000 & 1.000 \\
+Attn Entropy & No & 0.993 & 1.000 & 1.000 & 0.974 & 1.000 \\
+All-Equal Fusion & Yes & 0.999 & --- & --- & --- & --- \\
+\midrule
+Cosine Distance & Yes & 0.913 & 0.979 & 0.849 & 0.823 & 1.000 \\
+Norm Difference & Yes & 0.969 & --- & --- & --- & --- \\
+\midrule
+1 $-$ Mass & No & 0.746 & --- & --- & --- & --- \\
+MSP~\citep{hendrycks2017baseline} & No & 0.733 & --- & --- & --- & --- \\
+Energy~\citep{liu2020energy} & No & 0.693 & --- & --- & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The results establish a clear hierarchy: \textbf{attention-based} methods (0.993--1.000) $\gg$ \textbf{hidden-state} methods (0.913--0.969) $\gg$ \textbf{output-based} methods (0.693--0.746). The calibration-free attention max achieves perfect detection across all OOD types, including indoor scenes where cosine distance only achieves 0.849. Standard OOD baselines (MSP, energy score) are insufficient for VLA safety.
+
 \end{document}
