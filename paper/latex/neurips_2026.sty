@@ -1,0 +1,89 @@
+% neurips_2026.sty - Style file for NeurIPS 2026
+% Based on standard NeurIPS formatting
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{neurips_2026}[2026/01/01 NeurIPS 2026 submission]
+
+\newif\if@neuripsfinal
+\DeclareOption{final}{\@neuripsfinaltrue}
+\DeclareOption{preprint}{\@neuripsfinalfalse}
+\ProcessOptions\relax
+
+% Page layout
+\RequirePackage[letterpaper,
+  top=1in,
+  bottom=1in,
+  left=1.5in,
+  right=1.5in]{geometry}
+
+% Fonts and encoding
+\RequirePackage[T1]{fontenc}
+\RequirePackage{times}
+\RequirePackage{microtype}
+
+% Math
+\RequirePackage{amsmath,amsfonts,amssymb}
+
+% Line spacing
+\linespread{1.0}
+
+% Title formatting
+\def\@maketitle{%
+  \newpage
+  \null
+  \vskip 0.1in
+  \begin{center}%
+    {\LARGE \bf \@title \par}%
+    \vskip 0.3in
+    \if@neuripsfinal
+      {\large
+        \lineskip .5em%
+        \begin{tabular}[t]{c}%
+          \@author
+        \end{tabular}\par}%
+    \else
+      {\large Anonymous Authors\par}%
+    \fi
+    \vskip 0.3in
+  \end{center}%
+  \par
+  \vskip 0.2in
+}
+
+% Abstract environment
+\renewenvironment{abstract}{%
+  \centerline{\large\bf Abstract}%
+  \vspace{0.5ex}%
+  \begin{quote}%
+}{%
+  \par%
+  \end{quote}%
+  \vskip 1ex%
+}
+
+% Section formatting
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-2.0ex \@plus -0.5ex \@minus -0.2ex}%
+  {1.5ex \@plus 0.3ex \@minus 0.2ex}%
+  {\large\bf\raggedright}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-1.8ex \@plus -0.5ex \@minus -0.2ex}%
+  {0.8ex \@plus 0.2ex}%
+  {\normalsize\bf\raggedright}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-1.5ex \@plus -0.5ex \@minus -0.2ex}%
+  {0.5ex \@plus 0.2ex}%
+  {\normalsize\bf\raggedright}}
+
+% Footnote rule
+\renewcommand{\footnoterule}{%
+  \kern -3pt
+  \hrule width 2in height 0.4pt
+  \kern 2.6pt
+}
+
+% No page numbers for submission
+\if@neuripsfinal\else
+  \pagestyle{empty}
+\fi
+
+\endinput

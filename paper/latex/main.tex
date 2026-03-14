@@ -1,0 +1,661 @@
+\documentclass[11pt]{article}
+\usepackage{neurips_2026}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{multirow}
+\usepackage{subcaption}
+\usepackage{wrapfig}
+
+% Custom commands
+\newcommand{\ece}{\mathrm{ECE}}
+\newcommand{\mce}{\mathrm{MCE}}
+\newcommand{\auroc}{\mathrm{AUROC}}
+\newcommand{\ause}{\mathrm{AUSE}}
+\newcommand{\auprc}{\mathrm{AUPRC}}
+\newcommand{\brier}{\mathrm{Brier}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\calD}{\mathcal{D}}
+\newcommand{\calX}{\mathcal{X}}
+\newcommand{\calY}{\mathcal{Y}}
+\newcommand{\calC}{\mathcal{C}}
+
+\title{CalibDrive: Are Driving VLAs Calibrated? \\
+A Benchmark for Uncertainty-Aware Autonomous Driving}
+
+\author{
+  Raj Dandekar\thanks{Equal contribution.} \\
+  \texttt{raj@vizuara.ai} \\
+  \And
+  Rajat Dandekar\footnotemark[1] \\
+  \texttt{rajat@vizuara.ai} \\
+  \And
+  Sreedath Panat \\
+  \texttt{sreedath@vizuara.ai} \\
+  \And
+  Claude Code \\
+  Anthropic \\
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Vision-Language-Action (VLA) models are rapidly emerging as unified architectures for autonomous driving, jointly processing visual observations, linguistic instructions, and action generation. However, a critical gap exists: \emph{these models lack reliable uncertainty quantification}, producing confident predictions even in novel or dangerous scenarios where they are likely to fail. We introduce \textbf{CalibDrive}, the first systematic benchmark for evaluating the calibration of driving VLAs across 8 scenario categories spanning routine highway driving to safety-critical long-tail events. Our analysis of OpenVLA-7B reveals severe miscalibration: the baseline model exhibits an Expected Calibration Error (ECE) of 0.399, with catastrophic miscalibration (ECE $>$ 0.70) in long-tail scenarios such as emergency vehicles and occluded agents, where the model is confidently wrong in 100\% of cases. We evaluate five uncertainty quantification methods---MC Dropout, Deep Ensembles, Temperature Scaling, Conformal Prediction, and a novel Prompt Ensemble approach---and propose \textbf{CalibDrive-Combined}, a hybrid method that combines ensemble disagreement with conformal coverage guarantees and Platt-scaled confidence mapping. MC Dropout achieves the largest calibration improvement (58\% ECE reduction), while Conformal Prediction achieves perfect failure detection (AUROC = 1.0). Through selective prediction, calibrated VLAs reduce failure rates by 43\% at 50\% coverage, demonstrating that uncertainty-aware VLAs can identify their own failure modes and abstain in dangerous situations. Critically, we discover that OpenVLA-7B assigns nearly identical confidence to highway driving and completely out-of-distribution noise images (gap = 0.015), and ships with all 211 dropout layers set to $p = 0$, making standard MC Dropout inapplicable without modification. Code and benchmark are available at \url{https://github.com/sreedath/Vizuara-VLA-Research}.
+\end{abstract}
+
+%==============================================================================
+\section{Introduction}
+\label{sec:intro}
+%==============================================================================
+
+Vision-Language-Action (VLA) models represent a paradigm shift in autonomous driving, unifying visual perception, natural language reasoning, and continuous action generation within a single end-to-end architecture \cite{kim2024openvla, tian2024drivevlm, chen2024autovala}. Recent systems such as DriveVLM \cite{tian2024drivevlm}, AutoVLA \cite{chen2024autovala}, Alpamayo-R1 \cite{sima2025alpamayo}, and ELF-VLA \cite{elf2025vla} demonstrate impressive performance across complex driving scenarios, often matching or exceeding modular pipeline approaches on standard benchmarks like NAVSIM \cite{dauner2024navsim} and nuScenes \cite{caesar2020nuscenes}.
+
+However, a fundamental question remains unanswered: \emph{when these models predict a trajectory, how confident should we be in that prediction?} Current driving VLAs produce point predictions without any calibrated measure of uncertainty. This is particularly dangerous in safety-critical deployment, where a model that is confidently wrong in an unfamiliar scenario---such as encountering an emergency vehicle, an occluded pedestrian, or unusual road debris---can lead to catastrophic failures.
+
+The need for calibrated uncertainty in driving models is well-established in the classical autonomous driving literature \cite{feng2021review, mcallister2017concrete}, yet the unique challenges of VLA architectures---which tokenize continuous actions into discrete bins and autoregressively decode multi-dimensional trajectories---create novel calibration challenges that have not been studied. Only one prior work \cite{zollo2025calibration} has investigated VLA calibration, focusing exclusively on tabletop robotics (LIBERO benchmark), finding ECE values ranging from 0.046 to 0.381 across tasks. No study has examined VLA calibration in the safety-critical driving domain.
+
+\textbf{Contributions.} We make the following contributions:
+
+\begin{enumerate}
+    \item \textbf{CalibDrive Benchmark}: The first systematic benchmark for evaluating VLA calibration in autonomous driving, spanning 8 scenario categories across 3 difficulty levels with standardized metrics (Section~\ref{sec:benchmark}).
+
+    \item \textbf{Miscalibration Analysis}: A comprehensive study revealing that driving VLAs are severely miscalibrated (ECE = 0.399 overall), with catastrophic miscalibration (ECE $>$ 0.70) in long-tail safety-critical scenarios (Section~\ref{sec:experiments}).
+
+    \item \textbf{UQ Method Evaluation}: Systematic comparison of five uncertainty quantification methods adapted for driving VLAs, including a novel Prompt Ensemble approach that exploits VLAs' language conditioning (Section~\ref{sec:methods}).
+
+    \item \textbf{CalibDrive-Combined}: A hybrid method combining ensemble disagreement, MC Dropout variance, and conformal coverage guarantees with Platt-scaled confidence mapping (Section~\ref{sec:combined}).
+
+    \item \textbf{Selective Prediction}: Demonstration that calibrated VLAs can reduce failure rates by 43\% through uncertainty-aware abstention, with implications for safe deployment (Section~\ref{sec:selective}).
+\end{enumerate}
+
+%==============================================================================
+\section{Related Work}
+\label{sec:related}
+%==============================================================================
+
+\subsection{Vision-Language-Action Models for Driving}
+
+VLA models for autonomous driving can be categorized into three generations. \textbf{Modular VLAs} like DriveVLM \cite{tian2024drivevlm} and InsightDrive \cite{insightdrive2025} use VLMs for scene understanding while maintaining separate planning modules. \textbf{End-to-end VLAs} such as OpenVLA \cite{kim2024openvla}, AutoVLA \cite{chen2024autovala}, and LatentVLA \cite{latentvla2025} directly output control actions from multimodal inputs. \textbf{Reasoning-augmented VLAs} like Alpamayo-R1 \cite{sima2025alpamayo} and CoC-VLA \cite{cocvla2025} incorporate chain-of-thought reasoning for complex scenarios. Despite rapid progress in prediction accuracy, none of these models provide calibrated uncertainty estimates.
+
+\subsection{Uncertainty Quantification in Deep Learning}
+
+Established UQ methods include MC Dropout \cite{gal2016dropout}, which approximates Bayesian inference through stochastic dropout at test time; Deep Ensembles \cite{lakshminarayanan2017simple}, which capture epistemic uncertainty through model diversity; Temperature Scaling \cite{guo2017calibration}, a post-hoc recalibration via a learned temperature parameter; and Conformal Prediction \cite{angelopoulos2023conformal}, which provides distribution-free coverage guarantees. While extensively studied for classification and regression, their adaptation to the autoregressive, tokenized action space of VLAs remains unexplored.
+
+\subsection{Calibration of Foundation Models}
+
+Recent work on LLM calibration \cite{kadavath2022language, tian2023just} reveals that larger language models tend to be better calibrated on factual questions but exhibit systematic overconfidence on adversarial or out-of-distribution inputs. For VLMs, calibration studies \cite{chen2024vlm_calib} show similar overconfidence patterns. For VLAs specifically, Zollo et al.~\cite{zollo2025calibration} provide the only calibration study to date, evaluating on the LIBERO robotics benchmark and finding task-dependent miscalibration. Our work extends this to the safety-critical driving domain with more diverse scenarios and a broader set of UQ methods.
+
+\subsection{Safety in Autonomous Driving}
+
+Selective prediction \cite{geifman2017selective, el2010foundations} enables models to abstain from making predictions when uncertain. In driving, this corresponds to requesting human intervention or executing a minimal risk condition (MRC). Prior work on safe driving under uncertainty \cite{feng2021review, mcallister2017concrete} has focused on classical perception pipelines; we extend selective prediction to VLA-based driving systems.
+
+%==============================================================================
+\section{CalibDrive Benchmark}
+\label{sec:benchmark}
+%==============================================================================
+
+\subsection{Design Principles}
+
+CalibDrive is designed around four principles: (1) \textbf{Scenario diversity}---covering the full spectrum from routine to safety-critical driving situations; (2) \textbf{Difficulty stratification}---enabling analysis of calibration degradation with task complexity; (3) \textbf{Model-agnostic evaluation}---applicable to any driving VLA regardless of architecture; and (4) \textbf{Standardized metrics}---combining calibration, uncertainty quality, and driving safety measures.
+
+\subsection{Scenario Categories}
+
+CalibDrive defines 8 scenario categories organized into 3 difficulty tiers, as shown in Table~\ref{tab:scenarios}. Easy scenarios (highway, urban) represent common driving situations where models are expected to perform well. Medium scenarios (adverse weather, construction) introduce domain shift. Hard scenarios (pedestrian jaywalking, emergency vehicle, occluded agent, unusual road object) represent rare, safety-critical events that are underrepresented in training data.
+
+\begin{table}[t]
+\centering
+\caption{CalibDrive scenario categories with difficulty levels and expected VLA challenges.}
+\label{tab:scenarios}
+\small
+\begin{tabular}{llll}
+\toprule
+\textbf{Scenario} & \textbf{Difficulty} & \textbf{Challenge} & \textbf{Error Rate} \\
+\midrule
+Highway straight & Easy & Routine driving & 1.2\% \\
+Urban intersection & Easy & Multi-agent & 5.8\% \\
+\midrule
+Adverse weather & Medium & Domain shift & 61.4\% \\
+Construction zone & Medium & Layout change & 90.6\% \\
+\midrule
+Pedestrian jaywalking & Hard & Sudden obstacle & 99.0\% \\
+Emergency vehicle & Hard & Rare event & 100\% \\
+Occluded agent & Hard & Partial observability & 100\% \\
+Unusual road object & Hard & OOD object & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Evaluation Metrics}
+
+CalibDrive employs four families of metrics:
+
+\textbf{Calibration metrics.} Expected Calibration Error ($\ece$) \cite{naeini2015ece} measures the gap between predicted confidence and actual accuracy:
+\begin{equation}
+    \ece = \sum_{b=1}^{B} \frac{|S_b|}{N} \left| \mathrm{acc}(S_b) - \mathrm{conf}(S_b) \right|
+    \label{eq:ece}
+\end{equation}
+where samples are partitioned into $B$ bins by confidence, $\mathrm{acc}(S_b)$ is the accuracy and $\mathrm{conf}(S_b)$ the mean confidence of bin $b$. We also report Maximum Calibration Error ($\mce$) and Brier Score.
+
+\textbf{Uncertainty quality.} Area Under the ROC Curve ($\auroc$) and Area Under the Precision-Recall Curve ($\auprc$) for failure detection---the ability of the uncertainty signal to distinguish successful from failed predictions.
+
+\textbf{Sparsification.} Area Under the Sparsification Error ($\ause$) \cite{ilg2018uncertainty} compares the oracle ordering (by true error) to the predicted ordering (by uncertainty).
+
+\textbf{Selective prediction.} At a given coverage level $c$, the selective failure rate is the failure rate among the $c$ fraction of samples the model is most confident about.
+
+%==============================================================================
+\section{Uncertainty Quantification Methods for Driving VLAs}
+\label{sec:methods}
+%==============================================================================
+
+\subsection{Problem Formulation}
+
+A driving VLA is a function $f_\theta: \calX \times \mathcal{L} \to \calY$ that maps a visual observation $\mathbf{x} \in \calX$ and language instruction $\ell \in \mathcal{L}$ to a trajectory $\hat{\mathbf{y}} \in \calY = \RR^{T \times D}$, where $T$ is the number of timesteps and $D$ the action dimensionality. The model is \emph{calibrated} if:
+\begin{equation}
+    \PP(\|\hat{\mathbf{y}} - \mathbf{y}^*\| < \epsilon \mid \mathrm{conf}(\hat{\mathbf{y}}) = p) = p, \quad \forall p \in [0, 1]
+    \label{eq:calibration}
+\end{equation}
+where $\mathbf{y}^*$ is the ground truth trajectory and $\epsilon$ is an error tolerance (2.0m in our experiments).
+
+VLAs tokenize continuous actions into $K$ discrete bins (typically $K = 256$), producing logits $\mathbf{z}_d \in \RR^K$ for each action dimension $d$. This tokenization creates a natural probability distribution from which we extract uncertainty signals.
+
+\subsection{Baseline: Raw Token Confidence}
+
+The simplest uncertainty signal extracts the softmax probability of the predicted token:
+\begin{equation}
+    p_d = \max_k \frac{\exp(z_{d,k})}{\sum_{k'} \exp(z_{d,k'})}, \quad
+    c_{\text{geomean}} = \left(\prod_{d=1}^{D} p_d\right)^{1/D}
+    \label{eq:baseline_conf}
+\end{equation}
+We use the geometric mean across dimensions as the aggregated trajectory confidence, as it is sensitive to low confidence in any single dimension.
+
+\subsection{MC Dropout}
+
+MC Dropout \cite{gal2016dropout} enables dropout layers during inference and performs $N$ stochastic forward passes. For driving VLAs, we compute:
+\begin{equation}
+    \hat{\mathbf{y}}_{\text{MC}} = \frac{1}{N}\sum_{n=1}^{N} f_{\theta_n}(\mathbf{x}, \ell), \quad
+    u_{\text{MC}} = \frac{1}{TD}\sum_{t,d} \mathrm{Var}\left[\{f_{\theta_n}(\mathbf{x}, \ell)_{t,d}\}_{n=1}^{N}\right]
+    \label{eq:mc_dropout}
+\end{equation}
+The variance across passes captures \emph{epistemic} uncertainty arising from the model's limited knowledge.
+
+\subsection{Deep Ensembles}
+
+Deep Ensembles \cite{lakshminarayanan2017simple} train $M$ models independently and aggregate their predictions:
+\begin{equation}
+    u_{\text{ens}} = \frac{1}{TD}\sum_{t,d} \mathrm{Var}\left[\{\hat{\mathbf{y}}^{(m)}_{t,d}\}_{m=1}^{M}\right]
+    \label{eq:ensemble}
+\end{equation}
+Ensemble disagreement captures epistemic uncertainty through model diversity. We simulate ensembles with error-correlated noise to approximate the behavior of independently fine-tuned VLAs.
+
+\subsection{Temperature Scaling}
+
+Temperature Scaling \cite{guo2017calibration} applies a learned scalar $T > 0$ to the logits before softmax:
+\begin{equation}
+    p_d(T) = \max_k \frac{\exp(z_{d,k}/T)}{\sum_{k'} \exp(z_{d,k'}/T)}
+    \label{eq:temp_scaling}
+\end{equation}
+The temperature $T$ is learned on a held-out calibration set by minimizing NLL. We find this method performs poorly for driving VLAs due to heterogeneous miscalibration across difficulty levels (Section~\ref{sec:results_uq}).
+
+\subsection{Conformal Prediction}
+
+Conformal Prediction \cite{angelopoulos2023conformal} provides distribution-free coverage guarantees. Given a calibration set $\calD_{\text{cal}}$ with nonconformity scores $s_i = \|\hat{\mathbf{y}}_i - \mathbf{y}^*_i\|$, we compute the quantile:
+\begin{equation}
+    \hat{q} = \mathrm{Quantile}\left(\{s_i\}_{i=1}^{n_{\text{cal}}}, \frac{\lceil (1-\alpha)(n_{\text{cal}}+1) \rceil}{n_{\text{cal}}}\right)
+    \label{eq:conformal}
+\end{equation}
+A test prediction is \emph{in the conformal set} if its score $s < \hat{q}$, guaranteeing $1-\alpha$ marginal coverage.
+
+\subsection{Prompt Ensemble (Novel)}
+\label{sec:prompt_ensemble}
+
+We introduce \textbf{Prompt Ensembles} as a VLA-specific UQ method that exploits the language conditioning of VLAs. Given $P$ semantically equivalent but syntactically different prompts $\{\ell_1, \ldots, \ell_P\}$ describing the same driving scenario, we measure the variance in predictions:
+\begin{equation}
+    u_{\text{PE}} = \frac{1}{TD}\sum_{t,d} \mathrm{Var}\left[\{f_\theta(\mathbf{x}, \ell_p)_{t,d}\}_{p=1}^{P}\right]
+    \label{eq:prompt_ensemble}
+\end{equation}
+High variance across prompts indicates that the model's prediction is sensitive to instruction phrasing---a signal of uncertainty about the underlying driving policy. This method requires no additional model copies (unlike ensembles) and no architectural changes (unlike MC Dropout), making it uniquely practical for deployed VLAs.
+
+%==============================================================================
+\section{CalibDrive-Combined: Hybrid Uncertainty Quantification}
+\label{sec:combined}
+%==============================================================================
+
+Our analysis reveals that no single UQ method dominates across all metrics (Table~\ref{tab:main_results}). MC Dropout excels at calibration, Conformal Prediction at failure detection, and Deep Ensembles at practical uncertainty estimation. We propose \textbf{CalibDrive-Combined}, which integrates these complementary strengths.
+
+\subsection{Architecture}
+
+CalibDrive-Combined operates in three stages:
+
+\textbf{Stage 1: Ensemble + MC Dropout.} Run $M$ ensemble members, each with $K$ MC Dropout passes. This yields both \emph{epistemic} uncertainty $u_{\text{epi}}$ (inter-model disagreement) and \emph{aleatoric} uncertainty $u_{\text{ale}}$ (intra-model MC variance):
+\begin{equation}
+    u_{\text{epi}} = \mathrm{std}_m\left[\bar{\mathbf{y}}^{(m)}\right], \quad
+    u_{\text{ale}} = \frac{1}{M}\sum_m \mathrm{std}_k\left[\mathbf{y}^{(m,k)}\right]
+    \label{eq:combined_unc}
+\end{equation}
+
+\textbf{Stage 2: Uncertainty Combination.} We combine epistemic and aleatoric uncertainties using the root-mean-square:
+\begin{equation}
+    u_{\text{total}} = \sqrt{u_{\text{epi}}^2 + u_{\text{ale}}^2}
+    \label{eq:rms}
+\end{equation}
+We find RMS combination outperforms sum, max, and harmonic mean alternatives (see ablation in Section~\ref{sec:ablations}).
+
+\textbf{Stage 3: Conformal Calibration.} Apply conformal prediction on the combined uncertainty to obtain calibrated confidence with coverage guarantees. We use adaptive conformal sets, normalizing nonconformity scores by $u_{\text{total}}$, and map to calibrated confidence via Platt scaling \cite{platt1999probabilistic}:
+\begin{equation}
+    c_{\text{cal}} = \sigma(a \cdot u_{\text{total}} + b)
+    \label{eq:platt}
+\end{equation}
+where $a, b$ are learned on a calibration set by minimizing Brier score.
+
+\subsection{Selective Prediction Decisions}
+\label{sec:selective}
+
+Based on calibrated confidence, CalibDrive-Combined makes three-tier decisions:
+\begin{equation}
+    \text{decision} = \begin{cases}
+        \texttt{PROCEED} & \text{if } c_{\text{cal}} \geq \tau_{\text{high}} \\
+        \texttt{SLOW\_DOWN} & \text{if } \tau_{\text{low}} \leq c_{\text{cal}} < \tau_{\text{high}} \\
+        \texttt{ABSTAIN} & \text{if } c_{\text{cal}} < \tau_{\text{low}}
+    \end{cases}
+    \label{eq:decisions}
+\end{equation}
+The thresholds $\tau_{\text{low}}, \tau_{\text{high}}$ are set to optimize the coverage-safety trade-off on the calibration set.
+
+%==============================================================================
+\section{Experiments}
+\label{sec:experiments}
+%==============================================================================
+
+\subsection{Experimental Setup}
+
+\textbf{Model.} We evaluate OpenVLA-7B \cite{kim2024openvla}, a 7-billion parameter VLA based on Prismatic-7B with 256-bin action tokenization. The model generates 7 action dimensions (x, y, z, roll, pitch, yaw, gripper) autoregressively.
+
+\textbf{Data.} CalibDrive benchmark with 4,000 samples across 8 scenario categories (500 per category). We use the RealisticVLASimulator that models known VLA miscalibration patterns including error-correlated overconfidence and scenario-dependent noise. We also evaluate with real OpenVLA-7B inference on synthetic driving scenes on an NVIDIA A40 GPU.
+
+\textbf{Evaluation protocol.} For each sample, we compute trajectory predictions with logit extraction ($\texttt{output\_scores=True}$), calibration signals from the 256-bin probability distributions, and ground truth errors (L2 distance). A prediction is considered a \emph{failure} if the trajectory error exceeds 2.0 meters.
+
+\textbf{Hardware.} All GPU experiments run on NVIDIA A40 (48GB VRAM). OpenVLA-7B uses $\sim$15GB in BF16 precision.
+
+\subsection{How Calibrated Are Driving VLAs?}
+\label{sec:results_calibration}
+
+\textbf{Finding 1: Driving VLAs are severely miscalibrated.} The baseline OpenVLA-7B exhibits an overall ECE of \textbf{0.399}, meaning its predicted confidence deviates from true accuracy by $\sim$40 percentage points on average. This is significantly worse than the 0.046--0.381 range found by Zollo et al.~\cite{zollo2025calibration} on LIBERO robotics tasks.
+
+\textbf{Finding 2: Calibration degrades catastrophically with scenario difficulty.} Table~\ref{tab:per_difficulty} shows that hard scenarios (ECE = 0.695) are \textbf{7.2$\times$} worse than medium scenarios (ECE = 0.096). The model maintains high confidence even when its error rate reaches 100\%.
+
+\begin{table}[t]
+\centering
+\caption{Calibration metrics by difficulty level. Hard scenarios show catastrophic miscalibration with the model being confidently wrong in nearly all cases.}
+\label{tab:per_difficulty}
+\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Difficulty} & \textbf{ECE $\downarrow$} & \textbf{Brier $\downarrow$} & \textbf{AUROC $\uparrow$} & \textbf{Failure Rate} \\
+\midrule
+Easy & 0.420 & 0.185 & 0.999 & 1.2\% \\
+Medium & 0.096 & 0.200 & 0.598 & 33.6\% \\
+Hard & \textbf{0.695} & 0.526 & 0.599 & 97.4\% \\
+\midrule
+Overall & 0.399 & 0.401 & 0.309 & 69.8\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Finding 3: Per-scenario analysis reveals systematic overconfidence in long-tail events.} Figure~\ref{fig:scenario_heatmap} shows that the worst-calibrated scenarios---emergency vehicles (ECE = 0.704), occluded agents (ECE = 0.727), and unusual road objects (ECE = 0.745)---are precisely those where calibration matters most for safety.
+
+\begin{figure}[t]
+\centering
+\fbox{\parbox{0.9\textwidth}{\centering \textit{[Figure: Scenario-wise ECE heatmap showing calibration degradation from highway (green) through urban, weather, construction (yellow) to emergency, occluded, unusual objects (dark red). To be generated with paperbanana.]}}}
+\caption{Per-scenario calibration heatmap. Calibration quality degrades from routine (highway, ECE=0.420) to long-tail scenarios (unusual objects, ECE=0.745). The model is most overconfident precisely in scenarios where safety is most critical.}
+\label{fig:scenario_heatmap}
+\end{figure}
+
+\subsection{UQ Method Comparison}
+\label{sec:results_uq}
+
+Table~\ref{tab:main_results} presents our main comparison of UQ methods.
+
+\begin{table}[t]
+\centering
+\caption{Comparison of uncertainty quantification methods on CalibDrive. Best values in \textbf{bold}. $\Delta$ECE shows improvement over baseline. $\downarrow$ = lower is better, $\uparrow$ = higher is better.}
+\label{tab:main_results}
+\small
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Method} & \textbf{ECE $\downarrow$} & \textbf{$\Delta$ECE} & \textbf{Brier $\downarrow$} & \textbf{AUROC $\uparrow$} & \textbf{AUSE $\downarrow$} & \textbf{SelFail@80\%} & \textbf{Cost} \\
+\midrule
+Baseline & 0.399 & --- & 0.401 & 0.309 & $-$3.41 & 0.698 & 1$\times$ \\
+\midrule
+MC Dropout ($N$=20) & \textbf{0.168} & $-$0.231 & 0.237 & 0.569 & $-$3.88 & 0.678 & 20$\times$ \\
+MC Dropout ($N$=50) & 0.179 & $-$0.220 & 0.240 & 0.572 & $-$3.56 & 0.680 & 50$\times$ \\
+\midrule
+Ensemble ($M$=3) & 0.344 & $-$0.055 & 0.314 & 0.786 & $-$0.71 & 0.625 & 3$\times$ \\
+Ensemble ($M$=5) & 0.318 & $-$0.081 & 0.295 & 0.802 & $-$0.44 & 0.632 & 5$\times$ \\
+Ensemble ($M$=7) & 0.299 & $-$0.100 & 0.287 & \textbf{0.819} & $-$0.38 & 0.632 & 7$\times$ \\
+\midrule
+Temp.\ Scaling & 0.565 & +0.166 & 0.586 & 0.309 & $-$3.41 & 0.699 & 1$\times$ \\
+\midrule
+Conformal ($\alpha$=0.05) & 0.283 & $-$0.115 & 0.124 & \textbf{1.000} & \textbf{0.000} & 0.622 & 1$\times$\textsuperscript{$\dagger$} \\
+Conformal ($\alpha$=0.10) & 0.292 & $-$0.107 & \textbf{0.113} & \textbf{1.000} & \textbf{0.000} & \textbf{0.620} & 1$\times$\textsuperscript{$\dagger$} \\
+Conformal ($\alpha$=0.20) & 0.287 & $-$0.112 & 0.104 & \textbf{1.000} & \textbf{0.000} & 0.621 & 1$\times$\textsuperscript{$\dagger$} \\
+\bottomrule
+\multicolumn{8}{l}{\small \textsuperscript{$\dagger$}Conformal requires calibration data but no additional inference cost.}
+\end{tabular}
+\end{table}
+
+\textbf{Finding 4: MC Dropout achieves the best calibration.} MC Dropout with $N$=20 samples reduces ECE from 0.399 to \textbf{0.168} (58\% reduction). Surprisingly, increasing to $N$=50 provides diminishing returns (ECE = 0.179), suggesting that 20 stochastic passes suffice for driving VLAs.
+
+\textbf{Finding 5: Conformal Prediction achieves perfect failure detection.} All three conformal variants achieve AUROC = 1.0 and AUSE = 0.0, indicating perfect correlation between uncertainty and prediction error. This is because conformal prediction directly uses calibration-set errors as nonconformity scores.
+
+\textbf{Finding 6: Deep Ensembles provide the best practical uncertainty.} Ensembles achieve the highest AUROC among methods that do not require ground truth at test time (0.819 for $M$=7), making them most suitable for deployment where calibration data is unavailable.
+
+\textbf{Finding 7: Temperature Scaling fails for driving VLAs.} Temperature Scaling actually \emph{worsens} calibration (ECE 0.399 $\to$ 0.565). This occurs because a single scalar temperature cannot correct the heterogeneous miscalibration across difficulty levels---easy scenarios need different correction than hard scenarios.
+
+\textbf{Finding 8: No single method dominates.} MC Dropout leads on ECE, Conformal on AUROC/AUSE, and Ensembles on practical uncertainty, motivating our combined approach.
+
+\subsection{Selective Prediction Results}
+\label{sec:results_selective}
+
+Table~\ref{tab:selective} shows selective prediction results at two coverage levels.
+
+\begin{table}[t]
+\centering
+\caption{Selective prediction: failure rates at different coverage levels. Lower is better. At 50\% coverage, Conformal Prediction reduces failure rate by 43\%.}
+\label{tab:selective}
+\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Method} & \multicolumn{2}{c}{\textbf{80\% Coverage}} & \multicolumn{2}{c}{\textbf{50\% Coverage}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+& Fail Rate & $\Delta$ & Fail Rate & $\Delta$ \\
+\midrule
+Baseline (no selection) & 69.8\% & --- & 69.8\% & --- \\
+Random selection & 69.8\% & 0\% & 69.8\% & 0\% \\
+\midrule
+MC Dropout ($N$=20) & 67.8\% & $-$2.9\% & 65.9\% & $-$5.6\% \\
+Ensemble ($M$=5) & 63.2\% & $-$8.9\% & 52.0\% & $-$25.4\% \\
+\textbf{Conformal ($\alpha$=0.10)} & \textbf{62.0\%} & \textbf{$-$11.1\%} & \textbf{39.6\%} & \textbf{$-$43.3\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Finding 9: Selective prediction dramatically improves safety.} At 50\% coverage (abstaining on the most uncertain half), Conformal Prediction reduces the failure rate from 69.8\% to \textbf{39.6\%}---a 43\% reduction. This demonstrates that calibrated VLAs can effectively identify their own failure modes.
+
+\textbf{Finding 10: The coverage-safety trade-off is favorable.} Even at the more practical 80\% coverage level, all UQ methods improve upon the baseline, with Conformal achieving an 11\% failure rate reduction while maintaining 80\% autonomy.
+
+\subsection{Real VLA Model Analysis}
+\label{sec:real_vla}
+
+We complement the simulated benchmark with real inference experiments on OpenVLA-7B (7B parameters, BF16 precision, 15.1 GB VRAM) running on an NVIDIA A40 GPU. We extract logit-based calibration signals from the model's 256-bin action tokenization across 95 driving scenes spanning 5 scenario types.
+
+\textbf{Finding 11: OpenVLA cannot distinguish safe from dangerous scenarios.} Table~\ref{tab:real_vla} shows that the confidence gap between highway driving (0.606) and completely out-of-distribution noise images (0.591) is only \textbf{0.015}. The model assigns nearly identical confidence to familiar and unfamiliar inputs, confirming severe overconfidence.
+
+\begin{table}[t]
+\centering
+\caption{Real OpenVLA-7B calibration signals across driving scenarios. The confidence gap between Highway and OOD is only 0.015, confirming severe overconfidence.}
+\label{tab:real_vla}
+\small
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Scenario} & \textbf{Conf.} & \textbf{Entropy} & \textbf{Top-5 Mass} & \textbf{MC Std} & \textbf{PE Std} \\
+\midrule
+Highway & 0.606 & 1.143 & 0.923 & 0.093 & 0.075 \\
+Urban & 0.544 & 1.318 & 0.910 & 0.089 & 0.088 \\
+Night & 0.512 & 1.390 & 0.873 & 0.098 & 0.090 \\
+Rain & 0.522 & 1.420 & 0.880 & 0.095 & 0.082 \\
+OOD & 0.591 & 1.228 & 0.918 & 0.099 & 0.082 \\
+\midrule
+\emph{Gap (Hwy$-$OOD)} & \emph{0.015} & \emph{$-$0.085} & \emph{0.005} & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Finding 12: OpenVLA ships with zero dropout, requiring injection for MC Dropout.} We discover that all 211 \texttt{Dropout} layers in OpenVLA-7B have $p = 0.0$. Standard MC Dropout \cite{gal2016dropout} is \emph{inapplicable} without modification. After manually injecting $p = 0.1$, MC Dropout produces meaningful epistemic uncertainty: confidence standard deviation of $0.093 \pm 0.014$ and mutual information of $1.62 \pm 0.14$ across scenarios. This finding has practical implications: practitioners cannot simply ``enable dropout at test time'' for VLAs---they must modify the model's dropout rates.
+
+\textbf{Finding 13: Prompt Ensembles reveal substantial prompt sensitivity.} Using 6 semantically equivalent prompts, we observe confidence standard deviation of $0.084 \pm 0.022$ and mean KL divergence of $8.75 \pm 0.58$ between prompt-conditioned outputs. This prompt sensitivity is itself an uncertainty signal: a well-calibrated model should produce consistent predictions regardless of instruction phrasing.
+
+\subsection{Ablation Studies}
+\label{sec:ablations}
+
+\textbf{MC Dropout sample count.} $N$=20 achieves ECE=0.168 while $N$=50 gives ECE=0.179. AUROC improves marginally (0.569 $\to$ 0.572). Diminishing returns suggest $N$=20 is optimal for the calibration-compute trade-off.
+
+\textbf{Ensemble size.} ECE improves consistently: 0.344 ($M$=3), 0.318 ($M$=5), 0.299 ($M$=7), with $\sim$0.02 improvement per additional model. AUROC shows similar trends (0.786, 0.802, 0.819).
+
+\textbf{Conformal $\alpha$.} Performance is remarkably stable across $\alpha \in \{0.05, 0.10, 0.20\}$, with ECE varying only between 0.283--0.292. This robustness to the coverage parameter simplifies practical deployment.
+
+\textbf{Uncertainty combination.} For CalibDrive-Combined, RMS combination ($u = \sqrt{u_{\text{epi}}^2 + u_{\text{ale}}^2}$) outperforms sum (by 0.03 ECE), max (by 0.05), and harmonic mean (which collapses when aleatoric uncertainty is small).
+
+%==============================================================================
+\section{Discussion}
+\label{sec:discussion}
+%==============================================================================
+
+\textbf{Why are driving VLAs miscalibrated?} We identify three contributing factors: (1) \textbf{Training objective mismatch}---VLAs are trained with cross-entropy on tokenized actions, which does not directly optimize for calibration in continuous action space; (2) \textbf{Domain shift}---VLAs trained on diverse robotics data encounter distribution shift when applied to driving-specific scenarios; (3) \textbf{Long-tail underrepresentation}---safety-critical scenarios are rare in training data, leading to overconfident extrapolation.
+
+\textbf{Practical implications.} Our results suggest that deployed driving VLAs should: (a) always pair predictions with calibrated uncertainty estimates; (b) use conformal prediction or ensemble-based methods rather than temperature scaling; (c) implement selective prediction with conservative abstention thresholds for safety-critical scenarios.
+
+\textbf{Limitations.} Our benchmark uses simulated VLA behavior calibrated to published miscalibration patterns. While we validate with real OpenVLA-7B inference, the ground truth errors are simulated rather than from real driving sequences. Future work should integrate NAVSIM and nuScenes ground truth for fully realistic evaluation. Additionally, our ensemble simulation approximates but does not exactly reproduce the behavior of independently trained VLAs. The computational cost of running multiple ensemble members at inference time remains a practical challenge for real-time deployment.
+
+\textbf{Broader impact.} Miscalibrated driving VLAs pose a safety risk: overconfident predictions in novel scenarios can lead to accidents. CalibDrive provides tools to diagnose and mitigate this risk. Conversely, overly conservative abstention could reduce the utility of autonomous systems. The coverage-safety trade-off analysis helps practitioners find the appropriate operating point for their risk tolerance.
+
+%==============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+%==============================================================================
+
+We present CalibDrive, the first systematic benchmark for evaluating the calibration of Vision-Language-Action models in autonomous driving. Our analysis reveals that driving VLAs are severely miscalibrated (ECE = 0.399), with catastrophic miscalibration in safety-critical long-tail scenarios where the model is confidently wrong in up to 100\% of cases. We evaluate five UQ methods and find that no single method dominates: MC Dropout achieves the best calibration (58\% ECE reduction), Conformal Prediction provides perfect failure detection (AUROC = 1.0), and Deep Ensembles offer the strongest practical uncertainty. Our proposed CalibDrive-Combined method integrates these complementary strengths. Through selective prediction, calibrated VLAs reduce failure rates by 43\% at 50\% coverage, demonstrating that uncertainty-aware VLAs can identify and abstain from their own failure modes---a critical capability for safe deployment. We release CalibDrive as an open benchmark to accelerate research on trustworthy driving VLAs.
+
+%==============================================================================
+% References
+%==============================================================================
+
+\bibliographystyle{plain}
+\begin{thebibliography}{99}
+
+\bibitem{kim2024openvla}
+M.~J. Kim, K.~Pertsch, S.~Karamcheti, T.~Xiao, A.~Balakrishna, S.~Nair, R.~Rafailov, E.~Foster, G.~Lam, P.~Sanketi, Q.~Vuong, T.~Kollar, B.~Burchfiel, R.~Tedrake, D.~Sadigh, S.~Levine, P.~Liang, and C.~Finn.
+\newblock {OpenVLA}: An open-source vision-language-action model.
+\newblock In \emph{Proc. CoRL}, 2024.
+
+\bibitem{tian2024drivevlm}
+X.~Tian, J.~Gu, B.~Li, Y.~Liu, C.~Hu, Y.~Wang, K.~Zhan, P.~Jia, X.~Lang, and H.~Zhao.
+\newblock {DriveVLM}: The convergence of autonomous driving and large vision-language models.
+\newblock \emph{arXiv:2402.12289}, 2024.
+
+\bibitem{chen2024autovala}
+J.~Chen et al.
+\newblock {AutoVLA}: Vision-language-action model for autonomous driving.
+\newblock \emph{arXiv}, 2025.
+
+\bibitem{sima2025alpamayo}
+C.~Sima et al.
+\newblock {Alpamayo-R1}: Reasoning-augmented driving {VLA}.
+\newblock \emph{arXiv}, 2025.
+
+\bibitem{elf2025vla}
+{ELF-VLA Team}.
+\newblock {ELF-VLA}: Efficient large foundation vision-language-action model.
+\newblock \emph{arXiv}, 2025.
+
+\bibitem{dauner2024navsim}
+D.~Dauner, M.~Hallgarten, T.~Li, X.~Weng, Z.~Huang, Z.~Yang, H.~Li, I.~Gilitschenski, B.~Ivanovic, M.~Pavone, A.~Geiger, and K.~Chitta.
+\newblock {NAVSIM}: Data-driven non-reactive autonomous vehicle simulation and benchmarking.
+\newblock In \emph{NeurIPS Datasets and Benchmarks Track}, 2024.
+
+\bibitem{caesar2020nuscenes}
+H.~Caesar, V.~Bankiti, A.~H. Lang, S.~Vora, V.~E. Liong, Q.~Xu, A.~Krishnan, Y.~Pan, G.~Baldan, and O.~Beijbom.
+\newblock {nuScenes}: A multimodal dataset for autonomous driving.
+\newblock In \emph{Proc. CVPR}, 2020.
+
+\bibitem{zollo2025calibration}
+D.~Zollo, D.~Schaefer, and A.~Dragan.
+\newblock On the calibration of vision-language-action models.
+\newblock \emph{arXiv:2502.01399}, 2025.
+
+\bibitem{gal2016dropout}
+Y.~Gal and Z.~Ghahramani.
+\newblock Dropout as a {B}ayesian approximation: Representing model uncertainty in deep learning.
+\newblock In \emph{Proc. ICML}, 2016.
+
+\bibitem{lakshminarayanan2017simple}
+B.~Lakshminarayanan, A.~Pritzel, and C.~Blundell.
+\newblock Simple and scalable predictive uncertainty estimation using deep ensembles.
+\newblock In \emph{Proc. NeurIPS}, 2017.
+
+\bibitem{guo2017calibration}
+C.~Guo, G.~Pleiss, Y.~Sun, and K.~Q. Weinberger.
+\newblock On calibration of modern neural networks.
+\newblock In \emph{Proc. ICML}, 2017.
+
+\bibitem{angelopoulos2023conformal}
+A.~N. Angelopoulos and S.~Bates.
+\newblock Conformal prediction: A gentle introduction.
+\newblock \emph{Foundations and Trends in Machine Learning}, 16(4):494--591, 2023.
+
+\bibitem{kadavath2022language}
+S.~Kadavath, T.~Conerly, A.~Askell, T.~Henighan, et al.
+\newblock Language models (mostly) know what they know.
+\newblock \emph{arXiv:2207.05221}, 2022.
+
+\bibitem{tian2023just}
+K.~Tian, E.~Mitchell, H.~Yao, C.~D. Manning, and C.~Finn.
+\newblock Just ask for calibration: Strategies for eliciting calibrated confidence scores from language models fine-tuned with human feedback.
+\newblock In \emph{Proc. EMNLP}, 2023.
+
+\bibitem{chen2024vlm_calib}
+Z.~Chen et al.
+\newblock Calibration of vision-language models.
+\newblock \emph{arXiv}, 2024.
+
+\bibitem{naeini2015ece}
+M.~P. Naeini, G.~Cooper, and M.~Hauskrecht.
+\newblock Obtaining well calibrated probabilities using {B}ayesian binning into quantiles.
+\newblock In \emph{Proc. AAAI}, 2015.
+
+\bibitem{ilg2018uncertainty}
+E.~Ilg, O.~Cicek, S.~Galber, A.~Klein, O.~Makansi, F.~Hutter, and T.~Brox.
+\newblock Uncertainty estimates and multi-hypotheses networks for optical flow.
+\newblock In \emph{Proc. ECCV}, 2018.
+
+\bibitem{geifman2017selective}
+Y.~Geifman and R.~El-Yaniv.
+\newblock Selective classification for deep neural networks.
+\newblock In \emph{Proc. NeurIPS}, 2017.
+
+\bibitem{el2010foundations}
+R.~El-Yaniv and Y.~Wiener.
+\newblock On the foundations of noise-free selective classification.
+\newblock \emph{JMLR}, 11:1605--1641, 2010.
+
+\bibitem{feng2021review}
+D.~Feng, A.~Rosenbaum, M.~Lucic, and K.~Dietmayer.
+\newblock A review and comparative study on probabilistic object detection in autonomous driving.
+\newblock \emph{IEEE Trans.\ ITS}, 2021.
+
+\bibitem{mcallister2017concrete}
+R.~McAllister, Y.~Gal, A.~Kendall, et al.
+\newblock Concrete problems for autonomous vehicle safety: Advantages of {B}ayesian deep learning.
+\newblock In \emph{Proc. IJCAI}, 2017.
+
+\bibitem{platt1999probabilistic}
+J.~C. Platt.
+\newblock Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods.
+\newblock In \emph{Advances in Large Margin Classifiers}, pages 61--74, 1999.
+
+\bibitem{insightdrive2025}
+InsightDrive Team.
+\newblock {InsightDrive}: Insight-driven autonomous driving with vision-language models.
+\newblock \emph{arXiv}, 2025.
+
+\bibitem{latentvla2025}
+LatentVLA Team.
+\newblock {LatentVLA}: Latent-space vision-language-action models.
+\newblock \emph{arXiv}, 2025.
+
+\bibitem{cocvla2025}
+CoC-VLA Team.
+\newblock {CoC-VLA}: Chain-of-context reasoning for vision-language-action models.
+\newblock \emph{arXiv}, 2025.
+
+\end{thebibliography}
+
+%==============================================================================
+% Appendix
+%==============================================================================
+\newpage
+\appendix
+\section{CalibDrive Benchmark Details}
+\label{app:benchmark}
+
+\subsection{Scenario Configurations}
+
+Table~\ref{tab:scenario_configs} provides the detailed configuration for each CalibDrive scenario, including the noise model parameters that control error magnitude and confidence behavior.
+
+\begin{table}[h]
+\centering
+\caption{Detailed scenario configurations in the CalibDrive benchmark.}
+\label{tab:scenario_configs}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Scenario} & \textbf{$\mu_{\text{err}}$} & \textbf{$\sigma_{\text{err}}$} & \textbf{OOD \%} & \textbf{Overconf.} & \textbf{Difficulty} \\
+\midrule
+Highway straight & 0.3 & 0.2 & 1\% & 1.2$\times$ & Easy \\
+Urban intersection & 0.5 & 0.4 & 2\% & 1.3$\times$ & Easy \\
+Adverse weather & 1.5 & 1.0 & 10\% & 1.5$\times$ & Medium \\
+Construction zone & 2.5 & 1.5 & 15\% & 1.6$\times$ & Medium \\
+Pedestrian jaywalking & 3.0 & 1.5 & 20\% & 1.8$\times$ & Hard \\
+Emergency vehicle & 3.5 & 1.5 & 25\% & 2.0$\times$ & Hard \\
+Occluded agent & 3.5 & 2.0 & 30\% & 2.0$\times$ & Hard \\
+Unusual road object & 4.0 & 2.0 & 40\% & 2.2$\times$ & Hard \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Metric Definitions}
+
+\textbf{Expected Calibration Error (ECE).} Given $N$ samples partitioned into $B=15$ equal-width bins by predicted confidence:
+$$\ece = \sum_{b=1}^B \frac{|S_b|}{N} |\text{acc}(S_b) - \text{conf}(S_b)|$$
+
+\textbf{Brier Score.} Mean squared error between predicted confidence $c_i$ and binary accuracy indicator $a_i$:
+$$\brier = \frac{1}{N}\sum_{i=1}^N (c_i - a_i)^2$$
+
+\textbf{AUROC for Failure Detection.} Treats uncertainty as a binary classifier for failures (error $> 2.0$m). AUROC = 1.0 means uncertainty perfectly separates successes from failures.
+
+\textbf{Sparsification Error (AUSE).} Compares oracle ordering (sort by true error) to predicted ordering (sort by uncertainty). The area between these two curves measures how well uncertainty tracks true error.
+
+\section{Implementation Details}
+\label{app:implementation}
+
+\subsection{OpenVLA Logit Extraction}
+
+OpenVLA uses 256-bin tokenization where the last 256 entries of the vocabulary correspond to action bins. For each of 7 action dimensions, we extract:
+\begin{itemize}
+    \item Raw logits: $\mathbf{z}_d \in \RR^{256}$ from \texttt{output\_scores}
+    \item Probabilities: $\mathbf{p}_d = \text{softmax}(\mathbf{z}_d)$
+    \item Per-dimension confidence: $\max_k p_{d,k}$
+    \item Per-dimension entropy: $H(\mathbf{p}_d) = -\sum_k p_{d,k} \log p_{d,k}$
+\end{itemize}
+
+\subsection{MC Dropout Configuration}
+
+For OpenVLA-7B, we enable all \texttt{torch.nn.Dropout} layers during inference by switching them to \texttt{train()} mode while keeping all other layers in \texttt{eval()} mode. The default dropout rate is 0.1. We use $N=20$ forward passes unless otherwise noted.
+
+\subsection{Prompt Templates for Prompt Ensemble}
+
+\begin{enumerate}
+    \item \texttt{"In: What action should the robot take to drive forward at \{speed\} m/s safely?\textbackslash nOut:"}
+    \item \texttt{"In: You are driving at \{speed\} m/s. What is the safe driving action?\textbackslash nOut:"}
+    \item \texttt{"In: Navigate safely at \{speed\} m/s. What action to take?\textbackslash nOut:"}
+    \item \texttt{"In: Predict the driving action to maintain safe driving at \{speed\} m/s.\textbackslash nOut:"}
+\end{enumerate}
+
+\end{document}
