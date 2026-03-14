@@ -2218,4 +2218,20 @@ We test detection performance when images are downscaled to simulate low-resolut
 
 The resolution analysis demonstrates remarkable robustness: even images downscaled to 32$\times$32 pixels---a $64\times$ area reduction where fine structure is completely obliterated---maintain perfect AUROC. This is because the OOD signal is encoded in coarse visual features (color distributions, spatial layout) rather than fine textures or edges. A highway scene is still recognizable at 32$\times$32 as ``blue top, gray bottom with white center stripe,'' and this coarse structure suffices for the VLA's visual encoder to produce a distinctive representation. Cohen's $d$ does degrade from 37.37 to 8.95, reflecting wider ID score distributions at low resolutions due to increased aliasing noise in the downscale/upscale pipeline. Super-resolution (384, 512) provides no improvement because OpenVLA's SigLIP vision encoder internally resizes to a fixed resolution, discarding extra pixel information. For deployment, this means the OOD detector is compatible with any camera resolution, from high-end automotive sensors to low-cost embedded cameras.
 
+\subsection{Embedding Geometry Analysis}
+\label{app:embedding_geometry}
+
+\textbf{Finding 142: ID embeddings cluster at 24$^\circ$ from centroid with intra-distance 0.038; OOD at 42--56$^\circ$ with intra-distance 0.071. Compactness ratio is 5.13$\times$ (inter/intra). 90\% of variance is captured by $\sim$10 PCs in the 4,096-dimensional space. Hidden-state norms are higher for OOD (81--92) than ID (75--77).}
+
+We characterize the geometric structure of ID and OOD embeddings in the 4,096-dimensional representation space (Figure~\ref{fig:embedding_geometry}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig105_embedding_geometry.pdf}
+\caption{\textbf{Embedding geometry.} (a) Cumulative PCA variance: $\sim$10 PCs explain 90\% of variance for all data, with ID having lower intrinsic dimensionality than OOD. (b) Angular distance from ID centroid: clear bimodal distribution with ID at 24$^\circ$ and OOD at 42--56$^\circ$. (c) Intra-class distances (bars) vs ID-OOD inter-class distance (blue line): compactness ratio of 5.13$\times$.}
+\label{fig:embedding_geometry}
+\end{figure}
+
+The embedding geometry analysis provides a definitive explanation for why cosine distance achieves perfect OOD detection. The VLA's representation space is structured as a highly compact ID cluster surrounded by a dispersed OOD shell. ID embeddings form a tight cone of half-angle $\sim$24$^\circ$ around the centroid, with pairwise cosine distances averaging just 0.038. OOD embeddings occupy a much larger volume at 42--56$^\circ$, with 1.8$\times$ higher intra-class distances (0.071). The compactness ratio of 5.13$\times$ quantifies this structural property: the distance between the ID and OOD clusters is 5.13$\times$ the spread within the ID cluster, creating an enormous margin for the cosine distance threshold. The low intrinsic dimensionality ($\sim$10 PCs for 90\% variance) explains why the VLA's representations are so amenable to simple distance-based detection: the effective data manifold is low-dimensional, and the ID/OOD separation exists in this low-dimensional subspace. The norm gradient (ID: 75--77, OOD: 81--92) provides a complementary geometric insight: OOD inputs push the model to produce higher-norm representations, possibly reflecting increased activation in response to unfamiliar inputs.
+
 \end{document}

@@ -5313,3 +5313,52 @@ Oracle weights: [1.0, 0.0, 0.0, 0.0] — pure cosine.
 5. **Super-resolution (384, 512) doesn't help**: d=34.74 and 36.82 are slightly below native 37.37. Adding pixels beyond the model's native input resolution provides no detection benefit.
 
 6. **Practical implication: OOD detection works at any camera resolution**: Even extremely low-resolution cameras (32×32) maintain perfect AUROC, making the method suitable for resource-constrained edge devices.
+
+---
+
+## Finding 113: Embedding Geometry Analysis
+
+**Experiment 119** — Studies the geometric structure of ID vs OOD embeddings: intrinsic dimensionality, cluster compactness, inter/intra distances, angular distribution, and norm statistics.
+
+### Setup
+- 15 samples per category, 90 total inferences
+- PCA-based dimensionality analysis
+- Pairwise distance computations
+
+### Key Results
+
+**Intrinsic Dimensionality:**
+- 90% variance explained at ~10 PCs (all data)
+- 95% variance at ~16 PCs
+- ID data has lower intrinsic dimensionality than OOD
+
+**Angular Distribution (degrees from ID centroid):**
+
+| Category | Group | Mean Angle | Std |
+|----------|-------|-----------|-----|
+| Highway | ID | 23.81° | 0.87° |
+| Urban | ID | 24.02° | 0.85° |
+| Snow | OOD | 42.76° | 0.55° |
+| Indoor | OOD | 50.04° | 1.07° |
+| Twilight | OOD | 56.01° | 0.86° |
+| Noise | OOD | 56.27° | 0.70° |
+
+**Cluster Compactness:**
+- ID intra-distance: 0.038
+- OOD intra-distance: 0.071 (1.8× less compact)
+- ID-OOD inter-distance: 0.197
+- Compactness ratio: 5.13×
+
+### Key Insights
+
+1. **Clear angular separation**: ID embeddings cluster at ~24° from centroid, OOD at 42–56°. The gap (18°+) provides the basis for OOD detection via cosine distance.
+
+2. **ID cluster is 1.8× more compact than OOD**: ID intra-distance 0.038 vs OOD 0.071. Driving scenes produce tightly clustered representations; OOD scenes are geometrically diverse.
+
+3. **Compactness ratio of 5.13**: Inter-class distance is 5.13× the intra-class distance. This extreme ratio explains why even single-sample calibration achieves high AUROC.
+
+4. **Snow is the closest OOD category (42.76°)**: Consistent with prior findings — snow highways share visual features with driving scenes. The 18° gap from ID (24°) still enables perfect detection.
+
+5. **Hidden state norms increase for OOD**: ID norms 75–77, OOD norms 81–92. Noise and indoor have the largest norms (91–92), possibly due to the model allocating more representational capacity to unfamiliar scenes.
+
+6. **The embedding space is low-dimensional**: 90% of variance is captured by ~10 PCs in a 4,096-dim space. The relevant subspace is tiny, consistent with the PCA-4 result (Finding 133) that 4 dimensions suffice for perfect detection.
