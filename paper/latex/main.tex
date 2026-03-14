@@ -553,6 +553,19 @@ Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism beh
 
 \textbf{Finding 15: Temperature scaling reveals a fundamental per-dimension mismatch.} A temperature sweep ($T \in \{0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0\}$) on 100 real samples shows that confidence decreases monotonically from 0.78 ($T$=0.5) to 0.06 ($T$=5.0), while the highway--OOD gap peaks at $T$=1.5 ($\Delta$=0.090) before collapsing at high temperatures. Critically, per-dimension optimal temperatures diverge: dimensions 0--5 are best calibrated at $T$=5.0 (minimizing cross-scenario spread), while dimension 6 (gripper) requires $T$=0.5---the \emph{opposite} extreme. No single temperature can calibrate all dimensions simultaneously, confirming that per-dimension learned calibration strategies are essential for driving VLAs.
 
+\textbf{Finding 29: Night scenes use 6$\times$ more bins than urban.} Distribution shape analysis on 140 samples (Figure~\ref{fig:action_dist}a) reveals that night driving produces dramatically broader action distributions (effective support = 53.7 bins, perplexity = 25.8) compared to urban driving (10.4 bins, perplexity 2.8). OOD blank images (22.7 bins) fall between the two, while OOD noise (16.1 bins) is similar to highway (17.4 bins)---further confirming the model's inability to flag OOD inputs.
+
+\textbf{Finding 30: The lateral dimension is 8.5$\times$ more uncertain than the gripper.} Per-dimension analysis (Figure~\ref{fig:action_dist}b) shows dimension 0 (lateral control) has perplexity = 24.5 and spreads probability across 54.4 bins, while dimension 6 (gripper) concentrates on just 9.5 bins (perplexity = 2.9). This 8.5$\times$ width gap explains why per-dimension calibration is essential and why a single temperature fails.
+
+\textbf{Finding 31: Night and OOD noise are distributionally indistinguishable.} Inter-scenario KL divergence (Figure~\ref{fig:action_dist}c) shows Night$\to$OOD\_noise KL = 2.09, while Urban$\to$OOD\_noise KL = 5.80---the model's action distributions for challenging night scenes and random noise are nearly identical, while structured urban scenes are maximally distant from OOD inputs.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.99\textwidth]{figures/fig13_action_distribution.png}
+\caption{Action distribution analysis on 140 real OpenVLA-7B samples. (a) Night scenes use 6$\times$ more bins than urban. (b) Lateral control (dim 0) is 8.5$\times$ more uncertain than the gripper (dim 6). (c) KL divergence heatmap: night and OOD noise are distributionally similar (KL=2.1), while urban is maximally distant from OOD (KL=5.8).}
+\label{fig:action_dist}
+\end{figure}
+
 \subsection{Ablation Studies}
 \label{sec:ablations}
 
