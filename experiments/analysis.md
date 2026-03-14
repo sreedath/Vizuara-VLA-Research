@@ -5491,3 +5491,51 @@ Overall: AUROC=1.000, d=98.34
 4. **Practical implication: calibrate once, detect always**: A deployment system doesn't need to re-calibrate when the task prompt changes. A single calibration set with any reasonable driving prompt suffices for universal OOD detection.
 
 5. **Some prompt pairs transfer better than others**: navigate→lane_keep (d=46.2) transfers nearly as well as lane_keep→lane_keep (d=51.5). The asymmetry suggests some prompts create centroids that are more "universal" than others.
+
+---
+
+## Finding 117: Embedding Dimension Importance (Experiment 123)
+
+**Research Question:** Which dimensions of the 4096-d hidden state carry the OOD signal? Is the signal concentrated in a few dimensions or distributed broadly?
+
+**Experiment Design:** 90 inferences on OpenVLA-7B. Rank dimensions by per-dimension d-prime, then test top-K, bottom-K, random-K subspace detection, and top-K ablation.
+
+### Results
+
+**Per-Dimension Discriminability:**
+- 54.8% of dimensions have |d| > 1 (majority contribute)
+- 13.1% have |d| > 3 (strongly discriminative)
+- 2.8% have |d| > 5 (highly discriminative)
+- Max single-dimension |d|: 12.93 (dim 599)
+- Mean |d|: 1.51, Median |d|: 1.13
+
+**Top-K Subspace Detection (d-prime):**
+| K     | Top-K d | Random-K d | Bottom-K d |
+|-------|---------|------------|------------|
+| 10    | 171.7   | 15.6±7.9   | 3.14       |
+| 50    | 166.2   | 18.3±5.7   | 1.91       |
+| 100   | 145.4   | 24.8±9.2   | 5.90       |
+| 256   | 154.3   | 32.3±11.4  | 7.62       |
+| 512   | 139.6   | 42.2±4.4   | 7.04       |
+| 1024  | 121.1   | 50.5±8.3   | 8.08       |
+| 2048  | 95.3    | 44.0±3.3   | 13.38      |
+
+All top-K and random-K ≥ 100 achieve AUROC=1.000. Even 10 random dims: AUROC=0.997.
+
+**Ablation (remove top-K, test remaining):**
+- Remove top 10: d=44.4 (baseline 44.7) — negligible change
+- Remove top 256: d=37.9
+- Remove top 1024: d=23.6
+- Remove top 2048: d=13.4 — still AUROC=1.000
+
+### Key Insights
+
+1. **The OOD signal is massively distributed**: 54.8% of dimensions (2,245 of 4,096) have |d| > 1. There is no sparse "OOD detector" subspace — the entire representation shifts.
+
+2. **Removal resilience is extreme**: Even removing the 2,048 most discriminative dimensions leaves AUROC=1.000 and d=13.4. The remaining "least important" half of the embedding still trivially detects OOD.
+
+3. **10 random dimensions suffice for near-perfect detection (AUROC=0.997)**: This implies the OOD signal is so pervasive that any random projection of the embedding preserves it.
+
+4. **Top-K concentrates signal but cannot monopolize it**: Top-10 achieves d=171.7 (4× baseline) because concentrating on the best dimensions removes noise from irrelevant ones. But this gain doesn't mean those 10 dimensions "own" the signal.
+
+5. **Bottom-K eventually works too**: Even the 256 least discriminative dimensions achieve AUROC=1.000 (d=7.6). The OOD shift affects the entire manifold, not just discriminative features.

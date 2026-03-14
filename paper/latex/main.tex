@@ -2286,4 +2286,24 @@ We test whether a centroid calibrated with one task prompt transfers to OOD dete
 
 The cross-prompt transfer result has strong practical implications. In deployment, the task prompt may change frequently---the vehicle might switch from ``drive forward'' to ``avoid obstacle'' to ``navigate intersection'' within seconds. Our finding that a single calibration set with \emph{any} driving prompt produces a centroid that works with \emph{all} driving prompts means that no re-calibration is needed when the task changes. The low centroid similarity (0.609) suggests that different prompts produce centroids in different subspaces of the 4096-dimensional embedding space, yet the OOD signal occupies dimensions that are orthogonal to the prompt-specific variation. This is consistent with our earlier finding (Experiment 119) that ID embeddings cluster tightly ($24^\circ$ from centroid) while OOD embeddings scatter widely ($42$--$56^\circ$)---the ID/OOD separation is so large that prompt-induced centroid shifts cannot bridge the gap.
 
+\subsection{Embedding Dimension Importance}
+\label{app:dim_importance}
+
+\textbf{Finding 148: The OOD signal is massively distributed across the embedding---54.8\% of 4,096 dimensions have per-dimension $|d'| > 1$. Even 10 random dimensions achieve AUROC = 0.997.}
+
+\textbf{Finding 149: Removing the top 2,048 most discriminative dimensions (half the embedding) still yields AUROC = 1.000 with $d' = 13.4$. The OOD shift affects the entire representation manifold.}
+
+\textbf{Finding 150: Top-10 dimensions achieve $d' = 171.7$ (4$\times$ baseline) by concentrating signal, but this gain comes from noise reduction, not signal monopolization---the remaining 4,086 dimensions still carry the full OOD signal independently.}
+
+We rank all 4,096 hidden-state dimensions by their individual discriminability ($|d'|$ between ID and OOD) and test subspace detection using the top-K, bottom-K, and random-K dimensions (Figure~\ref{fig:dim_importance}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig109_dim_importance.png}
+\caption{\textbf{Embedding dimension importance.} (a) D-prime for top-K (green), random-K (blue), and bottom-K (red) subspaces. Top-K concentrates signal ($d' = 172$ at $K = 10$), but random-K achieves perfect AUROC at $K \geq 100$. (b) Ablation: removing the top-K most discriminative dimensions. Even removing 2,048 dims leaves $d' = 13.4$ (AUROC = 1.000). (c) Per-dimension discriminability distribution---54.8\% of dimensions have $|d'| > 1$.}
+\label{fig:dim_importance}
+\end{figure}
+
+The distributed nature of the OOD signal explains several earlier findings. Cross-prompt calibration transfer (Experiment 122) works because the OOD signal pervades all dimensions, so prompt-induced centroid shifts in a few dimensions cannot disrupt detection. Resolution robustness (Experiment 118) holds because even coarse visual features shift the \emph{entire} representation. Single-sample calibration (Experiment 113) succeeds because the OOD signal is so distributed that even a noisy centroid estimate captures it. The max single-dimension $|d'| = 12.93$ (dimension 599) is itself a strong detector, but the key insight is redundancy: the VLA encodes scene identity across a majority of its 4,096 hidden dimensions, making the cosine distance detector inherently robust to any localized perturbation or noise in the representation.
+
 \end{document}
