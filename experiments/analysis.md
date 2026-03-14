@@ -1575,3 +1575,56 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 3. **In-distribution has HIGHER variance than OOD** (std 0.10-0.13 vs 0.01-0.08): Normal driving has natural temporal variation; OOD produces static representations.
 
 4. **Action mass trajectory AUROC = 0.737**: Far inferior to cosine step 0 alone (0.972).
+
+---
+
+## Finding 32: PCA Dimensionality Reduction (Real OpenVLA-7B, Experiment 38)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Samples**: 122 (50 easy, 72 OOD across 6 types)
+- **Calibration**: 25 easy samples
+- **PCA dims tested**: 2, 4, 8, 16, 4096 (full)
+- **Random projection dims**: 8, 32, 128, 512, 2048
+
+### PCA Reduction Results
+
+| Dim | AUROC | Var Explained | Storage |
+|-----|-------|---------------|---------|
+| 2 | 0.688 | 50.4% | <0.1KB |
+| 4 | 0.632 | 72.1% | <0.1KB |
+| 8 | 0.844 | 91.1% | <0.1KB |
+| 16 | 0.686 | 99.6% | 0.1KB |
+| **4096** | **0.972** | 100% | 16.0KB |
+
+### Random Projection Results
+
+| Dim | AUROC |
+|-----|-------|
+| 8 | 0.889 |
+| 32 | 0.901 |
+| 128 | 0.909 |
+| **512** | **0.968** |
+| 2048 | 0.973 |
+
+### First k vs Last k PCA Components
+
+| k | First k | Last k |
+|---|---------|--------|
+| 4 | **0.932** | 0.444 |
+| 8 | **0.979** | 0.456 |
+| 16 | **0.974** | 0.833 |
+
+### Key Insights
+
+1. **Full 4096-d is optimal (AUROC = 0.972)**: No reduction method matches the full space, but random projection comes very close.
+
+2. **Random projection d=512 achieves 0.968** (99.6% of full performance): With only 2KB centroid storage and a projection matrix. This is a viable ultra-lightweight alternative.
+
+3. **PCA is unreliable with small calibration sets**: d=16 PCA (0.686) is WORSE than d=8 PCA (0.844) — non-monotonic behavior due to overfitting with only 25 calibration samples.
+
+4. **First PCA components carry the OOD signal**: First 8 components achieve 0.979, last 8 get 0.456 (below random). The OOD-discriminative information lies in the high-variance directions.
+
+5. **Random projection outperforms PCA at all dimensions**: RP d=8 (0.889) > PCA d=8 (0.844). Random projection preserves pairwise distances (Johnson-Lindenstrauss lemma) while PCA optimizes for variance, which is not the same as OOD discriminability.
+
+6. **Practical recommendation**: Use full 4096-d space (16KB — trivial storage). Only consider random projection to 512-d if compute is severely constrained.

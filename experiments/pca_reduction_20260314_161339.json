@@ -1,0 +1,713 @@
+{
+  "experiment": "pca_reduction",
+  "experiment_number": 38,
+  "timestamp": "20260314_161339",
+  "pca_results": {
+    "2": 0.6883333333333334,
+    "4": 0.6322222222222222,
+    "8": 0.8438888888888889,
+    "16": 0.6861111111111111,
+    "4096": 0.9722222222222221
+  },
+  "rp_results": {
+    "8": 0.8888888888888888,
+    "32": 0.9011111111111111,
+    "128": 0.9094444444444445,
+    "512": 0.9677777777777777,
+    "2048": 0.9733333333333333
+  },
+  "top_components": [
+    [
+      16,
+      0.8505555555555555
+    ],
+    [
+      10,
+      0.8477777777777777
+    ],
+    [
+      7,
+      0.8077777777777777
+    ],
+    [
+      20,
+      0.8061111111111112
+    ],
+    [
+      22,
+      0.7772222222222221
+    ],
+    [
+      12,
+      0.7644444444444445
+    ],
+    [
+      23,
+      0.7616666666666667
+    ],
+    [
+      19,
+      0.7533333333333334
+    ],
+    [
+      24,
+      0.7527777777777778
+    ],
+    [
+      17,
+      0.7100000000000001
+    ],
+    [
+      9,
+      0.705
+    ],
+    [
+      8,
+      0.6933333333333334
+    ],
+    [
+      14,
+      0.6733333333333333
+    ],
+    [
+      2,
+      0.6544444444444445
+    ],
+    [
+      18,
+      0.6216666666666666
+    ],
+    [
+      15,
+      0.5955555555555556
+    ],
+    [
+      11,
+      0.5866666666666667
+    ],
+    [
+      13,
+      0.5566666666666666
+    ],
+    [
+      21,
+      0.5522222222222222
+    ],
+    [
+      6,
+      0.5316666666666667
+    ]
+  ],
+  "samples": [
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 0
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 1
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 2
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 3
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 4
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 5
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 6
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 7
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 8
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 9
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 10
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 11
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 12
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 13
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 14
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 15
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 16
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 17
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 18
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 19
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 20
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 21
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 22
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 23
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 24
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 0
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 1
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 2
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 3
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 4
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 5
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 6
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 7
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 8
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 9
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 10
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 11
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 12
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 13
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 14
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 15
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 16
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 17
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 18
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 19
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 20
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 21
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 22
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 23
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 24
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 0
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 1
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 2
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 3
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 4
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 5
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 6
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 7
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 8
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 9
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 10
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 11
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 0
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 1
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 2
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 3
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 4
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 5
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 6
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 7
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 8
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 9
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 10
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 11
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 0
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 1
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 2
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 3
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 4
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 5
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 6
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 7
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 8
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 9
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 10
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 11
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 0
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 1
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 2
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 3
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 4
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 5
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 6
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 7
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 8
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 9
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 10
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 11
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 0
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 1
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 2
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 3
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 4
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 5
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 6
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 7
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 8
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 9
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 10
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 11
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 0
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 1
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 2
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 3
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 4
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 5
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 6
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 7
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 8
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 9
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 10
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 11
+    }
+  ]
+}
