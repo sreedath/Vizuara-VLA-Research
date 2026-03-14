@@ -1534,3 +1534,44 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 3. **All top methods achieve ≥0.960 on every OOD type**: Including the newly tested checker pattern. The global centroid achieves 1.000 on noise, indoor, checker, and blackout.
 
 4. **Practical recommendation: use the simplest approach**: A single 4096-d centroid vector achieves 0.994 AUROC with minimal storage (16KB) and compute (one dot product). Multi-centroid approaches add complexity with no meaningful benefit.
+
+---
+
+## Finding 31: Temporal Trajectory Analysis (Real OpenVLA-7B, Experiment 37)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Calibration**: 30 samples, threshold = 0.644 (α=0.10)
+- **Trajectories**: 41 total (16 easy + 25 OOD) × 8 steps = 328 inferences
+- **Scenarios**: highway(8), urban(8), noise(5), blank(5), indoor(5), inverted(5), blackout(5)
+
+### Cumulative AUROC by Number of Steps
+
+| Steps | AUROC | OOD Flag | Easy FP |
+|-------|-------|----------|---------|
+| 1 | 0.972 | 96.0% | 18.8% |
+| 2 | 0.995 | 96.0% | 6.2% |
+| **3** | **1.000** | **100.0%** | **0.0%** |
+| 4-8 | 1.000 | 100.0% | 0.0% |
+
+### Within-Trajectory Variance
+
+| Scenario | Std (mean ± std) |
+|----------|-----------------|
+| Highway | 0.102 ± 0.022 |
+| Urban | 0.133 ± 0.023 |
+| OOD noise | 0.035 ± 0.004 |
+| OOD blank | 0.050 ± 0.012 |
+| OOD indoor | 0.049 ± 0.008 |
+| OOD inverted | 0.080 ± 0.009 |
+| OOD blackout | 0.009 ± 0.009 |
+
+### Key Insights
+
+1. **Single-step detection already excellent (AUROC = 0.972)**: OOD is detectable immediately at step 0.
+
+2. **3-step mean achieves perfect AUROC = 1.000**: 100% OOD flagging, 0% false positives. Temporal averaging eliminates borderline cases.
+
+3. **In-distribution has HIGHER variance than OOD** (std 0.10-0.13 vs 0.01-0.08): Normal driving has natural temporal variation; OOD produces static representations.
+
+4. **Action mass trajectory AUROC = 0.737**: Far inferior to cosine step 0 alone (0.972).

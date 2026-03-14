@@ -1,0 +1,2273 @@
+{
+  "experiment": "temporal_trajectory",
+  "experiment_number": 37,
+  "timestamp": "20260314_160322",
+  "trajectory_length": 8,
+  "n_trajectories": {
+    "highway": 8,
+    "urban": 8,
+    "ood_noise": 5,
+    "ood_blank": 5,
+    "ood_indoor": 5,
+    "ood_inverted": 5,
+    "ood_blackout": 5
+  },
+  "threshold": 0.6443540453910828,
+  "trajectories": [
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "traj_idx": 0,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.3791944980621338,
+          "action_mass": 0.9962360858917236,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.45335853099823,
+          "action_mass": 0.9981195330619812,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.41965198516845703,
+          "action_mass": 0.9976202930722918,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.4541270136833191,
+          "action_mass": 0.9986224344798497,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.6543999016284943,
+          "action_mass": 0.8563524195924401,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.6011708676815033,
+          "action_mass": 0.9972056831632342,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.5916494131088257,
+          "action_mass": 0.9980634706360954,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.4571443200111389,
+          "action_mass": 0.9978177888052804,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "traj_idx": 1,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.41614484786987305,
+          "action_mass": 0.9982890657016209,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.5902469754219055,
+          "action_mass": 0.9765649778502328,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.5922151207923889,
+          "action_mass": 0.9876787832805088,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.36892569065093994,
+          "action_mass": 0.9946257812636239,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.698594868183136,
+          "action_mass": 0.9989791257040841,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.4505575895309448,
+          "action_mass": 0.9992458479745048,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.3796272873878479,
+          "action_mass": 0.9936190928731646,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.5886186957359314,
+          "action_mass": 0.9981008682932172,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "traj_idx": 2,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.4517320394515991,
+          "action_mass": 0.9994528038161141,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.6956577003002167,
+          "action_mass": 0.9986971276147025,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.4531869888305664,
+          "action_mass": 0.9987863898277283,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.743523359298706,
+          "action_mass": 0.8701222900833402,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.44960111379623413,
+          "action_mass": 0.9981506041118077,
+          "flagged": false
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.4529299736022949,
+          "action_mass": 0.9979538066046578,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.6895500421524048,
+          "action_mass": 0.9936706168310983,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.42895030975341797,
+          "action_mass": 0.999273283141,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "traj_idx": 3,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.45542216300964355,
+          "action_mass": 0.998261102608272,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.45469677448272705,
+          "action_mass": 0.9967667715890067,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.4301126003265381,
+          "action_mass": 0.9968130929129464,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.3857799172401428,
+          "action_mass": 0.9987256016050067,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.427542507648468,
+          "action_mass": 0.9993452855518886,
+          "flagged": false
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.6735042333602905,
+          "action_mass": 0.8530380049986499,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.45570939779281616,
+          "action_mass": 0.9991931659834725,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.6373856067657471,
+          "action_mass": 0.8097538538277149,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "traj_idx": 4,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.5303121209144592,
+          "action_mass": 0.9895417434828622,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.4168212413787842,
+          "action_mass": 0.996336851801191,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.589973509311676,
+          "action_mass": 0.9975582531520298,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.453971266746521,
+          "action_mass": 0.9980020267622811,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.47576582431793213,
+          "action_mass": 0.9979660596166339,
+          "flagged": false
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.42770111560821533,
+          "action_mass": 0.9977918948446002,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.4201371669769287,
+          "action_mass": 0.9990547299385071,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.5071627795696259,
+          "action_mass": 0.9988216757774353,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "traj_idx": 5,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.7399050295352936,
+          "action_mass": 0.9988407407488141,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.4513005018234253,
+          "action_mass": 0.9991824967520577,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.7101772129535675,
+          "action_mass": 0.8532798705356461,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.5756693780422211,
+          "action_mass": 0.7387630937487951,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.5905517339706421,
+          "action_mass": 0.9984989166259766,
+          "flagged": false
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.4211404323577881,
+          "action_mass": 0.9987340995243618,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.41758906841278076,
+          "action_mass": 0.9983236789703369,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.5909574031829834,
+          "action_mass": 0.9886684588023594,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "traj_idx": 6,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.6038135886192322,
+          "action_mass": 0.998636279787336,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.5869432091712952,
+          "action_mass": 0.9981251614434379,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.4242512583732605,
+          "action_mass": 0.9975232311657497,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.7234316468238831,
+          "action_mass": 0.8563182327364173,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.48317039012908936,
+          "action_mass": 0.998682975769043,
+          "flagged": false
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.7505324929952621,
+          "action_mass": 0.9808402742658343,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.7057734131813049,
+          "action_mass": 0.9911350948469979,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.451556921005249,
+          "action_mass": 0.9956038849694389,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "traj_idx": 7,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.5947480797767639,
+          "action_mass": 0.9939208967345101,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.7038522064685822,
+          "action_mass": 0.9989827104977199,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.6289677023887634,
+          "action_mass": 0.8191256097384861,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.4510253667831421,
+          "action_mass": 0.9984538640294757,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.7544608861207962,
+          "action_mass": 0.9008498276982989,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.6594913899898529,
+          "action_mass": 0.8558828612689727,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.5865503549575806,
+          "action_mass": 0.9967623608452933,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.593555748462677,
+          "action_mass": 0.9977454543113708,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "traj_idx": 0,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.5882232785224915,
+          "action_mass": 0.9957140002931867,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.44212251901626587,
+          "action_mass": 0.9276091541562762,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.6359170973300934,
+          "action_mass": 0.8477466020600072,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.547400027513504,
+          "action_mass": 0.8860855634723391,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.2898540496826172,
+          "action_mass": 0.9944967968123299,
+          "flagged": false
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.3795982599258423,
+          "action_mass": 0.9932303258350917,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.28863775730133057,
+          "action_mass": 0.993425360747746,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.5479899048805237,
+          "action_mass": 0.8864645745073046,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "traj_idx": 1,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.6452778279781342,
+          "action_mass": 0.9945174285343715,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.2891653776168823,
+          "action_mass": 0.9837815165519714,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.53873610496521,
+          "action_mass": 0.8818926726068769,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.38707494735717773,
+          "action_mass": 0.9988013250487191,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.6468148827552795,
+          "action_mass": 0.9991111244474139,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.286957323551178,
+          "action_mass": 0.9927406140736171,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.614962100982666,
+          "action_mass": 0.9962153775351388,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.3945341110229492,
+          "action_mass": 0.9935807585716248,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "traj_idx": 2,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.2863633632659912,
+          "action_mass": 0.9860515509332929,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.3961799144744873,
+          "action_mass": 0.999332708971841,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.38768720626831055,
+          "action_mass": 0.9994486229760307,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.3879585266113281,
+          "action_mass": 0.9988504733358111,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.6452886164188385,
+          "action_mass": 0.9969531893730164,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.3875863552093506,
+          "action_mass": 0.998363026550838,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.3864927291870117,
+          "action_mass": 0.9951623678207397,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.5975345075130463,
+          "action_mass": 0.9961727261543274,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "traj_idx": 3,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.28598201274871826,
+          "action_mass": 0.9809572356087821,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.6501946151256561,
+          "action_mass": 0.9992197411400932,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.2895449995994568,
+          "action_mass": 0.988926615033831,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.644884467124939,
+          "action_mass": 0.9982802782739911,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.28994500637054443,
+          "action_mass": 0.9890464288847787,
+          "flagged": false
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.643911600112915,
+          "action_mass": 0.9990116613251823,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.2876284718513489,
+          "action_mass": 0.9918474895613534,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.39217984676361084,
+          "action_mass": 0.9988895314080375,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "traj_idx": 4,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.6333795785903931,
+          "action_mass": 0.8460399618904505,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.6395710110664368,
+          "action_mass": 0.9958300335066659,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.6590298414230347,
+          "action_mass": 0.998151251247951,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.5888479948043823,
+          "action_mass": 0.9964576448713031,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.3951913118362427,
+          "action_mass": 0.9990580677986145,
+          "flagged": false
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.5153826773166656,
+          "action_mass": 0.9976407374654498,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.40083980560302734,
+          "action_mass": 0.9981922933033535,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.28644442558288574,
+          "action_mass": 0.9902704613549369,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "traj_idx": 5,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.5918893814086914,
+          "action_mass": 0.995641325201307,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.3897114396095276,
+          "action_mass": 0.9988970926829747,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.3857933282852173,
+          "action_mass": 0.9985151716641018,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.5940949320793152,
+          "action_mass": 0.9085367747715541,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.644688755273819,
+          "action_mass": 0.990809542792184,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.3911495804786682,
+          "action_mass": 0.9988470758710589,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.6460318267345428,
+          "action_mass": 0.9990371721131461,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.5444055199623108,
+          "action_mass": 0.8617158143648079,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "traj_idx": 6,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.6652644276618958,
+          "action_mass": 0.9785188777106149,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.285398006439209,
+          "action_mass": 0.992416228566851,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.2902328372001648,
+          "action_mass": 0.9891153488840375,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.6393328905105591,
+          "action_mass": 0.8452692765443187,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.28762495517730713,
+          "action_mass": 0.9910115940230233,
+          "flagged": false
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.6433020830154419,
+          "action_mass": 0.9983206902231488,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.6327140927314758,
+          "action_mass": 0.8492924401403538,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.589210569858551,
+          "action_mass": 0.9927041530609131,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "traj_idx": 7,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.39089441299438477,
+          "action_mass": 0.997614426272256,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.39222270250320435,
+          "action_mass": 0.999444672039577,
+          "flagged": false
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.3840913772583008,
+          "action_mass": 0.9982765231813703,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.29023975133895874,
+          "action_mass": 0.9960563012531826,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.38932740688323975,
+          "action_mass": 0.9976343512535095,
+          "flagged": false
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.3970538377761841,
+          "action_mass": 0.9983643974576678,
+          "flagged": false
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.2866615653038025,
+          "action_mass": 0.9825890234538487,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.6482175588607788,
+          "action_mass": 0.9952392152377537,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_noise",
+      "is_ood": true,
+      "traj_idx": 0,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.9085907340049744,
+          "action_mass": 0.9907928960663932,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.8315476179122925,
+          "action_mass": 0.9817040477480207,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.8054532259702682,
+          "action_mass": 0.9818139587129865,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.7523664236068726,
+          "action_mass": 0.8387897647252041,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.8341690897941589,
+          "action_mass": 0.9661069512367249,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.850319504737854,
+          "action_mass": 0.8453835568299317,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.8338450640439987,
+          "action_mass": 0.7864590819392886,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.804174929857254,
+          "action_mass": 0.9598353675433567,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_noise",
+      "is_ood": true,
+      "traj_idx": 1,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.8758010491728783,
+          "action_mass": 0.8034087962337902,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.8622608929872513,
+          "action_mass": 0.9191371372767857,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.7826089411973953,
+          "action_mass": 0.9210212741579328,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.8031717240810394,
+          "action_mass": 0.9931634153638568,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.8633775115013123,
+          "action_mass": 0.824491662638528,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.8799251541495323,
+          "action_mass": 0.82210545028959,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.8789234608411789,
+          "action_mass": 0.8086684814521244,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.8307664096355438,
+          "action_mass": 0.810592284160001,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_noise",
+      "is_ood": true,
+      "traj_idx": 2,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.8266322314739227,
+          "action_mass": 0.9220537372997829,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.8066198378801346,
+          "action_mass": 0.8476522940077952,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.8460428267717361,
+          "action_mass": 0.9077310732432774,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.8908819854259491,
+          "action_mass": 0.8559275056634631,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.7981580793857574,
+          "action_mass": 0.9676167454038348,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.8103073984384537,
+          "action_mass": 0.8011979098830905,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.8338855803012848,
+          "action_mass": 0.8850859105587006,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.7964057624340057,
+          "action_mass": 0.966120047228677,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_noise",
+      "is_ood": true,
+      "traj_idx": 3,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.8345290273427963,
+          "action_mass": 0.743160754442215,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.7956025898456573,
+          "action_mass": 0.9919903022902352,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.8070240914821625,
+          "action_mass": 0.7751965356541665,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.8275443017482758,
+          "action_mass": 0.9517608625548226,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.8769079744815826,
+          "action_mass": 0.8950477029596057,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.7813360393047333,
+          "action_mass": 0.9120234676769802,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.8741815388202667,
+          "action_mass": 0.9410159247262138,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.8601447641849518,
+          "action_mass": 0.9833726797785077,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_noise",
+      "is_ood": true,
+      "traj_idx": 4,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.8447926342487335,
+          "action_mass": 0.7174384114997727,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.7905261963605881,
+          "action_mass": 0.7812612679387841,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.847863644361496,
+          "action_mass": 0.9817053164754596,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.7759314477443695,
+          "action_mass": 0.7599106682190333,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.8143688291311264,
+          "action_mass": 0.8556751511995506,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.8742937594652176,
+          "action_mass": 0.9983843224389213,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.8439344763755798,
+          "action_mass": 0.9764712367738996,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.7779028713703156,
+          "action_mass": 0.9591423443385533,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_blank",
+      "is_ood": true,
+      "traj_idx": 0,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.747066855430603,
+          "action_mass": 0.9976293700081962,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.7759531736373901,
+          "action_mass": 0.7775384806695261,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.6998953819274902,
+          "action_mass": 0.9542062282562256,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.7827371060848236,
+          "action_mass": 0.8876452190535409,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.7649326473474503,
+          "action_mass": 0.9760754023279462,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.6946565806865692,
+          "action_mass": 0.789005815051496,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.6784581243991852,
+          "action_mass": 0.7910104680008122,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.7968714535236359,
+          "action_mass": 0.8591800842966352,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_blank",
+      "is_ood": true,
+      "traj_idx": 1,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.6753478050231934,
+          "action_mass": 0.7413145643658936,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.7932545244693756,
+          "action_mass": 0.781628102596317,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.6934933066368103,
+          "action_mass": 0.768721932200216,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.8711468130350113,
+          "action_mass": 0.7295705590929303,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.75676129758358,
+          "action_mass": 0.9435584119388035,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.8341938257217407,
+          "action_mass": 0.8752707711287907,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.7338295876979828,
+          "action_mass": 0.7853065474363186,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.7368231117725372,
+          "action_mass": 0.7451327966565648,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_blank",
+      "is_ood": true,
+      "traj_idx": 2,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.7276817560195923,
+          "action_mass": 0.8019550811389179,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.8608000874519348,
+          "action_mass": 0.9103798185076032,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.730108231306076,
+          "action_mass": 0.8147335761875313,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.6761488914489746,
+          "action_mass": 0.8235172094511134,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.7810319513082504,
+          "action_mass": 0.7949174206171717,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.7206755876541138,
+          "action_mass": 0.8555972554853984,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.8397821485996246,
+          "action_mass": 0.9386419483593532,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.7983853220939636,
+          "action_mass": 0.9764342648642403,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_blank",
+      "is_ood": true,
+      "traj_idx": 3,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.7590493559837341,
+          "action_mass": 0.9542718785149711,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.8576526045799255,
+          "action_mass": 0.9283001678330558,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.727371096611023,
+          "action_mass": 0.8222633446067837,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.6748226881027222,
+          "action_mass": 0.8221670048577445,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.7259277999401093,
+          "action_mass": 0.7876603962616043,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.8190379440784454,
+          "action_mass": 0.9090554331030164,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.7519913911819458,
+          "action_mass": 0.8342843907220023,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.7964357733726501,
+          "action_mass": 0.9875577943665641,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_blank",
+      "is_ood": true,
+      "traj_idx": 4,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.755964607000351,
+          "action_mass": 0.993460306099483,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.7717074155807495,
+          "action_mass": 0.7842612888863576,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.794935867190361,
+          "action_mass": 0.8158458737390382,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.8061886429786682,
+          "action_mass": 0.7726751951603157,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.7533968389034271,
+          "action_mass": 0.799269267490932,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.7414053380489349,
+          "action_mass": 0.8138805349795543,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.7270728945732117,
+          "action_mass": 0.8192391505100594,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.7013022005558014,
+          "action_mass": 0.7907573288040501,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_indoor",
+      "is_ood": true,
+      "traj_idx": 0,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.7405268549919128,
+          "action_mass": 0.992871744292123,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.7465479671955109,
+          "action_mass": 0.9957045316696167,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.8418354392051697,
+          "action_mass": 0.9942202397755214,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.8460217416286469,
+          "action_mass": 0.994958656174796,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.7378489971160889,
+          "action_mass": 0.9971355029514858,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.8460401892662048,
+          "action_mass": 0.993490287235805,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.73978191614151,
+          "action_mass": 0.9899223021098545,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.741649717092514,
+          "action_mass": 0.9986025094985962,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_indoor",
+      "is_ood": true,
+      "traj_idx": 1,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.7414790093898773,
+          "action_mass": 0.9956292254584176,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.7549681663513184,
+          "action_mass": 0.9297231265476772,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.8443405032157898,
+          "action_mass": 0.9915598630905151,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.7382921874523163,
+          "action_mass": 0.9976744992392403,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.7400689721107483,
+          "action_mass": 0.9973842671939305,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.739318311214447,
+          "action_mass": 0.9980446355683463,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.7369718551635742,
+          "action_mass": 0.9948051742144993,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.7386147379875183,
+          "action_mass": 0.9946328401565552,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_indoor",
+      "is_ood": true,
+      "traj_idx": 2,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.7392666339874268,
+          "action_mass": 0.9970509239605495,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.8491504639387131,
+          "action_mass": 0.9956082105636597,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.8462352752685547,
+          "action_mass": 0.9925965922219413,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.8459744453430176,
+          "action_mass": 0.9937857985496521,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.808946505188942,
+          "action_mass": 0.9916392394474575,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.7401965856552124,
+          "action_mass": 0.9947907754353115,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.6967799663543701,
+          "action_mass": 0.8564158132565873,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.7728701233863831,
+          "action_mass": 0.9994566525731768,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_indoor",
+      "is_ood": true,
+      "traj_idx": 3,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.7404702305793762,
+          "action_mass": 0.9953590631484985,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.7391306757926941,
+          "action_mass": 0.9963068876947675,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.7452630400657654,
+          "action_mass": 0.9946515730449131,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.8455321192741394,
+          "action_mass": 0.9941502468926566,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.8494535684585571,
+          "action_mass": 0.9975969791412354,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.7427523136138916,
+          "action_mass": 0.997074544429779,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.7429139912128448,
+          "action_mass": 0.9970274993351528,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.7520314157009125,
+          "action_mass": 0.9563141465187073,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_indoor",
+      "is_ood": true,
+      "traj_idx": 4,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.8495149314403534,
+          "action_mass": 0.9954873919487,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.7407967448234558,
+          "action_mass": 0.9922224283218384,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.7405254542827606,
+          "action_mass": 0.9951423321451459,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.8447142839431763,
+          "action_mass": 0.9913626313209534,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.8448038250207901,
+          "action_mass": 0.9967761720929827,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.6957137882709503,
+          "action_mass": 0.8568699356235031,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.768049880862236,
+          "action_mass": 0.999473648411887,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.8489391207695007,
+          "action_mass": 0.9926963363374982,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_inverted",
+      "is_ood": true,
+      "traj_idx": 0,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.8246170282363892,
+          "action_mass": 0.9983904872621808,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.7103372514247894,
+          "action_mass": 0.8561860898376575,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.6492083668708801,
+          "action_mass": 0.995246342250279,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.6337376832962036,
+          "action_mass": 0.9985940200941903,
+          "flagged": false
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.804962545633316,
+          "action_mass": 0.9983356765338353,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.7386808395385742,
+          "action_mass": 0.9836235046386719,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.7552550584077835,
+          "action_mass": 0.9951873762266976,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.6607821583747864,
+          "action_mass": 0.9900854655674526,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_inverted",
+      "is_ood": true,
+      "traj_idx": 1,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.7475408911705017,
+          "action_mass": 0.9982680082321167,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.8379878103733063,
+          "action_mass": 0.9967185258865356,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.7207739055156708,
+          "action_mass": 0.998751563685281,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.659256100654602,
+          "action_mass": 0.9967201011521476,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.8289474248886108,
+          "action_mass": 0.9969964793750218,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.6462843418121338,
+          "action_mass": 0.9984181353024074,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.6768808364868164,
+          "action_mass": 0.9745958702904838,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.6423327326774597,
+          "action_mass": 0.9990534016064235,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "ood_inverted",
+      "is_ood": true,
+      "traj_idx": 2,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.6533353626728058,
+          "action_mass": 0.9927879742213658,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.830201655626297,
+          "action_mass": 0.9972681828907558,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.7087605595588684,
+          "action_mass": 0.9848682454654148,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.6594950556755066,
+          "action_mass": 0.993920522076743,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.8330210447311401,
+          "action_mass": 0.995681915964399,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.748902440071106,
+          "action_mass": 0.9972882100514003,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.6104050874710083,
+          "action_mass": 0.9406885419573102,
+          "flagged": false
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.6438279151916504,
+          "action_mass": 0.9981402499335152,
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "scenario": "ood_inverted",
+      "is_ood": true,
+      "traj_idx": 3,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.6571452617645264,
+          "action_mass": 0.9958072475024632,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.8290919661521912,
+          "action_mass": 0.9984230058533805,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.599989652633667,
+          "action_mass": 0.9971711380141122,
+          "flagged": false
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.8282116204500198,
+          "action_mass": 0.9982530730111259,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.8242678642272949,
+          "action_mass": 0.9968607425689697,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.8045745939016342,
+          "action_mass": 0.9947187900543213,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.6669622659683228,
+          "action_mass": 0.9922565136637006,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.6471954584121704,
+          "action_mass": 0.9841664603778294,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_inverted",
+      "is_ood": true,
+      "traj_idx": 4,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.6058467328548431,
+          "action_mass": 0.9921910677637372,
+          "flagged": false
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.6510273218154907,
+          "action_mass": 0.9941509706633431,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.8333031535148621,
+          "action_mass": 0.9971246719360352,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.8288739621639252,
+          "action_mass": 0.998453404222216,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.8251177221536636,
+          "action_mass": 0.9980505619730268,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.8344393372535706,
+          "action_mass": 0.9929141061646598,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.751597210764885,
+          "action_mass": 0.9955814821379525,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.8258892744779587,
+          "action_mass": 0.9964610763958522,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_blackout",
+      "is_ood": true,
+      "traj_idx": 0,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.9130079746246338,
+          "action_mass": 0.8435596483094352,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.9372665137052536,
+          "action_mass": 0.9229049512318203,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.9143301546573639,
+          "action_mass": 0.858464994600841,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.9137861356139183,
+          "action_mass": 0.8726298766476768,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.9105987846851349,
+          "action_mass": 0.8534087538719177,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.8585717529058456,
+          "action_mass": 0.9236599121774945,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.9122577235102654,
+          "action_mass": 0.846465562071119,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.9156631976366043,
+          "action_mass": 0.8579618292195457,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_blackout",
+      "is_ood": true,
+      "traj_idx": 1,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.9148199409246445,
+          "action_mass": 0.8368690226759229,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.9124699756503105,
+          "action_mass": 0.8393238740307944,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.9142277091741562,
+          "action_mass": 0.864713328225272,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.9136667996644974,
+          "action_mass": 0.8789434688431876,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.9109915494918823,
+          "action_mass": 0.8634865156241825,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.9146124422550201,
+          "action_mass": 0.8487386405467987,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.914235532283783,
+          "action_mass": 0.8439716526440212,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.9162793904542923,
+          "action_mass": 0.8582649741853986,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_blackout",
+      "is_ood": true,
+      "traj_idx": 2,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.9165736883878708,
+          "action_mass": 0.8449676547731672,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.9133026599884033,
+          "action_mass": 0.8452817371913365,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.9128642827272415,
+          "action_mass": 0.8609177001885006,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.9153615608811378,
+          "action_mass": 0.8411047032901219,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.9286179542541504,
+          "action_mass": 0.8424183673092297,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.8588562309741974,
+          "action_mass": 0.9307401009968349,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.9112717807292938,
+          "action_mass": 0.8439260976655143,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.9165105149149895,
+          "action_mass": 0.8563630538327354,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_blackout",
+      "is_ood": true,
+      "traj_idx": 3,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.915039137005806,
+          "action_mass": 0.8431127497128078,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.9114300757646561,
+          "action_mass": 0.853695239339556,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.9085600227117538,
+          "action_mass": 0.861573304448809,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.9153382405638695,
+          "action_mass": 0.8406385864530291,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.9155674576759338,
+          "action_mass": 0.840623276574271,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.9102180004119873,
+          "action_mass": 0.8793153635093144,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.9129474982619286,
+          "action_mass": 0.838306337594986,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.9167143628001213,
+          "action_mass": 0.8276495848383222,
+          "flagged": true
+        }
+      ]
+    },
+    {
+      "scenario": "ood_blackout",
+      "is_ood": true,
+      "traj_idx": 4,
+      "steps": [
+        {
+          "step": 0,
+          "cos_dist": 0.9156329780817032,
+          "action_mass": 0.8527079182011741,
+          "flagged": true
+        },
+        {
+          "step": 1,
+          "cos_dist": 0.9135151654481888,
+          "action_mass": 0.8312240945441383,
+          "flagged": true
+        },
+        {
+          "step": 2,
+          "cos_dist": 0.9129396378993988,
+          "action_mass": 0.8607686076845441,
+          "flagged": true
+        },
+        {
+          "step": 3,
+          "cos_dist": 0.9145858734846115,
+          "action_mass": 0.8266642647130149,
+          "flagged": true
+        },
+        {
+          "step": 4,
+          "cos_dist": 0.9120287373661995,
+          "action_mass": 0.856760561466217,
+          "flagged": true
+        },
+        {
+          "step": 5,
+          "cos_dist": 0.9119382724165916,
+          "action_mass": 0.8582437932491302,
+          "flagged": true
+        },
+        {
+          "step": 6,
+          "cos_dist": 0.9192604497075081,
+          "action_mass": 0.835277429648808,
+          "flagged": true
+        },
+        {
+          "step": 7,
+          "cos_dist": 0.9126853048801422,
+          "action_mass": 0.8547282857554299,
+          "flagged": true
+        }
+      ]
+    }
+  ]
+}
