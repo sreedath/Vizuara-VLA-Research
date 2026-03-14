@@ -5277,3 +5277,39 @@ Oracle weights: [1.0, 0.0, 0.0, 0.0] — pure cosine.
 5. **Twilight is the hardest OOD category for attention**: Its stats (entropy 2.318, max 0.334) are closest to ID, consistent with twilight being the most ID-like OOD category.
 
 6. **Attention OOD detection is complementary but not superior to cosine distance**: Both achieve AUROC=1.000, but attention requires extracting attention weights (more memory-intensive) vs a simple hidden state vector.
+
+---
+
+## Finding 112: Image Resolution Sensitivity
+
+**Experiment 118** — Tests OOD detection at 6 input resolutions (32×32 to 512×512) to determine robustness to image quality degradation.
+
+### Setup
+- 10 samples per category, 60 inferences per resolution
+- 6 resolutions: 32, 64, 128, 256 (native), 384, 512
+- Images downscaled then upscaled to simulate resolution loss
+
+### Results
+
+| Resolution | AUROC | Cohen's d | Centroid Sim to Native |
+|------------|-------|-----------|----------------------|
+| 32×32 | 1.000 | 8.95 | 0.663 |
+| 64×64 | 1.000 | 6.77 | 0.761 |
+| 128×128 | 1.000 | 16.15 | 0.857 |
+| 256×256 | 1.000 | 37.37 | 0.935 |
+| 384×384 | 1.000 | 34.74 | 0.916 |
+| 512×512 | 1.000 | 36.82 | 0.912 |
+
+### Key Insights
+
+1. **All resolutions achieve perfect AUROC=1.000**: Even 32×32 images (extreme downscaling) maintain perfect detection. The OOD signal survives massive information loss.
+
+2. **Cohen's d peaks at native resolution (d=37.37)**: 256×256 gives the best separation. Higher resolutions (384, 512) don't improve detection — likely because the model's vision encoder normalizes to a fixed resolution internally.
+
+3. **64×64 has surprisingly low d (6.77)**: Lower than 32×32 (d=8.95). This may be a noise artifact or an interaction between the specific downscale factor and image content.
+
+4. **Centroid similarity degrades gracefully**: From 0.935 (native) to 0.663 (32×32). Even extreme downscaling preserves 66% of the centroid direction, which is sufficient for OOD detection.
+
+5. **Super-resolution (384, 512) doesn't help**: d=34.74 and 36.82 are slightly below native 37.37. Adding pixels beyond the model's native input resolution provides no detection benefit.
+
+6. **Practical implication: OOD detection works at any camera resolution**: Even extremely low-resolution cameras (32×32) maintain perfect AUROC, making the method suitable for resource-constrained edge devices.

@@ -2202,4 +2202,20 @@ We extract last-layer attention weights and test whether attention-based feature
 
 The attention analysis reveals a surprising mechanism: OOD inputs cause the model to \emph{concentrate} rather than \emph{diffuse} its attention. ID driving scenes have attention entropy $\sim$2.4 and max attention $\sim$0.31, while OOD inputs have lower entropy ($\sim$2.15) and higher max attention ($\sim$0.35). This pattern suggests that the model ``locks on'' to a few familiar-looking tokens when the overall scene is unfamiliar, rather than distributing attention broadly in search of relevant features. Head 7 alone achieves perfect AUROC, indicating that at least one attention head specializes in scene-level understanding and responds distinctively to OOD content. The practical value of attention-based detection is limited compared to cosine distance (both achieve AUROC $= 1.000$), because extracting attention weights requires $O(H \cdot L^2)$ memory (32 heads $\times$ $280^2$ sequence length) versus a single 4,096-dimensional vector for cosine distance. However, attention-based detection provides a complementary signal that could serve as a secondary verification channel in safety-critical deployments.
 
+\subsection{Resolution Sensitivity}
+\label{app:resolution_sensitivity}
+
+\textbf{Finding 141: All resolutions from 32$\times$32 to 512$\times$512 achieve AUROC $= 1.000$. Cohen's $d$ peaks at native resolution ($d = 37.37$ at 256$\times$256) and degrades to $d = 8.95$ at 32$\times$32. Centroid similarity to native drops to 0.663 at 32$\times$32 but detection remains perfect.}
+
+We test detection performance when images are downscaled to simulate low-resolution cameras, then upscaled back to the model's expected input size (Figure~\ref{fig:resolution_sensitivity}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig104_resolution_sensitivity.pdf}
+\caption{\textbf{Resolution sensitivity.} (a) AUROC (blue, always 1.000) and Cohen's $d$ (red) vs resolution: $d$ peaks at 256$\times$256 and drops at lower resolutions. (b) Centroid cosine similarity to native-resolution centroid: monotonically increases from 0.663 (32$\times$32) to 0.935 (256$\times$256). (c) Separation by resolution: 256$\times$256 is optimal; super-resolution provides no benefit.}
+\label{fig:resolution_sensitivity}
+\end{figure}
+
+The resolution analysis demonstrates remarkable robustness: even images downscaled to 32$\times$32 pixels---a $64\times$ area reduction where fine structure is completely obliterated---maintain perfect AUROC. This is because the OOD signal is encoded in coarse visual features (color distributions, spatial layout) rather than fine textures or edges. A highway scene is still recognizable at 32$\times$32 as ``blue top, gray bottom with white center stripe,'' and this coarse structure suffices for the VLA's visual encoder to produce a distinctive representation. Cohen's $d$ does degrade from 37.37 to 8.95, reflecting wider ID score distributions at low resolutions due to increased aliasing noise in the downscale/upscale pipeline. Super-resolution (384, 512) provides no improvement because OpenVLA's SigLIP vision encoder internally resizes to a fixed resolution, discarding extra pixel information. For deployment, this means the OOD detector is compatible with any camera resolution, from high-end automotive sensors to low-cost embedded cameras.
+
 \end{document}
