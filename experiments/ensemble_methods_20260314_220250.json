@@ -1,0 +1,153 @@
+{
+  "experiment": "ensemble_methods",
+  "experiment_number": 112,
+  "timestamp": "20260314_220250",
+  "n_cal": 10,
+  "n_test": 80,
+  "individual": {
+    "cosine": {
+      "auroc": 1.0,
+      "d": 37.58517882386698
+    },
+    "entropy": {
+      "auroc": 0.6183333333333332,
+      "d": 0.48483455155432653
+    },
+    "norm": {
+      "auroc": 0.7883333333333333,
+      "d": 2.5415917923095215
+    },
+    "top1_inv": {
+      "auroc": 0.6691666666666667,
+      "d": 0.6992945621852757
+    }
+  },
+  "ensemble": {
+    "avg_all": {
+      "auroc": 0.9608333333333333,
+      "d": 3.564202253813777,
+      "method": "average"
+    },
+    "avg_cos_ent": {
+      "auroc": 0.9983333333333333,
+      "d": 4.923199923412137,
+      "method": "average"
+    },
+    "avg_cos_norm": {
+      "auroc": 1.0,
+      "d": 9.591156804460772,
+      "method": "average"
+    },
+    "avg_cos_top1": {
+      "auroc": 0.9966666666666667,
+      "d": 4.2851816107687295,
+      "method": "average"
+    },
+    "avg_ent_norm": {
+      "auroc": 0.7866666666666666,
+      "d": 2.1202620170909308,
+      "method": "average"
+    },
+    "max_all": {
+      "auroc": 0.9249999999999999,
+      "d": 1.8701863081739873,
+      "method": "max"
+    },
+    "max_cos_ent": {
+      "auroc": 0.9308333333333333,
+      "d": 2.075283073428821,
+      "method": "max"
+    },
+    "prod_all": {
+      "auroc": 0.9375000000000001,
+      "d": 63.178166805944635,
+      "method": "product"
+    },
+    "prod_cos_ent": {
+      "auroc": 0.9829166666666667,
+      "d": 32.80237650811533,
+      "method": "product"
+    },
+    "oracle_weighted": {
+      "auroc": 1.0,
+      "d": 37.58517912360519,
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "weight_labels": [
+        "cosine",
+        "entropy",
+        "norm",
+        "top1_inv"
+      ],
+      "method": "oracle_weighted"
+    }
+  },
+  "per_category": {
+    "highway": {
+      "group": "ID",
+      "cosine_mean": 0.082606569925944,
+      "cosine_std": 0.007035499590446613,
+      "entropy_mean": 1.4937035361925761,
+      "entropy_std": 0.416215816505633,
+      "norm_mean": 3.7666894531250006,
+      "norm_std": 2.3855339113756404
+    },
+    "urban": {
+      "group": "ID",
+      "cosine_mean": 0.08739623626073202,
+      "cosine_std": 0.0071726767436300935,
+      "entropy_mean": 1.7982583443323772,
+      "entropy_std": 0.31890341178354686,
+      "norm_mean": 2.6032640584309905,
+      "norm_std": 2.1251676275794122
+    },
+    "noise": {
+      "group": "OOD",
+      "cosine_mean": 0.44472453196843464,
+      "cosine_std": 0.01149251408671566,
+      "entropy_mean": 1.9539534489313761,
+      "entropy_std": 0.4344125871432471,
+      "norm_mean": 13.223690795898431,
+      "norm_std": 3.915312904184916
+    },
+    "indoor": {
+      "group": "OOD",
+      "cosine_mean": 0.35862435499827067,
+      "cosine_std": 0.01407031024049178,
+      "entropy_mean": 2.087482754389445,
+      "entropy_std": 0.3959200349000855,
+      "norm_mean": 14.743660481770828,
+      "norm_std": 2.6077712003905664
+    },
+    "twilight": {
+      "group": "OOD",
+      "cosine_mean": 0.44113179842631023,
+      "cosine_std": 0.01279872159241,
+      "entropy_mean": 1.3638631939888,
+      "entropy_std": 0.44708844116951546,
+      "norm_mean": 4.240273132324215,
+      "norm_std": 3.0439770862781947
+    },
+    "snow": {
+      "group": "OOD",
+      "cosine_mean": 0.26437557538350426,
+      "cosine_std": 0.006210018113840349,
+      "entropy_mean": 2.2387749354044595,
+      "entropy_std": 0.4810963069397069,
+      "norm_mean": 6.952191975911453,
+      "norm_std": 4.005924458570144
+    }
+  },
+  "correlations": {
+    "cosine_vs_entropy": -0.046066062773563,
+    "cosine_vs_norm": 0.43388975866082724,
+    "cosine_vs_top1_inv": 0.06181272669010713,
+    "entropy_vs_norm": 0.2232689755347831,
+    "entropy_vs_top1_inv": 0.9195484381701833,
+    "norm_vs_top1_inv": 0.41157178105935605
+  }
+}

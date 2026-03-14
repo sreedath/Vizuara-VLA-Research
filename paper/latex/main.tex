@@ -2106,4 +2106,20 @@ We analyze the distribution of action tokens produced by OpenVLA-7B across all 7
 
 The action vocabulary analysis reveals that the VLA's output space encodes a strong OOD signal complementary to the hidden-state approach. For in-distribution driving scenes, the model produces narrow, confident action distributions---dimension 0 uses just 2 unique tokens with 0.21-bit entropy, indicating a nearly deterministic steering/throttle decision. OOD inputs break this concentration: the model distributes probability mass across 11--40 tokens per dimension, reflecting genuine confusion about the appropriate action. Critically, the token overlap between ID and OOD is minimal (1--6 tokens per dimension), meaning OOD inputs produce largely novel action tokens not seen during calibration. This vocabulary divergence could serve as a lightweight, post-hoc OOD indicator requiring only the decoded action tokens---no hidden state access needed. The consistency gradient (urban 0.695 $>$ highway 0.619 $>$ twilight 0.476 $>$ snow 0.429 $>$ indoor 0.410 $>$ noise 0.210) tracks domain proximity to the training distribution, providing an ordinal measure of ``how OOD'' an input is.
 
+\subsection{Ensemble Detection Methods}
+\label{app:ensemble_methods}
+
+\textbf{Finding 135: Cosine distance alone is the optimal OOD detector. Oracle-weighted ensemble assigns weight 1.0 to cosine, 0.0 to all other signals (entropy, norm, top-1 confidence). Every ensemble degrades Cohen's $d$ from 37.59. Entropy and top-1 confidence are redundant ($r = 0.920$), while cosine is nearly uncorrelated with all other signals ($|r| < 0.07$).}
+
+We combine four OOD signals---cosine distance, logit entropy, hidden-state norm deviation, and inverse top-1 probability---into ensemble detectors via averaging, max-fusion, product-fusion, and oracle-weighted grid search (Figure~\ref{fig:ensemble_methods}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig98_ensemble_methods.pdf}
+\caption{\textbf{Ensemble detection methods.} (a) Individual detector performance: cosine distance achieves AUROC $= 1.000$ ($d = 37.59$); all other signals are substantially weaker. (b) Cohen's $d$ comparison: every ensemble (averaging, max, product) degrades $d$ relative to cosine alone. Product fusion achieves a nominally higher $d = 63.18$ but reduces AUROC to 0.938. (c) Signal correlation matrix: entropy and top-1 inverse are nearly identical ($r = 0.92$); cosine is independent of all output-space signals.}
+\label{fig:ensemble_methods}
+\end{figure}
+
+The ensemble analysis provides a strong negative result with important practical implications: combining multiple OOD signals does not improve detection over the simple cosine distance baseline. This is surprising because the four signals are theoretically complementary---cosine measures geometric direction in representation space, entropy measures output distribution flatness, norm measures representation magnitude, and top-1 confidence measures prediction certainty. However, the oracle-weighted grid search over all possible weight combinations assigns 100\% weight to cosine and zero to everything else. The reason is that cosine distance already achieves perfect AUROC ($= 1.000$) with enormous separation ($d = 37.59$); adding any imperfect signal can only dilute this. The average of cosine and norm (the second-best signal) drops $d$ from 37.59 to 9.59 despite maintaining AUROC $= 1.000$. The correlation analysis reveals why the other signals are weak: entropy ($r = -0.046$ with cosine) captures genuinely different information---output distribution shape rather than representation geometry---but this information is simply less discriminative for OOD detection. Entropy and top-1 confidence are nearly identical ($r = 0.920$), providing a single weak signal dressed up as two. For deployment, this result means that a single cosine distance computation against the calibration centroid is not just simple and efficient but provably optimal among all linear combinations of the four tested signals.
+
 \end{document}

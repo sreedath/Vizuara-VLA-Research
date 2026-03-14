@@ -4981,3 +4981,65 @@ Inter-domain distance (highway↔urban centroid): **0.266**
 5. **Consistency correlates with domain proximity**: Highway (0.619) and urban (0.695) are most consistent. Among OOD categories, twilight (0.476) — which is closest to a driving scene — is most consistent, while pure noise (0.210) is least consistent.
 
 6. **Action vocabulary analysis provides a complementary OOD signal**: Unlike hidden-state cosine distance, this operates in the output space. The entropy gap and vocabulary divergence could serve as lightweight, post-hoc OOD indicators without needing hidden state access.
+
+---
+
+## Finding 106: Ensemble Detection Methods
+
+**Experiment 112** — Combines multiple OOD signals (cosine distance, logit entropy, norm deviation, top-1 confidence) into ensemble detectors to test whether multi-signal fusion outperforms any individual detector.
+
+### Setup
+- 15 samples per category, 90 total inferences
+- 10 calibration (ID only), 80 test samples
+- 4 individual signals: cosine distance, logit entropy, norm deviation, 1-top1 probability
+- Ensemble methods: average, max, product, oracle-weighted grid search
+
+### Individual Detector Results
+
+| Detector | AUROC | Cohen's d |
+|----------|-------|-----------|
+| **Cosine distance** | **1.000** | **37.59** |
+| Norm deviation | 0.788 | 2.54 |
+| 1 - Top1 prob | 0.669 | 0.70 |
+| Logit entropy | 0.618 | 0.48 |
+
+### Ensemble Results
+
+| Method | AUROC | Cohen's d |
+|--------|-------|-----------|
+| **Cosine (alone)** | **1.000** | **37.59** |
+| Avg cosine+norm | 1.000 | 9.59 |
+| Avg cosine+entropy | 0.998 | 4.92 |
+| Avg cosine+top1 | 0.997 | 4.29 |
+| Avg all 4 | 0.961 | 3.56 |
+| Max cosine+entropy | 0.931 | 2.08 |
+| Product all 4 | 0.938 | 63.18 |
+| Product cosine+entropy | 0.983 | 32.80 |
+| **Oracle weighted** | **1.000** | **37.59** |
+
+Oracle weights: [1.0, 0.0, 0.0, 0.0] — pure cosine.
+
+### Signal Correlations
+
+| Pair | Correlation |
+|------|-------------|
+| Cosine vs Entropy | -0.046 |
+| Cosine vs Norm | 0.434 |
+| Cosine vs Top1-inv | 0.062 |
+| Entropy vs Norm | 0.223 |
+| **Entropy vs Top1-inv** | **0.920** |
+| Norm vs Top1-inv | 0.412 |
+
+### Key Insights
+
+1. **Cosine distance alone is the optimal detector**: AUROC=1.000, d=37.59. The oracle-weighted ensemble assigns weight 1.0 to cosine and 0.0 to all other signals. No combination improves over pure cosine distance.
+
+2. **Every ensemble degrades d relative to cosine alone**: Average ensembles dilute the cosine signal — avg(cos+norm) drops d from 37.59 to 9.59, avg(all 4) drops to 3.56. Adding noisy signals hurts more than it helps.
+
+3. **Entropy and top-1 confidence are near-identical signals (r=0.920)**: They carry redundant information, making their combination pointless. Both are weak detectors individually (AUROC 0.618–0.669).
+
+4. **Cosine distance is nearly uncorrelated with all other signals**: r=-0.046 with entropy, r=0.062 with top1-inv. This means cosine captures a fundamentally different aspect of the representation (geometric direction) than the output-space signals (probability distribution shape).
+
+5. **Norm deviation is the second-best individual signal (AUROC=0.788)**: The hidden state norm shifts for OOD inputs (noise: 13.22, indoor: 14.74 vs highway: 3.77, urban: 2.60 deviation from calibration mean). However, twilight has near-ID norm (4.24), making norm unreliable alone.
+
+6. **Product fusion achieves high d (63.18) but hurts AUROC (0.938)**: Multiplying normalized scores amplifies separation for well-separated categories but creates near-zero products for borderline cases, reducing discrimination.
