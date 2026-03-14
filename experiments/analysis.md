@@ -3706,3 +3706,50 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Twilight is anomalous**: Despite being OOD in embedding space (high cosine dist), twilight has LOW entropy (1.168) and HIGH top-1 probability (0.754). The model is confidently wrong on near-OOD — this is the most dangerous failure mode.
 
 5. **OOD detection correlates with action instability**: Higher cosine distance → lower token agreement, validating that OOD detection flags inputs that would produce unreliable actions.
+
+---
+
+## Finding 77: Feature Correlation Analysis
+
+**Experiment 83** — Full correlation matrix between 8 OOD detection features to identify redundant vs complementary signals.
+
+### Setup
+- 8 features: cosine distance, attention max, attention entropy, output entropy, top-1 probability, top-5 probability sum, hidden norm, attention mean
+- 70 samples (24 ID, 46 OOD across 7 categories)
+- ~70 model inferences with full feature extraction
+
+### Results — Correlation Matrix (key pairs)
+
+| Feature Pair | Correlation | Interpretation |
+|-------------|------------|---------------|
+| cosine_dist ↔ attn_max | **0.686** | Moderate — complementary |
+| attn_entropy ↔ output_entropy | **-0.827** | High — redundant |
+| output_entropy ↔ top5_prob | **-0.961** | Very high — redundant |
+| output_entropy ↔ top1_prob | **-0.914** | Very high — redundant |
+| cosine_dist ↔ attn_mean | **0.106** | Near-zero — independent |
+| cosine_dist ↔ hidden_norm | **-0.116** | Near-zero — independent |
+
+### Results — Per-Feature AUROC
+
+| Feature | AUROC | Direction |
+|---------|-------|-----------|
+| cosine_dist | **1.000** | higher = OOD |
+| attn_entropy | **0.965** | lower = OOD |
+| attn_max | **0.918** | higher = OOD |
+| hidden_norm | **0.841** | higher = OOD |
+| top1_prob | 0.724 | lower = OOD |
+| output_entropy | 0.653 | higher = OOD |
+| top5_prob_sum | 0.621 | lower = OOD |
+| attn_mean | 0.502 | — (random) |
+
+### Key Insights
+
+1. **Cosine and attention features are moderately correlated (r=0.686)**: This explains why their ensemble (Exp 69) improves — they capture partially independent OOD signals.
+
+2. **Output features are highly redundant**: entropy, top-1 prob, and top-5 prob are all >0.9 correlated with each other. Using any one captures the same information as all three.
+
+3. **Hidden norm is a surprisingly good detector (AUROC 0.841)**: OOD images produce higher-norm hidden states, providing a simple calibration-free alternative.
+
+4. **Attention mean is useless (AUROC 0.502)**: Random-level performance. The OOD signal is in the attention DISTRIBUTION (max/entropy), not the mean.
+
+5. **Three independent OOD signal families**: (a) Geometric/cosine — measures direction in embedding space, (b) Attention sharpness — measures processing pattern, (c) Output confidence — measures prediction uncertainty. These three families have low cross-correlation.
