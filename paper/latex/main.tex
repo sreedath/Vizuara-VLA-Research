@@ -1766,4 +1766,22 @@ We extract per-layer attention statistics to map where in the transformer depth 
 
 The early-layer divergence suggests that the VLA processes OOD images fundamentally differently from the first layers onward---the OOD signal is not merely a late-stage output artifact but reflects a systematic difference in visual processing. This is consistent with the token position analysis (Experiment~77) showing that visual token positions carry the strongest OOD signal.
 
+\subsection{Calibration Set Diversity}
+\label{app:calibration_diversity}
+
+\textbf{Finding 114: Mixed-domain calibration sets double the effect size (Cohen's $d$ = 5.37--5.74) compared to single-domain sets ($d$ = 2.49--2.54). Just 5 mixed samples outperform 15 homogeneous samples---diversity dominates quantity.}
+
+We compare seven calibration configurations spanning single-domain (highway-only, urban-only) and mixed compositions at different sizes (Figure~\ref{fig:calibration_diversity}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig77_calibration_diversity.pdf}
+\caption{\textbf{Calibration set diversity.} (a) Cohen's $d$ by strategy: mixed configurations achieve $d > 5$ regardless of size, while homogeneous sets plateau at $d \approx 2.5$. (b) Score distributions: mixed centroids reduce ID mean distance by 41\% while OOD remains stable. (c) Centroid divergence: highway and urban centroids differ by $\cos = 0.265$, but each is close to the mixed centroid ($\leq 0.080$).}
+\label{fig:calibration_diversity}
+\end{figure}
+
+The mechanism is geometric: single-domain centroids are biased toward one region of the ID manifold, inflating the distance from other ID scenarios. Mixed centroids interpolate between domain clusters, sitting closer to the true center of the ID distribution. This reduces the mean ID distance from $0.150 \to 0.088$ (41\% reduction) without significantly affecting the OOD distances ($0.412 \to 0.376$). The result is a 2$\times$ increase in effect size from the same or fewer calibration samples.
+
+This finding complements the calibration set size analysis (Experiment~70): even $N=1$ achieves perfect AUROC, but \emph{which} sample matters for the magnitude of separation. A deployment protocol should include at least one sample from each expected ID domain to maximize the safety margin.
+
 \end{document}

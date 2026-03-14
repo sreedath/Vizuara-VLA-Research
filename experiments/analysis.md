@@ -3986,3 +3986,48 @@ Summary: AUROC = 1.000 ± 0.000, Cohen's d = 5.58 ± 0.14
 3. **Early layers (0-2) show the largest ID-OOD divergence**: Attention entropy is much higher in layer 0 for ID (4.32) suggesting more distributed attention, while OOD may trigger more focused early attention.
 
 4. **Attention patterns complement hidden state features**: The per-layer variation explains why the last-layer attention max alone (AUROC 0.918 from Exp 83) doesn't capture the full picture — a multi-layer attention feature could potentially improve detection.
+
+---
+
+## Finding 85: Calibration Set Diversity Analysis
+
+**Experiment 91** — Tests whether diversity within the calibration set matters: compare centroids from highway-only, urban-only, and mixed highway+urban calibration pools.
+
+### Setup
+- 7 calibration configurations: highway_5, urban_5, mixed_5, highway_only(15), urban_only(15), mixed_15, mixed_30
+- 16 ID test images (8 highway + 8 urban), 24 OOD test images (6 each: noise, indoor, twilight, snow)
+- Centroid-based cosine distance detection
+- ~100 model inferences
+
+### Results
+
+| Config | N_cal | AUROC | Cohen's d | ID Mean | OOD Mean |
+|--------|-------|-------|-----------|---------|----------|
+| highway_5 | 5 | 0.992 | 2.49 | 0.151 | 0.412 |
+| urban_5 | 5 | 1.000 | 2.53 | 0.153 | 0.424 |
+| **mixed_5** | **5** | **1.000** | **5.37** | **0.093** | **0.378** |
+| highway_only | 15 | 0.992 | 2.50 | 0.150 | 0.412 |
+| urban_only | 15 | 1.000 | 2.54 | 0.150 | 0.421 |
+| **mixed_15** | **15** | **1.000** | **5.63** | **0.088** | **0.376** |
+| **mixed_30** | **30** | **1.000** | **5.74** | **0.087** | **0.374** |
+
+### Centroid Distances
+| Pair | Cosine Distance |
+|------|----------------|
+| Highway vs Urban | 0.265 |
+| Highway vs Mixed | 0.059 |
+| Mixed vs Urban | 0.080 |
+
+### Key Insights
+
+1. **Diversity doubles effect size**: Mixed calibration (d=5.37-5.74) more than doubles the Cohen's d of homogeneous calibration (d=2.49-2.54), while using the same or fewer total samples.
+
+2. **The mechanism is ID distance reduction**: Mixed centroids reduce ID mean distance from 0.150→0.088 (41% reduction) while OOD mean stays stable (0.412→0.376). The mixed centroid sits closer to the true center of the ID manifold.
+
+3. **5 mixed samples > 15 homogeneous samples**: mixed_5 (d=5.37) outperforms highway_only (d=2.50) and urban_only (d=2.54) by 2.1×, despite using 3× fewer samples. Diversity > quantity.
+
+4. **Diminishing returns from quantity**: mixed_15→mixed_30 only improves d from 5.63→5.74 (+2%), confirming that the diversity composition matters far more than pool size.
+
+5. **Highway-only is the weakest calibrator**: highway_only is the only configuration with AUROC < 1.000 (0.992), failing on snow detection (0.969). The highway centroid is biased away from snow's embedding region.
+
+6. **Centroid geometry explains the effect**: Highway and urban centroids are far apart (cos=0.265), but each is close to the mixed centroid (0.059, 0.080). The mixed centroid interpolates between domain clusters, creating a more representative ID reference point.

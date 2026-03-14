@@ -1,0 +1,105 @@
+{
+  "experiment": "calibration_diversity",
+  "experiment_number": 91,
+  "timestamp": "20260314_204328",
+  "n_id": 16,
+  "n_ood": 24,
+  "results": {
+    "highway_only": {
+      "n_cal": 15,
+      "auroc": 0.9921875,
+      "cohens_d": 2.4985150372876204,
+      "id_mean": 0.15002282708883286,
+      "ood_mean": 0.41216829667488736,
+      "per_category": {
+        "snow": 0.96875,
+        "indoor": 1.0,
+        "noise": 1.0,
+        "twilight": 1.0
+      }
+    },
+    "urban_only": {
+      "n_cal": 15,
+      "auroc": 1.0,
+      "cohens_d": 2.544035825330267,
+      "id_mean": 0.14984140917658806,
+      "ood_mean": 0.4214027250806491,
+      "per_category": {
+        "snow": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0,
+        "twilight": 1.0
+      }
+    },
+    "mixed_15": {
+      "n_cal": 15,
+      "auroc": 1.0,
+      "cohens_d": 5.633052469182783,
+      "id_mean": 0.08822314068675041,
+      "ood_mean": 0.3755262444416682,
+      "per_category": {
+        "snow": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0,
+        "twilight": 1.0
+      }
+    },
+    "mixed_30": {
+      "n_cal": 30,
+      "auroc": 1.0,
+      "cohens_d": 5.742400674650923,
+      "id_mean": 0.08735315501689911,
+      "ood_mean": 0.3738025153676669,
+      "per_category": {
+        "snow": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0,
+        "twilight": 1.0
+      }
+    },
+    "highway_5": {
+      "n_cal": 5,
+      "auroc": 0.9921875,
+      "cohens_d": 2.4940774855654855,
+      "id_mean": 0.15071338042616844,
+      "ood_mean": 0.4120420614878337,
+      "per_category": {
+        "snow": 0.96875,
+        "indoor": 1.0,
+        "noise": 1.0,
+        "twilight": 1.0
+      }
+    },
+    "urban_5": {
+      "n_cal": 5,
+      "auroc": 1.0,
+      "cohens_d": 2.527789538956149,
+      "id_mean": 0.15280338376760483,
+      "ood_mean": 0.4241940652330716,
+      "per_category": {
+        "snow": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0,
+        "twilight": 1.0
+      }
+    },
+    "mixed_5": {
+      "n_cal": 5,
+      "auroc": 1.0,
+      "cohens_d": 5.368949286349148,
+      "id_mean": 0.09331337362527847,
+      "ood_mean": 0.37796954065561295,
+      "per_category": {
+        "snow": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0,
+        "twilight": 1.0
+      }
+    }
+  },
+  "centroid_distances": {
+    "highway_only_vs_urban_only": 0.2648999094963074,
+    "highway_only_vs_mixed_15": 0.05922091007232666,
+    "mixed_15_vs_urban_only": 0.07997983694076538
+  }
+}
