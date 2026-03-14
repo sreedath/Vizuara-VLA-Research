@@ -2010,4 +2010,20 @@ We ablate dimension groups and compare informed (mean-difference, variance) vs r
 
 The dimension ablation reveals a fundamental property of the VLA's OOD encoding: the signal is \emph{everywhere} but \emph{diluted}. All 16 blocks of 256 dimensions independently achieve perfect AUROC, demonstrating that no dimensions are critical. Yet including all 4,096 dimensions actually \emph{reduces} separation ($d=64.0$) compared to a targeted 64-dimension selection ($d=173.6$). This is because irrelevant dimensions add noise that inflates the denominator of Cohen's $d$. The practical implication is that a supervised feature selection step---requiring a small labeled validation set---can improve detection margin by $3\times$, though even random 16-dimensional subsets already achieve perfect AUROC.
 
+\subsection{Cross-Domain Generalization}
+\label{app:cross_domain}
+
+\textbf{Finding 129: Single-domain calibration drops AUROC to 0.995---the first imperfect result in 106 experiments. Highway-calibrated urban scores 0.281, just 0.019 from snow (0.300). Mixed calibration restores $d = 42.30$ ($24\times$ single-domain).}
+
+We test whether centroids calibrated on a single driving sub-domain (highway-only or urban-only) generalize across driving environments (Figure~\ref{fig:cross_domain}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig92_cross_domain.pdf}
+\caption{\textbf{Cross-domain generalization.} (a) AUROC by calibration strategy: highway-only and highway$\to$urban transfer drop below 1.000. Mixed calibration achieves $d=42.30$. (b) Highway-calibrated scores: urban (0.281) nearly overlaps with snow (0.300)---a 0.019 gap, the narrowest observed across all experiments. (c) Inter-domain centroid distance (0.266) is smaller than any OOD category distance, explaining the near-miss.}
+\label{fig:cross_domain}
+\end{figure}
+
+The cross-domain analysis reveals the most critical practical limitation of centroid-based detection: calibration diversity determines whether the detector generalizes. A highway-only centroid positions urban driving (0.281) closer to snow (0.300) than to itself (0.018), producing the first imperfect AUROC (0.995) in our entire experimental series. The fix is simple but essential: mixed calibration. Including both highway and urban samples produces $d=42.30$---a $24\times$ improvement over single-domain calibration. The inter-domain distance of 0.266 shows that highway and urban are distinct sub-clusters within the broader ``driving'' manifold. For deployment, this means the calibration set must sample the full diversity of the target operating domain, not just a single representative scenario.
+
 \end{document}

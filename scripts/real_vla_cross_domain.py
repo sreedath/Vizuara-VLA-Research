@@ -1,14 +1,11 @@
 """
-Cross-Domain Transfer of OOD Detection.
+Cross-Domain Generalization.
 
-Tests whether calibration on one driving domain (e.g., highway)
-transfers to detecting OOD inputs when the test ID distribution
-shifts to a different domain (e.g., urban).
+Tests whether a centroid calibrated on one ID domain (highway-only or
+urban-only) transfers to detect OOD when tested against a different ID
+domain. This tests the assumption that "driving" forms a single cluster.
 
-Critical question: Does the detector need recalibration when the
-deployment domain changes?
-
-Experiment 62 in the CalibDrive series.
+Experiment 106 in the CalibDrive series.
 """
 import os
 import json
@@ -49,44 +46,68 @@ def create_indoor(idx):
     rng = np.random.default_rng(idx * 5004)
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
     img[:] = [200, 180, 160]
-    img[SIZE[0]//2:] = [139, 90, 43]
+    img[SIZE[0]//2:, :] = [100, 80, 60]
+    img[:SIZE[0]//3, SIZE[1]//3:2*SIZE[1]//3] = [150, 200, 255]
+    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
+    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+
+def create_twilight_highway(idx):
+    rng = np.random.default_rng(idx * 5010)
+    img = np.zeros((*SIZE, 3), dtype=np.uint8)
+    img[:SIZE[0]//2] = [70, 50, 80]
+    img[SIZE[0]//2:] = [60, 60, 60]
+    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [200, 200, 100]
     noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
     return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
-def create_inverted(idx):
-    return 255 - create_highway(idx + 3000)
-
-def create_blackout(idx):
-    return np.zeros((*SIZE, 3), dtype=np.uint8)
+def create_snow(idx):
+    rng = np.random.default_rng(idx * 5014)
+    img = np.zeros((*SIZE, 3), dtype=np.uint8)
+    img[:SIZE[0]//2] = [200, 200, 210]
+    img[SIZE[0]//2:] = [220, 220, 230]
+    img[SIZE[0]//2:, SIZE[1]//2-2:SIZE[1]//2+2] = [180, 180, 190]
+    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
+    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
 
 def extract_hidden(model, processor, image, prompt):
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
     with torch.no_grad():
-        outputs = model.generate(
-            **inputs, max_new_tokens=7, do_sample=False,
-            output_hidden_states=True,
-            return_dict_in_generate=True,
-        )
-    if hasattr(outputs, 'hidden_states') and outputs.hidden_states:
-        last_step = outputs.hidden_states[-1]
-        if isinstance(last_step, tuple):
-            hidden = last_step[-1][0, -1, :].float().cpu().numpy()
-        else:
-            hidden = last_step[0, -1, :].float().cpu().numpy()
-    else:
-        hidden = np.zeros(4096)
-    return hidden
+        fwd = model(**inputs, output_hidden_states=True)
+    if not hasattr(fwd, 'hidden_states') or not fwd.hidden_states:
+        return None
+    return fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
 
 
 def cosine_dist(a, b):
-    return 1.0 - float(np.dot(a / (np.linalg.norm(a) + 1e-10),
-                               b / (np.linalg.norm(b) + 1e-10)))
+    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
+
+
+def evaluate_scenario(cal_embeds, test_embeds_dict):
+    centroid = np.mean(cal_embeds, axis=0)
+    results = {}
+    all_scores = []
+    all_labels = []
+    for name, (embeds, label) in test_embeds_dict.items():
+        scores = [cosine_dist(e, centroid) for e in embeds]
+        results[name] = {
+            'mean': float(np.mean(scores)),
+            'std': float(np.std(scores)),
+            'scores': [float(s) for s in scores],
+            'label': label,
+        }
+        all_scores.extend(scores)
+        all_labels.extend([label] * len(scores))
+    auroc = roc_auc_score(all_labels, all_scores)
+    id_scores = [s for s, l in zip(all_scores, all_labels) if l == 0]
+    ood_scores = [s for s, l in zip(all_scores, all_labels) if l == 1]
+    d = (np.mean(ood_scores) - np.mean(id_scores)) / (np.std(id_scores) + 1e-10)
+    return auroc, d, results
 
 
 def main():
     print("=" * 70, flush=True)
-    print("CROSS-DOMAIN TRANSFER ANALYSIS", flush=True)
+    print("CROSS-DOMAIN GENERALIZATION", flush=True)
     print("=" * 70, flush=True)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
@@ -103,126 +124,128 @@ def main():
 
     prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
 
-    # Collect embeddings for all domains
-    print("\nCollecting domain embeddings...", flush=True)
-    domains = {
-        'highway': (create_highway, 20),
-        'urban': (create_urban, 20),
-    }
-    ood_domains = {
-        'noise': (create_noise, 10),
-        'indoor': (create_indoor, 10),
-        'inverted': (create_inverted, 10),
-        'blackout': (create_blackout, 10),
+    categories = {
+        'highway': (create_highway, 'ID'),
+        'urban': (create_urban, 'ID'),
+        'noise': (create_noise, 'OOD'),
+        'indoor': (create_indoor, 'OOD'),
+        'twilight': (create_twilight_highway, 'OOD'),
+        'snow': (create_snow, 'OOD'),
     }
 
-    domain_hidden = {}
-    cnt = 0
-    total = sum(v[1] for v in {**domains, **ood_domains}.values())
-    for name, (fn, n) in {**domains, **ood_domains}.items():
-        domain_hidden[name] = []
-        for i in range(n):
-            cnt += 1
-            h = extract_hidden(model, processor,
-                               Image.fromarray(fn(i + 200)), prompt)
-            domain_hidden[name].append(h)
-            if cnt % 10 == 0:
-                print(f"  [{cnt}/{total}] {name}", flush=True)
+    print("\n--- Collecting embeddings ---", flush=True)
+    embeddings = {}
+    for cat_name, (fn, group) in categories.items():
+        print(f"  {cat_name} ({group})...", flush=True)
+        embeds = []
+        for i in range(20):
+            h = extract_hidden(model, processor, Image.fromarray(fn(i + 900)), prompt)
+            if h is not None:
+                embeds.append(h)
+        embeddings[cat_name] = {'embeds': np.array(embeds), 'group': group}
+        print(f"    Collected {len(embeds)} embeddings", flush=True)
 
-    # Cross-domain experiments
-    print("\n" + "=" * 70, flush=True)
-    print("CROSS-DOMAIN TRANSFER RESULTS", flush=True)
-    print("=" * 70, flush=True)
+    ood_cats = ['noise', 'indoor', 'twilight', 'snow']
 
-    cal_configs = {
-        'highway_only': ['highway'],
-        'urban_only': ['urban'],
-        'mixed': ['highway', 'urban'],
+    print("\n--- Scenario 1: Highway-Calibrated ---", flush=True)
+    hw_cal = embeddings['highway']['embeds'][:10]
+    test_dict_hw = {
+        'highway': (embeddings['highway']['embeds'][10:], 0),
+        'urban': (embeddings['urban']['embeds'], 0),
     }
+    for c in ood_cats:
+        test_dict_hw[c] = (embeddings[c]['embeds'], 1)
+    auroc_hw, d_hw, res_hw = evaluate_scenario(hw_cal, test_dict_hw)
+    print(f"  AUROC={auroc_hw:.4f}, d={d_hw:.2f}", flush=True)
+    for name, r in res_hw.items():
+        print(f"    {name}: {r['mean']:.4f}+/-{r['std']:.4f}", flush=True)
 
-    ood_types = list(ood_domains.keys())
-    results = {}
+    print("\n--- Scenario 2: Urban-Calibrated ---", flush=True)
+    urb_cal = embeddings['urban']['embeds'][:10]
+    test_dict_urb = {
+        'highway': (embeddings['highway']['embeds'], 0),
+        'urban': (embeddings['urban']['embeds'][10:], 0),
+    }
+    for c in ood_cats:
+        test_dict_urb[c] = (embeddings[c]['embeds'], 1)
+    auroc_urb, d_urb, res_urb = evaluate_scenario(urb_cal, test_dict_urb)
+    print(f"  AUROC={auroc_urb:.4f}, d={d_urb:.2f}", flush=True)
+    for name, r in res_urb.items():
+        print(f"    {name}: {r['mean']:.4f}+/-{r['std']:.4f}", flush=True)
 
-    for cal_name, cal_domains in cal_configs.items():
-        print(f"\n  Calibration: {cal_name}", flush=True)
-        cal_h = []
-        for d in cal_domains:
-            cal_h.extend(domain_hidden[d][:10])  # First 10 for calibration
-        centroid = np.mean(cal_h, axis=0)
+    print("\n--- Scenario 3: Mixed-Calibrated (baseline) ---", flush=True)
+    mix_cal = np.concatenate([embeddings['highway']['embeds'][:10],
+                               embeddings['urban']['embeds'][:10]], axis=0)
+    test_dict_mix = {
+        'highway': (embeddings['highway']['embeds'][10:], 0),
+        'urban': (embeddings['urban']['embeds'][10:], 0),
+    }
+    for c in ood_cats:
+        test_dict_mix[c] = (embeddings[c]['embeds'], 1)
+    auroc_mix, d_mix, res_mix = evaluate_scenario(mix_cal, test_dict_mix)
+    print(f"  AUROC={auroc_mix:.4f}, d={d_mix:.2f}", flush=True)
+    for name, r in res_mix.items():
+        print(f"    {name}: {r['mean']:.4f}+/-{r['std']:.4f}", flush=True)
 
-        results[cal_name] = {}
+    print("\n--- Scenario 4: Highway->Urban Transfer ---", flush=True)
+    test_dict_transfer = {
+        'urban_as_id': (embeddings['urban']['embeds'], 0),
+    }
+    for c in ood_cats:
+        test_dict_transfer[c] = (embeddings[c]['embeds'], 1)
+    auroc_t1, d_t1, res_t1 = evaluate_scenario(hw_cal, test_dict_transfer)
+    print(f"  AUROC={auroc_t1:.4f}, d={d_t1:.2f}", flush=True)
+    for name, r in res_t1.items():
+        print(f"    {name}: {r['mean']:.4f}+/-{r['std']:.4f}", flush=True)
 
-        # Test on each ID domain
-        for test_id_name in ['highway', 'urban']:
-            test_id = domain_hidden[test_id_name][10:]  # Last 10 for testing
-            id_scores = [cosine_dist(h, centroid) for h in test_id]
+    print("\n--- Scenario 5: Urban->Highway Transfer ---", flush=True)
+    test_dict_transfer2 = {
+        'highway_as_id': (embeddings['highway']['embeds'], 0),
+    }
+    for c in ood_cats:
+        test_dict_transfer2[c] = (embeddings[c]['embeds'], 1)
+    auroc_t2, d_t2, res_t2 = evaluate_scenario(urb_cal, test_dict_transfer2)
+    print(f"  AUROC={auroc_t2:.4f}, d={d_t2:.2f}", flush=True)
+    for name, r in res_t2.items():
+        print(f"    {name}: {r['mean']:.4f}+/-{r['std']:.4f}", flush=True)
 
-            for ood_type in ood_types:
-                test_ood = domain_hidden[ood_type]
-                ood_scores = [cosine_dist(h, centroid) for h in test_ood]
+    hw_centroid = np.mean(embeddings['highway']['embeds'], axis=0)
+    urb_centroid = np.mean(embeddings['urban']['embeds'], axis=0)
+    inter_domain_dist = cosine_dist(hw_centroid, urb_centroid)
+    print(f"\nInter-domain distance (highway<->urban): {inter_domain_dist:.4f}", flush=True)
 
-                labels = [0]*len(id_scores) + [1]*len(ood_scores)
-                scores = id_scores + ood_scores
-                auroc = roc_auc_score(labels, scores)
-
-                key = f"{test_id_name}_vs_{ood_type}"
-                results[cal_name][key] = float(auroc)
-                print(f"    {cal_name} → test_id={test_id_name} vs {ood_type}: AUROC={auroc:.3f}",
-                      flush=True)
-
-        # Overall AUROC (all ID vs all OOD)
-        all_id = domain_hidden['highway'][10:] + domain_hidden['urban'][10:]
-        all_ood = []
-        for ood_type in ood_types:
-            all_ood.extend(domain_hidden[ood_type])
-        id_scores = [cosine_dist(h, centroid) for h in all_id]
-        ood_scores = [cosine_dist(h, centroid) for h in all_ood]
-        labels = [0]*len(id_scores) + [1]*len(ood_scores)
-        scores = id_scores + ood_scores
-        overall = roc_auc_score(labels, scores)
-        results[cal_name]['overall'] = float(overall)
-        print(f"    Overall: AUROC={overall:.3f}", flush=True)
-
-    # Cross-calibration analysis
-    print("\n  Cross-calibration summary:", flush=True)
-    print(f"    {'Calibration':<15} {'Highway Test':>15} {'Urban Test':>15} {'Overall':>10}",
-          flush=True)
-    print("    " + "-" * 55, flush=True)
-    for cal_name in cal_configs:
-        hw_avg = np.mean([results[cal_name].get(f'highway_vs_{o}', 0.5) for o in ood_types])
-        ur_avg = np.mean([results[cal_name].get(f'urban_vs_{o}', 0.5) for o in ood_types])
-        overall = results[cal_name]['overall']
-        print(f"    {cal_name:<15} {hw_avg:>15.3f} {ur_avg:>15.3f} {overall:>10.3f}",
-              flush=True)
-
-    # Domain distance analysis
-    print("\n  Domain centroid distances:", flush=True)
-    hw_centroid = np.mean(domain_hidden['highway'], axis=0)
-    ur_centroid = np.mean(domain_hidden['urban'], axis=0)
-    mixed_centroid = np.mean(domain_hidden['highway'] + domain_hidden['urban'], axis=0)
-
-    print(f"    Highway-Urban cosine: {cosine_dist(hw_centroid, ur_centroid):.4f}", flush=True)
-    print(f"    Highway-Mixed cosine: {cosine_dist(hw_centroid, mixed_centroid):.4f}", flush=True)
-    print(f"    Urban-Mixed cosine: {cosine_dist(ur_centroid, mixed_centroid):.4f}", flush=True)
-
-    for ood_type in ood_types:
-        ood_centroid = np.mean(domain_hidden[ood_type], axis=0)
-        print(f"    {ood_type} to HW: {cosine_dist(ood_centroid, hw_centroid):.4f}, "
-              f"to UR: {cosine_dist(ood_centroid, ur_centroid):.4f}, "
-              f"to MX: {cosine_dist(ood_centroid, mixed_centroid):.4f}", flush=True)
-
-    # Save
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
         'experiment': 'cross_domain',
-        'experiment_number': 62,
+        'experiment_number': 106,
         'timestamp': timestamp,
-        'n_per_domain': {k: len(v) for k, v in domain_hidden.items()},
-        'results': results,
-        'domain_distances': {
-            'hw_ur': float(cosine_dist(hw_centroid, ur_centroid)),
-            'hw_mx': float(cosine_dist(hw_centroid, mixed_centroid)),
-            'ur_mx': float(cosine_dist(ur_centroid, mixed_centroid)),
+        'inter_domain_distance': inter_domain_dist,
+        'scenarios': {
+            'highway_calibrated': {
+                'auroc': float(auroc_hw), 'd': float(d_hw),
+                'per_category': {k: {'mean': v['mean'], 'std': v['std'], 'label': v['label']}
+                                 for k, v in res_hw.items()},
+            },
+            'urban_calibrated': {
+                'auroc': float(auroc_urb), 'd': float(d_urb),
+                'per_category': {k: {'mean': v['mean'], 'std': v['std'], 'label': v['label']}
+                                 for k, v in res_urb.items()},
+            },
+            'mixed_calibrated': {
+                'auroc': float(auroc_mix), 'd': float(d_mix),
+                'per_category': {k: {'mean': v['mean'], 'std': v['std'], 'label': v['label']}
+                                 for k, v in res_mix.items()},
+            },
+            'highway_to_urban': {
+                'auroc': float(auroc_t1), 'd': float(d_t1),
+                'per_category': {k: {'mean': v['mean'], 'std': v['std'], 'label': v['label']}
+                                 for k, v in res_t1.items()},
+            },
+            'urban_to_highway': {
+                'auroc': float(auroc_t2), 'd': float(d_t2),
+                'per_category': {k: {'mean': v['mean'], 'std': v['std'], 'label': v['label']}
+                                 for k, v in res_t2.items()},
+            },
         },
     }
     output_path = os.path.join(RESULTS_DIR, f"cross_domain_{timestamp}.json")

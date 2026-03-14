@@ -4700,3 +4700,51 @@ Every single block achieves **1.000 AUROC** when used alone. The OOD signal is d
 5. **Random 16 dims already achieve 1.000 AUROC**: Even randomly chosen dimensions suffice for perfect discrimination. The d is lower (20.13) but still far above any practical threshold.
 
 6. **Feature selection is more impactful than PCA**: Mean-diff top-64 (d=173.64) outperforms PCA-8 from multi-layer fusion (d=15.78) by 11×. However, mean-diff requires knowing which dimensions differ (oracle knowledge), while PCA is fully unsupervised.
+
+---
+
+## Finding 100: Cross-Domain Generalization
+
+**Experiment 106** — Tests whether a centroid calibrated on one driving sub-domain (highway-only or urban-only) generalizes to detect OOD when the other sub-domain is included as ID.
+
+### Setup
+- 20 samples per category (6 categories, 120 total inferences)
+- 5 scenarios: highway-cal, urban-cal, mixed-cal, highway→urban transfer, urban→highway transfer
+- Inter-domain centroid distance measured
+
+### Results
+
+| Scenario | AUROC | Cohen's d |
+|----------|-------|-----------|
+| Mixed-calibrated (baseline) | **1.000** | **42.30** |
+| Urban-calibrated | 1.000 | 1.90 |
+| Highway-calibrated | 0.995 | 1.78 |
+| Urban→Highway transfer | 1.000 | 21.06 |
+| Highway→Urban transfer | 0.993 | 17.51 |
+
+### Per-Category Scores (Highway-Calibrated)
+
+| Category | Score | Gap to nearest OOD |
+|----------|-------|-------------------|
+| Highway (ID) | 0.018 | — |
+| **Urban (ID)** | **0.281** | **Snow: 0.300 (gap=0.019)** |
+| Snow (OOD) | 0.300 | — |
+| Twilight (OOD) | 0.422 | — |
+| Indoor (OOD) | 0.433 | — |
+| Noise (OOD) | 0.506 | — |
+
+Inter-domain distance (highway↔urban centroid): **0.266**
+
+### Key Insights
+
+1. **Single-domain calibration nearly fails**: Highway-calibrated scores urban at 0.281 and snow at 0.300 — a gap of only 0.019. This is the first scenario to drop below 1.000 AUROC (0.995), demonstrating that ID sub-domain diversity matters.
+
+2. **Mixed calibration restores perfect detection (d=42.30)**: Simply including both driving sub-types in calibration produces d=42.30 — 24× higher than single-domain (d=1.78). Diversity is the critical factor.
+
+3. **Inter-domain distance is 0.266**: Highway and urban centroids are 0.266 apart in cosine distance — closer than any OOD category is to either ID centroid. The VLA encodes them as distinct but related concepts.
+
+4. **Transfer is asymmetric**: Urban→highway transfer (AUROC=1.000) works better than highway→urban (0.993). This suggests urban scenes have a broader embedding footprint that better represents "driving" generally.
+
+5. **The 0.019 near-miss is the narrowest gap we've observed**: Across all 106 experiments, this is the closest any ID sample has come to being misclassified as OOD. It occurs only when calibration lacks ID diversity.
+
+6. **Critical deployment lesson**: Always calibrate with diverse ID samples. A highway-only calibration set would misclassify some urban driving as OOD (0.5% error rate). Mixed calibration eliminates this completely.

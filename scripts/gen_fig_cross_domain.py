@@ -1,4 +1,4 @@
-"""Generate Figure 48: Cross-Domain Transfer Analysis."""
+"""Generate Figure 92: Cross-Domain Generalization."""
 import json
 import numpy as np
 import matplotlib
@@ -7,89 +7,79 @@ import matplotlib.pyplot as plt
 
 OUT_DIR = "/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/paper/figures"
 
-fig, axes = plt.subplots(1, 3, figsize=(16, 4.5))
+with open("/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/experiments/cross_domain_20260314_214017.json") as f:
+    data = json.load(f)
 
-# Panel (a): Cross-calibration AUROC matrix
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+
+# Panel (a): AUROC and d by calibration strategy
 ax = axes[0]
-cal_names = ['Highway\nOnly', 'Urban\nOnly', 'Mixed']
-test_names = ['Highway\nTest', 'Urban\nTest', 'Overall']
-data = np.array([
-    [0.975, 0.530, 0.752],
-    [0.682, 0.988, 0.835],
-    [0.905, 0.938, 0.921],
-])
+scenarios = ['highway_calibrated', 'urban_calibrated', 'mixed_calibrated',
+             'highway_to_urban', 'urban_to_highway']
+labels = ['Highway\nCal', 'Urban\nCal', 'Mixed\nCal', 'Hwy->Urb\nTransfer', 'Urb->Hwy\nTransfer']
+aurocs = [data['scenarios'][s]['auroc'] for s in scenarios]
+ds = [data['scenarios'][s]['d'] for s in scenarios]
+colors = ['#2196F3', '#FF9800', '#4CAF50', '#F44336', '#9C27B0']
 
-im = ax.imshow(data, cmap='RdYlGn', vmin=0.4, vmax=1.0, aspect='auto')
-ax.set_xticks(range(3))
-ax.set_yticks(range(3))
-ax.set_xticklabels(test_names, fontsize=9)
-ax.set_yticklabels(cal_names, fontsize=9)
-ax.set_title('(a) Cross-Domain Transfer AUROC', fontsize=12, fontweight='bold')
-
-for i in range(3):
-    for j in range(3):
-        color = 'white' if data[i, j] < 0.6 else 'black'
-        ax.text(j, i, f'{data[i, j]:.3f}', ha='center', va='center',
-                fontsize=11, fontweight='bold', color=color)
-
-plt.colorbar(im, ax=ax, shrink=0.8)
-
-# Highlight failure cells
-for i, j in [(0, 1), (1, 0)]:
-    rect = plt.Rectangle((j-0.5, i-0.5), 1, 1, fill=False,
-                          edgecolor='red', linewidth=3)
-    ax.add_patch(rect)
-
-# Panel (b): Per-OOD type with different calibrations
-ax = axes[1]
-ood_types = ['Noise', 'Indoor', 'Inverted', 'Blackout']
-hw_cal = [1.000, 0.970, 0.930, 1.000]  # Highway test
-ur_cal = [1.000, 0.980, 0.970, 1.000]  # Urban test
-mx_hw = [1.000, 0.940, 0.680, 1.000]   # Mixed → Highway test
-mx_ur = [1.000, 0.860, 0.890, 1.000]   # Mixed → Urban test
-
-x = np.arange(len(ood_types))
-width = 0.2
-bars1 = ax.bar(x - 1.5*width, hw_cal, width, label='HW cal → HW test',
-               color='#2196F3', edgecolor='black', linewidth=0.5, alpha=0.85)
-bars2 = ax.bar(x - 0.5*width, ur_cal, width, label='UR cal → UR test',
-               color='#4CAF50', edgecolor='black', linewidth=0.5, alpha=0.85)
-bars3 = ax.bar(x + 0.5*width, mx_hw, width, label='Mixed → HW test',
-               color='#FF9800', edgecolor='black', linewidth=0.5, alpha=0.85)
-bars4 = ax.bar(x + 1.5*width, mx_ur, width, label='Mixed → UR test',
-               color='#9C27B0', edgecolor='black', linewidth=0.5, alpha=0.85)
-
-ax.set_xticks(x)
-ax.set_xticklabels(ood_types, fontsize=10)
+bars = ax.bar(range(len(scenarios)), aurocs, color=colors, alpha=0.7,
+              edgecolor='black', linewidth=0.5)
+ax.set_xticks(range(len(scenarios)))
+ax.set_xticklabels(labels, fontsize=8)
 ax.set_ylabel('AUROC', fontsize=11)
-ax.set_title('(b) Same-Domain vs Cross-Domain', fontsize=12, fontweight='bold')
-ax.set_ylim(0.5, 1.1)
-ax.legend(fontsize=7, loc='lower left')
+ax.set_title('(a) Detection AUROC by Calibration', fontsize=12, fontweight='bold')
+ax.set_ylim(0.98, 1.005)
 ax.grid(True, alpha=0.3, axis='y')
 
-# Panel (c): Domain centroid distances
+for i, (a, d_val) in enumerate(zip(aurocs, ds)):
+    ax.text(i, a + 0.001, f'd={d_val:.1f}', ha='center', fontsize=7, fontweight='bold')
+
+# Panel (b): Per-category scores under highway calibration
+ax = axes[1]
+hw_data = data['scenarios']['highway_calibrated']['per_category']
+cats = ['highway', 'urban', 'noise', 'indoor', 'twilight', 'snow']
+cat_labels = ['Highway\n(ID)', 'Urban\n(ID)', 'Noise\n(OOD)', 'Indoor\n(OOD)', 'Twilight\n(OOD)', 'Snow\n(OOD)']
+means = [hw_data[c]['mean'] for c in cats]
+stds = [hw_data[c]['std'] for c in cats]
+cat_colors = ['#4CAF50', '#FF9800', '#F44336', '#F44336', '#F44336', '#F44336']
+
+bars = ax.bar(range(len(cats)), means, yerr=stds, color=cat_colors, alpha=0.7,
+              edgecolor='black', linewidth=0.5, capsize=3)
+ax.set_xticks(range(len(cats)))
+ax.set_xticklabels(cat_labels, fontsize=8)
+ax.set_ylabel('Cosine Distance', fontsize=11)
+ax.set_title('(b) Highway-Calibrated Scores', fontsize=12, fontweight='bold')
+ax.grid(True, alpha=0.3, axis='y')
+
+# Annotate the urban/snow overlap
+ax.annotate('Urban~Snow!', xy=(1.5, 0.29), fontsize=9, fontweight='bold',
+            color='red', ha='center')
+
+# Panel (c): Centroid distances
 ax = axes[2]
-labels = ['HW↔UR', 'HW↔Mix', 'UR↔Mix', 'Noise↔Mix', 'Indoor↔Mix', 'Inverted↔Mix', 'Blackout↔Mix']
-distances = [0.694, 0.245, 0.145, 0.654, 0.570, 0.477, 0.842]
-colors = ['#9E9E9E', '#9E9E9E', '#9E9E9E', '#F44336', '#FF9800', '#9C27B0', '#333333']
+inter_dist = data['inter_domain_distance']
+ood_cats = ['noise', 'indoor', 'twilight', 'snow']
+hw_ood_dists = [hw_data[c]['mean'] for c in ood_cats]
+urb_data = data['scenarios']['urban_calibrated']['per_category']
+urb_ood_dists = [urb_data[c]['mean'] for c in ood_cats]
 
-bars = ax.barh(range(len(labels)), distances, 0.6, color=colors,
-               edgecolor='black', linewidth=0.5, alpha=0.85)
-ax.set_yticks(range(len(labels)))
-ax.set_yticklabels(labels, fontsize=9)
-ax.set_xlabel('Cosine Distance Between Centroids', fontsize=11)
-ax.set_title('(c) Domain Centroid Distances', fontsize=12, fontweight='bold')
-ax.grid(True, alpha=0.3, axis='x')
+bar_labels = ['Hwy<->Urb\nCentroid', 'Avg OOD\n(Hwy cal)', 'Avg OOD\n(Urb cal)', 'Avg OOD\n(Mixed cal)']
+mix_data = data['scenarios']['mixed_calibrated']['per_category']
+mix_ood_dists = [mix_data[c]['mean'] for c in ood_cats]
+bar_vals = [inter_dist, np.mean(hw_ood_dists), np.mean(urb_ood_dists), np.mean(mix_ood_dists)]
+bar_colors = ['#9C27B0', '#2196F3', '#FF9800', '#4CAF50']
 
-# Annotate
-ax.axvline(x=0.5, color='red', linestyle='--', alpha=0.3, label='Detection boundary')
-ax.legend(fontsize=8)
+ax.bar(range(len(bar_labels)), bar_vals, color=bar_colors, alpha=0.7,
+       edgecolor='black', linewidth=0.5)
+ax.set_xticks(range(len(bar_labels)))
+ax.set_xticklabels(bar_labels, fontsize=8)
+ax.set_ylabel('Cosine Distance', fontsize=11)
+ax.set_title('(c) Distance Comparison', fontsize=12, fontweight='bold')
+ax.grid(True, alpha=0.3, axis='y')
 
-for bar, v in zip(bars, distances):
-    ax.text(bar.get_width() + 0.01, bar.get_y() + bar.get_height()/2.,
-            f'{v:.3f}', ha='left', va='center', fontsize=9)
+for i, v in enumerate(bar_vals):
+    ax.text(i, v + 0.01, f'{v:.3f}', ha='center', fontsize=9, fontweight='bold')
 
 plt.tight_layout()
-plt.savefig(f'{OUT_DIR}/fig48_cross_domain.png', dpi=200, bbox_inches='tight')
-plt.savefig(f'{OUT_DIR}/fig48_cross_domain.pdf', dpi=200, bbox_inches='tight')
-print("Saved fig48_cross_domain.png/pdf")
+plt.savefig(f'{OUT_DIR}/fig92_cross_domain.png', dpi=200, bbox_inches='tight')
+plt.savefig(f'{OUT_DIR}/fig92_cross_domain.pdf', dpi=200, bbox_inches='tight')
+print("Saved fig92_cross_domain.png/pdf")
