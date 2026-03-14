@@ -422,6 +422,8 @@ OOD & 0.591 & 1.228 & 0.918 & 0.099 & 0.082 \\
 
 \textbf{Finding 13: Prompt Ensembles reveal substantial prompt sensitivity.} Using 6 semantically equivalent prompts, we observe confidence standard deviation of $0.084 \pm 0.022$ and mean KL divergence of $8.75 \pm 0.58$ between prompt-conditioned outputs. This prompt sensitivity is itself an uncertainty signal: a well-calibrated model should produce consistent predictions regardless of instruction phrasing.
 
+\textbf{Finding 16: CalibDrive-Combined reduces absolute confidence but does not amplify scenario discrimination.} Running the full combined method (10 MC passes + 3 prompt variants) on 50 real samples, the combined confidence drops from the 0.54--0.60 baseline range to 0.22--0.27, indicating the method is appropriately more conservative. However, the uncertainty gap between highway and OOD scenarios is 0.012 (vs.\ baseline confidence gap of 0.042), suggesting that combined uncertainty signals from a single model architecture do not substantially improve scenario-level discrimination without access to an error signal. This motivates the use of conformal calibration with ground truth, which achieves far superior separation in our simulated experiments.
+
 \subsection{Logit Distribution Analysis}
 \label{sec:logit_analysis}
 
