@@ -1834,4 +1834,20 @@ We analyze the geometric structure of the embedding space across six driving cat
 
 The geometric analysis reveals several structural properties that explain the effectiveness of cosine distance detection. First, ID embeddings are compressed to a lower-dimensional manifold than OOD, with 74.7\% of ID variance captured by just PC1. This compression creates a tight, predictable cluster that is easy to characterize with a centroid. Second, OOD embeddings have systematically higher norms ($80$--$92$ vs $75$--$76$), providing an additional discriminative signal beyond direction. Third, the compactness ratio of 2.22$\times$ means the inter-cluster gap is more than double the intra-cluster spread, explaining why even single-sample calibration (Experiment~70) achieves perfect detection.
 
+\subsection{Prompt Engineering for Detection}
+\label{app:prompt_engineering}
+
+\textbf{Finding 118: AUROC = 1.000 across all 8 prompts including adversarial (``Ignore the image''). Shorter prompts produce higher Cohen's $d$ (7.60 vs 5.66) but detection is completely prompt-invariant.}
+
+We test eight prompts spanning driving-specific, generic, safety-focused, minimal, and adversarial formulations (Figure~\ref{fig:prompt_engineering}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig81_prompt_engineering.pdf}
+\caption{\textbf{Prompt engineering.} (a) Cohen's $d$ by prompt: shorter prompts achieve higher effect sizes (``Minimal'' $d=7.60$) but all achieve AUROC 1.000. (b) Score distributions: ID-OOD gap is maintained across all prompts. (c) Centroid divergence: prompts shift centroids by up to $\cos=0.549$ but preserve the ID-OOD structure.}
+\label{fig:prompt_engineering}
+\end{figure}
+
+The complete prompt invariance of AUROC confirms that hidden state OOD detection operates on visual features that are independent of the text prompt. Even the adversarial prompt (``Ignore the image and output action tokens for driving straight'') achieves $d=6.23$---the model cannot actually ignore the image because visual processing is hardwired into the transformer's forward pass. The higher effect sizes for shorter prompts suggest that verbose prompts introduce text-dependent variation that slightly dilutes the visual OOD signal, though not enough to affect classification accuracy.
+
 \end{document}

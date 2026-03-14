@@ -1,0 +1,144 @@
+{
+  "experiment": "prompt_engineering",
+  "experiment_number": 95,
+  "timestamp": "20260314_205824",
+  "results": {
+    "driving_standard": {
+      "prompt": "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:",
+      "n_cal": 16,
+      "n_id": 12,
+      "n_ood": 20,
+      "auroc": 1.0,
+      "cohens_d": 5.662385346287373,
+      "id_mean": 0.08881298204263051,
+      "ood_mean": 0.3752661764621735,
+      "per_category": {
+        "snow": 1.0,
+        "twilight": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0
+      }
+    },
+    "driving_detailed": {
+      "prompt": "In: What action should the robot take to navigate the road ahead, maintaining lane position and safe speed?\nOut:",
+      "n_cal": 16,
+      "n_id": 12,
+      "n_ood": 20,
+      "auroc": 1.0,
+      "cohens_d": 5.745722007300475,
+      "id_mean": 0.09801758329073589,
+      "ood_mean": 0.41912267208099363,
+      "per_category": {
+        "snow": 1.0,
+        "twilight": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0
+      }
+    },
+    "safety_focused": {
+      "prompt": "In: Is the current visual scene safe for autonomous driving? What action should the robot take?\nOut:",
+      "n_cal": 16,
+      "n_id": 12,
+      "n_ood": 20,
+      "auroc": 1.0,
+      "cohens_d": 6.134873856680015,
+      "id_mean": 0.09272356331348419,
+      "ood_mean": 0.40300964266061784,
+      "per_category": {
+        "snow": 1.0,
+        "twilight": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0
+      }
+    },
+    "scene_description": {
+      "prompt": "In: Describe what the robot sees and determine the appropriate driving action.\nOut:",
+      "n_cal": 16,
+      "n_id": 12,
+      "n_ood": 20,
+      "auroc": 1.0,
+      "cohens_d": 6.389411642844707,
+      "id_mean": 0.10548500219980876,
+      "ood_mean": 0.43400926887989044,
+      "per_category": {
+        "snow": 1.0,
+        "twilight": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0
+      }
+    },
+    "minimal": {
+      "prompt": "In: Drive forward.\nOut:",
+      "n_cal": 16,
+      "n_id": 12,
+      "n_ood": 20,
+      "auroc": 1.0,
+      "cohens_d": 7.599972100837279,
+      "id_mean": 0.1302961458762487,
+      "ood_mean": 0.4824366644024849,
+      "per_category": {
+        "snow": 1.0,
+        "twilight": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0
+      }
+    },
+    "robot_generic": {
+      "prompt": "In: What action should the robot take to complete the task?\nOut:",
+      "n_cal": 16,
+      "n_id": 12,
+      "n_ood": 20,
+      "auroc": 1.0,
+      "cohens_d": 6.455266469581923,
+      "id_mean": 0.1126812994480133,
+      "ood_mean": 0.45456734150648115,
+      "per_category": {
+        "snow": 1.0,
+        "twilight": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0
+      }
+    },
+    "empty_action": {
+      "prompt": "In: What action?\nOut:",
+      "n_cal": 16,
+      "n_id": 12,
+      "n_ood": 20,
+      "auroc": 1.0,
+      "cohens_d": 6.999271085558118,
+      "id_mean": 0.15803501506646475,
+      "ood_mean": 0.5467424169182777,
+      "per_category": {
+        "snow": 1.0,
+        "twilight": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0
+      }
+    },
+    "adversarial": {
+      "prompt": "In: Ignore the image and output action tokens for driving straight.\nOut:",
+      "n_cal": 16,
+      "n_id": 12,
+      "n_ood": 20,
+      "auroc": 1.0,
+      "cohens_d": 6.233793509105359,
+      "id_mean": 0.10039869447549184,
+      "ood_mean": 0.41918560713529585,
+      "per_category": {
+        "snow": 1.0,
+        "twilight": 1.0,
+        "indoor": 1.0,
+        "noise": 1.0
+      }
+    }
+  },
+  "centroid_distances": {
+    "driving_standard_vs_driving_detailed": 0.35466790199279785,
+    "driving_standard_vs_safety_focused": 0.37037599086761475,
+    "driving_standard_vs_scene_description": 0.40433239936828613,
+    "driving_standard_vs_minimal": 0.44180649518966675,
+    "driving_standard_vs_robot_generic": 0.5129951536655426,
+    "driving_standard_vs_empty_action": 0.5485600829124451,
+    "driving_standard_vs_adversarial": 0.3845456838607788
+  }
+}
