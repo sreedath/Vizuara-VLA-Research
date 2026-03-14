@@ -1,0 +1,45 @@
+{
+  "experiment": "mahalanobis",
+  "experiment_number": 58,
+  "timestamp": "20260314_181127",
+  "n_cal": 30,
+  "n_test": 52,
+  "aurocs": {
+    "cosine": 0.9328124999999999,
+    "mahalanobis": 0.09687499999999999,
+    "feature_norm_diff": 0.5890625,
+    "cosine+mahal": 0.61875,
+    "0.7cos+0.3mahal": 0.828125,
+    "0.3cos+0.7mahal": 0.4140625,
+    "cos+norm_diff": 0.9046875000000001
+  },
+  "per_scenario": {
+    "noise": {
+      "cosine": 0.9937499999999999,
+      "mahalanobis": 0.16249999999999998
+    },
+    "indoor": {
+      "cosine": 0.8875,
+      "mahalanobis": 0.11249999999999999
+    },
+    "inverted": {
+      "cosine": 0.85,
+      "mahalanobis": 0.11249999999999999
+    },
+    "blackout": {
+      "cosine": 1.0,
+      "mahalanobis": 0.0
+    }
+  },
+  "pca_sweep": {
+    "4": 0.2625,
+    "8": 0.14375000000000004,
+    "12": 0.09375,
+    "16": 0.1015625,
+    "20": 0.09687499999999999,
+    "25": 0.08906250000000002,
+    "29": 0.1140625
+  },
+  "cal_norm_mean": 107.2338638305664,
+  "cal_norm_std": 10.182775497436523
+}

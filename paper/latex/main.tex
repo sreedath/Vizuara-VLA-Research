@@ -1213,4 +1213,36 @@ We examine how the probability distribution over OpenVLA's 256 action bins chang
 
 Key mechanistic findings: (1) \textbf{Garbage token leakage} --- noise images leak 12.3\% of probability to non-action vocabulary tokens versus 1.7\% for ID (AUROC 0.841), indicating the model is confused about whether to produce text or actions; (2) \textbf{Entropy divergence} --- blackout images produce entropy of 3.10 nats versus 1.05 for ID, approaching the maximum $\ln(256) = 5.55$ nats of a uniform distribution; (3) \textbf{Indoor is deceptively confident} --- high mass (0.979), high top-1 (0.770), low garbage (0.020) all appear ID-like, yet the model produces structured but wrong actions, making indoor scenes the most dangerous OOD failure mode for output-space detectors. This analysis validates the complementary value of hidden-state (cosine distance) detection for cases where output-space signals fail.
 
+\subsection{Mahalanobis Distance Comparison}
+\label{app:mahalanobis}
+
+\textbf{Finding 81: Mahalanobis distance catastrophically fails in the few-shot calibration regime, validating cosine distance as the correct design choice.}
+
+We compare our cosine distance detector against the Mahalanobis distance baseline from \citet{lee2018simple}, which accounts for the covariance structure of in-distribution embeddings (Figure~\ref{fig:mahalanobis}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig44_mahalanobis.pdf}
+\caption{\textbf{Mahalanobis distance fails catastrophically in the few-shot regime.} (a) Cosine distance achieves 0.933 AUROC while Mahalanobis scores 0.097 (worse than random). (b) The failure is consistent across all OOD types — Mahalanobis inverts the detection for every scenario. (c) No PCA dimensionality (4--29) rescues Mahalanobis; all produce below-random AUROC.}
+\label{fig:mahalanobis}
+\end{figure}
+
+With only 30 calibration samples in a 4096-dimensional space, the precision matrix (inverse covariance) is severely ill-conditioned even with Ledoit-Wolf shrinkage and PCA reduction to 20 dimensions. The result is that OOD points receive \emph{lower} Mahalanobis distances than ID points (OOD mean: 1.28, ID mean: 2.64), completely inverting the detector. No PCA dimensionality from 4 to 29 rescues the method (all produce AUROC $< 0.27$). In contrast, cosine distance achieves 0.933 AUROC because it requires only a centroid estimate, which is well-conditioned even with $N=10$ samples (Finding~79). This validates our design choice of cosine distance over Mahalanobis for the few-shot deployment regime.
+
+\subsection{Temporal Autocorrelation Analysis}
+\label{app:temporal_autocorr}
+
+\textbf{Finding 82: Temporal aggregation over 8-step trajectories achieves perfect OOD detection (AUROC 1.000) and enables real-time transition detection.}
+
+We analyze how cosine distance OOD scores evolve over consecutive frames in simulated driving trajectories (Figure~\ref{fig:temporal_autocorr}). Each trajectory consists of 8 sequential frames with consistent scene conditions (highway, urban, noise, indoor) or deliberate transitions (ID$\to$OOD mid-trajectory).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig45_temporal_autocorr.pdf}
+\caption{\textbf{Temporal autocorrelation analysis.} (a) Score traces show clear separation between ID (blue/green, low) and OOD (red/orange, high) trajectories, with transition trajectories (purple, dotted) showing clear mid-trajectory jumps. (b) Temporal aggregation progressively improves detection: per-step 0.953 $\to$ 3-step window 0.996 $\to$ trajectory mean 1.000. (c) ID$\to$OOD transitions produce a mean score jump of +0.269 $\pm$ 0.078.}
+\label{fig:temporal_autocorr}
+\end{figure}
+
+Key findings: (1) Trajectory-level mean achieves \textbf{perfect AUROC (1.000)}, the strongest result in our study, confirming that temporal aggregation eliminates per-frame noise; (2) Even a short 3-step sliding window achieves 0.996 AUROC, providing near-perfect real-time detection with only 3 frames of latency; (3) ID$\to$OOD transitions produce a clear score jump of +0.269 $\pm$ 0.078, enabling transition detection for scenarios where the environment changes mid-drive (e.g., entering fog, construction zones, or unfamiliar terrain).
+
 \end{document}

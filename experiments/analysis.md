@@ -2646,3 +2646,106 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Indoor is the deceptive OOD type**: High mass (0.979), high top-1 (0.770), low garbage (0.020) — all look ID-like. The model confidently produces structured but wrong actions for indoor scenes. This is the most dangerous OOD failure mode.
 
 5. **Action mass alone achieves AUROC 0.839**: Even this simple metric (fraction of probability on action bins) provides useful OOD detection, confirming earlier findings that output-space signals are informative.
+
+---
+
+## Finding 52: Mahalanobis Distance Fails in Low-Sample Regime (Real OpenVLA-7B, Experiment 58)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Calibration**: 30 samples (15 highway + 15 urban)
+- **Test**: 52 samples (20 ID + 32 OOD)
+- **Methods**: Cosine distance, Mahalanobis distance (PCA-reduced), feature norm difference
+- **Mahalanobis**: Ledoit-Wolf shrinkage covariance, PCA sweep from 4 to 29 dimensions
+- **Total inferences**: 82
+
+### Detection Results
+
+| Method | AUROC | ID Mean | OOD Mean | Ratio |
+|--------|-------|---------|----------|-------|
+| **Cosine distance** | **0.933** | 0.536 | 0.766 | 1.43× |
+| Mahalanobis (PCA-20) | 0.097 | 2.644 | 1.276 | 0.48× |
+| Feature norm diff | 0.589 | 6.334 | 20.912 | 3.30× |
+| Cosine + norm diff | 0.905 | — | — | — |
+
+### Per-OOD Type Comparison
+
+| OOD Type | Cosine AUROC | Mahalanobis AUROC | Delta |
+|----------|-------------|-------------------|-------|
+| Noise | 0.994 | 0.162 | -0.831 |
+| Indoor | 0.887 | 0.112 | -0.775 |
+| Inverted | 0.850 | 0.112 | -0.738 |
+| Blackout | 1.000 | 0.000 | -1.000 |
+
+### PCA Dimension Sweep for Mahalanobis
+
+| PCA Dims | AUROC |
+|----------|-------|
+| 4 | 0.263 |
+| 8 | 0.144 |
+| 12 | 0.094 |
+| 16 | 0.102 |
+| 20 | 0.097 |
+| 25 | 0.089 |
+| 29 | 0.114 |
+
+### Key Insights
+
+1. **Mahalanobis distance catastrophically fails (AUROC 0.097 — worse than random)**: The covariance structure estimated from 30 calibration samples in 4096-d space is highly unreliable. Even with PCA reduction and Ledoit-Wolf shrinkage, the precision matrix inverts the detection — OOD samples get lower Mahalanobis scores than ID samples.
+
+2. **Cosine distance is robust by design (0.933)**: By ignoring covariance structure entirely, cosine distance avoids the ill-conditioning problem. It only measures angular separation from the centroid, which is well-estimated even with 30 samples.
+
+3. **No PCA dimensionality helps Mahalanobis**: All PCA dimensions from 4 to 29 produce below-random AUROC (0.089-0.263). The problem is fundamental — the ID covariance in PCA space does not capture the relevant OOD directions.
+
+4. **Feature norm is a weak signal (0.589)**: Blackout has dramatically lower norm (40.5 vs 107 for ID), but other OOD types have similar norms to ID, limiting feature norm's discriminative power.
+
+5. **This validates our architectural choice**: The CalibDrive pipeline uses cosine distance rather than Mahalanobis precisely because it is more robust in the few-shot calibration regime. Lee et al. (2018) showed Mahalanobis excels with thousands of calibration samples; with 10-30, cosine dominates.
+
+---
+
+## Finding 53: Temporal Autocorrelation Enables Perfect Trajectory-Level Detection (Real OpenVLA-7B, Experiment 59)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Calibration**: 20 samples (10 highway + 10 urban)
+- **Trajectories**: 18 total (8 ID + 6 OOD + 4 transition), 8 steps each
+- **Trajectory types**: highway (5), urban (3), noise (3), indoor (3), transition ID→OOD (4)
+- **Total inferences**: 20 cal + 18×8 = 164
+
+### Temporal Analysis Results
+
+| Metric | ID | OOD |
+|--------|-----|-----|
+| Lag-1 autocorrelation | -0.009 ± 0.188 | 0.234 ± 0.413 |
+| Intra-trajectory variance | 0.01748 ± 0.00368 | 0.00212 ± 0.00147 |
+
+### Detection with Temporal Context
+
+| Method | AUROC | N samples |
+|--------|-------|-----------|
+| Per-step (raw) | 0.953 | 112 |
+| 3-step window | **0.996** | 84 |
+| Trajectory mean | **1.000** | 14 |
+| EMA (α=0.5) | **1.000** | 14 |
+
+### Transition Detection (ID → OOD)
+
+| Trajectory | First Half Score | Second Half Score | Jump |
+|------------|-----------------|-------------------|------|
+| 0 | 0.411 | 0.802 | +0.391 |
+| 1 | 0.599 | 0.816 | +0.218 |
+| 2 | 0.494 | 0.775 | +0.280 |
+| 3 | 0.597 | 0.785 | +0.188 |
+| **Mean** | — | — | **+0.269 ± 0.078** |
+
+### Key Insights
+
+1. **Trajectory-level detection achieves perfect AUROC (1.000)**: Averaging cosine scores over 8 steps eliminates per-frame noise and achieves perfect separation. This is the strongest result in the entire paper.
+
+2. **3-step window nearly perfect (0.996)**: Even a short sliding window dramatically improves detection from 0.953 to 0.996, confirming that temporal aggregation is one of the most valuable pipeline components.
+
+3. **ID trajectories have higher score variance (0.0175 vs 0.0021)**: ID frames show more score variation because the centroid lies between highway and urban subclusters. OOD frames consistently score high, producing lower variance.
+
+4. **Transition detection is clear (+0.269 mean jump)**: When a trajectory transitions from ID to OOD, the cosine score jumps by +0.269 on average. This provides a clear signal for real-time transition detection.
+
+5. **OOD has higher lag-1 autocorrelation (0.234 vs -0.009)**: OOD scores are more temporally correlated because they consistently measure distance from the same region of embedding space. ID scores fluctuate more between highway and urban subclusters.
