@@ -1080,3 +1080,61 @@ Overall L2 dist AUROC (all OOD): **0.805**
 5. **Three-signal recommendation established**: (1) Action mass for pixel-level OOD (noise, blank), (2) Hidden state distance for semantic OOD (indoor, inverted), (3) Entropy for difficulty detection. Together these cover all failure modes discovered so far.
 
 6. **Zero additional cost for hidden state extraction**: The hidden states are already computed during generation — `output_hidden_states=True` just exposes them. No additional forward pass needed.
+
+---
+
+## Finding 22: Cosine Distance is Near-Universal OOD Detector (Real OpenVLA-7B, Experiment 28)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, output_hidden_states=True)
+- **Samples**: 122 across 8 scenarios (50 easy, 72 OOD: 6 types × 12)
+- **Train/test split**: 25 easy calibration, 25 easy test + 72 OOD test
+- **Distance metrics**: L2, cosine, Mahalanobis (PCA-regularized), kNN (k=1,3,5)
+- **Combined signals**: 10 multi-signal combinations tested
+
+### Individual Signal AUROCs (on test set)
+
+| Signal | Overall | Noise | Blank | Indoor | Inverted | Checker | Blackout |
+|--------|---------|-------|-------|--------|----------|---------|----------|
+| **Cosine Dist** | **0.979** | **1.000** | **0.947** | **1.000** | **0.930** | **1.000** | **1.000** |
+| kNN (k=3) | 0.824 | 0.937 | 0.700 | 0.930 | 0.920 | 0.840 | 0.617 |
+| Action Mass (inv) | 0.691 | 0.780 | 0.927 | 0.393 | 0.313 | 0.820 | 0.910 |
+| L2 Dist | 0.649 | 0.953 | 0.163 | 0.990 | 0.913 | 0.873 | 0.000 |
+| Entropy | 0.488 | 0.367 | 0.967 | 0.167 | 0.297 | 0.130 | 1.000 |
+| Mahalanobis (k=50) | 0.500 | — | — | — | — | — | — |
+
+### Best Combined Signals
+
+| Combination | Overall AUROC |
+|------------|--------------|
+| **All signals** (6 signals equal weight) | **0.923** |
+| Cos + Mass | 0.886 |
+| Best3: Cos+Maha+Mass | 0.886 |
+| All hidden (4 dist metrics) | 0.850 |
+| L2 + Mass (0.25/0.75) | 0.834 |
+
+### PCA Visualization
+
+| Component | Variance Explained |
+|-----------|-------------------|
+| PC1 | 18.5% |
+| PC2 | 14.4% |
+| PC3 | 10.6% |
+
+PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separately from easy in PCA space.
+
+### Key Insights
+
+1. **Cosine distance is near-universal OOD detector (AUROC = 0.979)**: This is the breakthrough result. By computing the cosine distance between a sample's hidden state and the calibration centroid, we achieve near-perfect detection across ALL OOD types — including indoor (1.000) and inverted (0.930) that action mass completely misses.
+
+2. **Cosine distance succeeds where L2 fails**: L2 distance fails for blank (0.163) and blackout (0.000) because these have lower norms and are actually closer to centroid in Euclidean space. Cosine distance is norm-invariant and captures directional differences, achieving 0.947 and 1.000 on these respectively.
+
+3. **Mahalanobis distance fails with small calibration sets**: With only 25 calibration samples in 4096-d space, PCA-regularized Mahalanobis achieves only 0.500 (random). The covariance estimate is too noisy. This is a practical limitation — cosine distance requires no covariance estimation.
+
+4. **kNN is a strong but expensive alternative (0.824)**: kNN k=3 achieves solid performance across most types but requires storing all calibration hidden states and computing distances at inference time. Cosine distance to a single centroid is O(d) vs O(n×d).
+
+5. **Action mass is now secondary to cosine distance**: Action mass (0.691) is outperformed by cosine distance (0.979). However, action mass requires no calibration set — it's a completely unsupervised signal. The recommended hierarchy is: (1) cosine distance if calibration data available, (2) action mass for zero-shot detection.
+
+6. **Combining all signals achieves 0.923 — LOWER than cosine alone (0.979)**: Adding noisy signals (action mass, entropy, L2) actually dilutes the cosine signal. This reinforces our earlier finding that signal combination hurts when one signal dominates.
+
+7. **Revised recommendation**: For deployed VLAs with access to even a small calibration set (25 samples), use hidden state cosine distance as the primary OOD detector. It requires only a single forward pass with `output_hidden_states=True`, storing a single 4096-d centroid vector, and computing one dot product per inference.
