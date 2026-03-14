@@ -1542,4 +1542,20 @@ We test gradient-based OOD detection by computing gradient norms w.r.t.\ the pre
 
 This failure has an important mechanistic implication: in VLAs, the model has learned strong, fine-grained gradients for in-distribution inputs where it can make precise action predictions. OOD inputs produce diffuse, low-confidence predictions with smaller gradients. This inverts the gradient-OOD relationship observed in classifiers, making gradient-based methods fundamentally unsuitable for VLA OOD detection.
 
+\subsection{Token Position Analysis}
+\label{app:token_position}
+
+\textbf{Finding 100: Visual token positions (5\% of sequence) carry the strongest OOD signal ($d=10.94$), even exceeding the final action token ($d=8.52$). Middle text tokens (25--90\%) are weakest.}
+
+We analyze cosine distance OOD detection at different token positions within the sequence (Figure~\ref{fig:token_position}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig63_token_position.pdf}
+\caption{\textbf{Token position analysis.} (a) U-shaped AUROC: visual tokens (5\%) and action tokens (95--100\%) achieve 1.000; text tokens (25--90\%) are weaker. (b) Effect size peaks at 5\% ($d=10.94$) in the visual token region.}
+\label{fig:token_position}
+\end{figure}
+
+The U-shaped pattern reveals the mechanistic origin of the OOD signal: it arises from \emph{visual processing} (position 5\%), not text conditioning (25--90\%). The signal then re-concentrates at the output end (95--100\%) where the model integrates visual and text information for action prediction. This suggests that visual token representations could enable \textbf{ultra-early OOD detection}---flagging OOD inputs before the model even processes the text instruction.
+
 \end{document}

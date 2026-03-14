@@ -3499,3 +3499,37 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 3. **Blackout has very small gradients (4,839)**: With no visual information, the model produces negligible gradients — but this is the direction OPPOSITE of the typical OOD assumption.
 
 4. **This rules out gradient-based methods for VLA OOD detection**: Unlike in classification where OOD gradients are often larger, VLAs show the reverse pattern, making gradient methods unreliable.
+
+---
+
+## Finding 71: Visual Token Positions (5%) Have the Strongest OOD Signal (d=10.94)
+
+**Experiment 77** — Token position analysis for cosine OOD detection.
+
+### Setup
+- 7 token positions tested: 5%, 25%, 50%, 75%, 90%, 95%, 100% of sequence
+- 32 test samples with cosine distance at each position
+
+### Results
+
+| Position | AUROC | Cohen's d | ID Cosine | OOD Cosine |
+|----------|-------|----------|-----------|------------|
+| **5%** | **1.000** | **10.94** | 0.199 | 0.837 |
+| 25% | 0.719 | 1.01 | 0.255 | 0.341 |
+| 50% | 0.949 | 2.27 | 0.174 | 0.346 |
+| 75% | 0.922 | 1.13 | 0.086 | 0.273 |
+| 90% | 0.859 | 0.57 | 0.126 | 0.220 |
+| **95%** | **1.000** | **6.70** | 0.196 | 0.657 |
+| **100%** | **1.000** | **8.52** | 0.088 | 0.416 |
+
+### Key Insights
+
+1. **Visual token region (5%) has the HIGHEST separability (d=10.94)**: Early tokens that process visual features carry the strongest OOD signal, even exceeding the final token (d=8.52).
+
+2. **U-shaped pattern**: Detection is best at the start (visual tokens) and end (action prediction) of the sequence, with a valley in the middle (text instruction tokens at 25-90%).
+
+3. **Middle tokens (25-90%) are weaker**: Text instruction tokens carry less OOD information because the text is identical for ID and OOD — only the visual content differs.
+
+4. **Multiple token positions achieve perfect AUROC**: Positions 5%, 95%, and 100% all achieve 1.000, offering redundancy for robust detection.
+
+5. **Practical implication**: Reading the hidden state at position 5% (visual token region) could enable very early OOD detection without processing the full sequence.
