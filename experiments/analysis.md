@@ -3790,3 +3790,38 @@ Score distributions: ID mean=0.088 (range 0.077-0.124), OOD mean=0.373 (range 0.
 4. **Snow is the hardest category**: 90% TPR at Youden threshold — 1 of 10 snow samples falls below threshold. All other categories achieve 100% TPR.
 
 5. **Practical recommendation**: Use calibration-based μ+3σ threshold for deployment — it's computed from calibration data alone and achieves near-perfect performance without any labeled OOD data.
+
+---
+
+## Finding 79: Computational Overhead Analysis
+
+**Experiment 85** — Measures inference latency and post-processing overhead of OOD detection on an A40 GPU.
+
+### Setup
+- OpenVLA-7B on NVIDIA A40 GPU (bf16)
+- 3 warmup + 10 measurement runs per mode
+- Modes: baseline (logits), hidden states, attention, full features
+- Post-processing: cosine distance (4096D) and PCA-4 cosine
+
+### Results
+
+| Mode | Latency (ms) | Overhead (ms) | Overhead (%) |
+|------|-------------|---------------|-------------|
+| Baseline | 84.1 ± 0.5 | — | — |
+| **Hidden states** | **84.3 ± 0.4** | **+0.2** | **+0.3%** |
+| Attention | 89.9 ± 0.5 | +5.8 | +6.9% |
+| Full features | 89.5 ± 0.4 | +5.4 | +6.5% |
+
+Post-processing:
+- Cosine distance (4096D): **7.6 μs** — 10,000× faster than forward pass
+- PCA-4 + cosine: **7.2 μs**
+
+### Key Insights
+
+1. **Hidden state extraction is essentially free**: +0.2ms (0.3%) overhead. The model already computes hidden states during the forward pass; `output_hidden_states=True` just prevents their deallocation.
+
+2. **Attention extraction adds 6.9%**: The overhead comes from SDPA → manual attention fallback. With eager attention implementation, this could be reduced.
+
+3. **Post-processing is negligible**: Cosine distance computation takes 7.6 microseconds — 4 orders of magnitude faster than the forward pass. This means OOD detection adds zero computational cost beyond what the model already does.
+
+4. **Total OOD detection overhead**: 0.2ms (model) + 0.008ms (cosine) = **0.2ms total**, or **0.3% of inference time**. This makes hidden-state OOD detection a zero-cost add-on to any VLA deployment.

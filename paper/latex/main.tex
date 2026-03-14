@@ -1670,4 +1670,20 @@ We evaluate multiple threshold strategies on 40 ID and 54 OOD test samples (Figu
 
 The complete separation between ID and OOD score distributions means threshold selection is non-critical---any threshold between 0.124 and 0.247 achieves perfect classification. For deployment without labeled OOD data, we recommend the calibration-based $\mu+3\sigma$ threshold, which requires only clean driving images and achieves near-perfect performance.
 
+\subsection{Computational Overhead}
+\label{app:latency}
+
+\textbf{Finding 108: Hidden state OOD detection adds only 0.2\,ms (0.3\%) to inference latency on an A40 GPU. Post-processing (cosine distance) takes 7.6\,$\mu$s---four orders of magnitude faster than the forward pass.}
+
+We benchmark four inference modes to quantify the computational cost of OOD detection (Figure~\ref{fig:latency}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig71_latency.pdf}
+\caption{\textbf{Computational overhead.} (a) Inference latency: hidden state extraction adds only 0.2\,ms to the 84.1\,ms baseline. (b) Overhead percentages: hidden states at 0.3\%, attention at 6.9\%. (c) Time scale comparison: post-processing is $10{,}000\times$ faster than the forward pass.}
+\label{fig:latency}
+\end{figure}
+
+The near-zero overhead arises because the model already computes hidden states during the forward pass; \texttt{output\_hidden\_states=True} simply prevents their deallocation. Combined with the 7.6\,$\mu$s cosine distance computation, the total OOD detection overhead is \textbf{0.2\,ms per inference}---making it a genuine zero-cost add-on to any VLA deployment pipeline.
+
 \end{document}

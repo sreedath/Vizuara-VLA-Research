@@ -1,0 +1,53 @@
+{
+  "experiment": "latency_analysis",
+  "experiment_number": 85,
+  "timestamp": "20260314_202312",
+  "n_warmup": 3,
+  "n_measure": 10,
+  "gpu": "NVIDIA A40",
+  "results": {
+    "baseline": {
+      "mean_ms": 84.09466287121177,
+      "std_ms": 0.494447875894008,
+      "min_ms": 83.24398938566446,
+      "max_ms": 84.80617683380842
+    },
+    "hidden_states": {
+      "mean_ms": 84.33588733896613,
+      "std_ms": 0.38159478489800847,
+      "min_ms": 83.55557825416327,
+      "max_ms": 84.76086053997278,
+      "overhead_ms": 0.241224467754364,
+      "overhead_pct": 0.28684872442355996
+    },
+    "attention": {
+      "mean_ms": 89.91648154333234,
+      "std_ms": 0.47107118701976064,
+      "min_ms": 89.2529645934701,
+      "max_ms": 91.14101994782686,
+      "overhead_ms": 5.821818672120571,
+      "overhead_pct": 6.922934789615004
+    },
+    "full_features": {
+      "mean_ms": 89.53264076262712,
+      "std_ms": 0.4189686202759628,
+      "min_ms": 88.98786641657352,
+      "max_ms": 90.05847852677107,
+      "overhead_ms": 5.437977891415358,
+      "overhead_pct": 6.4664958580587255
+    },
+    "cosine_postprocess": {
+      "mean_us": 7.567827589809895,
+      "std_us": 2.791252720338172
+    },
+    "pca4_postprocess": {
+      "mean_us": 7.226685993373394,
+      "std_us": 1.0785966711565915
+    },
+    "memory": {
+      "baseline_mb": 15096.09216,
+      "peak_mb": 15989.842944,
+      "overhead_mb": 893.750784
+    }
+  }
+}

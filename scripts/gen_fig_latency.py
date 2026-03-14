@@ -1,4 +1,4 @@
-"""Generate Figure 46: Zero-Overhead Latency Profile."""
+"""Generate Figure 71: Computational Overhead Analysis."""
 import json
 import numpy as np
 import matplotlib
@@ -7,79 +7,77 @@ import matplotlib.pyplot as plt
 
 OUT_DIR = "/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/paper/figures"
 
-fig, axes = plt.subplots(1, 3, figsize=(16, 4.5))
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
 
-# Data from latency_profile experiment
-configs = ['Baseline\n(no extras)', 'Scores\nOnly', 'Hidden\nStates Only', 'Both\n(CalibDrive)']
-means = [296.0, 292.2, 294.4, 294.8]
-stds = [5.1, 8.8, 9.4, 3.1]
-colors = ['#9E9E9E', '#FF9800', '#2196F3', '#4CAF50']
-
-# Panel (a): Latency comparison
+# Panel (a): Inference latency comparison
 ax = axes[0]
-bars = ax.bar(range(len(configs)), means, 0.6, yerr=stds, capsize=5,
+modes = ['Baseline', 'Hidden\nStates', 'Attention', 'Full\nFeatures']
+latencies = [84.1, 84.3, 89.9, 89.5]
+stds = [0.5, 0.4, 0.5, 0.4]
+colors = ['#607D8B', '#4CAF50', '#FF9800', '#2196F3']
+
+bars = ax.bar(range(len(modes)), latencies, 0.6, yerr=stds, capsize=5,
               color=colors, edgecolor='black', linewidth=0.5, alpha=0.85)
-ax.set_xticks(range(len(configs)))
-ax.set_xticklabels(configs, fontsize=9)
-ax.set_ylabel('Inference Latency (ms)', fontsize=11)
-ax.set_title('(a) Generation Latency by Configuration', fontsize=12, fontweight='bold')
-ax.set_ylim(250, 330)
+ax.set_xticks(range(len(modes)))
+ax.set_xticklabels(modes, fontsize=10)
+ax.set_ylabel('Latency (ms)', fontsize=11)
+ax.set_title('(a) Inference Latency', fontsize=12, fontweight='bold')
 ax.grid(True, alpha=0.3, axis='y')
-for bar, m, s in zip(bars, means, stds):
-    ax.text(bar.get_x() + bar.get_width()/2., bar.get_height() + s + 2,
-            f'{m:.0f}ms', ha='center', va='bottom', fontsize=10, fontweight='bold')
-ax.annotate('Within noise\n(±1σ overlap)', xy=(3, 294.8), xytext=(2.2, 315),
-            fontsize=9, color='green', fontweight='bold',
-            arrowprops=dict(arrowstyle='->', color='green'))
+ax.set_ylim(75, 95)
 
-# Panel (b): Overhead percentage
+for bar, v in zip(bars, latencies):
+    ax.text(bar.get_x() + bar.get_width()/2., bar.get_height() + 0.8,
+            f'{v:.1f}ms', ha='center', va='bottom', fontsize=10, fontweight='bold')
+
+ax.annotate('Hidden states:\n+0.3% overhead!', xy=(1, 84.5), xytext=(2, 78),
+            fontsize=10, color='darkgreen', fontweight='bold',
+            arrowprops=dict(arrowstyle='->', color='darkgreen'))
+
+# Panel (b): Overhead percentages
 ax = axes[1]
-overheads = [-3.9, -1.7, -1.3]
-overhead_labels = ['Scores Only', 'Hidden Only', 'Both (CalibDrive)']
-overhead_colors = ['#FF9800', '#2196F3', '#4CAF50']
+overhead_labels = ['Hidden\nStates', 'Attention', 'Full\nFeatures']
+overhead_ms = [0.2, 5.8, 5.4]
+overhead_pct = [0.3, 6.9, 6.5]
+colors_oh = ['#4CAF50', '#FF9800', '#2196F3']
 
-bars = ax.barh(range(len(overheads)), overheads, 0.5, color=overhead_colors,
-               edgecolor='black', linewidth=0.5, alpha=0.85)
-ax.axvline(x=0, color='black', linewidth=1)
-ax.set_yticks(range(len(overheads)))
-ax.set_yticklabels(overhead_labels, fontsize=10)
-ax.set_xlabel('Overhead vs Baseline (ms)', fontsize=11)
-ax.set_title('(b) Overhead: All Within Noise', fontsize=12, fontweight='bold')
-ax.set_xlim(-15, 15)
-ax.grid(True, alpha=0.3, axis='x')
-# Shade noise band
-ax.axvspan(-5.1, 5.1, alpha=0.1, color='gray', label='±1σ noise band')
+bars = ax.bar(range(len(overhead_labels)), overhead_pct, 0.5, color=colors_oh,
+              edgecolor='black', linewidth=0.5, alpha=0.85)
+ax.set_xticks(range(len(overhead_labels)))
+ax.set_xticklabels(overhead_labels, fontsize=10)
+ax.set_ylabel('Overhead (%)', fontsize=11)
+ax.set_title('(b) Detection Overhead', fontsize=12, fontweight='bold')
+ax.grid(True, alpha=0.3, axis='y')
+
+for bar, v, ms in zip(bars, overhead_pct, overhead_ms):
+    ax.text(bar.get_x() + bar.get_width()/2., bar.get_height() + 0.2,
+            f'{v:.1f}%\n(+{ms:.1f}ms)', ha='center', va='bottom', fontsize=9, fontweight='bold')
+
+ax.axhline(y=1.0, color='green', linestyle='--', alpha=0.3, label='1% overhead')
 ax.legend(fontsize=8)
 
-for bar, v in zip(bars, overheads):
-    x = bar.get_width()
-    ax.text(x + 0.5 if x >= 0 else x - 0.5, bar.get_y() + bar.get_height()/2.,
-            f'{v:+.1f}ms', ha='left' if x >= 0 else 'right', va='center',
-            fontsize=10, fontweight='bold')
-
-# Panel (c): Post-processing cost breakdown
+# Panel (c): Post-processing time scale comparison
 ax = axes[2]
-labels = ['Model\nInference', 'Cosine\nDistance', 'Action\nMass']
-times_us = [294800, 12.21, 249.30]
-times_ms = [t/1000 for t in times_us]
-pcts = [t/sum(times_us)*100 for t in times_us]
+components = ['Model\nForward', 'Hidden State\nOverhead', 'Cosine\nDistance', 'PCA-4\n+ Cosine']
+times_us = [84100, 200, 7.6, 7.2]
+colors_pp = ['#607D8B', '#4CAF50', '#FF5722', '#E91E63']
 
-# Use log scale for the dramatic difference
-bars = ax.bar(range(len(labels)), times_us, 0.6,
-              color=['#9E9E9E', '#2196F3', '#FF9800'],
-              edgecolor='black', linewidth=0.5, alpha=0.85)
-ax.set_xticks(range(len(labels)))
-ax.set_xticklabels(labels, fontsize=10)
-ax.set_ylabel('Time (µs, log scale)', fontsize=11)
-ax.set_title('(c) Post-Processing Cost', fontsize=12, fontweight='bold')
-ax.set_yscale('log')
-ax.grid(True, alpha=0.3, axis='y')
-for bar, t, p in zip(bars, times_us, pcts):
-    ax.text(bar.get_x() + bar.get_width()/2., bar.get_height() * 1.5,
-            f'{p:.2f}%' if p < 1 else f'{p:.0f}%',
-            ha='center', va='bottom', fontsize=10, fontweight='bold')
+bars = ax.barh(range(len(components)), np.log10(times_us), 0.6, color=colors_pp,
+               edgecolor='black', linewidth=0.5, alpha=0.85)
+ax.set_yticks(range(len(components)))
+ax.set_yticklabels(components, fontsize=10)
+ax.set_xlabel('Time (log₁₀ μs)', fontsize=11)
+ax.set_title('(c) Time Scale Comparison', fontsize=12, fontweight='bold')
+ax.grid(True, alpha=0.3, axis='x')
+
+labels_text = ['84.1 ms', '0.2 ms', '7.6 μs', '7.2 μs']
+for bar, txt in zip(bars, labels_text):
+    ax.text(bar.get_width() + 0.1, bar.get_y() + bar.get_height()/2.,
+            txt, ha='left', va='center', fontsize=10, fontweight='bold')
+
+ax.annotate('Post-processing\n10,000× faster\nthan forward pass', xy=(1, 2.5),
+            fontsize=9, color='darkred', fontweight='bold')
 
 plt.tight_layout()
-plt.savefig(f'{OUT_DIR}/fig46_latency.png', dpi=200, bbox_inches='tight')
-plt.savefig(f'{OUT_DIR}/fig46_latency.pdf', dpi=200, bbox_inches='tight')
-print("Saved fig46_latency.png/pdf")
+plt.savefig(f'{OUT_DIR}/fig71_latency.png', dpi=200, bbox_inches='tight')
+plt.savefig(f'{OUT_DIR}/fig71_latency.pdf', dpi=200, bbox_inches='tight')
+print("Saved fig71_latency.png/pdf")
