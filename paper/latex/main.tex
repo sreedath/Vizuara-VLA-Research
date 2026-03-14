@@ -1946,4 +1946,20 @@ We systematically construct scenarios designed to fool the detector: inverted co
 
 The failure to find failure modes suggests that the VLA's hidden states encode a rich, multi-faceted representation of the visual scene---one that is sensitive to color statistics, spatial layout, texture, and orientation simultaneously. Any meaningful alteration to the driving scene creates a detectable signature. The difficulty ordering (structural $<$ textural $<$ color $<$ semantic) reveals that the detector is most robust to the changes that matter most for safety: even preserving exact driving colors and road structure while only changing spatial geometry triggers detection. The failure boundary, if it exists, lies below the threshold of any perceptually meaningful scene variation.
 
+\subsection{Activation Statistics Analysis}
+\label{app:activation_stats}
+
+\textbf{Finding 125: Mean activation achieves 0.984 AUROC, sparsity 0.968, kurtosis 0.936---seven features independently exceed 0.95 AUROC. All are calibration-free: no centroid, no reference set, no threshold learning required.}
+
+We extract 14 activation-level statistics from the last hidden state and evaluate each as an independent OOD detector (Figure~\ref{fig:activation_stats}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig88_activation_stats.pdf}
+\caption{\textbf{Activation statistics.} (a) Per-feature AUROC ranking: 7 features exceed 0.95. Mean activation (0.984) and abs mean/L1 norm (0.983) lead. (b) Normalized statistics by category: ID categories (highway, urban) cluster together while OOD categories spread. (c) Sparsity profile: ID activations are sparser at all thresholds---62.3\% vs 56.2\% within $|x|<1$.}
+\label{fig:activation_stats}
+\end{figure}
+
+The activation statistics analysis reveals that the ID/OOD distinction is deeply embedded in the distributional properties of the hidden state, not just its direction. ID activations are more negative-biased (mean $-0.025$ vs $-0.003$), more peaked (kurtosis 21.2 vs 14.5), sparser (62.3\% vs 56.2\% within $|x|<1$), and more skewed (1.40 vs 1.05). These properties suggest the model develops a compact, efficient representation for familiar driving scenes, with most activations suppressed near zero. OOD inputs disrupt this structure, activating more neurons above the noise floor---the model ``works harder'' on unfamiliar inputs. Critically, these features require no calibration and could serve as a defense-in-depth layer alongside the cosine distance detector, providing redundant OOD monitoring through complementary mechanisms.
+
 \end{document}

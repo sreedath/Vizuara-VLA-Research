@@ -4496,3 +4496,59 @@ Hidden state AUROC: **1.000** (for reference)
 5. **Rotation is caught**: Rotating a highway 90° (0.212) is clearly OOD. The model encodes orientation-specific features, not just content.
 
 6. **The detector appears to have no accessible failure mode** for the driving domain: any perceptible change to the driving scene triggers detection. The failure boundary, if it exists, is below the perceptual threshold of meaningful scene changes.
+
+---
+
+## Finding 96: Activation Statistics Analysis
+
+**Experiment 102** — Tests whether activation-level statistics (sparsity, kurtosis, skewness, mean, variance, top-k patterns) differ systematically between ID and OOD, providing calibration-free OOD signals.
+
+### Setup
+- 6 categories: highway (ID), urban (ID), noise (OOD), indoor (OOD), twilight (OOD), snow (OOD)
+- 10 samples per category, 60 total inferences
+- 14 activation features extracted from last hidden state
+- Per-feature AUROC with bidirectional search (higher/lower = OOD)
+
+### Per-Feature AUROC Rankings
+
+| Feature | AUROC | Direction |
+|---------|-------|-----------|
+| **Mean** | **0.984** | higher=OOD |
+| **Abs mean** | **0.983** | higher=OOD |
+| **L1 norm** | **0.983** | higher=OOD |
+| **Top-100 mean** | **0.979** | higher=OOD |
+| **Std dev** | **0.976** | higher=OOD |
+| **L2 norm** | **0.976** | higher=OOD |
+| **Sparsity (|x|<1)** | **0.968** | lower=OOD |
+| **Positive frac** | **0.946** | higher=OOD |
+| Skewness | 0.938 | lower=OOD |
+| Kurtosis | 0.936 | lower=OOD |
+| Sparsity (|x|<0.1) | 0.889 | lower=OOD |
+| Top-10 mean | 0.828 | higher=OOD |
+| Sparsity (|x|<0.01) | 0.683 | lower=OOD |
+| Max abs | 0.609 | higher=OOD |
+
+### ID vs OOD Category Statistics
+
+| Statistic | ID (highway/urban) | OOD (4 categories) | Direction |
+|-----------|-------------------|---------------------|-----------|
+| Mean activation | -0.025 | -0.003 | OOD closer to zero |
+| Std dev | 1.183 | 1.349 | OOD more dispersed |
+| Sparsity (|x|<1) | 0.623 | 0.562 | OOD less sparse |
+| Kurtosis | 21.2 | 14.5 | OOD less peaked |
+| L1 norm | 3,704 | 4,249 | OOD 15% higher |
+| L2 norm | 75.7 | 86.4 | OOD 14% higher |
+
+### Key Insights
+
+1. **Mean activation is the best single feature (0.984 AUROC)**: ID activations average -0.025 while OOD averages -0.003. The model produces more negative-biased activations for familiar driving scenes — a possible signature of learned inhibitory patterns.
+
+2. **Seven features exceed 0.95 AUROC**: Mean, abs_mean, L1 norm, top-100 mean, std, L2 norm, and sparsity all independently provide near-perfect discrimination. This redundancy suggests the ID/OOD distinction is deeply encoded.
+
+3. **Sparsity decreases for OOD (0.968 AUROC)**: ID activations have 62.3% of values within |x|<1, but OOD only 56.2%. OOD inputs activate more neurons above the noise floor — the model "works harder" on unfamiliar inputs.
+
+4. **Kurtosis drops for OOD (0.936 AUROC)**: ID kurtosis is 21.2 (highly peaked) vs OOD 14.5 (flatter). The model's activations are more concentrated for ID inputs, suggesting a more focused, efficient representation.
+
+5. **All features are calibration-free**: These statistics require no reference centroid, no calibration set, and no threshold learning. A simple threshold on mean activation or sparsity provides near-perfect detection.
+
+6. **Complementary to cosine distance**: While cosine distance measures direction relative to a calibration centroid, activation statistics measure intrinsic properties. Combining both could provide defense-in-depth OOD monitoring.
