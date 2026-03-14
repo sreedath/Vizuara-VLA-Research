@@ -1,0 +1,19 @@
+{
+  "experiment": "attn_calibfree",
+  "experiment_number": 64,
+  "timestamp": "20260314_183558",
+  "n_test": 70,
+  "calfree_aurocs": {
+    "attn_entropy": 0.9833333333333333,
+    "attn_max": 1.0,
+    "1-mass": 0.6216666666666666
+  },
+  "fusion_results": {
+    "cos+attn_ent": 0.8575,
+    "cos+attn_max": 0.8591666666666666,
+    "0.7cos+0.3ent": 0.8066666666666666,
+    "0.7cos+0.3max": 0.8049999999999999,
+    "cos+mass+ent": 0.84,
+    "all_equal": 0.9291666666666666
+  }
+}
