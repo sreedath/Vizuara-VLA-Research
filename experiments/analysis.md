@@ -262,10 +262,11 @@ This should give us the best of all worlds:
 - [x] NeurIPS paper draft (LaTeX)
 - [x] Figure generation with paperbanana
 
-**Completed:**
 - [x] Large-scale validation (200 samples, 8 scenarios, statistical tests)
+- [x] Temperature sweep (7 temperatures, 100 samples)
+- [x] Entropy-based selective prediction (120 samples, 5 signals)
+- [x] Per-dimension calibration + cross-prompt consistency (80 + 240 inferences)
 
 **In Progress:**
-- [ ] Temperature sweep on real model
-- [ ] Per-dimension uncertainty decomposition
+- [ ] Dropout rate sensitivity sweep (7 rates × 60 samples × 10 MC passes)
 - [ ] Additional experiment iterations
