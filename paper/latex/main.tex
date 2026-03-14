@@ -2266,4 +2266,24 @@ We test detector behavior on temporal sequences: smooth interpolation from highw
 
 The temporal analysis confirms that the cosine distance detector is a memoryless, frame-independent system. Each input is processed independently with no state carried between frames---the autoregressive model computes a fresh forward pass for each image. This has important deployment implications. On the positive side, the detector responds instantly to OOD inputs (no warm-up, no lag) and produces scores that are strictly proportional to the OOD severity (90\% monotonicity in smooth transitions). On the negative side, there is no built-in temporal smoothing, so a single corrupted sensor frame would trigger a detection. For deployment, a simple exponential moving average over the raw scores would provide temporal smoothing while preserving the instant-response property. The smooth-transition experiment reveals that the score function is approximately linear in the blend factor (mean step size 0.025 per 5\% increment), making threshold selection straightforward: any threshold between the ID score range ($\sim$0.02) and the lowest OOD score ($\sim$0.20 for fog) will work.
 
+\subsection{Cross-Prompt Calibration Transfer}
+\label{app:cross_prompt_transfer}
+
+\textbf{Finding 145: Centroids calibrated with one prompt transfer perfectly to other prompts---all 25 (calibration, test) prompt pairs achieve AUROC = 1.000 with zero degradation. Centroid similarity across prompts averages only 0.609, yet the OOD signal is preserved in orthogonal embedding dimensions.}
+
+\textbf{Finding 146: D-prime decreases from 46.1 (same-prompt) to 17.1 (cross-prompt) on average, but the minimum cross-prompt d-prime is 5.84---still far above any reasonable detection threshold.}
+
+\textbf{Finding 147: Some prompts produce more ``universal'' centroids than others. The navigate$\rightarrow$lane\_keep pair achieves d = 46.2, nearly matching same-prompt performance (51.5), while drive\_forward$\rightarrow$navigate yields only d = 8.3.}
+
+We test whether a centroid calibrated with one task prompt transfers to OOD detection when test images are processed with a different prompt (Figure~\ref{fig:cross_prompt_calibration}). Experiment 115 showed all prompts individually achieve AUROC = 1.000; this experiment tests the stronger claim that the \emph{centroid itself} transfers across prompts.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig108_cross_prompt_calibration.png}
+\caption{\textbf{Cross-prompt calibration transfer.} (a) D-prime transfer matrix: diagonal entries (same-prompt, 26--63) are higher than off-diagonal (cross-prompt, 6--46), but all cells yield AUROC = 1.000. (b) Centroid cosine similarity across prompts averages only 0.609---centroids point in substantially different directions. (c) Despite the d-prime reduction, even the weakest cross-prompt pair (d = 5.84) far exceeds the detection threshold.}
+\label{fig:cross_prompt_calibration}
+\end{figure}
+
+The cross-prompt transfer result has strong practical implications. In deployment, the task prompt may change frequently---the vehicle might switch from ``drive forward'' to ``avoid obstacle'' to ``navigate intersection'' within seconds. Our finding that a single calibration set with \emph{any} driving prompt produces a centroid that works with \emph{all} driving prompts means that no re-calibration is needed when the task changes. The low centroid similarity (0.609) suggests that different prompts produce centroids in different subspaces of the 4096-dimensional embedding space, yet the OOD signal occupies dimensions that are orthogonal to the prompt-specific variation. This is consistent with our earlier finding (Experiment 119) that ID embeddings cluster tightly ($24^\circ$ from centroid) while OOD embeddings scatter widely ($42$--$56^\circ$)---the ID/OOD separation is so large that prompt-induced centroid shifts cannot bridge the gap.
+
 \end{document}
