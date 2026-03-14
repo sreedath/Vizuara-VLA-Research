@@ -3533,3 +3533,34 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Multiple token positions achieve perfect AUROC**: Positions 5%, 95%, and 100% all achieve 1.000, offering redundancy for robust detection.
 
 5. **Practical implication**: Reading the hidden state at position 5% (visual token region) could enable very early OOD detection without processing the full sequence.
+
+---
+
+## Finding 72: Even 2 PCA Dimensions Suffice for Perfect Detection (d=8.84)
+
+**Experiment 78** — Embedding dimensionality analysis.
+
+### Setup
+- PCA reduction: 2, 4, 8, 16 dimensions + full 4096
+- 30 calibration, 46 test samples
+- Cosine distance AUROC and Cohen's d at each dimension
+
+### Results
+
+| Dimensions | AUROC | Cohen's d | ID Cosine | OOD Cosine |
+|-----------|-------|----------|-----------|------------|
+| **2** | **1.000** | 8.84 | 0.500 | 1.769 |
+| **4** | **1.000** | **19.80** | 0.505 | 1.548 |
+| 8 | **1.000** | 14.95 | 0.512 | 1.503 |
+| 16 | **1.000** | 15.01 | 0.527 | 1.495 |
+| 4096 (full) | **1.000** | 9.74 | 0.087 | 0.418 |
+
+### Key Insights
+
+1. **PCA-2 achieves perfect AUROC**: Just 2 principal components capture enough OOD signal for perfect detection. The ID/OOD clusters are so well-separated they're linearly separable in 2D.
+
+2. **PCA-4 has peak separability (d=19.80)**: This is the highest Cohen's d observed in any experiment — the first 4 principal components concentrate the discriminative signal more efficiently than the full 4096-dim space.
+
+3. **Full dimensionality is NOT optimal**: d=9.74 at 4096 dims vs d=19.80 at 4 dims. The curse of dimensionality actually dilutes the OOD signal in the full space.
+
+4. **Practical implication: OOD detection can be done with a 4-dimensional projection**, enabling extremely lightweight deployment with a 4×4096 projection matrix and 4D centroid. This reduces memory from 16KB to 16 bytes per centroid.

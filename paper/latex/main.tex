@@ -1558,4 +1558,20 @@ We analyze cosine distance OOD detection at different token positions within the
 
 The U-shaped pattern reveals the mechanistic origin of the OOD signal: it arises from \emph{visual processing} (position 5\%), not text conditioning (25--90\%). The signal then re-concentrates at the output end (95--100\%) where the model integrates visual and text information for action prediction. This suggests that visual token representations could enable \textbf{ultra-early OOD detection}---flagging OOD inputs before the model even processes the text instruction.
 
+\subsection{Embedding Dimensionality}
+\label{app:embedding_dim}
+
+\textbf{Finding 101: Even 2 PCA dimensions achieve perfect AUROC (1.000); PCA-4 has peak separability ($d=19.80$), exceeding the full 4096-dimensional space ($d=9.74$).}
+
+We test whether PCA-reduced hidden states maintain OOD detection (Figure~\ref{fig:embedding_dim}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig64_embedding_dim.pdf}
+\caption{\textbf{Embedding dimensionality.} (a) Perfect AUROC at all dimensions, including just 2. (b) Peak separability at 4 dimensions ($d=19.80$), exceeding full 4096-dim ($d=9.74$). The curse of dimensionality dilutes the OOD signal.}
+\label{fig:embedding_dim}
+\end{figure}
+
+This result has two significant implications: (1) The OOD signal is concentrated in a very low-dimensional subspace, suggesting that ID and OOD distributions differ primarily along a few principal axes. (2) Deployment can use a \textbf{4-dimensional projection} (a $4\times4096$ matrix plus a 4D centroid), reducing the memory footprint from $\sim$16\,KB to $\sim$16 bytes per centroid while \emph{improving} separability.
+
 \end{document}
