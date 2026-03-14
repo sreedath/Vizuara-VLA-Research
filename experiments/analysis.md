@@ -641,3 +641,52 @@ This should give us the best of all worlds:
 5. **MC entropy remains strong at 0.843**: Despite dropout degrading action mass, the entropy signal under dropout is robust and complementary.
 
 6. **Practical recommendation**: Use single-pass action mass (AUROC ≈ 0.88-0.95) with the default prompt for OOD detection. For a more robust multi-signal approach, combine single-pass action mass with MC dropout entropy (from separate passes).
+
+---
+
+## Finding 14: Action Mass Under Temperature & Augmentation (Real OpenVLA-7B, Experiment 20)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, no dropout)
+- **Samples**: 80 across 6 scenarios
+- **Temperatures**: T ∈ {0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0}
+- **Augmentations**: original, horizontal flip, brightness +30%, brightness -30%, center crop 80%
+- **Total inferences**: 480
+
+### Action Mass AUROC vs Temperature
+
+| T | Action Mass AUROC | Entropy AUROC |
+|---|-------------------|---------------|
+| **0.25** | **0.874** | 0.748 |
+| 0.5 | 0.866 | 0.771 |
+| 0.75 | 0.857 | 0.797 |
+| 1.0 | 0.856 | 0.817 |
+| 1.5 | 0.846 | **0.846** |
+| 2.0 | 0.811 | 0.839 |
+| 3.0 | 0.548 | 0.819 |
+| 5.0 | **0.346** | 0.791 |
+
+### Augmentation Robustness
+
+| Augmentation | AUROC | Easy Mass | OOD Mass |
+|-------------|-------|-----------|----------|
+| Original | **0.856** | 0.967 | 0.863 |
+| Center Crop | 0.854 | 0.950 | 0.838 |
+| Flip H | 0.823 | 0.951 | 0.863 |
+| Bright Up | 0.764 | 0.949 | 0.883 |
+| Bright Down | **0.690** | 0.941 | 0.909 |
+| **Ensemble (avg)** | **0.930** | — | — |
+
+### Key Insights
+
+1. **Low temperature maximizes action mass AUROC**: T=0.25 achieves 0.874 vs T=1.0's 0.856. Sharper softmax concentrates mass on top tokens, making the action/non-action split more discriminative.
+
+2. **High temperature destroys action mass**: At T=5.0, AUROC=0.346 (worse than random). Flat softmax distributes mass uniformly across all 32k tokens, erasing the signal.
+
+3. **Action mass and entropy have opposite optimal temperatures**: Action mass peaks at T=0.25, entropy peaks at T=1.5. This complementarity suggests using both signals at their respective optimal temperatures.
+
+4. **Augmentation ensemble achieves AUROC=0.930**: Averaging action mass across 5 image augmentations recovers much of the signal without MC dropout. This is the cheapest robust ensemble — 5 forward passes vs 10+ for MC.
+
+5. **Brightness reduction is worst augmentation (0.690)**: Darkening images makes easy scenes look more like night/OOD in terms of action mass.
+
+6. **Center crop is most robust (0.854)**: Nearly matching original, suggesting action mass is spatially stable.
