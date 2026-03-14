@@ -4229,3 +4229,54 @@ Hidden state AUROC: **1.000** (for reference)
 5. **This extends Experiment 71**: That experiment tested 5 prompts; this tests 8 including adversarial. The conclusion is stronger: no prompt formulation can break or improve detection beyond the visual signal.
 
 6. **Practical implication**: Prompt choice doesn't matter for detection. Use whatever prompt is natural for the deployment task — the safety monitor is completely decoupled from prompt engineering.
+
+---
+
+## Finding 90: Norm-Based OOD Detection
+
+**Experiment 96** — Tests whether embedding norm alone can detect OOD, comparing L2, L1, Linf norms and combinations with cosine distance.
+
+### Setup
+- 20 calibration, 20 ID, 32 OOD samples
+- 8 detection methods: L2 norm, L1 norm, Linf norm, L2 deviation, cosine, Euclidean, cosine+norm, cosine×norm
+- Per-category norm analysis
+- ~72 model inferences
+
+### Results
+
+| Method | AUROC |
+|--------|-------|
+| L1 norm | 0.983 |
+| L2 norm | 0.975 |
+| L2 deviation | 0.930 |
+| Linf norm | 0.604 |
+| **Cosine distance** | **1.000** |
+| **Euclidean distance** | **1.000** |
+| **Cosine + Norm** | **1.000** |
+| Cosine × Norm | 0.255 |
+
+### Per-Category Norm Detection (L2 norm AUROC)
+
+| Category | Mean Norm | AUROC |
+|----------|-----------|-------|
+| ID | 75.6±3.2 | — |
+| Indoor | 93.3±3.4 | 1.000 |
+| Noise | 88.4±4.1 | 1.000 |
+| Snow | 83.6±3.2 | 0.988 |
+| Twilight | 80.3±1.9 | 0.913 |
+
+### Key Insights
+
+1. **Norm is a strong but imperfect OOD signal**: L2 norm achieves 0.975 AUROC — far above chance but below cosine's 1.000. OOD inputs systematically inflate embedding norms.
+
+2. **L1 outperforms L2**: 0.983 vs 0.975, suggesting the OOD norm increase is distributed across many dimensions rather than concentrated in a few.
+
+3. **Linf is weak**: 0.604 — max single-dimension activation is not discriminative. The OOD signal is distributed, not localized.
+
+4. **Twilight is the hardest for norm**: AUROC=0.913 because twilight norms (80.3) are closest to ID (75.6). Twilight is "near-OOD" in norm space, consistent with its behavior in other experiments.
+
+5. **Cosine + Norm combination doesn't improve over cosine alone**: Both achieve 1.000. The norm signal is already captured by the directional signal.
+
+6. **Cosine × Norm catastrophically fails**: 0.255 AUROC — the product introduces sign-dependent interactions that destroy the ranking.
+
+7. **Norm provides a complementary baseline**: For systems that cannot compute centroids (no calibration), raw norm is a reasonable OOD indicator at 0.975-0.983 AUROC.

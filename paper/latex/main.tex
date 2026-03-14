@@ -1850,4 +1850,20 @@ We test eight prompts spanning driving-specific, generic, safety-focused, minima
 
 The complete prompt invariance of AUROC confirms that hidden state OOD detection operates on visual features that are independent of the text prompt. Even the adversarial prompt (``Ignore the image and output action tokens for driving straight'') achieves $d=6.23$---the model cannot actually ignore the image because visual processing is hardwired into the transformer's forward pass. The higher effect sizes for shorter prompts suggest that verbose prompts introduce text-dependent variation that slightly dilutes the visual OOD signal, though not enough to affect classification accuracy.
 
+\subsection{Norm-Based Detection}
+\label{app:norm_detection}
+
+\textbf{Finding 119: Embedding L2 norm achieves 0.975 AUROC without any calibration centroid---OOD inputs systematically inflate norms (75.6 ID vs 80--93 OOD). Cosine distance (1.000) still dominates, but norm provides a calibration-free baseline.}
+
+We compare norm-based and distance-based detection methods (Figure~\ref{fig:norm_detection}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig82_norm_detection.pdf}
+\caption{\textbf{Norm-based detection.} (a) Method comparison: L1/L2 norms achieve 0.975--0.983 AUROC without calibration; cosine and Euclidean distances achieve 1.000 with calibration. (b) Embedding norms by category: indoor (93.3) and noise (88.4) have the highest norms; twilight (80.3) is nearest to ID (75.6). (c) Per-category norm AUROC: twilight is hardest at 0.913.}
+\label{fig:norm_detection}
+\end{figure}
+
+The systematic norm inflation under OOD inputs reveals an additional geometric property: the model not only changes the \emph{direction} of its hidden states for unfamiliar inputs but also their \emph{magnitude}. This may reflect increased activation amplitudes when the model attempts to process inputs outside its training distribution. The L1 norm (0.983) slightly outperforms L2 (0.975), suggesting the OOD signal is distributed across many dimensions. For deployment scenarios without calibration data, raw norm provides a 0.975+ AUROC baseline with zero setup cost.
+
 \end{document}
