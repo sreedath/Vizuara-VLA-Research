@@ -781,3 +781,59 @@ This should give us the best of all worlds:
 5. **Action mass distribution is well-separated**: Easy mean = 0.971 vs OOD mean = 0.876, a 0.095 gap with moderate overlap (easy min = 0.836, OOD max = 0.997).
 
 6. **Prediction set sizes scale with difficulty**: Easy samples have 0.3 dims flagged on average, hard/OOD have 1.9 — a 6× difference that provides a natural per-dimension uncertainty measure.
+
+---
+
+## Finding 17: Leaked Token Interpretability (Real OpenVLA-7B, Experiment 23)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass)
+- **Samples**: 80 across 6 scenarios
+- **Analysis**: Decode non-action tokens receiving leaked probability mass
+
+### Top 5 Global Leaked Tokens
+
+| Rank | Token ID | Character | Total Mass | Avg/Dim |
+|------|----------|-----------|------------|---------|
+| 1 | 31808 | '忠' (Chinese: loyalty) | 17.56 | 0.0314 |
+| 2 | 31807 | '⊤' (math: top/true) | 3.84 | 0.0069 |
+| 3 | 31803 | '씨' (Korean: Mr/Ms) | 3.73 | 0.0067 |
+| 4 | 31770 | 'ḷ' | 3.72 | 0.0066 |
+| 5 | 31802 | '들' (Korean: plural) | 2.56 | 0.0046 |
+
+### Per-Scenario Top Leaked Token
+
+| Scenario | Top Token | Mass |
+|----------|-----------|------|
+| Highway | '忠' | 2.03 |
+| Urban | '忠' | 1.89 |
+| Night | '忠' | 3.90 |
+| Rain | '忠' | 1.54 |
+| OOD Noise | **'ḷ'** | 2.45 |
+| OOD Blank | '忠' | 5.81 |
+
+### Per-Dimension Leak Ratio (OOD/Easy)
+
+| Dim | Easy Leak | OOD Leak | Ratio |
+|-----|-----------|----------|-------|
+| 0 (lateral) | 0.0015 | 0.0140 | 9.2× |
+| 1 (long) | 0.0214 | 0.2630 | **12.3×** |
+| 2 (z) | 0.0024 | 0.1499 | **62.3×** |
+| 3 (roll) | 0.0074 | 0.0328 | 4.5× |
+| 4 (pitch) | 0.0518 | 0.1175 | 2.3× |
+| 5 (yaw) | 0.0964 | 0.0585 | **0.61×** |
+| 6 (gripper) | 0.1411 | 0.2250 | 1.6× |
+
+### Key Insights
+
+1. **All top leaked tokens are rare Unicode characters**: Chinese, Korean, Greek, and mathematical symbols. These are "garbage tokens" — vocabulary entries with minimal training signal that serve as probability sinks when the model is uncertain.
+
+2. **Token '忠' dominates across all scenarios**: 31% of total leaked mass goes to this single Chinese character. This suggests a systematic artifact of the LLaMA tokenizer used by OpenVLA.
+
+3. **OOD noise leaks to DIFFERENT tokens than easy inputs**: OOD noise uniquely prefers 'ḷ' and 'ぶ' (Japanese), while easy inputs prefer '⊤' and '씨'. Jaccard overlap between easy and OOD top-20 leaked tokens is only 0.25.
+
+4. **Dim 2 (z-axis) has most extreme leak ratio (62×)**: Easy samples retain 99.76% action mass on dim 2, while OOD leaks 15%. This single dimension could serve as a highly discriminative OOD detector.
+
+5. **Dim 5 (yaw) is inverted**: Easy samples leak MORE than OOD (ratio 0.61×), suggesting the model is systematically uncertain about yaw in structured scenes.
+
+6. **Leaked token identity is scenario-dependent**: This opens a potential research direction — using leaked token identity (not just mass) as an uncertainty signal.

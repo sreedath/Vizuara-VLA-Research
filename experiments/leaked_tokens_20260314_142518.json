@@ -1,0 +1,1311 @@
+{
+  "timestamp": "20260314_142518",
+  "top_global_tokens": [
+    {
+      "id": 31744,
+      "mass": 17.564260969250768,
+      "text": "\u5fe0"
+    },
+    {
+      "id": 31802,
+      "mass": 3.9340439571275283,
+      "text": "\u1e37"
+    },
+    {
+      "id": 31781,
+      "mass": 2.590884591995632,
+      "text": "\uc528"
+    },
+    {
+      "id": 31771,
+      "mass": 2.378525128221895,
+      "text": "\u22a4"
+    },
+    {
+      "id": 31804,
+      "mass": 2.3602719287899845,
+      "text": "\ub4e4"
+    },
+    {
+      "id": 31800,
+      "mass": 1.9478704211767308,
+      "text": "\u071d"
+    },
+    {
+      "id": 31782,
+      "mass": 1.479487199120399,
+      "text": "\u3076"
+    },
+    {
+      "id": 31803,
+      "mass": 1.3801206171945068,
+      "text": "\u53f3"
+    },
+    {
+      "id": 31807,
+      "mass": 0.9856319099503708,
+      "text": "\u0c4d"
+    },
+    {
+      "id": 31801,
+      "mass": 0.9386595412679526,
+      "text": "\u103c"
+    },
+    {
+      "id": 31798,
+      "mass": 0.9299336496210344,
+      "text": "\u8fbe"
+    },
+    {
+      "id": 31799,
+      "mass": 0.8520640281818714,
+      "text": "\u011a"
+    },
+    {
+      "id": 31780,
+      "mass": 0.7685112201583024,
+      "text": "\u5ea7"
+    },
+    {
+      "id": 31768,
+      "mass": 0.739182657222841,
+      "text": "\u51fb"
+    },
+    {
+      "id": 31794,
+      "mass": 0.6638012127524462,
+      "text": "\u02e0"
+    },
+    {
+      "id": 31806,
+      "mass": 0.5991588299685873,
+      "text": "\u04cf"
+    },
+    {
+      "id": 31792,
+      "mass": 0.5181934358971603,
+      "text": "\u5289"
+    },
+    {
+      "id": 31769,
+      "mass": 0.479330317169115,
+      "text": "\u1f18"
+    },
+    {
+      "id": 31784,
+      "mass": 0.47624360628935847,
+      "text": "\u4e91"
+    },
+    {
+      "id": 31805,
+      "mass": 0.45950677511928006,
+      "text": "\u015d"
+    },
+    {
+      "id": 31778,
+      "mass": 0.4392246121860808,
+      "text": "\u1fb6"
+    },
+    {
+      "id": 31796,
+      "mass": 0.43457580951519503,
+      "text": "\u0e13"
+    },
+    {
+      "id": 31791,
+      "mass": 0.4116929963272469,
+      "text": "\u5224"
+    },
+    {
+      "id": 31795,
+      "mass": 0.4008496342590888,
+      "text": "\u7f16"
+    },
+    {
+      "id": 31751,
+      "mass": 0.3055212606045643,
+      "text": "\u8be5"
+    },
+    {
+      "id": 31793,
+      "mass": 0.2888435157292406,
+      "text": "\u02dc"
+    },
+    {
+      "id": 31767,
+      "mass": 0.2871284603888853,
+      "text": "\u4e32"
+    },
+    {
+      "id": 31785,
+      "mass": 0.26809281408282004,
+      "text": "\u544a"
+    },
+    {
+      "id": 31746,
+      "mass": 0.2571391209531839,
+      "text": "\ub2e8"
+    },
+    {
+      "id": 31752,
+      "mass": 0.23405879986955824,
+      "text": "\u1e6f"
+    },
+    {
+      "id": 31786,
+      "mass": 0.23369224162968294,
+      "text": "\u5909"
+    },
+    {
+      "id": 31776,
+      "mass": 0.2214567384144175,
+      "text": "\u0964"
+    },
+    {
+      "id": 31756,
+      "mass": 0.2130158924769603,
+      "text": "\u4e13"
+    },
+    {
+      "id": 31775,
+      "mass": 0.1977083528353205,
+      "text": "\u1015"
+    },
+    {
+      "id": 31777,
+      "mass": 0.17821757594447263,
+      "text": "\u0450"
+    },
+    {
+      "id": 31757,
+      "mass": 0.16351927984192116,
+      "text": "\u5207"
+    },
+    {
+      "id": 31789,
+      "mass": 0.15489365566065771,
+      "text": "\uac1c"
+    },
+    {
+      "id": 31787,
+      "mass": 0.14877558949820013,
+      "text": "\u8bd5"
+    },
+    {
+      "id": 31797,
+      "mass": 0.14612670014321338,
+      "text": "\u1eef"
+    },
+    {
+      "id": 31783,
+      "mass": 0.1405398796729287,
+      "text": "\u0162"
+    },
+    {
+      "id": 31762,
+      "mass": 0.13778015099182994,
+      "text": "\u5e78"
+    },
+    {
+      "id": 31745,
+      "mass": 0.13519850055547522,
+      "text": "\u9519"
+    },
+    {
+      "id": 31761,
+      "mass": 0.1331542129277068,
+      "text": "\u305a"
+    },
+    {
+      "id": 31749,
+      "mass": 0.1276190897090146,
+      "text": "\u6865"
+    },
+    {
+      "id": 31772,
+      "mass": 0.1211398859320525,
+      "text": "\u2097"
+    },
+    {
+      "id": 31774,
+      "mass": 0.11083572748714232,
+      "text": "\uac15"
+    },
+    {
+      "id": 31764,
+      "mass": 0.11017087551215354,
+      "text": "\u026b"
+    },
+    {
+      "id": 31790,
+      "mass": 0.10939972308506185,
+      "text": "\u057a"
+    },
+    {
+      "id": 31788,
+      "mass": 0.1081672134235987,
+      "text": "\u9686"
+    },
+    {
+      "id": 31766,
+      "mass": 0.10523489589661494,
+      "text": "\u2237"
+    }
+  ],
+  "per_scenario_tokens": {
+    "highway": [
+      {
+        "id": 31744,
+        "mass": 2.0294092715915895
+      },
+      {
+        "id": 31771,
+        "mass": 1.963769128810327
+      },
+      {
+        "id": 31781,
+        "mass": 0.138935247833615
+      },
+      {
+        "id": 31795,
+        "mass": 0.1062148521320978
+      },
+      {
+        "id": 31778,
+        "mass": 0.10561590373436047
+      },
+      {
+        "id": 31785,
+        "mass": 0.10187266318916954
+      },
+      {
+        "id": 31805,
+        "mass": 0.08702878023029825
+      },
+      {
+        "id": 31801,
+        "mass": 0.07378452271495917
+      },
+      {
+        "id": 31802,
+        "mass": 0.06787409161995583
+      },
+      {
+        "id": 31806,
+        "mass": 0.04443069391129484
+      },
+      {
+        "id": 31804,
+        "mass": 0.03481829542909054
+      },
+      {
+        "id": 31770,
+        "mass": 0.030000018353916857
+      },
+      {
+        "id": 31748,
+        "mass": 0.028000387970678275
+      },
+      {
+        "id": 31807,
+        "mass": 0.023373033531470355
+      },
+      {
+        "id": 31798,
+        "mass": 0.016340187926061844
+      },
+      {
+        "id": 31800,
+        "mass": 0.01607766132474353
+      },
+      {
+        "id": 31776,
+        "mass": 0.01605476901295333
+      },
+      {
+        "id": 31794,
+        "mass": 0.013643761744901894
+      },
+      {
+        "id": 31775,
+        "mass": 0.01256754053702025
+      },
+      {
+        "id": 31793,
+        "mass": 0.010790650032504345
+      }
+    ],
+    "urban": [
+      {
+        "id": 31744,
+        "mass": 1.893279137828813
+      },
+      {
+        "id": 31798,
+        "mass": 0.4611572698845521
+      },
+      {
+        "id": 31807,
+        "mass": 0.3898725816388833
+      },
+      {
+        "id": 31792,
+        "mass": 0.3703877398872919
+      },
+      {
+        "id": 31794,
+        "mass": 0.3397690544206853
+      },
+      {
+        "id": 31796,
+        "mass": 0.19399583859717495
+      },
+      {
+        "id": 31799,
+        "mass": 0.18567784789502184
+      },
+      {
+        "id": 31771,
+        "mass": 0.183612289472876
+      },
+      {
+        "id": 31806,
+        "mass": 0.12263394478657119
+      },
+      {
+        "id": 31800,
+        "mass": 0.08519940391954606
+      },
+      {
+        "id": 31793,
+        "mass": 0.07724072426185558
+      },
+      {
+        "id": 31750,
+        "mass": 0.05356112427375592
+      },
+      {
+        "id": 31775,
+        "mass": 0.033148388579661514
+      },
+      {
+        "id": 31777,
+        "mass": 0.02620890713933477
+      },
+      {
+        "id": 31802,
+        "mass": 0.02495775126931221
+      },
+      {
+        "id": 31755,
+        "mass": 0.02157794886306874
+      },
+      {
+        "id": 31761,
+        "mass": 0.016203229873894998
+      },
+      {
+        "id": 31760,
+        "mass": 0.015040726827010076
+      },
+      {
+        "id": 31764,
+        "mass": 0.013727412605931022
+      },
+      {
+        "id": 31784,
+        "mass": 0.011310374597087502
+      }
+    ],
+    "night": [
+      {
+        "id": 31744,
+        "mass": 3.9028845827114083
+      },
+      {
+        "id": 31799,
+        "mass": 0.5357677996366874
+      },
+      {
+        "id": 31784,
+        "mass": 0.4206375228932302
+      },
+      {
+        "id": 31801,
+        "mass": 0.3592511486044714
+      },
+      {
+        "id": 31800,
+        "mass": 0.3462885270910192
+      },
+      {
+        "id": 31804,
+        "mass": 0.30977219120779864
+      },
+      {
+        "id": 31791,
+        "mass": 0.24088786369793524
+      },
+      {
+        "id": 31807,
+        "mass": 0.22851587621516956
+      },
+      {
+        "id": 31794,
+        "mass": 0.20130804306791106
+      },
+      {
+        "id": 31805,
+        "mass": 0.18145167010413843
+      },
+      {
+        "id": 31802,
+        "mass": 0.18012377692139125
+      },
+      {
+        "id": 31806,
+        "mass": 0.17262838238821132
+      },
+      {
+        "id": 31776,
+        "mass": 0.16487126607898972
+      },
+      {
+        "id": 31782,
+        "mass": 0.14403740479303906
+      },
+      {
+        "id": 31768,
+        "mass": 0.13495251385029405
+      },
+      {
+        "id": 31771,
+        "mass": 0.12274673772105871
+      },
+      {
+        "id": 31798,
+        "mass": 0.10957162635759232
+      },
+      {
+        "id": 31783,
+        "mass": 0.10243796775102965
+      },
+      {
+        "id": 31779,
+        "mass": 0.06877507500939828
+      },
+      {
+        "id": 31803,
+        "mass": 0.057889701667591
+      }
+    ],
+    "rain": [
+      {
+        "id": 31744,
+        "mass": 1.5404943502878723
+      },
+      {
+        "id": 31804,
+        "mass": 0.8245803155284648
+      },
+      {
+        "id": 31781,
+        "mass": 0.2969997264965514
+      },
+      {
+        "id": 31807,
+        "mass": 0.2688654087323812
+      },
+      {
+        "id": 31802,
+        "mass": 0.24066817247012295
+      },
+      {
+        "id": 31800,
+        "mass": 0.22989363467695512
+      },
+      {
+        "id": 31806,
+        "mass": 0.22443960619511927
+      },
+      {
+        "id": 31768,
+        "mass": 0.1719111056344218
+      },
+      {
+        "id": 31757,
+        "mass": 0.14369039743905887
+      },
+      {
+        "id": 31803,
+        "mass": 0.14199739372520526
+      },
+      {
+        "id": 31796,
+        "mass": 0.13448104233975755
+      },
+      {
+        "id": 31805,
+        "mass": 0.13439975248002156
+      },
+      {
+        "id": 31801,
+        "mass": 0.11772283879838596
+      },
+      {
+        "id": 31799,
+        "mass": 0.10216163452992078
+      },
+      {
+        "id": 31787,
+        "mass": 0.09719865709178066
+      },
+      {
+        "id": 31749,
+        "mass": 0.08538064372260123
+      },
+      {
+        "id": 31780,
+        "mass": 0.080825702752918
+      },
+      {
+        "id": 31794,
+        "mass": 0.0766202921004151
+      },
+      {
+        "id": 31746,
+        "mass": 0.07068181270733476
+      },
+      {
+        "id": 31793,
+        "mass": 0.06416312291912618
+      }
+    ],
+    "ood_noise": [
+      {
+        "id": 31802,
+        "mass": 2.4523706262143605
+      },
+      {
+        "id": 31744,
+        "mass": 2.3837019550882133
+      },
+      {
+        "id": 31781,
+        "mass": 2.1371622374322214
+      },
+      {
+        "id": 31782,
+        "mass": 1.2898365573522597
+      },
+      {
+        "id": 31800,
+        "mass": 1.1502401867296612
+      },
+      {
+        "id": 31803,
+        "mass": 1.0505482479603643
+      },
+      {
+        "id": 31780,
+        "mass": 0.6352735569066681
+      },
+      {
+        "id": 31769,
+        "mass": 0.4336442365702169
+      },
+      {
+        "id": 31768,
+        "mass": 0.4303882256688212
+      },
+      {
+        "id": 31767,
+        "mass": 0.28504564990294057
+      },
+      {
+        "id": 31798,
+        "mass": 0.28497755023272475
+      },
+      {
+        "id": 31795,
+        "mass": 0.23054934476317612
+      },
+      {
+        "id": 31752,
+        "mass": 0.1329283523232334
+      },
+      {
+        "id": 31804,
+        "mass": 0.05090435972931573
+      },
+      {
+        "id": 31762,
+        "mass": 0.041042481602744374
+      },
+      {
+        "id": 31790,
+        "mass": 0.03878315079032291
+      },
+      {
+        "id": 31764,
+        "mass": 0.032649401221760854
+      },
+      {
+        "id": 31785,
+        "mass": 0.031983406736458164
+      },
+      {
+        "id": 31749,
+        "mass": 0.031464644798234076
+      },
+      {
+        "id": 31777,
+        "mass": 0.029288758919278735
+      }
+    ],
+    "ood_blank": [
+      {
+        "id": 31744,
+        "mass": 5.814491671742871
+      },
+      {
+        "id": 31804,
+        "mass": 1.13720055256033
+      },
+      {
+        "id": 31802,
+        "mass": 0.9680495386323855
+      },
+      {
+        "id": 31801,
+        "mass": 0.3711954974889977
+      },
+      {
+        "id": 31778,
+        "mass": 0.30539865256150733
+      },
+      {
+        "id": 31751,
+        "mass": 0.26438425073320104
+      },
+      {
+        "id": 31756,
+        "mass": 0.1488606041825733
+      },
+      {
+        "id": 31786,
+        "mass": 0.14864243257829912
+      },
+      {
+        "id": 31791,
+        "mass": 0.1298874308095037
+      },
+      {
+        "id": 31792,
+        "mass": 0.1288763643844959
+      },
+      {
+        "id": 31803,
+        "mass": 0.1268893362698691
+      },
+      {
+        "id": 31746,
+        "mass": 0.1267750373117451
+      },
+      {
+        "id": 31800,
+        "mass": 0.12017100743480569
+      },
+      {
+        "id": 31752,
+        "mass": 0.09748214975172687
+      },
+      {
+        "id": 31796,
+        "mass": 0.09247813867500554
+      },
+      {
+        "id": 31793,
+        "mass": 0.08174943966344017
+      },
+      {
+        "id": 31774,
+        "mass": 0.08019938044867558
+      },
+      {
+        "id": 31775,
+        "mass": 0.07793273352308461
+      },
+      {
+        "id": 31747,
+        "mass": 0.06866859508227208
+      },
+      {
+        "id": 31797,
+        "mass": 0.06793270291382214
+      }
+    ]
+  },
+  "samples": [
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 0,
+      "mean_action_mass": 0.9948155493290999,
+      "total_leaked_mass": 0.005184450670900073
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 1,
+      "mean_action_mass": 0.8927744709230053,
+      "total_leaked_mass": 0.10722552907699472
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 2,
+      "mean_action_mass": 0.9954531680167358,
+      "total_leaked_mass": 0.004546831983264253
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 3,
+      "mean_action_mass": 0.9981383987882444,
+      "total_leaked_mass": 0.001861601211755572
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 4,
+      "mean_action_mass": 0.9936285835706907,
+      "total_leaked_mass": 0.006371416429309258
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 5,
+      "mean_action_mass": 0.8467668738521752,
+      "total_leaked_mass": 0.1532331261478248
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 6,
+      "mean_action_mass": 0.9977921233942523,
+      "total_leaked_mass": 0.002207876605747775
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 7,
+      "mean_action_mass": 0.9963215872931873,
+      "total_leaked_mass": 0.0036784127068126998
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 8,
+      "mean_action_mass": 0.9742838686298845,
+      "total_leaked_mass": 0.025716131370115494
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 9,
+      "mean_action_mass": 0.9932153803161035,
+      "total_leaked_mass": 0.00678461968389651
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 10,
+      "mean_action_mass": 0.8281087636694013,
+      "total_leaked_mass": 0.17189123633059872
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 11,
+      "mean_action_mass": 0.9983527816086409,
+      "total_leaked_mass": 0.0016472183913590146
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 12,
+      "mean_action_mass": 0.9954335415754291,
+      "total_leaked_mass": 0.004566458424570945
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 13,
+      "mean_action_mass": 0.8571500625180956,
+      "total_leaked_mass": 0.14284993748190442
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 14,
+      "mean_action_mass": 0.9162080339909673,
+      "total_leaked_mass": 0.08379196600903274
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 0,
+      "mean_action_mass": 0.9974897665555643,
+      "total_leaked_mass": 0.002510233444435731
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 1,
+      "mean_action_mass": 0.9982995564600644,
+      "total_leaked_mass": 0.0017004435399355447
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 2,
+      "mean_action_mass": 0.9196827065914996,
+      "total_leaked_mass": 0.08031729340850038
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 3,
+      "mean_action_mass": 0.9835369924778986,
+      "total_leaked_mass": 0.01646300752210144
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 4,
+      "mean_action_mass": 0.9994576720898749,
+      "total_leaked_mass": 0.0005423279101250955
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 5,
+      "mean_action_mass": 0.9972062280342057,
+      "total_leaked_mass": 0.0027937719657943815
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 6,
+      "mean_action_mass": 0.986610900253124,
+      "total_leaked_mass": 0.013389099746875997
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 7,
+      "mean_action_mass": 0.9986807210771887,
+      "total_leaked_mass": 0.0013192789228112037
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 8,
+      "mean_action_mass": 0.9132924758818523,
+      "total_leaked_mass": 0.08670752411814776
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 9,
+      "mean_action_mass": 0.9988759170309274,
+      "total_leaked_mass": 0.0011240829690726578
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 10,
+      "mean_action_mass": 0.8524031869882103,
+      "total_leaked_mass": 0.14759681301178976
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 11,
+      "mean_action_mass": 0.9995023013160937,
+      "total_leaked_mass": 0.0004976986839062241
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 12,
+      "mean_action_mass": 0.7208273535321115,
+      "total_leaked_mass": 0.2791726464678886
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 13,
+      "mean_action_mass": 0.9982668948040165,
+      "total_leaked_mass": 0.001733105195983496
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 14,
+      "mean_action_mass": 0.9775707887722221,
+      "total_leaked_mass": 0.022429211227777808
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 0,
+      "mean_action_mass": 0.8243855549953878,
+      "total_leaked_mass": 0.1756144450046122
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 1,
+      "mean_action_mass": 0.8972501909759428,
+      "total_leaked_mass": 0.10274980902405721
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 2,
+      "mean_action_mass": 0.9618669644996365,
+      "total_leaked_mass": 0.038133035500363476
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 3,
+      "mean_action_mass": 0.979569276141839,
+      "total_leaked_mass": 0.02043072385816101
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 4,
+      "mean_action_mass": 0.791708701662271,
+      "total_leaked_mass": 0.208291298337729
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 5,
+      "mean_action_mass": 0.8646525676595047,
+      "total_leaked_mass": 0.1353474323404953
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 6,
+      "mean_action_mass": 0.7884551486432818,
+      "total_leaked_mass": 0.21154485135671816
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 7,
+      "mean_action_mass": 0.7749871697077262,
+      "total_leaked_mass": 0.22501283029227384
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 8,
+      "mean_action_mass": 0.8958123133254828,
+      "total_leaked_mass": 0.10418768667451721
+    },
+    {
+      "scenario": "night",
+      "difficulty": "hard",
+      "idx": 9,
+      "mean_action_mass": 0.7506344766422575,
+      "total_leaked_mass": 0.2493655233577426
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 0,
+      "mean_action_mass": 0.8996070674246377,
+      "total_leaked_mass": 0.10039293257536233
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 1,
+      "mean_action_mass": 0.8483648427978291,
+      "total_leaked_mass": 0.15163515720217088
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 2,
+      "mean_action_mass": 0.9357706595759997,
+      "total_leaked_mass": 0.06422934042400032
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 3,
+      "mean_action_mass": 0.9054613220059602,
+      "total_leaked_mass": 0.09453867799403984
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 4,
+      "mean_action_mass": 0.9625073408895852,
+      "total_leaked_mass": 0.03749265911041481
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 5,
+      "mean_action_mass": 0.8231912754994742,
+      "total_leaked_mass": 0.1768087245005258
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 6,
+      "mean_action_mass": 0.9448161104269924,
+      "total_leaked_mass": 0.05518388957300756
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 7,
+      "mean_action_mass": 0.8467014799742694,
+      "total_leaked_mass": 0.15329852002573066
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 8,
+      "mean_action_mass": 0.9584868200389403,
+      "total_leaked_mass": 0.04151317996105978
+    },
+    {
+      "scenario": "rain",
+      "difficulty": "hard",
+      "idx": 9,
+      "mean_action_mass": 0.9752971643242095,
+      "total_leaked_mass": 0.024702835675790475
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 0,
+      "mean_action_mass": 0.8776942020818167,
+      "total_leaked_mass": 0.12230579791818334
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 1,
+      "mean_action_mass": 0.9004442121684926,
+      "total_leaked_mass": 0.09955578783150745
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 2,
+      "mean_action_mass": 0.8672645369425159,
+      "total_leaked_mass": 0.13273546305748404
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 3,
+      "mean_action_mass": 0.9449865753860129,
+      "total_leaked_mass": 0.055013424613987026
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 4,
+      "mean_action_mass": 0.8615207604759365,
+      "total_leaked_mass": 0.13847923952406355
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 5,
+      "mean_action_mass": 0.6918355102451252,
+      "total_leaked_mass": 0.3081644897548748
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 6,
+      "mean_action_mass": 0.9965372497584651,
+      "total_leaked_mass": 0.00346275024153491
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 7,
+      "mean_action_mass": 0.6783779488103912,
+      "total_leaked_mass": 0.3216220511896089
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 8,
+      "mean_action_mass": 0.9796389526271899,
+      "total_leaked_mass": 0.0203610473728101
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 9,
+      "mean_action_mass": 0.8794286980217814,
+      "total_leaked_mass": 0.12057130197821866
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 10,
+      "mean_action_mass": 0.8782852106902064,
+      "total_leaked_mass": 0.12171478930979365
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 11,
+      "mean_action_mass": 0.9487911257954573,
+      "total_leaked_mass": 0.05120887420454271
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 12,
+      "mean_action_mass": 0.7190001385146974,
+      "total_leaked_mass": 0.2809998614853027
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 13,
+      "mean_action_mass": 0.9661376496799546,
+      "total_leaked_mass": 0.03386235032004541
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 14,
+      "mean_action_mass": 0.8768270571306402,
+      "total_leaked_mass": 0.12317294286935976
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 0,
+      "mean_action_mass": 0.9107350901841917,
+      "total_leaked_mass": 0.08926490981580823
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 1,
+      "mean_action_mass": 0.9960488766841341,
+      "total_leaked_mass": 0.0039511233158659054
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 2,
+      "mean_action_mass": 0.9567349822110762,
+      "total_leaked_mass": 0.04326501778892374
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 3,
+      "mean_action_mass": 0.8363739338903022,
+      "total_leaked_mass": 0.16362606610969774
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 4,
+      "mean_action_mass": 0.7164289475003898,
+      "total_leaked_mass": 0.28357105249961023
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 5,
+      "mean_action_mass": 0.8713028180847167,
+      "total_leaked_mass": 0.12869718191528332
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 6,
+      "mean_action_mass": 0.8500376017015827,
+      "total_leaked_mass": 0.14996239829841734
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 7,
+      "mean_action_mass": 0.946932017562241,
+      "total_leaked_mass": 0.053067982437758995
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 8,
+      "mean_action_mass": 0.9480129309586768,
+      "total_leaked_mass": 0.051987069041323206
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 9,
+      "mean_action_mass": 0.9075319414052144,
+      "total_leaked_mass": 0.09246805859478562
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 10,
+      "mean_action_mass": 0.8096663223529634,
+      "total_leaked_mass": 0.19033367764703663
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 11,
+      "mean_action_mass": 0.9405899562012304,
+      "total_leaked_mass": 0.05941004379876956
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 12,
+      "mean_action_mass": 0.8677671492530084,
+      "total_leaked_mass": 0.1322328507469917
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 13,
+      "mean_action_mass": 0.938148349473652,
+      "total_leaked_mass": 0.061851650526347966
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 14,
+      "mean_action_mass": 0.7486640991757147,
+      "total_leaked_mass": 0.2513359008242852
+    }
+  ]
+}
