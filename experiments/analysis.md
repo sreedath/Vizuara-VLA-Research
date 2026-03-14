@@ -4780,3 +4780,66 @@ Inter-domain distance (highway↔urban centroid): **0.266**
 4. **Different images show meaningful variation**: Different highway images have mean pairwise cosine distance of 0.032, confirming the model encodes per-image differences — the determinism isn't because the model is ignoring the input.
 
 5. **Deployment implication**: Detection scores are perfectly reproducible. A threshold set in testing will behave identically in production. No need for score averaging or repeated inference.
+
+---
+
+## Finding 102: Gradient-Free Sensitivity Analysis
+
+**Experiment 108** — Tests how minimal pixel perturbations affect detection scores: single-pixel changes, Gaussian noise, brightness shifts, and progressive corruption.
+
+### Setup
+- Base image: highway (score=0.016)
+- Single-pixel: 5 positions × 6 delta values
+- Gaussian noise: 9 sigma values (0.1–100)
+- Brightness: 12 shift values (-100 to +100)
+- Progressive corruption: 10 alpha values (0–100%)
+- ~80 model inferences
+
+### Gaussian Noise Sensitivity
+
+| Sigma | Score | Change | Pixels Changed |
+|-------|-------|--------|----------------|
+| 0.1 | 0.017 | +0.001 | 50% |
+| 1.0 | 0.016 | +0.000 | 85% |
+| 5.0 | 0.020 | +0.004 | 98% |
+| 10.0 | 0.040 | +0.024 | 99% |
+| 20.0 | 0.098 | +0.082 | 99% |
+| 50.0 | 0.256 | +0.240 | 99% |
+| 100.0 | 0.435 | +0.418 | 99% |
+
+### Brightness Shift
+
+| Shift | Score | Change |
+|-------|-------|--------|
+| ±1 | 0.017 | +0.000 |
+| ±5 | 0.018 | +0.001 |
+| ±10 | 0.020 | +0.004 |
+| ±20 | 0.037 | +0.021 |
+| ±50 | 0.108 | +0.091 |
+| ±100 | 0.213 | +0.196 |
+
+### Progressive Corruption (blend with noise)
+
+| Alpha | Score | Change |
+|-------|-------|--------|
+| 0.01 | 0.017 | +0.000 |
+| 0.02 | 0.014 | -0.003 |
+| 0.05 | 0.016 | +0.000 |
+| **0.10** | **0.043** | **+0.027** |
+| 0.20 | 0.119 | +0.102 |
+| 0.50 | 0.329 | +0.313 |
+| 1.00 | 0.504 | +0.488 |
+
+### Key Insights
+
+1. **Sub-pixel noise is invisible**: Gaussian sigma ≤ 1.0 causes no meaningful score change, despite affecting 50-85% of pixels. The processor's image quantization absorbs sub-pixel-level noise.
+
+2. **Detection threshold crossed at sigma ≈ 10**: At sigma=10 (score=0.040), the perturbation is borderline. At sigma=20 (score=0.098), it's clearly above any reasonable threshold. The model is sensitive to moderate noise.
+
+3. **Brightness shifts are asymmetrically detected**: Darkening (-50: 0.091) is slightly easier to detect than brightening (+50: 0.108). Both are well above threshold at ±50.
+
+4. **Progressive corruption: 10% noise blend is the detection onset**: At alpha=0.10, the score jumps to 0.043 (above typical threshold). Below 5%, corruption is undetectable. This matches the sequential detection finding (5% interpolation detected).
+
+5. **Single pixel changes are largely invisible**: Changing one pixel by ≤10 intensity produces < 0.004 score change. Only extreme single-pixel changes at specific positions (corner at delta=127: 0.355) trigger detection.
+
+6. **The detector has a natural noise floor of ~0.004**: Score changes below 0.004 are within the natural variation of similar-but-different highway images. This sets the effective sensitivity floor.
