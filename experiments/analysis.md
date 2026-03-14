@@ -952,3 +952,49 @@ This should give us the best of all worlds:
 5. **At α=0.30: 98.3% safety but lower accuracy**: Nearly perfect safety at the cost of over-cautiousness (many easy samples get SLOW instead of PROCEED).
 
 6. **Practical deployment**: For safety-critical applications, use α=0.30 (98.3% safe). For balanced operation, use α=0.20 (89.2% safe, 73% throughput).
+
+---
+
+## Finding 20: Diverse OOD Evaluation (Real OpenVLA-7B, Experiment 26)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, no dropout)
+- **Samples**: 110 (40 easy + 70 diverse OOD across 7 types)
+- **New OOD types**: checkerboard, inverted highway, rotated highway, text-only, indoor, whiteout, blackout
+
+### Per-OOD-Type Action Mass
+
+| OOD Type | Action Mass | Mass AUROC | Entropy AUROC |
+|----------|------------|-----------|--------------|
+| **Indoor** | **0.996** | **0.463** | 0.333 |
+| Inverted | 0.984 | 0.417 | 0.608 |
+| Checker | 0.951 | 0.830 | 0.282 |
+| Text | 0.941 | 0.693 | 0.287 |
+| Whiteout | 0.935 | 0.580 | 0.760 |
+| Rotated | 0.912 | 0.870 | 0.512 |
+| Noise | 0.877 | 0.850 | 0.562 |
+| Blackout | 0.858 | **0.938** | **1.000** |
+| Blank | 0.840 | **0.938** | **1.000** |
+
+### Overall AUROC (All OOD Combined)
+
+| Signal | AUROC |
+|--------|-------|
+| Action Mass | 0.731 |
+| Entropy | 0.594 |
+
+### Key Insights
+
+1. **Action mass fails for semantic OOD**: Indoor scenes (action mass=0.996, AUROC=0.463) and inverted highway (0.984, AUROC=0.417) are BELOW random for action mass detection. The model is MORE committed to acting on these than on real driving scenes.
+
+2. **Action mass is best for pixel-level OOD**: Noise (0.850), blank (0.938), blackout (0.938) are well-detected. These types lack recognizable patterns that trigger the model's action generation.
+
+3. **Entropy is best for extreme brightness OOD**: Blackout (1.000) and blank (1.000) have perfect entropy AUROC. These inputs produce maximally uncertain action distributions.
+
+4. **Overall AUROC drops from 0.838 to 0.731 with diverse OOD**: Action mass is not a universal OOD detector. It specifically detects inputs that lack visual structure, not inputs that are semantically wrong for driving.
+
+5. **Indoor scenes are the hardest OOD type**: Action mass = 0.996 (higher than highway's 0.948!). The model treats indoor images as completely valid driving scenes, producing confident action predictions.
+
+6. **No single signal detects all OOD types**: This motivates future work on multi-signal ensemble approaches that combine pixel-level (action mass) and semantic-level (possibly vision encoder features) OOD detectors.
+
+7. **This is a critical limitation for real-world deployment**: In practice, OOD inputs are more likely to be semantic (wrong environment) than pixel-level (random noise). The action mass signal's strong performance on noise/blank should not be over-generalized.
