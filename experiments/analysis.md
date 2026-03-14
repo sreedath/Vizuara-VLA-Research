@@ -998,3 +998,85 @@ This should give us the best of all worlds:
 6. **No single signal detects all OOD types**: This motivates future work on multi-signal ensemble approaches that combine pixel-level (action mass) and semantic-level (possibly vision encoder features) OOD detectors.
 
 7. **This is a critical limitation for real-world deployment**: In practice, OOD inputs are more likely to be semantic (wrong environment) than pixel-level (random noise). The action mass signal's strong performance on noise/blank should not be over-generalized.
+
+---
+
+## Finding 21: Hidden State OOD Detection (Real OpenVLA-7B, Experiment 27)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, output_hidden_states=True)
+- **Samples**: 100 across 8 scenarios (40 easy, 60 OOD: noise, blank, indoor, inverted, checker, blackout)
+- **Features**: Last-layer hidden state (4096-d), L2 distance to easy centroid, cosine similarity, hidden norm
+
+### Per-Scenario Hidden State Statistics
+
+| Scenario | H_norm | H_mean | H_std | H_max | Mass | Entropy |
+|----------|--------|--------|-------|-------|------|---------|
+| Highway | 104.5 | 0.0000 | 1.633 | 6.37 | 0.968 | 1.387 |
+| Urban | 114.2 | 0.0188 | 1.783 | 7.13 | 0.975 | 0.860 |
+| OOD Noise | 110.7 | 0.0158 | 1.729 | 8.29 | 0.876 | 1.415 |
+| OOD Blank | 81.4 | 0.0163 | 1.272 | 5.78 | 0.807 | 2.088 |
+| OOD Indoor | 113.8 | 0.0342 | 1.777 | 7.20 | **0.996** | 0.991 |
+| OOD Inverted | 112.2 | 0.0200 | 1.752 | 7.45 | 0.984 | 1.200 |
+| OOD Checker | 105.0 | 0.0278 | 1.641 | 5.85 | 0.966 | 0.793 |
+| OOD Blackout | **39.9** | -0.0025 | 0.623 | 5.47 | 0.861 | **3.350** |
+
+### Cosine Similarity Between Scenario Centroids
+
+| Pair | Cosine Sim |
+|------|-----------|
+| Highway ↔ Urban | **0.546** |
+| Highway ↔ OOD Inverted | 0.395 |
+| Highway ↔ OOD Blank | 0.338 |
+| Highway ↔ OOD Noise | 0.290 |
+| Highway ↔ OOD Indoor | 0.264 |
+| Highway ↔ OOD Checker | 0.173 |
+| Highway ↔ OOD Blackout | **0.089** |
+
+### L2 Distance-Based OOD Detection (vs Easy Centroid)
+
+| OOD Type | L2 dist AUROC | Mean Dist (Easy=88.6) |
+|----------|--------------|----------------------|
+| **OOD Indoor** | **0.998** | 119.8 |
+| OOD Noise | **0.995** | 119.8 |
+| OOD Checker | **0.973** | 114.5 |
+| OOD Inverted | **0.973** | 115.1 |
+| OOD Blank | 0.603 | 94.0 |
+| OOD Blackout | 0.287 | 71.7 |
+
+Overall L2 dist AUROC (all OOD): **0.805**
+
+### Hidden Norm as OOD Signal
+
+| OOD Type | Norm AUROC | Direction |
+|----------|-----------|-----------|
+| OOD Blackout | **1.000** | Lower (39.9 vs 107) |
+| OOD Blank | **0.980** | Lower |
+| OOD Checker | 0.820 | Lower |
+| OOD Indoor | 0.675 | Higher |
+| OOD Inverted | 0.578 | Higher |
+| OOD Noise | 0.510 | Mixed |
+
+### Combined Signal (Distance + Action Mass)
+
+| w_dist | w_mass | AUROC |
+|--------|--------|-------|
+| 0.00 | 1.00 | 0.747 |
+| **0.25** | **0.75** | **0.862** |
+| 0.50 | 0.50 | 0.829 |
+| 0.75 | 0.25 | 0.821 |
+| 1.00 | 0.00 | 0.805 |
+
+### Key Insights
+
+1. **Hidden states detect semantic OOD that action mass misses**: Indoor AUROC = 0.998 (vs action mass 0.463), inverted AUROC = 0.973 (vs 0.417). This is the breakthrough — hidden states encode domain information that output probabilities don't.
+
+2. **Cosine similarity reveals clear driving vs non-driving clustering**: Highway↔urban cos=0.546 (same domain), highway↔blackout cos=0.089 (completely different). The hidden state representation naturally separates driving from non-driving content.
+
+3. **Combined signal (w_dist=0.25) achieves best overall AUROC = 0.862**: Better than action mass alone (0.747) or distance alone (0.805). The small distance weight is enough to catch semantic OOD without hurting pixel-level detection.
+
+4. **Blackout is the pathological case**: Very low hidden norm (39.9 vs ~107), L2 distance AUROC = 0.287 (below random) because blackout is actually CLOSER to centroid than most OOD. But hidden norm detects it perfectly (AUROC = 1.000).
+
+5. **Three-signal recommendation established**: (1) Action mass for pixel-level OOD (noise, blank), (2) Hidden state distance for semantic OOD (indoor, inverted), (3) Entropy for difficulty detection. Together these cover all failure modes discovered so far.
+
+6. **Zero additional cost for hidden state extraction**: The hidden states are already computed during generation — `output_hidden_states=True` just exposes them. No additional forward pass needed.
