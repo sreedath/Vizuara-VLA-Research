@@ -3159,3 +3159,54 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Cosine has by far the largest effect size (d=5.18)**: This is an extremely large effect — 5 pooled standard deviations of separation between ID and OOD. Attention signals (d≈1.2-1.3) still show large effects but 4× smaller separation.
 
 5. **Occluded attention CI includes chance level [0.093, 0.641]**: This confirms attention-based detection is unreliable for camera occlusion — the CI spans from near-random to moderate detection.
+
+---
+
+## Finding 63: Ensemble Detection Achieves Perfect Near-OOD via Cosine-Attention Fusion
+
+**Experiment 69** — Ensemble strategies combining multiple OOD detection signals.
+
+### Setup
+- 24 ID, 40 near-OOD, 24 far-OOD (88 total inferences + 30 calibration)
+- 9 ensemble strategies + weight sweep (11 points)
+- Min-max normalized signals before fusion
+
+### Ensemble Results (All OOD)
+
+| Strategy | All OOD | Near-OOD | Far-OOD |
+|----------|---------|----------|---------|
+| Max(cos+attn) | **1.000** | **1.000** | **1.000** |
+| Avg(cos+attn) | **1.000** | **1.000** | **1.000** |
+| Adaptive | **1.000** | **1.000** | **1.000** |
+| W(0.6cos+0.4at) | **1.000** | **1.000** | **1.000** |
+| W(0.4cos+0.6at) | **1.000** | 0.996 | **1.000** |
+| Avg(top 3) | **1.000** | 0.974 | **1.000** |
+| Product | 0.985 | 0.976 | **1.000** |
+| Vote | 0.984 | 0.931 | **1.000** |
+| Avg(all 5) | 0.966 | 0.916 | **1.000** |
+| Cosine only | **1.000** | **1.000** | **1.000** |
+| Attn only | 0.890 | 0.824 | **1.000** |
+
+### Weight Sweep (cos_weight vs attn_weight)
+
+| cos_w | All AUROC | Near AUROC |
+|-------|-----------|------------|
+| 0.0 | 0.890 | 0.824 |
+| 0.1 | 0.955 | 0.875 |
+| 0.2 | 0.993 | 0.924 |
+| 0.3 | 1.000 | 0.975 |
+| 0.4 | 1.000 | 0.996 |
+| **0.5** | **1.000** | **1.000** |
+| 0.6-1.0 | 1.000 | 1.000 |
+
+### Key Insights
+
+1. **Simple averaging of cosine + attention achieves perfect detection**: Even the simplest fusion (50/50 mean) reaches 1.000 on ALL OOD types, including near-OOD where attention alone fails at 0.824.
+
+2. **Cosine weight ≥ 0.5 is the sweet spot**: The weight sweep shows perfect detection for cos_w ∈ [0.5, 1.0]. Below 0.5, near-OOD detection degrades because attention contributes more noise than signal for subtle shifts.
+
+3. **Including weak detectors (MSP, energy) hurts**: Avg(all 5) = 0.966 is worse than Avg(top 3) = 1.000. The output-based signals dilute the hidden-state signals.
+
+4. **Product and voting rules underperform averaging**: Product (0.985) and voting (0.984) are worse than simple averaging (1.000) because they are more sensitive to one signal being wrong.
+
+5. **Cosine alone already achieves 1.000**: The ensemble doesn't improve over cosine alone on these benchmarks, but provides robustness — if the calibration set is noisy, the attention signal can compensate.

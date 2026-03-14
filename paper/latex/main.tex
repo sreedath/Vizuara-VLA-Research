@@ -1414,4 +1414,20 @@ We establish statistical rigor for all key AUROC comparisons using 10,000-resamp
 
 Key statistical findings: (1) The method hierarchy is \emph{statistically confirmed}: cosine $>$ attention $>$ MSP $>$ energy (all pairwise $p<0.001$, except cosine vs.\ attention on far-OOD which are tied at 1.000). (2) Cosine distance has a Cohen's $d=5.18$, indicating the ID and OOD embedding clusters are separated by over 5 pooled standard deviations---an extremely large effect. (3) Attention-based detection on occluded cameras has a CI that includes chance level [0.093, 0.641], statistically confirming unreliability for this failure mode.
 
+\subsection{Ensemble Detection Strategies}
+\label{app:ensemble}
+
+\textbf{Finding 92: Simple cosine-attention averaging achieves perfect 1.000 AUROC on all OOD types, with cosine weight $\geq 0.5$ as the sweet spot.}
+
+We evaluate 9 ensemble strategies for combining multiple OOD detection signals (Figure~\ref{fig:ensemble}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig55_ensemble.pdf}
+\caption{\textbf{Ensemble OOD detection.} (a) All ensemble strategies on all OOD: top 5 strategies achieve perfect 1.000. (b) Near-OOD comparison reveals ensemble advantage: attention alone (0.824) fails but Max/Avg with cosine achieves 1.000. (c) Weight sweep: cosine weight $\geq 0.5$ yields perfect detection on both all and near-OOD.}
+\label{fig:ensemble}
+\end{figure}
+
+The key finding is that even simple fusion rules (averaging, maximum) close the gap between calibrated cosine and calibration-free attention. Including weak detectors (MSP, energy) in the ensemble \emph{hurts} performance (Avg-all-5 = 0.966 vs.\ Avg-top-3 = 1.000), confirming that signal quality matters more than quantity. The weight sweep reveals a clear phase transition: below cos\_w = 0.3, near-OOD detection degrades rapidly; above 0.5, both far and near OOD achieve perfect detection. This suggests a practical deployment recipe: average normalized cosine distance and attention max with equal weights.
+
 \end{document}

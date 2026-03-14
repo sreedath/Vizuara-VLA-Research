@@ -1,0 +1,104 @@
+{
+  "experiment": "ensemble_detection",
+  "experiment_number": 69,
+  "timestamp": "20260314_192156",
+  "n_id": 24,
+  "n_near_ood": 40,
+  "n_far_ood": 24,
+  "results": {
+    "far_ood": {
+      "cosine": 1.0,
+      "attn_max": 1.0,
+      "attn_entropy": 1.0,
+      "msp": 0.8489583333333333,
+      "energy": 0.515625,
+      "ensemble_avg_all": 1.0,
+      "ensemble_avg_top3": 1.0,
+      "ensemble_cos_attn": 1.0,
+      "ensemble_max_cos_attn": 1.0,
+      "ensemble_w60_cos": 1.0,
+      "ensemble_w60_attn": 1.0,
+      "ensemble_product": 1.0,
+      "ensemble_vote": 1.0,
+      "ensemble_adaptive": 1.0
+    },
+    "near_ood": {
+      "cosine": 1.0,
+      "attn_max": 0.8239583333333333,
+      "attn_entropy": 0.7729166666666667,
+      "msp": 0.6322916666666667,
+      "energy": 0.3302083333333333,
+      "ensemble_avg_all": 0.915625,
+      "ensemble_avg_top3": 0.9739583333333334,
+      "ensemble_cos_attn": 1.0,
+      "ensemble_max_cos_attn": 1.0,
+      "ensemble_w60_cos": 1.0,
+      "ensemble_w60_attn": 0.9958333333333333,
+      "ensemble_product": 0.9755208333333334,
+      "ensemble_vote": 0.93125,
+      "ensemble_adaptive": 1.0
+    },
+    "all_ood": {
+      "cosine": 1.0,
+      "attn_max": 0.8899739583333333,
+      "attn_entropy": 0.8580729166666667,
+      "msp": 0.7135416666666667,
+      "energy": 0.3997395833333333,
+      "ensemble_avg_all": 0.9661458333333334,
+      "ensemble_avg_top3": 1.0,
+      "ensemble_cos_attn": 1.0,
+      "ensemble_max_cos_attn": 1.0,
+      "ensemble_w60_cos": 1.0,
+      "ensemble_w60_attn": 1.0,
+      "ensemble_product": 0.9847005208333333,
+      "ensemble_vote": 0.984375,
+      "ensemble_adaptive": 1.0
+    }
+  },
+  "weight_sweep": {
+    "0.0": {
+      "all_ood": 0.8899739583333333,
+      "near_ood": 0.8239583333333333
+    },
+    "0.1": {
+      "all_ood": 0.955078125,
+      "near_ood": 0.875
+    },
+    "0.2": {
+      "all_ood": 0.9934895833333333,
+      "near_ood": 0.9239583333333332
+    },
+    "0.3": {
+      "all_ood": 1.0,
+      "near_ood": 0.975
+    },
+    "0.4": {
+      "all_ood": 1.0,
+      "near_ood": 0.9958333333333333
+    },
+    "0.5": {
+      "all_ood": 1.0,
+      "near_ood": 1.0
+    },
+    "0.6": {
+      "all_ood": 1.0,
+      "near_ood": 1.0
+    },
+    "0.7": {
+      "all_ood": 1.0,
+      "near_ood": 1.0
+    },
+    "0.8": {
+      "all_ood": 1.0,
+      "near_ood": 1.0
+    },
+    "0.9": {
+      "all_ood": 1.0,
+      "near_ood": 1.0
+    },
+    "1.0": {
+      "all_ood": 1.0,
+      "near_ood": 1.0
+    }
+  }
+}
