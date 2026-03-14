@@ -1978,4 +1978,20 @@ We test k-nearest-neighbor distance as an alternative to centroid-based detectio
 
 The KNN analysis confirms that the ID manifold is effectively convex---a single centroid captures its structure as well as arbitrary k-neighbor comparisons. This is consistent with the low-dimensional PCA results (Finding 120): the ID distribution occupies a compact, 9-dimensional subspace where the centroid is representative. The practical implication is that the simpler centroid approach is optimal: it is O(1) per test sample vs O(N) for KNN, requires storing only a single vector rather than the full calibration set, and achieves identical detection performance. KNN would provide value only if the ID distribution were multi-modal (e.g., a model trained on both highway and off-road driving with distinct embedding clusters), which our analysis shows is not the case for the current domain.
 
+\subsection{Confidence Calibration}
+\label{app:confidence_calibration}
+
+\textbf{Finding 127: Isotonic regression and histogram binning achieve perfect calibration (ECE=0, Brier=0). Platt scaling is the worst method (ECE=0.201) because its logistic model cannot represent the bimodal score distribution.}
+
+We test five methods for converting raw cosine distance scores into calibrated probability estimates (Figure~\ref{fig:confidence_calibration}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig90_confidence_calibration.pdf}
+\caption{\textbf{Confidence calibration.} (a) ECE and Brier score by method: isotonic regression and histogram binning achieve perfect calibration; Platt scaling is worst. (b) Reliability diagram: raw scores cluster in the 0--0.65 range; Platt maps everything to 0.75--0.85, destroying calibration. (c) Sigmoid temperature sensitivity: ECE increases monotonically from 0.101 (T=0.02) to 0.394 (T=10).}
+\label{fig:confidence_calibration}
+\end{figure}
+
+The calibration analysis reveals an important asymmetry: when the underlying detector achieves perfect AUROC, calibration becomes trivial for non-parametric methods (isotonic, histogram) but remains difficult for parametric methods (Platt, sigmoid). Platt scaling's logistic assumption maps the bimodal score distribution (ID at 0.08, OOD at 0.26--0.46) into an overconfident 0.75--0.85 range, \emph{increasing} ECE from 0.178 to 0.201. The practical recommendation is simple: use isotonic regression to convert scores to probabilities. It requires only the score-label pairs from calibration, handles arbitrary score distributions, and guarantees calibration whenever the underlying detector maintains separation.
+
 \end{document}

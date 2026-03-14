@@ -4610,3 +4610,38 @@ Centroid cosine: 1.000 AUROC
 5. **ID gap is clean**: Maximum ID score (urban, 0.033) is 9× lower than minimum OOD score (snow, 0.268). No overlap whatsoever between ID and OOD distributions.
 
 6. **Practical implication**: The centroid approach is optimal for this domain — simpler, faster (O(1) vs O(N) comparison), and equally effective. KNN would only help if the ID distribution were multi-modal or non-convex.
+
+---
+
+## Finding 98: Confidence Calibration
+
+**Experiment 104** — Tests whether cosine distance scores can be transformed into calibrated probability estimates using Platt scaling, isotonic regression, histogram binning, and temperature-scaled sigmoid.
+
+### Setup
+- 20 calibration embeddings for centroid
+- 50 train (10 ID + 40 OOD), 50 test (10 ID + 40 OOD)
+- 5 calibration methods: raw min-max, Platt, isotonic, histogram, sigmoid
+- Temperature search: 10 values from 0.01 to 10.0
+- ~120 model inferences
+
+### Results
+
+| Method | AUROC | ECE | Brier Score |
+|--------|-------|-----|-------------|
+| **Isotonic regression** | **1.000** | **0.000** | **0.000** |
+| **Histogram binning** | **1.000** | **0.000** | **0.000** |
+| Sigmoid (T=0.02) | 1.000 | 0.101 | 0.052 |
+| Raw min-max | 1.000 | 0.178 | 0.067 |
+| Platt scaling | 1.000 | 0.201 | 0.129 |
+
+### Key Insights
+
+1. **Isotonic regression and histogram binning achieve perfect calibration** (ECE=0, Brier=0): Because the raw scores are already perfectly separated, any monotonic mapping can produce perfect probabilities. These methods learn the step function between ID and OOD score ranges.
+
+2. **Platt scaling is the worst method (ECE=0.201)**: Logistic regression maps both ID (~0.08) and OOD (~0.3-0.46) into the 0.75-0.85 probability range, losing discrimination. The bimodal score distribution violates Platt's unimodal assumption.
+
+3. **Temperature-scaled sigmoid needs very low T (0.02)**: The optimal temperature is 50× lower than default (T=1.0). Higher temperatures flatten the sigmoid, spreading scores into the miscalibrated middle range. ECE increases monotonically from 0.101 (T=0.02) to 0.394 (T=10.0).
+
+4. **Calibration is trivial when detection is perfect**: The real challenge would be calibrating near-boundary cases. With perfect separation, the only question is whether the mapping is monotonic — isotonic regression handles this by definition.
+
+5. **Practical recommendation**: For deployment, use isotonic regression to convert cosine distances to probabilities. It requires minimal training data (just the score-label pairs) and produces perfectly calibrated confidence estimates whenever detection is perfect.
