@@ -1,0 +1,3172 @@
+{
+  "experiment": "optimal_realistic",
+  "experiment_number": 44,
+  "timestamp": "20260314_164926",
+  "n_cal": 24,
+  "n_id_traj": 20,
+  "n_ood_traj": 20,
+  "steps_per_traj": 8,
+  "total_inferences": 344,
+  "trajectories": [
+    {
+      "traj_idx": 0,
+      "scene": "highway",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.7177682518959045,
+          "action_mass": 0.9355205467769078,
+          "action_spread": 22.956036065417187,
+          "action_roughness": 25.5,
+          "mean_entropy": 1.4702114207404,
+          "entropy_std": 0.7004909110320291
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6586009860038757,
+          "action_mass": 0.8567319788770484,
+          "action_spread": 50.90567507755929,
+          "action_roughness": 76.66666666666667,
+          "mean_entropy": 1.216220702443804,
+          "entropy_std": 0.6361527002315717
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.5497053861618042,
+          "action_mass": 0.8570451263471374,
+          "action_spread": 26.650420221061875,
+          "action_roughness": 42.0,
+          "mean_entropy": 1.0679848460214478,
+          "entropy_std": 0.9106353707003632
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.6790194809436798,
+          "action_mass": 0.9995765345437186,
+          "action_spread": 10.608044694706841,
+          "action_roughness": 14.0,
+          "mean_entropy": 1.5702360064855643,
+          "entropy_std": 0.9898156402833338
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.7723043262958527,
+          "action_mass": 0.9996012789862496,
+          "action_spread": 9.194053091259478,
+          "action_roughness": 13.5,
+          "mean_entropy": 1.3573306586061205,
+          "entropy_std": 0.801821774550221
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.4308880567550659,
+          "action_mass": 0.8665983251162938,
+          "action_spread": 9.499731467740741,
+          "action_roughness": 13.833333333333334,
+          "mean_entropy": 1.1018764755405885,
+          "entropy_std": 0.9516843369627614
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.47107887268066406,
+          "action_mass": 0.9781114969934736,
+          "action_spread": 7.8454458387119885,
+          "action_roughness": 10.666666666666666,
+          "mean_entropy": 1.2350797007259513,
+          "entropy_std": 1.0063548438522743
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.7232986092567444,
+          "action_mass": 0.9973568660872323,
+          "action_spread": 17.919320322387414,
+          "action_roughness": 19.0,
+          "mean_entropy": 1.254865139722824,
+          "entropy_std": 0.6584873593707856
+        }
+      ]
+    },
+    {
+      "traj_idx": 1,
+      "scene": "highway",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.7991104423999786,
+          "action_mass": 0.9671525188854763,
+          "action_spread": 40.57344059397296,
+          "action_roughness": 51.333333333333336,
+          "mean_entropy": 1.8242210320064,
+          "entropy_std": 0.6973980141830294
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.4970121383666992,
+          "action_mass": 0.8578775815133538,
+          "action_spread": 26.76275206250627,
+          "action_roughness": 30.333333333333332,
+          "mean_entropy": 0.6770331685162562,
+          "entropy_std": 0.7114833353900868
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.4689040780067444,
+          "action_mass": 0.7393796965479851,
+          "action_spread": 23.74524657050075,
+          "action_roughness": 34.833333333333336,
+          "mean_entropy": 1.6362308808290567,
+          "entropy_std": 0.9288747480979251
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7076937556266785,
+          "action_mass": 0.9999270013400486,
+          "action_spread": 20.817967122224992,
+          "action_roughness": 22.833333333333332,
+          "mean_entropy": 1.0130834898778371,
+          "entropy_std": 0.7655422508671905
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.7662322670221329,
+          "action_mass": 0.9991884657314846,
+          "action_spread": 27.787091409134423,
+          "action_roughness": 33.333333333333336,
+          "mean_entropy": 1.091537390170353,
+          "entropy_std": 0.7615781001012127
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.705479085445404,
+          "action_mass": 0.9995883532932827,
+          "action_spread": 44.64737120035222,
+          "action_roughness": 59.5,
+          "mean_entropy": 1.4394493103027344,
+          "entropy_std": 0.6490437477376636
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.49757760763168335,
+          "action_mass": 0.8585459532748375,
+          "action_spread": 26.76275206250627,
+          "action_roughness": 30.333333333333332,
+          "mean_entropy": 0.8539421729212242,
+          "entropy_std": 0.9259873274770283
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.7379149496555328,
+          "action_mass": 0.9993452855518886,
+          "action_spread": 8.09635846588843,
+          "action_roughness": 9.5,
+          "mean_entropy": 1.082340069115162,
+          "entropy_std": 0.8328248785425147
+        }
+      ]
+    },
+    {
+      "traj_idx": 2,
+      "scene": "highway",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6936638653278351,
+          "action_mass": 0.9878691605159214,
+          "action_spread": 20.067233928746145,
+          "action_roughness": 21.5,
+          "mean_entropy": 1.5619524802480425,
+          "entropy_std": 0.746409344804939
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.7107124328613281,
+          "action_mass": 0.9825661182403564,
+          "action_spread": 48.09768970649257,
+          "action_roughness": 63.5,
+          "mean_entropy": 1.6365771208490645,
+          "entropy_std": 0.7933023263809228
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6974618434906006,
+          "action_mass": 0.9855392319815499,
+          "action_spread": 49.2739116302627,
+          "action_roughness": 61.5,
+          "mean_entropy": 1.2412435459305666,
+          "entropy_std": 0.8194257797213796
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.6900255680084229,
+          "action_mass": 0.9967189175742013,
+          "action_spread": 11.310100235936849,
+          "action_roughness": 11.833333333333334,
+          "mean_entropy": 1.7171749898365565,
+          "entropy_std": 0.8163194876892241
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.41232746839523315,
+          "action_mass": 0.9642619660922459,
+          "action_spread": 17.344057383744218,
+          "action_roughness": 17.5,
+          "mean_entropy": 1.1592701764933875,
+          "entropy_std": 0.8069046102442408
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.4550188183784485,
+          "action_mass": 0.9981648921966553,
+          "action_spread": 19.635453150059035,
+          "action_roughness": 24.5,
+          "mean_entropy": 1.272265086216586,
+          "entropy_std": 0.9262602228161687
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.6572631597518921,
+          "action_mass": 0.999766366822379,
+          "action_spread": 29.813022767418474,
+          "action_roughness": 33.166666666666664,
+          "mean_entropy": 1.3884619687284743,
+          "entropy_std": 0.6608817949919948
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.7468717694282532,
+          "action_mass": 0.9991667951856341,
+          "action_spread": 45.77718886528708,
+          "action_roughness": 42.333333333333336,
+          "mean_entropy": 1.011729782447219,
+          "entropy_std": 0.8264764851544897
+        }
+      ]
+    },
+    {
+      "traj_idx": 3,
+      "scene": "highway",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.7295792102813721,
+          "action_mass": 0.9994689226150513,
+          "action_spread": 9.29998902786274,
+          "action_roughness": 8.833333333333334,
+          "mean_entropy": 1.133362073983465,
+          "entropy_std": 0.6965655720693974
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6375431418418884,
+          "action_mass": 0.9997762015887669,
+          "action_spread": 11.025017932328423,
+          "action_roughness": 14.333333333333334,
+          "mean_entropy": 1.188810675538012,
+          "entropy_std": 0.8310629240114353
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.5510668456554413,
+          "action_mass": 0.8882747335093362,
+          "action_spread": 26.115129714401192,
+          "action_roughness": 27.0,
+          "mean_entropy": 1.4133627084749085,
+          "entropy_std": 0.7852180871046796
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7390623986721039,
+          "action_mass": 0.9985910398619515,
+          "action_spread": 10.0,
+          "action_roughness": 13.166666666666666,
+          "mean_entropy": 1.2447368949651718,
+          "entropy_std": 0.8570509480988567
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.4402617812156677,
+          "action_mass": 0.8572565720616174,
+          "action_spread": 33.88937585613473,
+          "action_roughness": 47.666666666666664,
+          "mean_entropy": 0.9455496906989863,
+          "entropy_std": 0.8011570137651968
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6565563976764679,
+          "action_mass": 0.9862250855990818,
+          "action_spread": 49.539100203572445,
+          "action_roughness": 59.333333333333336,
+          "mean_entropy": 0.9052320865115949,
+          "entropy_std": 0.9895474673125445
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.7179848551750183,
+          "action_mass": 0.9956185732569013,
+          "action_spread": 39.36900262067783,
+          "action_roughness": 56.166666666666664,
+          "mean_entropy": 1.4136146136692591,
+          "entropy_std": 0.5740152273155272
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.620678037405014,
+          "action_mass": 0.8920500746795109,
+          "action_spread": 44.279723097045455,
+          "action_roughness": 68.83333333333333,
+          "mean_entropy": 1.158052639237472,
+          "entropy_std": 0.9125543984308174
+        }
+      ]
+    },
+    {
+      "traj_idx": 4,
+      "scene": "highway",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.4724520444869995,
+          "action_mass": 0.8607119933835098,
+          "action_spread": 27.73195313153756,
+          "action_roughness": 31.0,
+          "mean_entropy": 0.8880452382564629,
+          "entropy_std": 0.8000121052760893
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.49831974506378174,
+          "action_mass": 0.8778385860579354,
+          "action_spread": 28.937652895527666,
+          "action_roughness": 31.5,
+          "mean_entropy": 1.2220620376023135,
+          "entropy_std": 0.8653177012071076
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.438193678855896,
+          "action_mass": 0.8572158920079735,
+          "action_spread": 33.88937585613473,
+          "action_roughness": 47.666666666666664,
+          "mean_entropy": 0.8490384613648659,
+          "entropy_std": 0.9171352593429596
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7582329511642456,
+          "action_mass": 0.9853947162628174,
+          "action_spread": 20.686187839883374,
+          "action_roughness": 33.166666666666664,
+          "mean_entropy": 1.4797897849764143,
+          "entropy_std": 0.8268141424889164
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.664053738117218,
+          "action_mass": 0.86761588709695,
+          "action_spread": 42.32430671346562,
+          "action_roughness": 55.166666666666664,
+          "mean_entropy": 1.30458579318864,
+          "entropy_std": 0.7057838121988392
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6226480007171631,
+          "action_mass": 0.9982654622622898,
+          "action_spread": 38.28997844057361,
+          "action_roughness": 52.833333333333336,
+          "mean_entropy": 1.0662166010588408,
+          "entropy_std": 0.9380629279537025
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.7121029496192932,
+          "action_mass": 0.9992685317993164,
+          "action_spread": 8.378787599208675,
+          "action_roughness": 9.833333333333334,
+          "mean_entropy": 1.0744838028081827,
+          "entropy_std": 0.8145687859917441
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.6479263305664062,
+          "action_mass": 0.9977988430431911,
+          "action_spread": 19.862794673582513,
+          "action_roughness": 24.0,
+          "mean_entropy": 1.234123990471874,
+          "entropy_std": 1.0968271609079956
+        }
+      ]
+    },
+    {
+      "traj_idx": 5,
+      "scene": "highway",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6562431454658508,
+          "action_mass": 0.9953912496566772,
+          "action_spread": 21.66535841157586,
+          "action_roughness": 25.0,
+          "mean_entropy": 1.0882241044725691,
+          "entropy_std": 0.6625010441344218
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.601239800453186,
+          "action_mass": 0.9982549718448094,
+          "action_spread": 38.28997844057361,
+          "action_roughness": 52.833333333333336,
+          "mean_entropy": 1.0706024052841323,
+          "entropy_std": 1.0430699724029908
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.7708654701709747,
+          "action_mass": 0.9988908512251717,
+          "action_spread": 17.043761202221983,
+          "action_roughness": 17.166666666666668,
+          "mean_entropy": 1.2039920762181282,
+          "entropy_std": 0.9988929323845669
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.5001031756401062,
+          "action_mass": 0.8628252510513578,
+          "action_spread": 28.937652895527666,
+          "action_roughness": 31.5,
+          "mean_entropy": 1.664022240675487,
+          "entropy_std": 0.8315594277115742
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.8249054253101349,
+          "action_mass": 0.9968415413584027,
+          "action_spread": 54.27706698044764,
+          "action_roughness": 67.83333333333333,
+          "mean_entropy": 1.760461449623108,
+          "entropy_std": 0.6631609268846733
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.8234616070985794,
+          "action_mass": 0.9857661894389561,
+          "action_spread": 46.86411098014325,
+          "action_roughness": 51.333333333333336,
+          "mean_entropy": 1.3326194286346436,
+          "entropy_std": 0.8346259324269777
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.8374492228031158,
+          "action_mass": 0.992952993937901,
+          "action_spread": 69.51141442017905,
+          "action_roughness": 70.66666666666667,
+          "mean_entropy": 1.8264124223164149,
+          "entropy_std": 0.8564811688448969
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.4484010934829712,
+          "action_mass": 0.9960599711963108,
+          "action_spread": 19.722565549054078,
+          "action_roughness": 25.0,
+          "mean_entropy": 1.2569139088903154,
+          "entropy_std": 0.8257257102650701
+        }
+      ]
+    },
+    {
+      "traj_idx": 6,
+      "scene": "urban",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.5234789848327637,
+          "action_mass": 0.8638263025454113,
+          "action_spread": 29.139355531931837,
+          "action_roughness": 45.5,
+          "mean_entropy": 1.1023019071711002,
+          "entropy_std": 0.8717529273098777
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.68661168217659,
+          "action_mass": 0.9851059402738299,
+          "action_spread": 32.139999873004584,
+          "action_roughness": 34.0,
+          "mean_entropy": 0.6303387625749954,
+          "entropy_std": 0.6588333083047787
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6093669831752777,
+          "action_mass": 0.8462470423962388,
+          "action_spread": 26.697855910242712,
+          "action_roughness": 40.833333333333336,
+          "mean_entropy": 1.3330418722970145,
+          "entropy_std": 0.4979472952496039
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7635578215122223,
+          "action_mass": 0.9981312922069004,
+          "action_spread": 7.578164119928482,
+          "action_roughness": 8.333333333333334,
+          "mean_entropy": 0.9668152374880654,
+          "entropy_std": 0.5755634299336192
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.7558422982692719,
+          "action_mass": 0.9940037642206464,
+          "action_spread": 26.932265756439993,
+          "action_roughness": 26.833333333333332,
+          "mean_entropy": 0.9160527288913727,
+          "entropy_std": 0.575241522416316
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6204018592834473,
+          "action_mass": 0.7297000501837049,
+          "action_spread": 36.08097469157226,
+          "action_roughness": 44.0,
+          "mean_entropy": 1.1441759206042792,
+          "entropy_std": 0.7788701925909881
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.5628836750984192,
+          "action_mass": 0.8509665535031152,
+          "action_spread": 23.56666618556899,
+          "action_roughness": 34.333333333333336,
+          "mean_entropy": 0.9769126766573208,
+          "entropy_std": 0.8282192503846536
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.574150413274765,
+          "action_mass": 0.9865128142493111,
+          "action_spread": 28.50420663548395,
+          "action_roughness": 33.833333333333336,
+          "mean_entropy": 0.9267994393428255,
+          "entropy_std": 0.47309227228541806
+        }
+      ]
+    },
+    {
+      "traj_idx": 7,
+      "scene": "urban",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.8012417256832123,
+          "action_mass": 0.8915909358433315,
+          "action_spread": 26.511453050656105,
+          "action_roughness": 27.833333333333332,
+          "mean_entropy": 1.0277723904166902,
+          "entropy_std": 0.5869923139963734
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6728777289390564,
+          "action_mass": 0.990532534463065,
+          "action_spread": 26.768851835135337,
+          "action_roughness": 39.333333333333336,
+          "mean_entropy": 1.1566370470183236,
+          "entropy_std": 0.3030653040392175
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6041964292526245,
+          "action_mass": 0.971540127481733,
+          "action_spread": 16.02548989986304,
+          "action_roughness": 24.833333333333332,
+          "mean_entropy": 1.119917861052922,
+          "entropy_std": 0.790386108996312
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7596608102321625,
+          "action_mass": 0.9956703356334141,
+          "action_spread": 22.209576901022878,
+          "action_roughness": 26.833333333333332,
+          "mean_entropy": 0.8934404913868222,
+          "entropy_std": 0.7467110347322262
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.7041167616844177,
+          "action_mass": 0.9860041396958488,
+          "action_spread": 17.16308330607961,
+          "action_roughness": 17.666666666666668,
+          "mean_entropy": 1.4846588628632682,
+          "entropy_std": 0.37675641157545636
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.8632855713367462,
+          "action_mass": 0.9398837430136544,
+          "action_spread": 43.57868791985741,
+          "action_roughness": 64.83333333333333,
+          "mean_entropy": 0.987499193421432,
+          "entropy_std": 0.5706642611511387
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.7052929401397705,
+          "action_mass": 0.936721955026899,
+          "action_spread": 26.39805187617342,
+          "action_roughness": 33.0,
+          "mean_entropy": 1.384336497102465,
+          "entropy_std": 0.453559162585596
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.5459217727184296,
+          "action_mass": 0.8873805318559919,
+          "action_spread": 23.805332964506512,
+          "action_roughness": 38.0,
+          "mean_entropy": 1.1355066681947743,
+          "entropy_std": 0.7168838324637161
+        }
+      ]
+    },
+    {
+      "traj_idx": 8,
+      "scene": "urban",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6920116543769836,
+          "action_mass": 0.9183145931788853,
+          "action_spread": 17.279219559095502,
+          "action_roughness": 21.166666666666668,
+          "mean_entropy": 1.6606585127966744,
+          "entropy_std": 0.4643308751575324
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.5160925686359406,
+          "action_mass": 0.8542244830834014,
+          "action_spread": 23.919081273736076,
+          "action_roughness": 30.833333333333332,
+          "mean_entropy": 1.282900652715138,
+          "entropy_std": 0.6485126574151919
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6295308768749237,
+          "action_mass": 0.9221731764929635,
+          "action_spread": 43.02822993603817,
+          "action_roughness": 49.166666666666664,
+          "mean_entropy": 1.133527432169233,
+          "entropy_std": 0.45481685307006137
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.6881332993507385,
+          "action_mass": 0.9994646481105259,
+          "action_spread": 25.62205682450898,
+          "action_roughness": 34.5,
+          "mean_entropy": 1.5048852477754866,
+          "entropy_std": 0.38632006949616166
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6953966617584229,
+          "action_mass": 0.9529691849436078,
+          "action_spread": 36.60768292284547,
+          "action_roughness": 28.833333333333332,
+          "mean_entropy": 1.2549692690372467,
+          "entropy_std": 0.5840417582022733
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.7871087938547134,
+          "action_mass": 0.9219391686575753,
+          "action_spread": 30.06998639229245,
+          "action_roughness": 24.0,
+          "mean_entropy": 1.195633351802826,
+          "entropy_std": 0.6550841966777835
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.543377697467804,
+          "action_mass": 0.832149764256818,
+          "action_spread": 52.868724599864585,
+          "action_roughness": 65.0,
+          "mean_entropy": 1.2153710505979884,
+          "entropy_std": 0.6504486239437341
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.6721265912055969,
+          "action_mass": 0.97953690801348,
+          "action_spread": 22.756026337958865,
+          "action_roughness": 30.833333333333332,
+          "mean_entropy": 1.4469776792185647,
+          "entropy_std": 0.5863596832513578
+        }
+      ]
+    },
+    {
+      "traj_idx": 9,
+      "scene": "urban",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.563948929309845,
+          "action_mass": 0.9639675446919033,
+          "action_spread": 48.65874504534365,
+          "action_roughness": 50.166666666666664,
+          "mean_entropy": 1.0466681766140806,
+          "entropy_std": 0.5825776883048887
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6203311681747437,
+          "action_mass": 0.8950399373258863,
+          "action_spread": 28.264060976037094,
+          "action_roughness": 39.833333333333336,
+          "mean_entropy": 1.1433897667697497,
+          "entropy_std": 0.750265042705061
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.5922979712486267,
+          "action_mass": 0.9872086048126221,
+          "action_spread": 20.111931680432075,
+          "action_roughness": 20.833333333333332,
+          "mean_entropy": 1.1075338137369337,
+          "entropy_std": 0.8934034493481685
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.5838364958763123,
+          "action_mass": 0.9778778553009033,
+          "action_spread": 17.867996701433796,
+          "action_roughness": 25.5,
+          "mean_entropy": 1.067274387393679,
+          "entropy_std": 0.45350920986751564
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6668564677238464,
+          "action_mass": 0.9757633124079023,
+          "action_spread": 24.651861708890987,
+          "action_roughness": 30.5,
+          "mean_entropy": 0.9259402624198368,
+          "entropy_std": 0.49069054411279345
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.5564290285110474,
+          "action_mass": 0.97026298727308,
+          "action_spread": 30.80087462315024,
+          "action_roughness": 23.166666666666668,
+          "mean_entropy": 0.7750213550921866,
+          "entropy_std": 0.8281726543960882
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.5759055316448212,
+          "action_mass": 0.8565242361573837,
+          "action_spread": 27.53031724021608,
+          "action_roughness": 30.5,
+          "mean_entropy": 1.1235488206148148,
+          "entropy_std": 0.7512717036589606
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.8192015886306763,
+          "action_mass": 0.9959521974836077,
+          "action_spread": 22.132255526581055,
+          "action_roughness": 18.666666666666668,
+          "mean_entropy": 1.3639370884214128,
+          "entropy_std": 0.7006030517114806
+        }
+      ]
+    },
+    {
+      "traj_idx": 10,
+      "scene": "urban",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.511134535074234,
+          "action_mass": 0.9301756620407104,
+          "action_spread": 23.39544696678202,
+          "action_roughness": 34.833333333333336,
+          "mean_entropy": 1.065438653741564,
+          "entropy_std": 0.7610223945634704
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.5590482354164124,
+          "action_mass": 0.8318468910183583,
+          "action_spread": 49.061810244729,
+          "action_roughness": 62.333333333333336,
+          "mean_entropy": 1.1633181394463463,
+          "entropy_std": 0.8027490751770391
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.5098713636398315,
+          "action_mass": 0.9484780601092747,
+          "action_spread": 33.92187903921333,
+          "action_roughness": 27.833333333333332,
+          "mean_entropy": 1.0087238202187498,
+          "entropy_std": 0.8574440685387879
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.8004885613918304,
+          "action_mass": 0.9993144188608442,
+          "action_spread": 23.01818269746501,
+          "action_roughness": 16.333333333333332,
+          "mean_entropy": 0.8329082365546908,
+          "entropy_std": 0.6293856344426472
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.886358730494976,
+          "action_mass": 0.9868869611195156,
+          "action_spread": 50.87640084818605,
+          "action_roughness": 71.66666666666667,
+          "mean_entropy": 1.1485155134328775,
+          "entropy_std": 0.7825362255401801
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6338599622249603,
+          "action_mass": 0.8812076917716435,
+          "action_spread": 47.874410530819794,
+          "action_roughness": 40.5,
+          "mean_entropy": 1.0255350066082818,
+          "entropy_std": 0.6508174823382898
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.8654772937297821,
+          "action_mass": 0.9143492579460144,
+          "action_spread": 43.840620433565945,
+          "action_roughness": 45.0,
+          "mean_entropy": 1.2602042385510035,
+          "entropy_std": 0.6453879939403212
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.6513033509254456,
+          "action_mass": 0.9182144403457642,
+          "action_spread": 36.28008955279995,
+          "action_roughness": 45.0,
+          "mean_entropy": 0.9835921843952227,
+          "entropy_std": 0.5751103949503779
+        }
+      ]
+    },
+    {
+      "traj_idx": 11,
+      "scene": "urban",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.7637749910354614,
+          "action_mass": 0.8923747709819249,
+          "action_spread": 35.144018563851326,
+          "action_roughness": 28.166666666666668,
+          "mean_entropy": 0.8453338779509068,
+          "entropy_std": 0.6605956886401845
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6452409625053406,
+          "action_mass": 0.8393648877224352,
+          "action_spread": 31.39023636061873,
+          "action_roughness": 37.666666666666664,
+          "mean_entropy": 0.9961015642308796,
+          "entropy_std": 0.6211594577802104
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.5650462508201599,
+          "action_mass": 0.856500972012457,
+          "action_spread": 22.984466804468497,
+          "action_roughness": 32.666666666666664,
+          "mean_entropy": 0.9522428656686576,
+          "entropy_std": 0.5292919394268504
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.5713356733322144,
+          "action_mass": 0.8255689399582999,
+          "action_spread": 45.630279957278276,
+          "action_roughness": 41.166666666666664,
+          "mean_entropy": 1.6990175112837929,
+          "entropy_std": 0.7992161555026251
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.5651593208312988,
+          "action_mass": 0.9969023806708199,
+          "action_spread": 28.090233614012465,
+          "action_roughness": 35.166666666666664,
+          "mean_entropy": 1.3318768909999303,
+          "entropy_std": 0.4547645031280228
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.660700798034668,
+          "action_mass": 0.9959476249558585,
+          "action_spread": 14.858516420022614,
+          "action_roughness": 21.166666666666668,
+          "mean_entropy": 1.0178277300936835,
+          "entropy_std": 0.534624058526938
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.7640296667814255,
+          "action_mass": 0.9630295549120221,
+          "action_spread": 36.711228332954015,
+          "action_roughness": 29.833333333333332,
+          "mean_entropy": 0.8042486026617033,
+          "entropy_std": 0.6483217872238332
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.6742447018623352,
+          "action_mass": 0.75970458984375,
+          "action_spread": 48.6281181781798,
+          "action_roughness": 41.833333333333336,
+          "mean_entropy": 1.0742034632047373,
+          "entropy_std": 0.7112463430752474
+        }
+      ]
+    },
+    {
+      "traj_idx": 12,
+      "scene": "night",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.801580011844635,
+          "action_mass": 0.9220097831317356,
+          "action_spread": 34.450200674750974,
+          "action_roughness": 40.166666666666664,
+          "mean_entropy": 1.4560130195958274,
+          "entropy_std": 0.9265938055716882
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.609596848487854,
+          "action_mass": 0.8871727458068303,
+          "action_spread": 15.406068245191898,
+          "action_roughness": 17.0,
+          "mean_entropy": 1.1057531067303248,
+          "entropy_std": 0.8468775836344042
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6190702319145203,
+          "action_mass": 0.997658738068172,
+          "action_spread": 9.100347604933134,
+          "action_roughness": 9.5,
+          "mean_entropy": 1.261980583092996,
+          "entropy_std": 0.949815864573636
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.548348605632782,
+          "action_mass": 0.9013310074806213,
+          "action_spread": 22.460850293752625,
+          "action_roughness": 28.666666666666668,
+          "mean_entropy": 1.1319287606914128,
+          "entropy_std": 1.1201660544252479
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6476586759090424,
+          "action_mass": 0.8578682456697736,
+          "action_spread": 11.74734012447073,
+          "action_roughness": 11.833333333333334,
+          "mean_entropy": 1.2898612831320082,
+          "entropy_std": 0.8302879552526793
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.443514347076416,
+          "action_mass": 0.8252657359506494,
+          "action_spread": 19.234323062522094,
+          "action_roughness": 28.0,
+          "mean_entropy": 1.014916873403958,
+          "entropy_std": 1.0000313451568024
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.649310827255249,
+          "action_mass": 0.8932454798902784,
+          "action_spread": 16.993396076243314,
+          "action_roughness": 23.833333333333332,
+          "mean_entropy": 1.1713780633040838,
+          "entropy_std": 0.8895707698013314
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.8085098564624786,
+          "action_mass": 0.973656143460955,
+          "action_spread": 23.309803490709875,
+          "action_roughness": 34.166666666666664,
+          "mean_entropy": 1.3295021142278398,
+          "entropy_std": 0.48724086230545793
+        }
+      ]
+    },
+    {
+      "traj_idx": 13,
+      "scene": "night",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.7987529337406158,
+          "action_mass": 0.9565996527671814,
+          "action_spread": 47.33726150223112,
+          "action_roughness": 60.166666666666664,
+          "mean_entropy": 1.3382670474903924,
+          "entropy_std": 0.6438852497771698
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.7881399244070053,
+          "action_mass": 0.9877331597464425,
+          "action_spread": 47.33726150223112,
+          "action_roughness": 60.166666666666664,
+          "mean_entropy": 1.0422619810061795,
+          "entropy_std": 0.5717697442694777
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.731725424528122,
+          "action_mass": 0.8823637174708503,
+          "action_spread": 27.98396042050386,
+          "action_roughness": 38.666666666666664,
+          "mean_entropy": 1.426627951008933,
+          "entropy_std": 0.6671405429909445
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7899627983570099,
+          "action_mass": 0.9184152739388602,
+          "action_spread": 23.638432904997778,
+          "action_roughness": 21.333333333333332,
+          "mean_entropy": 1.3501791400568826,
+          "entropy_std": 0.9753019499352296
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.7867048233747482,
+          "action_mass": 0.9421226808003017,
+          "action_spread": 47.33726150223112,
+          "action_roughness": 60.166666666666664,
+          "mean_entropy": 1.1328441819974355,
+          "entropy_std": 0.730269608456904
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6003003716468811,
+          "action_mass": 0.8668035747749465,
+          "action_spread": 19.025224930955993,
+          "action_roughness": 19.333333333333332,
+          "mean_entropy": 1.1907790388379778,
+          "entropy_std": 0.7797287640404729
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.5930678248405457,
+          "action_mass": 0.8411327321165507,
+          "action_spread": 14.027669450200259,
+          "action_roughness": 16.0,
+          "mean_entropy": 1.1864428988524847,
+          "entropy_std": 0.5717969893055527
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.8175055682659149,
+          "action_mass": 0.9081541895866394,
+          "action_spread": 35.986959089228364,
+          "action_roughness": 62.666666666666664,
+          "mean_entropy": 0.8995245971849987,
+          "entropy_std": 0.6045527555314741
+        }
+      ]
+    },
+    {
+      "traj_idx": 14,
+      "scene": "night",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6002991795539856,
+          "action_mass": 0.8650368281773159,
+          "action_spread": 17.71774159837926,
+          "action_roughness": 16.833333333333332,
+          "mean_entropy": 1.2338791234152657,
+          "entropy_std": 0.6438158271739253
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.8003392815589905,
+          "action_mass": 0.9525976010731289,
+          "action_spread": 47.33726150223112,
+          "action_roughness": 60.166666666666664,
+          "mean_entropy": 1.1591427722014487,
+          "entropy_std": 1.0119468507354488
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.7425265312194824,
+          "action_mass": 0.9981402243886676,
+          "action_spread": 4.266624149448022,
+          "action_roughness": 4.166666666666667,
+          "mean_entropy": 1.0276053420134954,
+          "entropy_std": 0.8553266726910682
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7098168432712555,
+          "action_mass": 0.90440091916493,
+          "action_spread": 23.019955850238695,
+          "action_roughness": 28.333333333333332,
+          "mean_entropy": 1.8776704924447196,
+          "entropy_std": 0.7488380744984418
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6346910893917084,
+          "action_mass": 0.9977369223322187,
+          "action_spread": 9.302183197771262,
+          "action_roughness": 11.5,
+          "mean_entropy": 1.319527302469526,
+          "entropy_std": 0.8564647394764526
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.713495671749115,
+          "action_mass": 0.9922312753541129,
+          "action_spread": 17.561553555004927,
+          "action_roughness": 13.833333333333334,
+          "mean_entropy": 1.6780029790742057,
+          "entropy_std": 0.7499062760677234
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.4178274869918823,
+          "action_mass": 0.843463651788105,
+          "action_spread": 7.871415607974806,
+          "action_roughness": 8.333333333333334,
+          "mean_entropy": 1.3240782343406343,
+          "entropy_std": 1.2548206133120463
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.8025552034378052,
+          "action_mass": 0.9344250219208854,
+          "action_spread": 41.48272322944351,
+          "action_roughness": 47.833333333333336,
+          "mean_entropy": 1.2429944886160749,
+          "entropy_std": 0.6963560992067791
+        }
+      ]
+    },
+    {
+      "traj_idx": 15,
+      "scene": "night",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6140996515750885,
+          "action_mass": 0.8530703521599727,
+          "action_spread": 14.029124225361048,
+          "action_roughness": 16.0,
+          "mean_entropy": 1.2437860178095954,
+          "entropy_std": 0.6860397938539705
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.8011873960494995,
+          "action_mass": 0.9707038913454328,
+          "action_spread": 47.33726150223112,
+          "action_roughness": 60.166666666666664,
+          "mean_entropy": 1.0560475031712226,
+          "entropy_std": 0.839520887963909
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.7599079310894012,
+          "action_mass": 0.9752236434391567,
+          "action_spread": 41.48911831764457,
+          "action_roughness": 63.333333333333336,
+          "mean_entropy": 1.0574725231687938,
+          "entropy_std": 0.805303748449157
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.6393404901027679,
+          "action_mass": 0.869984681052821,
+          "action_spread": 5.233331166861201,
+          "action_roughness": 5.666666666666667,
+          "mean_entropy": 1.4195348088230406,
+          "entropy_std": 0.8391296908981456
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6452988088130951,
+          "action_mass": 0.8706793231623513,
+          "action_spread": 16.993396076243314,
+          "action_roughness": 23.833333333333332,
+          "mean_entropy": 1.469547574009214,
+          "entropy_std": 0.6455597677972034
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.5059331655502319,
+          "action_mass": 0.8840176101241793,
+          "action_spread": 22.6202004718737,
+          "action_roughness": 35.666666666666664,
+          "mean_entropy": 1.066874614631258,
+          "entropy_std": 1.1704696333175095
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.725304126739502,
+          "action_mass": 0.9849098750523159,
+          "action_spread": 9.118270512704541,
+          "action_roughness": 14.166666666666666,
+          "mean_entropy": 1.7118864400046212,
+          "entropy_std": 0.5720530018865118
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.7102217376232147,
+          "action_mass": 0.987497363771711,
+          "action_spread": 48.334717315395395,
+          "action_roughness": 51.666666666666664,
+          "mean_entropy": 1.2747875766030379,
+          "entropy_std": 0.9762345316215594
+        }
+      ]
+    },
+    {
+      "traj_idx": 16,
+      "scene": "foggy",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.5335331559181213,
+          "action_mass": 0.9290040816579547,
+          "action_spread": 46.90328738315619,
+          "action_roughness": 42.833333333333336,
+          "mean_entropy": 1.738477264647372,
+          "entropy_std": 0.8649852037738541
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.7265128195285797,
+          "action_mass": 0.9997603808130536,
+          "action_spread": 12.620035900204444,
+          "action_roughness": 14.833333333333334,
+          "mean_entropy": 1.2854764716965812,
+          "entropy_std": 0.739853675468388
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.48158735036849976,
+          "action_mass": 0.8555954224430025,
+          "action_spread": 17.10829849958845,
+          "action_roughness": 19.333333333333332,
+          "mean_entropy": 1.2639702760034197,
+          "entropy_std": 1.0194134764748721
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.6029414534568787,
+          "action_mass": 0.9986938578741891,
+          "action_spread": 18.646004113153978,
+          "action_roughness": 19.0,
+          "mean_entropy": 0.8991459250849273,
+          "entropy_std": 0.9039400002645983
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6524317562580109,
+          "action_mass": 0.9659375378063747,
+          "action_spread": 32.71085446759225,
+          "action_roughness": 43.0,
+          "mean_entropy": 1.136210904589721,
+          "entropy_std": 0.9543783811204832
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.5638696551322937,
+          "action_mass": 0.8460587078173246,
+          "action_spread": 16.437885558448603,
+          "action_roughness": 12.0,
+          "mean_entropy": 1.4156015059787543,
+          "entropy_std": 0.7678180925731912
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.6740431785583496,
+          "action_mass": 0.9825960397720337,
+          "action_spread": 33.71307503879509,
+          "action_roughness": 44.0,
+          "mean_entropy": 1.0850284730217286,
+          "entropy_std": 0.8652489204043174
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.6581518650054932,
+          "action_mass": 0.9636842949049813,
+          "action_spread": 15.331706509381007,
+          "action_roughness": 19.833333333333332,
+          "mean_entropy": 1.2612014072281974,
+          "entropy_std": 0.7214624519564632
+        }
+      ]
+    },
+    {
+      "traj_idx": 17,
+      "scene": "foggy",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.735320657491684,
+          "action_mass": 0.998090786593301,
+          "action_spread": 20.42207688972392,
+          "action_roughness": 17.666666666666668,
+          "mean_entropy": 1.003192899948252,
+          "entropy_std": 0.8576304792770278
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.8264522403478622,
+          "action_mass": 0.9967435342924935,
+          "action_spread": 44.736416248683916,
+          "action_roughness": 57.833333333333336,
+          "mean_entropy": 1.192791542836598,
+          "entropy_std": 0.7615742179114259
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.43232738971710205,
+          "action_mass": 0.7894305977970362,
+          "action_spread": 42.941821107167776,
+          "action_roughness": 41.833333333333336,
+          "mean_entropy": 1.1401302487522895,
+          "entropy_std": 0.9142366099112273
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.6826445460319519,
+          "action_mass": 0.8625153127525534,
+          "action_spread": 28.18741939669004,
+          "action_roughness": 33.0,
+          "mean_entropy": 1.4837648017065865,
+          "entropy_std": 0.8488842797285281
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.809997946023941,
+          "action_mass": 0.9021633395126888,
+          "action_spread": 43.287835874456434,
+          "action_roughness": 65.83333333333333,
+          "mean_entropy": 1.7554358754839217,
+          "entropy_std": 0.7335263576308266
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.5464797019958496,
+          "action_mass": 0.8541076459389713,
+          "action_spread": 27.644979615821452,
+          "action_roughness": 31.0,
+          "mean_entropy": 1.2495444061007999,
+          "entropy_std": 1.0617171243838082
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.8189767152070999,
+          "action_mass": 0.9996717827660697,
+          "action_spread": 31.931687288040767,
+          "action_roughness": 35.833333333333336,
+          "mean_entropy": 1.0646176700081145,
+          "entropy_std": 0.9118688422190321
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.5936665534973145,
+          "action_mass": 0.9335029295512608,
+          "action_spread": 38.86764563941352,
+          "action_roughness": 50.333333333333336,
+          "mean_entropy": 1.0202835947275162,
+          "entropy_std": 0.5968098693464546
+        }
+      ]
+    },
+    {
+      "traj_idx": 18,
+      "scene": "foggy",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.65566486120224,
+          "action_mass": 0.9786078674452645,
+          "action_spread": 32.71085446759225,
+          "action_roughness": 43.0,
+          "mean_entropy": 1.1720347936664308,
+          "entropy_std": 0.7241018012915235
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6833234429359436,
+          "action_mass": 0.9994027444294521,
+          "action_spread": 12.89201619734683,
+          "action_roughness": 19.5,
+          "mean_entropy": 1.2555602650557245,
+          "entropy_std": 0.8178276457185183
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6102175712585449,
+          "action_mass": 0.9186648854187557,
+          "action_spread": 19.715320883795435,
+          "action_roughness": 23.666666666666668,
+          "mean_entropy": 1.3689877284424645,
+          "entropy_std": 0.8751929258693306
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7137762904167175,
+          "action_mass": 0.9181808744158063,
+          "action_spread": 28.2929283729763,
+          "action_roughness": 31.0,
+          "mean_entropy": 1.1880353167653084,
+          "entropy_std": 0.9012180939074874
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.44223904609680176,
+          "action_mass": 0.9330010414123535,
+          "action_spread": 26.131535409484513,
+          "action_roughness": 33.833333333333336,
+          "mean_entropy": 1.436815295120011,
+          "entropy_std": 0.7289296237814112
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6985959410667419,
+          "action_mass": 0.9864265407834735,
+          "action_spread": 17.260311913373375,
+          "action_roughness": 13.333333333333334,
+          "mean_entropy": 1.2146474016564233,
+          "entropy_std": 0.8590504361910861
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.572113573551178,
+          "action_mass": 0.8799349303756442,
+          "action_spread": 11.92151202572861,
+          "action_roughness": 11.166666666666666,
+          "mean_entropy": 1.0197368110945848,
+          "entropy_std": 1.0287135699991206
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.8224017322063446,
+          "action_mass": 0.9985602157456535,
+          "action_spread": 31.44804591444013,
+          "action_roughness": 40.0,
+          "mean_entropy": 1.657994074480874,
+          "entropy_std": 0.8938356530138104
+        }
+      ]
+    },
+    {
+      "traj_idx": 19,
+      "scene": "foggy",
+      "is_ood": false,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6763865351676941,
+          "action_mass": 0.9625435130936759,
+          "action_spread": 31.060835632739852,
+          "action_roughness": 36.666666666666664,
+          "mean_entropy": 1.5369771144219808,
+          "entropy_std": 0.7694237912010584
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.5748670101165771,
+          "action_mass": 0.9984484314918518,
+          "action_spread": 10.083326305726453,
+          "action_roughness": 13.0,
+          "mean_entropy": 0.9759515448074255,
+          "entropy_std": 1.0484415037800936
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6941104233264923,
+          "action_mass": 0.9112683704921177,
+          "action_spread": 33.957356210640526,
+          "action_roughness": 39.166666666666664,
+          "mean_entropy": 1.5527216366359167,
+          "entropy_std": 0.49412118513655323
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7845961451530457,
+          "action_mass": 0.9994969367980957,
+          "action_spread": 43.374966917590164,
+          "action_roughness": 49.333333333333336,
+          "mean_entropy": 1.3060583514826638,
+          "entropy_std": 0.8629066130534473
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6993508040904999,
+          "action_mass": 0.997469791344234,
+          "action_spread": 16.522094051201098,
+          "action_roughness": 20.833333333333332,
+          "mean_entropy": 0.8448207067059619,
+          "entropy_std": 0.8057883689533466
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6354882121086121,
+          "action_mass": 0.9997397661209106,
+          "action_spread": 21.296737318381968,
+          "action_roughness": 17.0,
+          "mean_entropy": 1.2461299140538489,
+          "entropy_std": 0.8170621210421006
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.7340421676635742,
+          "action_mass": 0.9936807581356594,
+          "action_spread": 21.796835568869316,
+          "action_roughness": 24.5,
+          "mean_entropy": 1.4527509829827718,
+          "entropy_std": 0.883569457561613
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.6956149339675903,
+          "action_mass": 0.9800220813070025,
+          "action_spread": 51.42936507324133,
+          "action_roughness": 62.5,
+          "mean_entropy": 1.0530808875113766,
+          "entropy_std": 0.9635774387950932
+        }
+      ]
+    },
+    {
+      "traj_idx": 20,
+      "scene": "snow",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6613026261329651,
+          "action_mass": 0.982755150113787,
+          "action_spread": 30.342937853000002,
+          "action_roughness": 29.0,
+          "mean_entropy": 1.3000426249844688,
+          "entropy_std": 0.8532650994407748
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.8268776088953018,
+          "action_mass": 0.9959932225091117,
+          "action_spread": 47.47459041101753,
+          "action_roughness": 72.66666666666667,
+          "mean_entropy": 1.242698596790433,
+          "entropy_std": 0.7782799610474663
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.5767607390880585,
+          "action_mass": 0.7912742157267141,
+          "action_spread": 18.304677666918803,
+          "action_roughness": 25.0,
+          "mean_entropy": 1.21824460471024,
+          "entropy_std": 0.8102483107141187
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.8858804702758789,
+          "action_mass": 0.9997772829873222,
+          "action_spread": 18.805123053604955,
+          "action_roughness": 27.666666666666668,
+          "mean_entropy": 1.050407656684651,
+          "entropy_std": 0.9144551488277982
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.8986883834004402,
+          "action_mass": 0.9946759257997785,
+          "action_spread": 48.02592837122847,
+          "action_roughness": 61.833333333333336,
+          "mean_entropy": 1.2215639991419656,
+          "entropy_std": 1.0487310163317811
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.8241390287876129,
+          "action_mass": 0.9038430665220533,
+          "action_spread": 51.955632563775424,
+          "action_roughness": 68.33333333333333,
+          "mean_entropy": 1.4543588076319014,
+          "entropy_std": 0.7901427337800467
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.8198734074831009,
+          "action_mass": 0.9067697652748653,
+          "action_spread": 42.347927207544764,
+          "action_roughness": 62.0,
+          "mean_entropy": 1.1090317890048027,
+          "entropy_std": 0.7847807864272285
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.5271860957145691,
+          "action_mass": 0.8249692662666348,
+          "action_spread": 15.4060682451919,
+          "action_roughness": 22.333333333333332,
+          "mean_entropy": 1.2838887332140334,
+          "entropy_std": 0.9471894831206061
+        }
+      ]
+    },
+    {
+      "traj_idx": 21,
+      "scene": "snow",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.7716327160596848,
+          "action_mass": 0.9979029893875122,
+          "action_spread": 22.45903299933695,
+          "action_roughness": 33.333333333333336,
+          "mean_entropy": 1.4160305942807878,
+          "entropy_std": 0.7127325639491517
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.7152124047279358,
+          "action_mass": 0.9995290722165789,
+          "action_spread": 20.842460585672367,
+          "action_roughness": 30.0,
+          "mean_entropy": 0.9216449473585401,
+          "entropy_std": 0.6255696605872445
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.8178198039531708,
+          "action_mass": 0.997425513608115,
+          "action_spread": 31.497975315559437,
+          "action_roughness": 37.833333333333336,
+          "mean_entropy": 1.5550398166690553,
+          "entropy_std": 0.7028437838702991
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.6934484541416168,
+          "action_mass": 0.9681030511856079,
+          "action_spread": 38.84033249820898,
+          "action_roughness": 41.5,
+          "mean_entropy": 1.799093748841967,
+          "entropy_std": 0.7468380472247214
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.7069818675518036,
+          "action_mass": 0.9983892951692853,
+          "action_spread": 21.44665903289996,
+          "action_roughness": 23.666666666666668,
+          "mean_entropy": 1.3160356889878,
+          "entropy_std": 0.8102237936490355
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6256134212017059,
+          "action_mass": 0.9166651879038129,
+          "action_spread": 38.08529632178759,
+          "action_roughness": 52.333333333333336,
+          "mean_entropy": 1.1009994149208069,
+          "entropy_std": 0.97857781040814
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.6004399657249451,
+          "action_mass": 0.9800392133849007,
+          "action_spread": 16.807432758109353,
+          "action_roughness": 19.0,
+          "mean_entropy": 0.8948558041426752,
+          "entropy_std": 0.905365310495614
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.7723202109336853,
+          "action_mass": 0.9985532505171639,
+          "action_spread": 24.876839486903133,
+          "action_roughness": 27.0,
+          "mean_entropy": 1.3207413293421268,
+          "entropy_std": 0.7644292508897355
+        }
+      ]
+    },
+    {
+      "traj_idx": 22,
+      "scene": "snow",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.5513859391212463,
+          "action_mass": 0.9809515731675285,
+          "action_spread": 45.8956224847785,
+          "action_roughness": 53.333333333333336,
+          "mean_entropy": 1.2443388896814906,
+          "entropy_std": 0.7100362199074912
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.695863664150238,
+          "action_mass": 0.9313436320849827,
+          "action_spread": 48.07137550410996,
+          "action_roughness": 39.166666666666664,
+          "mean_entropy": 1.3961370119026728,
+          "entropy_std": 0.756674854470585
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.8443980515003204,
+          "action_mass": 0.9898080570357186,
+          "action_spread": 47.47459041101753,
+          "action_roughness": 72.66666666666667,
+          "mean_entropy": 1.1689298621245794,
+          "entropy_std": 0.5490251740992199
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.8752598017454147,
+          "action_mass": 0.9081235826015472,
+          "action_spread": 44.98389734569653,
+          "action_roughness": 59.0,
+          "mean_entropy": 1.3750487736293249,
+          "entropy_std": 0.6147994150067506
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6332058310508728,
+          "action_mass": 0.9622079304286412,
+          "action_spread": 40.241110058937366,
+          "action_roughness": 22.333333333333332,
+          "mean_entropy": 0.6602299378386566,
+          "entropy_std": 0.5713280224253826
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.7669370025396347,
+          "action_mass": 0.9718105622700283,
+          "action_spread": 41.95186746348092,
+          "action_roughness": 53.666666666666664,
+          "mean_entropy": 1.3095165906207902,
+          "entropy_std": 0.9547686612847966
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.7094594240188599,
+          "action_mass": 0.9610205973897662,
+          "action_spread": 31.318638904925976,
+          "action_roughness": 34.833333333333336,
+          "mean_entropy": 1.3272584799144949,
+          "entropy_std": 0.8772646704177269
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.5440327525138855,
+          "action_mass": 0.9840921419007438,
+          "action_spread": 21.4590259778576,
+          "action_roughness": 26.833333333333332,
+          "mean_entropy": 1.2354363627563967,
+          "entropy_std": 0.9256907286806639
+        }
+      ]
+    },
+    {
+      "traj_idx": 23,
+      "scene": "snow",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.8663766235113144,
+          "action_mass": 0.9993616342544556,
+          "action_spread": 42.593474636763936,
+          "action_roughness": 56.666666666666664,
+          "mean_entropy": 1.3782367472137724,
+          "entropy_std": 0.8396611607060525
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.5511811375617981,
+          "action_mass": 0.8572502229695341,
+          "action_spread": 35.17884336370602,
+          "action_roughness": 29.833333333333332,
+          "mean_entropy": 1.335945208689996,
+          "entropy_std": 0.8892411824206988
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.5177554488182068,
+          "action_mass": 0.8572781777807644,
+          "action_spread": 21.830515994163505,
+          "action_roughness": 29.5,
+          "mean_entropy": 1.4831801534534503,
+          "entropy_std": 0.863922394711895
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7512920200824738,
+          "action_mass": 0.9850635784012931,
+          "action_spread": 45.04510211432311,
+          "action_roughness": 56.0,
+          "mean_entropy": 1.6049843898841314,
+          "entropy_std": 0.723778721788575
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.5995718240737915,
+          "action_mass": 0.9937026074954441,
+          "action_spread": 23.08988646881697,
+          "action_roughness": 26.333333333333332,
+          "mean_entropy": 1.1846950565065657,
+          "entropy_std": 0.854292178071028
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6027557849884033,
+          "action_mass": 0.7868164820330483,
+          "action_spread": 32.54384797187214,
+          "action_roughness": 58.833333333333336,
+          "mean_entropy": 1.6576776312930244,
+          "entropy_std": 1.089961848473408
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.8116387724876404,
+          "action_mass": 0.9852605717522758,
+          "action_spread": 44.403989524752006,
+          "action_roughness": 54.666666666666664,
+          "mean_entropy": 1.7017439263207572,
+          "entropy_std": 0.5904364550545674
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.5307974219322205,
+          "action_mass": 0.9709034476961408,
+          "action_spread": 32.493641450195724,
+          "action_roughness": 56.5,
+          "mean_entropy": 1.325514929993789,
+          "entropy_std": 0.7294982398551636
+        }
+      ]
+    },
+    {
+      "traj_idx": 24,
+      "scene": "snow",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.7127484977245331,
+          "action_mass": 0.9925782339913505,
+          "action_spread": 50.11822756935721,
+          "action_roughness": 65.16666666666667,
+          "mean_entropy": 1.4865796949182237,
+          "entropy_std": 0.7502384164564415
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.5836271047592163,
+          "action_mass": 0.8752288456474032,
+          "action_spread": 57.511312108211925,
+          "action_roughness": 58.833333333333336,
+          "mean_entropy": 1.1356841823102772,
+          "entropy_std": 0.9369466985322318
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.8544583916664124,
+          "action_mass": 0.9832481827054705,
+          "action_spread": 42.593474636763936,
+          "action_roughness": 56.666666666666664,
+          "mean_entropy": 1.2769414186477661,
+          "entropy_std": 0.6280078283079423
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.8152468204498291,
+          "action_mass": 0.9999505366597857,
+          "action_spread": 34.809100381764466,
+          "action_roughness": 45.166666666666664,
+          "mean_entropy": 0.9567646232566663,
+          "entropy_std": 0.7884381022853666
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.7500900477170944,
+          "action_mass": 0.9555832062448774,
+          "action_spread": 42.91329654557155,
+          "action_roughness": 51.166666666666664,
+          "mean_entropy": 1.486040220196758,
+          "entropy_std": 0.9052525934086799
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.8177842199802399,
+          "action_mass": 0.9781677041734967,
+          "action_spread": 45.59717141244977,
+          "action_roughness": 46.166666666666664,
+          "mean_entropy": 1.592849510056632,
+          "entropy_std": 0.4679634426706018
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.8720632493495941,
+          "action_mass": 0.9994209323610578,
+          "action_spread": 28.555709961907294,
+          "action_roughness": 29.0,
+          "mean_entropy": 1.505592209952218,
+          "entropy_std": 0.7601855825327515
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.7524939179420471,
+          "action_mass": 0.9979944825172424,
+          "action_spread": 40.34747039588652,
+          "action_roughness": 46.833333333333336,
+          "mean_entropy": 1.3257322141102381,
+          "entropy_std": 0.6517247179452388
+        }
+      ]
+    },
+    {
+      "traj_idx": 25,
+      "scene": "flooded",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.7941105216741562,
+          "action_mass": 0.8728126968656268,
+          "action_spread": 19.56569259010813,
+          "action_roughness": 25.333333333333332,
+          "mean_entropy": 1.4651835305350167,
+          "entropy_std": 0.8389660607018956
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6832993030548096,
+          "action_mass": 0.9576497418539864,
+          "action_spread": 36.7828709025918,
+          "action_roughness": 46.833333333333336,
+          "mean_entropy": 1.1718547937593289,
+          "entropy_std": 0.7378250648435584
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.7855619192123413,
+          "action_mass": 0.9757394279752459,
+          "action_spread": 27.96791164232062,
+          "action_roughness": 30.833333333333332,
+          "mean_entropy": 0.963587550180299,
+          "entropy_std": 0.6061370771251204
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7137305736541748,
+          "action_mass": 0.7938947677612305,
+          "action_spread": 34.88757453797637,
+          "action_roughness": 43.333333333333336,
+          "mean_entropy": 1.8160619224820818,
+          "entropy_std": 0.699418541778869
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6526046395301819,
+          "action_mass": 0.9428561925888062,
+          "action_spread": 44.730029177322045,
+          "action_roughness": 51.666666666666664,
+          "mean_entropy": 1.6502577192191634,
+          "entropy_std": 0.9011163473751844
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.8986017480492592,
+          "action_mass": 0.8527404639337745,
+          "action_spread": 60.09448343047397,
+          "action_roughness": 42.833333333333336,
+          "mean_entropy": 1.4873205785240446,
+          "entropy_std": 0.8178040697040309
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.7500611990690231,
+          "action_mass": 0.959840212549482,
+          "action_spread": 9.253791280400941,
+          "action_roughness": 10.833333333333334,
+          "mean_entropy": 1.5139887418065752,
+          "entropy_std": 0.6253500211009186
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.7075136303901672,
+          "action_mass": 0.9548776234899249,
+          "action_spread": 26.04313533273564,
+          "action_roughness": 34.666666666666664,
+          "mean_entropy": 0.6800400026674781,
+          "entropy_std": 0.6960924564231128
+        }
+      ]
+    },
+    {
+      "traj_idx": 26,
+      "scene": "flooded",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.5781262516975403,
+          "action_mass": 0.8430342132674663,
+          "action_spread": 18.511992803342928,
+          "action_roughness": 22.666666666666668,
+          "mean_entropy": 1.1238101976258414,
+          "entropy_std": 0.9855513052452146
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.646151602268219,
+          "action_mass": 0.8532271330643978,
+          "action_spread": 18.69300862431116,
+          "action_roughness": 19.333333333333332,
+          "mean_entropy": 1.306552842259407,
+          "entropy_std": 0.9397369911799722
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6067700088024139,
+          "action_mass": 0.9801810468946185,
+          "action_spread": 29.557277497449334,
+          "action_roughness": 46.333333333333336,
+          "mean_entropy": 1.3582097222762448,
+          "entropy_std": 0.9348186972525618
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.6414192318916321,
+          "action_mass": 0.8976003016744342,
+          "action_spread": 23.521592338157063,
+          "action_roughness": 29.666666666666668,
+          "mean_entropy": 1.3557547075407845,
+          "entropy_std": 0.5506470780508765
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6262689828872681,
+          "action_mass": 0.9735114574432373,
+          "action_spread": 29.882764126444773,
+          "action_roughness": 48.333333333333336,
+          "mean_entropy": 0.8215088336063283,
+          "entropy_std": 0.5145021116976708
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.7803409397602081,
+          "action_mass": 0.9398492063794818,
+          "action_spread": 27.96791164232062,
+          "action_roughness": 30.833333333333332,
+          "mean_entropy": 0.9999359963195664,
+          "entropy_std": 0.6359270386711582
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.6459336280822754,
+          "action_mass": 0.9367171440805707,
+          "action_spread": 42.82141367806247,
+          "action_roughness": 67.0,
+          "mean_entropy": 1.7456160911491938,
+          "entropy_std": 0.7624605785372317
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.7870361804962158,
+          "action_mass": 0.9703912394387382,
+          "action_spread": 15.633558880347946,
+          "action_roughness": 22.666666666666668,
+          "mean_entropy": 1.4528635229383196,
+          "entropy_std": 0.4508049768682032
+        }
+      ]
+    },
+    {
+      "traj_idx": 27,
+      "scene": "flooded",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6871011257171631,
+          "action_mass": 0.8461813123431057,
+          "action_spread": 23.968516765089312,
+          "action_roughness": 27.333333333333332,
+          "mean_entropy": 1.2027931128229414,
+          "entropy_std": 0.8314535772374821
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.618933379650116,
+          "action_mass": 0.8373175929134179,
+          "action_spread": 25.081906642365258,
+          "action_roughness": 38.0,
+          "mean_entropy": 1.3342922670500619,
+          "entropy_std": 0.7038804950352258
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6508829891681671,
+          "action_mass": 0.991650470665523,
+          "action_spread": 25.379567549105168,
+          "action_roughness": 27.5,
+          "mean_entropy": 1.0760305973164057,
+          "entropy_std": 0.8027879076014016
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.728348046541214,
+          "action_mass": 0.9694074477468219,
+          "action_spread": 29.916209516526898,
+          "action_roughness": 33.5,
+          "mean_entropy": 1.1171746413622583,
+          "entropy_std": 0.8566068112558426
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.8700381517410278,
+          "action_mass": 0.9262223499161857,
+          "action_spread": 34.35706860698837,
+          "action_roughness": 38.833333333333336,
+          "mean_entropy": 1.490085584776742,
+          "entropy_std": 0.35354539378616945
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.5821866691112518,
+          "action_mass": 0.8385737955938778,
+          "action_spread": 13.64715713836342,
+          "action_roughness": 16.0,
+          "mean_entropy": 1.2602409379822868,
+          "entropy_std": 0.6950358361580722
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.8919036760926247,
+          "action_mass": 0.8508560178535325,
+          "action_spread": 61.12149159415105,
+          "action_roughness": 42.5,
+          "mean_entropy": 1.5250777442540442,
+          "entropy_std": 0.6936589544572278
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.6001867055892944,
+          "action_mass": 0.9061463304928371,
+          "action_spread": 23.193947134402745,
+          "action_roughness": 33.166666666666664,
+          "mean_entropy": 1.5919182431145242,
+          "entropy_std": 0.9536585861029683
+        }
+      ]
+    },
+    {
+      "traj_idx": 28,
+      "scene": "flooded",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.7864887714385986,
+          "action_mass": 0.9868883916309902,
+          "action_spread": 13.021175845835248,
+          "action_roughness": 14.5,
+          "mean_entropy": 1.217947393655777,
+          "entropy_std": 0.8307589625579721
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.5920401811599731,
+          "action_mass": 0.8897670379706791,
+          "action_spread": 18.72246277189243,
+          "action_roughness": 28.333333333333332,
+          "mean_entropy": 1.2999332389551586,
+          "entropy_std": 0.8236650350827366
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.5984301269054413,
+          "action_mass": 0.8367060488006766,
+          "action_spread": 18.312480410242358,
+          "action_roughness": 22.0,
+          "mean_entropy": 1.6443533386502946,
+          "entropy_std": 0.5952397822698995
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7884916365146637,
+          "action_mass": 0.9644647410937718,
+          "action_spread": 27.96791164232062,
+          "action_roughness": 30.833333333333332,
+          "mean_entropy": 0.8341941136334624,
+          "entropy_std": 0.7267504672525396
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6383559107780457,
+          "action_mass": 0.7062301175402743,
+          "action_spread": 26.610570249049374,
+          "action_roughness": 35.0,
+          "mean_entropy": 1.7520121367251704,
+          "entropy_std": 1.0217083032692809
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.7818953096866608,
+          "action_mass": 0.9503813811710903,
+          "action_spread": 27.96791164232062,
+          "action_roughness": 30.833333333333332,
+          "mean_entropy": 1.0324230390999998,
+          "entropy_std": 0.7589566353037175
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.81977179646492,
+          "action_mass": 0.9969324469566345,
+          "action_spread": 40.97037257057139,
+          "action_roughness": 38.333333333333336,
+          "mean_entropy": 1.409981267792838,
+          "entropy_std": 0.6296073880945641
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.691178023815155,
+          "action_mass": 0.8023652902671269,
+          "action_spread": 28.872697363793783,
+          "action_roughness": 37.833333333333336,
+          "mean_entropy": 1.8342222997120448,
+          "entropy_std": 0.4177113186031052
+        }
+      ]
+    },
+    {
+      "traj_idx": 29,
+      "scene": "flooded",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.8869636952877045,
+          "action_mass": 0.9955371192523411,
+          "action_spread": 46.985885852963925,
+          "action_roughness": 67.0,
+          "mean_entropy": 1.6828054104532515,
+          "entropy_std": 0.7459658121570371
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6466221809387207,
+          "action_mass": 0.9970328552382333,
+          "action_spread": 25.379567549105168,
+          "action_roughness": 27.5,
+          "mean_entropy": 1.4979399280660541,
+          "entropy_std": 0.9746926656473058
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6740948855876923,
+          "action_mass": 0.8199679691876683,
+          "action_spread": 28.667694966527698,
+          "action_roughness": 38.833333333333336,
+          "mean_entropy": 1.399463308176824,
+          "entropy_std": 0.7292709293881621
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.8440569341182709,
+          "action_mass": 0.9791549614497593,
+          "action_spread": 30.8954788317789,
+          "action_roughness": 35.166666666666664,
+          "mean_entropy": 1.5356478946549552,
+          "entropy_std": 0.45317390292854126
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6765480935573578,
+          "action_mass": 0.7825866639614105,
+          "action_spread": 56.59306945381282,
+          "action_roughness": 69.66666666666667,
+          "mean_entropy": 1.4568058327838247,
+          "entropy_std": 1.134028733381388
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6799712181091309,
+          "action_mass": 0.9920494386128017,
+          "action_spread": 34.63571354918539,
+          "action_roughness": 30.833333333333332,
+          "mean_entropy": 1.293672806450299,
+          "entropy_std": 0.6323691353410723
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.6705650687217712,
+          "action_mass": 0.9181379207542965,
+          "action_spread": 15.70129333032467,
+          "action_roughness": 27.333333333333332,
+          "mean_entropy": 1.5350385393415178,
+          "entropy_std": 0.7283820873523515
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.8977431729435921,
+          "action_mass": 0.8391578133617129,
+          "action_spread": 61.12149159415105,
+          "action_roughness": 42.5,
+          "mean_entropy": 1.5098452738353185,
+          "entropy_std": 0.6995325312527768
+        }
+      ]
+    },
+    {
+      "traj_idx": 30,
+      "scene": "offroad",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.8046635687351227,
+          "action_mass": 0.9835299508912223,
+          "action_spread": 55.81712121211702,
+          "action_roughness": 78.16666666666667,
+          "mean_entropy": 1.2077102762247836,
+          "entropy_std": 0.7650720465371545
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.7557156980037689,
+          "action_mass": 0.8248956246035439,
+          "action_spread": 36.22323079157341,
+          "action_roughness": 56.0,
+          "mean_entropy": 1.4733119841132845,
+          "entropy_std": 0.8427739183139963
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.7171793580055237,
+          "action_mass": 0.9629869631358555,
+          "action_spread": 44.79431450803659,
+          "action_roughness": 56.166666666666664,
+          "mean_entropy": 1.2471488841942378,
+          "entropy_std": 0.8885187374422162
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.8821966126561165,
+          "action_mass": 0.8053964711393097,
+          "action_spread": 33.613044115252,
+          "action_roughness": 40.333333333333336,
+          "mean_entropy": 1.518993807690484,
+          "entropy_std": 1.0157765059055581
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.8689161688089371,
+          "action_mass": 0.9943017022950309,
+          "action_spread": 47.334674695950206,
+          "action_roughness": 57.5,
+          "mean_entropy": 1.6393313918794905,
+          "entropy_std": 0.7331393588746519
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6254898309707642,
+          "action_mass": 0.8596709253532546,
+          "action_spread": 35.55851745032836,
+          "action_roughness": 43.0,
+          "mean_entropy": 1.0474444901542483,
+          "entropy_std": 0.8511470074899903
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.6672047972679138,
+          "action_mass": 0.9968476295471191,
+          "action_spread": 11.900951771233446,
+          "action_roughness": 13.0,
+          "mean_entropy": 1.0666014041219438,
+          "entropy_std": 0.6757579932681507
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.6320667266845703,
+          "action_mass": 0.9744923966271537,
+          "action_spread": 37.468898667387315,
+          "action_roughness": 44.333333333333336,
+          "mean_entropy": 1.0335924082568713,
+          "entropy_std": 0.6810061278233955
+        }
+      ]
+    },
+    {
+      "traj_idx": 31,
+      "scene": "offroad",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.76188725233078,
+          "action_mass": 0.9208635772977557,
+          "action_spread": 46.00443634330613,
+          "action_roughness": 60.833333333333336,
+          "mean_entropy": 1.0676589182444982,
+          "entropy_std": 0.9014538361189612
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6631709337234497,
+          "action_mass": 0.9193254283496312,
+          "action_spread": 38.28624733104405,
+          "action_roughness": 48.666666666666664,
+          "mean_entropy": 1.354416681514197,
+          "entropy_std": 0.8312619286986505
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.5811499059200287,
+          "action_mass": 0.8567502034628498,
+          "action_spread": 18.328075931393855,
+          "action_roughness": 21.5,
+          "mean_entropy": 0.9654604468295085,
+          "entropy_std": 0.8079977788204372
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.8254408538341522,
+          "action_mass": 0.9894776770046779,
+          "action_spread": 45.51205267591773,
+          "action_roughness": 54.333333333333336,
+          "mean_entropy": 1.7039506009646825,
+          "entropy_std": 0.5358342887427929
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6124500930309296,
+          "action_mass": 0.9639964614595685,
+          "action_spread": 17.077255431164122,
+          "action_roughness": 21.166666666666668,
+          "mean_entropy": 0.9903579818949636,
+          "entropy_std": 0.9491363137874805
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.8135741800069809,
+          "action_mass": 0.9962217126573835,
+          "action_spread": 53.28475678955895,
+          "action_roughness": 49.5,
+          "mean_entropy": 1.518929089818682,
+          "entropy_std": 0.7533228645483661
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.8273532092571259,
+          "action_mass": 0.879984553371157,
+          "action_spread": 64.26031244167773,
+          "action_roughness": 67.16666666666667,
+          "mean_entropy": 1.560249081679753,
+          "entropy_std": 0.895445950253642
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.8850706368684769,
+          "action_mass": 0.8460342458316258,
+          "action_spread": 54.163396028939644,
+          "action_roughness": 63.166666666666664,
+          "mean_entropy": 0.957217031291553,
+          "entropy_std": 0.7499473077885429
+        }
+      ]
+    },
+    {
+      "traj_idx": 32,
+      "scene": "offroad",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.7952196300029755,
+          "action_mass": 0.8882011813776833,
+          "action_spread": 36.800066548298304,
+          "action_roughness": 49.833333333333336,
+          "mean_entropy": 1.3120895964758736,
+          "entropy_std": 0.7098212225914847
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6264107823371887,
+          "action_mass": 0.8325842045513647,
+          "action_spread": 60.59197764640168,
+          "action_roughness": 86.0,
+          "mean_entropy": 1.1935592819004992,
+          "entropy_std": 0.7486636371565621
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.8840424716472626,
+          "action_mass": 0.9504717758723668,
+          "action_spread": 50.86958114349169,
+          "action_roughness": 65.66666666666667,
+          "mean_entropy": 1.5389314677034105,
+          "entropy_std": 0.6096527865922278
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7728295028209686,
+          "action_mass": 0.9593388267925808,
+          "action_spread": 28.10548642786562,
+          "action_roughness": 29.0,
+          "mean_entropy": 1.550232252904347,
+          "entropy_std": 0.9050184552570334
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6697268486022949,
+          "action_mass": 0.847908227039235,
+          "action_spread": 59.65615762733251,
+          "action_roughness": 86.0,
+          "mean_entropy": 1.0657398845039228,
+          "entropy_std": 0.8266218433511997
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.7189626097679138,
+          "action_mass": 0.8509217564548764,
+          "action_spread": 48.25485066026936,
+          "action_roughness": 71.66666666666667,
+          "mean_entropy": 1.0405187851616315,
+          "entropy_std": 0.7045214500738086
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.6725017428398132,
+          "action_mass": 0.8470460807106325,
+          "action_spread": 60.030944401319275,
+          "action_roughness": 76.33333333333333,
+          "mean_entropy": 1.2841960060489197,
+          "entropy_std": 0.9987438764037817
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.7881476283073425,
+          "action_mass": 0.862147616488593,
+          "action_spread": 48.91934219525368,
+          "action_roughness": 57.666666666666664,
+          "mean_entropy": 1.427623757294246,
+          "entropy_std": 0.8606263559141206
+        }
+      ]
+    },
+    {
+      "traj_idx": 33,
+      "scene": "offroad",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.5599351525306702,
+          "action_mass": 0.985319869858878,
+          "action_spread": 34.51234620851394,
+          "action_roughness": 53.333333333333336,
+          "mean_entropy": 0.9023733294471786,
+          "entropy_std": 0.7825831884422415
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6336050927639008,
+          "action_mass": 0.7442536907536643,
+          "action_spread": 25.221468017932498,
+          "action_roughness": 38.833333333333336,
+          "mean_entropy": 1.4270589181355067,
+          "entropy_std": 0.724575301893048
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.5837779343128204,
+          "action_mass": 0.8897043317556381,
+          "action_spread": 18.328075931393855,
+          "action_roughness": 21.5,
+          "mean_entropy": 1.4517408026107919,
+          "entropy_std": 0.9630623179215609
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.610817015171051,
+          "action_mass": 0.6431466756122453,
+          "action_spread": 49.649793965497246,
+          "action_roughness": 55.333333333333336,
+          "mean_entropy": 1.512952402501534,
+          "entropy_std": 0.792270446914331
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.5873470306396484,
+          "action_mass": 0.9802762269973755,
+          "action_spread": 28.559997713370972,
+          "action_roughness": 46.0,
+          "mean_entropy": 1.0715823616358517,
+          "entropy_std": 0.7572920608159676
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.5950347185134888,
+          "action_mass": 0.8530948635722909,
+          "action_spread": 19.327468028900302,
+          "action_roughness": 22.666666666666668,
+          "mean_entropy": 1.2507091711070413,
+          "entropy_std": 0.8964255238592138
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.6877612471580505,
+          "action_mass": 0.8268121523516518,
+          "action_spread": 50.324254711271166,
+          "action_roughness": 56.833333333333336,
+          "mean_entropy": 1.7705281291689192,
+          "entropy_std": 0.8344613354315557
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.8795531243085861,
+          "action_mass": 0.8918142361300332,
+          "action_spread": 53.96219387077344,
+          "action_roughness": 46.0,
+          "mean_entropy": 1.043869829603604,
+          "entropy_std": 0.6219350789097936
+        }
+      ]
+    },
+    {
+      "traj_idx": 34,
+      "scene": "offroad",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6591108441352844,
+          "action_mass": 0.947307118347713,
+          "action_spread": 26.94817399440365,
+          "action_roughness": 44.0,
+          "mean_entropy": 1.2858502412480968,
+          "entropy_std": 1.0865250317774906
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.7549149990081787,
+          "action_mass": 0.7950303916420255,
+          "action_spread": 43.36367331379235,
+          "action_roughness": 64.5,
+          "mean_entropy": 1.4857977394546782,
+          "entropy_std": 0.8809089410114677
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6721779704093933,
+          "action_mass": 0.9453186392784119,
+          "action_spread": 22.840172271411507,
+          "action_roughness": 22.333333333333332,
+          "mean_entropy": 0.9174223329339709,
+          "entropy_std": 0.8425301124945369
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.8096047937870026,
+          "action_mass": 0.9900760480335781,
+          "action_spread": 29.06572425608232,
+          "action_roughness": 38.0,
+          "mean_entropy": 1.3275119279112135,
+          "entropy_std": 0.7132804101360966
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.7768631875514984,
+          "action_mass": 0.9380750485828945,
+          "action_spread": 35.758829364941754,
+          "action_roughness": 35.666666666666664,
+          "mean_entropy": 1.321561689887728,
+          "entropy_std": 0.7371086117139756
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.7097717821598053,
+          "action_mass": 0.976370530469077,
+          "action_spread": 20.913817324965827,
+          "action_roughness": 27.833333333333332,
+          "mean_entropy": 1.6026252167565482,
+          "entropy_std": 0.4806692096535832
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.5980921387672424,
+          "action_mass": 0.896808351789202,
+          "action_spread": 28.63920532474065,
+          "action_roughness": 34.333333333333336,
+          "mean_entropy": 1.416235474433441,
+          "entropy_std": 0.7653721302611619
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.7705033719539642,
+          "action_mass": 0.9715309313365391,
+          "action_spread": 19.866904075648534,
+          "action_roughness": 20.5,
+          "mean_entropy": 1.7548507111413139,
+          "entropy_std": 0.719822127960981
+        }
+      ]
+    },
+    {
+      "traj_idx": 35,
+      "scene": "tunnel",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6125949919223785,
+          "action_mass": 0.8118548064089575,
+          "action_spread": 17.40630896648496,
+          "action_roughness": 18.333333333333332,
+          "mean_entropy": 0.8104061548198972,
+          "entropy_std": 0.42814761266084317
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.5641255378723145,
+          "action_mass": 0.8560903085266806,
+          "action_spread": 18.845234335047607,
+          "action_roughness": 21.333333333333332,
+          "mean_entropy": 0.9054819509453539,
+          "entropy_std": 0.7194179160362603
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.8566777110099792,
+          "action_mass": 0.7868744390351432,
+          "action_spread": 15.455003812912596,
+          "action_roughness": 21.166666666666668,
+          "mean_entropy": 1.2941520075712885,
+          "entropy_std": 0.8621212169535118
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.6565457582473755,
+          "action_mass": 0.8416805854732436,
+          "action_spread": 20.177781274036477,
+          "action_roughness": 31.0,
+          "mean_entropy": 1.1174091824463435,
+          "entropy_std": 0.884023364019381
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.5384787917137146,
+          "action_mass": 0.8560214854197251,
+          "action_spread": 19.854573317819074,
+          "action_roughness": 22.333333333333332,
+          "mean_entropy": 0.9675188560504466,
+          "entropy_std": 0.7390280526160605
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.7989981323480606,
+          "action_mass": 0.9899084738322667,
+          "action_spread": 17.15832635385241,
+          "action_roughness": 17.0,
+          "mean_entropy": 0.747290360342179,
+          "entropy_std": 0.6418852370135821
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.6869241893291473,
+          "action_mass": 0.731491016857035,
+          "action_spread": 21.712405933672375,
+          "action_roughness": 27.833333333333332,
+          "mean_entropy": 1.0707913729295666,
+          "entropy_std": 1.075514151445482
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.592984527349472,
+          "action_mass": 0.8369530543152776,
+          "action_spread": 21.75747584399534,
+          "action_roughness": 26.333333333333332,
+          "mean_entropy": 1.0881919317266042,
+          "entropy_std": 0.8330072262352862
+        }
+      ]
+    },
+    {
+      "traj_idx": 36,
+      "scene": "tunnel",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6715184450149536,
+          "action_mass": 0.9202050566673279,
+          "action_spread": 20.126132874692942,
+          "action_roughness": 19.0,
+          "mean_entropy": 0.9681563207081386,
+          "entropy_std": 0.8490692198164984
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.8059226721525192,
+          "action_mass": 0.9824704272406442,
+          "action_spread": 24.299995800789087,
+          "action_roughness": 35.0,
+          "mean_entropy": 1.2055907643267088,
+          "entropy_std": 0.8724927672726669
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6316132247447968,
+          "action_mass": 0.7092209810312186,
+          "action_spread": 26.101059482757574,
+          "action_roughness": 35.333333333333336,
+          "mean_entropy": 1.0705508856834578,
+          "entropy_std": 0.7469283434626279
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.48976361751556396,
+          "action_mass": 0.8538532339267216,
+          "action_spread": 28.857850062055586,
+          "action_roughness": 37.0,
+          "mean_entropy": 1.3539262094226225,
+          "entropy_std": 0.7653628580649837
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.7690596282482147,
+          "action_mass": 0.9600759404046195,
+          "action_spread": 30.027878203225665,
+          "action_roughness": 40.333333333333336,
+          "mean_entropy": 1.059666246175766,
+          "entropy_std": 0.8312952284730604
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.7522273063659668,
+          "action_mass": 0.8396985956600734,
+          "action_spread": 29.52204295790119,
+          "action_roughness": 34.833333333333336,
+          "mean_entropy": 1.5592855044773646,
+          "entropy_std": 0.4892465606287829
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.7676015794277191,
+          "action_mass": 0.9834291764668056,
+          "action_spread": 30.103901706575904,
+          "action_roughness": 40.5,
+          "mean_entropy": 1.0347286994968141,
+          "entropy_std": 0.9588685926512158
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.6142296493053436,
+          "action_mass": 0.8449655015553746,
+          "action_spread": 17.854285485677707,
+          "action_roughness": 18.0,
+          "mean_entropy": 1.0927348515527342,
+          "entropy_std": 0.9416714765350058
+        }
+      ]
+    },
+    {
+      "traj_idx": 37,
+      "scene": "tunnel",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.5457097291946411,
+          "action_mass": 0.8559516579197342,
+          "action_spread": 19.854573317819074,
+          "action_roughness": 22.333333333333332,
+          "mean_entropy": 0.9571733885843839,
+          "entropy_std": 0.698112508061482
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.6942344307899475,
+          "action_mass": 0.7217569702437946,
+          "action_spread": 22.831235317486634,
+          "action_roughness": 26.666666666666668,
+          "mean_entropy": 1.2357669116130896,
+          "entropy_std": 0.8751893383216622
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.6627399623394012,
+          "action_mass": 0.8523528935121638,
+          "action_spread": 20.177781274036477,
+          "action_roughness": 31.0,
+          "mean_entropy": 1.0366220995783806,
+          "entropy_std": 0.718896112396804
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.6284513473510742,
+          "action_mass": 0.8868891213621412,
+          "action_spread": 61.73908231998825,
+          "action_roughness": 74.0,
+          "mean_entropy": 0.9172796747244772,
+          "entropy_std": 0.9349657249679016
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6082604825496674,
+          "action_mass": 0.701271594834647,
+          "action_spread": 24.636955815131355,
+          "action_roughness": 29.0,
+          "mean_entropy": 1.3594756755977642,
+          "entropy_std": 0.816510360864299
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.8299807012081146,
+          "action_mass": 0.9889433554240635,
+          "action_spread": 19.550040450921145,
+          "action_roughness": 22.0,
+          "mean_entropy": 1.387200870684215,
+          "entropy_std": 1.0208764866255153
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.7932308465242386,
+          "action_mass": 0.9868772200175694,
+          "action_spread": 17.15832635385241,
+          "action_roughness": 17.0,
+          "mean_entropy": 0.760760236531496,
+          "entropy_std": 0.6642400346333087
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.8231208771467209,
+          "action_mass": 0.9835437025342669,
+          "action_spread": 22.66346516005936,
+          "action_roughness": 28.333333333333332,
+          "mean_entropy": 0.9375873007627108,
+          "entropy_std": 0.891250369001416
+        }
+      ]
+    },
+    {
+      "traj_idx": 38,
+      "scene": "tunnel",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.6808905005455017,
+          "action_mass": 0.8849106175558907,
+          "action_spread": 13.986874313484929,
+          "action_roughness": 15.166666666666666,
+          "mean_entropy": 1.203748060124261,
+          "entropy_std": 0.831407387674595
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.8650091290473938,
+          "action_mass": 0.8970068395137787,
+          "action_spread": 22.108267915060228,
+          "action_roughness": 26.833333333333332,
+          "mean_entropy": 1.4272791147232056,
+          "entropy_std": 0.6601367857606698
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.7302125096321106,
+          "action_mass": 0.9938683765275138,
+          "action_spread": 14.894184593118133,
+          "action_roughness": 13.833333333333334,
+          "mean_entropy": 1.1149464691323894,
+          "entropy_std": 0.9513759393291107
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7159206569194794,
+          "action_mass": 0.9474006295204163,
+          "action_spread": 36.83443375707141,
+          "action_roughness": 40.0,
+          "mean_entropy": 1.4161287963257305,
+          "entropy_std": 0.9077677218576291
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.7238931953907013,
+          "action_mass": 0.9897330318178449,
+          "action_spread": 14.894184593118133,
+          "action_roughness": 13.833333333333334,
+          "mean_entropy": 1.1636502716158117,
+          "entropy_std": 0.9579299057191139
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6225969791412354,
+          "action_mass": 0.7481783019112689,
+          "action_spread": 23.371882636175968,
+          "action_roughness": 26.666666666666668,
+          "mean_entropy": 1.2310282586909937,
+          "entropy_std": 0.8670609111488506
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.656907469034195,
+          "action_mass": 0.842951112177356,
+          "action_spread": 20.177781274036477,
+          "action_roughness": 31.0,
+          "mean_entropy": 1.0467394122055598,
+          "entropy_std": 0.6607944188092821
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.6537050008773804,
+          "action_mass": 0.8224189172638684,
+          "action_spread": 21.976796669140267,
+          "action_roughness": 23.0,
+          "mean_entropy": 0.9703452991587775,
+          "entropy_std": 0.5029584117503327
+        }
+      ]
+    },
+    {
+      "traj_idx": 39,
+      "scene": "tunnel",
+      "is_ood": true,
+      "steps": [
+        {
+          "step": 0,
+          "cos_per_scene": 0.7669099569320679,
+          "action_mass": 0.9870770403317043,
+          "action_spread": 30.103901706575904,
+          "action_roughness": 40.5,
+          "mean_entropy": 1.0210878838385855,
+          "entropy_std": 0.928648342287839
+        },
+        {
+          "step": 1,
+          "cos_per_scene": 0.8300937116146088,
+          "action_mass": 0.9845886826515198,
+          "action_spread": 42.29633071362969,
+          "action_roughness": 62.5,
+          "mean_entropy": 1.2963389158248901,
+          "entropy_std": 0.29495422367750584
+        },
+        {
+          "step": 2,
+          "cos_per_scene": 0.7431320250034332,
+          "action_mass": 0.9876419731548854,
+          "action_spread": 14.02912422536105,
+          "action_roughness": 15.166666666666666,
+          "mean_entropy": 1.2964821287563868,
+          "entropy_std": 0.7613381223027916
+        },
+        {
+          "step": 3,
+          "cos_per_scene": 0.7212311029434204,
+          "action_mass": 0.9481686353683472,
+          "action_spread": 16.10171748983471,
+          "action_roughness": 20.666666666666668,
+          "mean_entropy": 1.2364037505217962,
+          "entropy_std": 0.7262256306420868
+        },
+        {
+          "step": 4,
+          "cos_per_scene": 0.6117079854011536,
+          "action_mass": 0.8564793031130519,
+          "action_spread": 18.994091455083648,
+          "action_roughness": 21.333333333333332,
+          "mean_entropy": 0.9813255288837743,
+          "entropy_std": 0.7888002760665537
+        },
+        {
+          "step": 5,
+          "cos_per_scene": 0.6432192325592041,
+          "action_mass": 0.9753091931343079,
+          "action_spread": 8.174125429097124,
+          "action_roughness": 10.0,
+          "mean_entropy": 1.123149309839521,
+          "entropy_std": 0.5707005067565868
+        },
+        {
+          "step": 6,
+          "cos_per_scene": 0.7533072531223297,
+          "action_mass": 0.9352341890335083,
+          "action_spread": 32.67339927843693,
+          "action_roughness": 42.666666666666664,
+          "mean_entropy": 1.1511626137154443,
+          "entropy_std": 1.0145407873380243
+        },
+        {
+          "step": 7,
+          "cos_per_scene": 0.7959967255592346,
+          "action_mass": 0.9800690157072884,
+          "action_spread": 17.15832635385241,
+          "action_roughness": 17.0,
+          "mean_entropy": 0.8295810017734766,
+          "entropy_std": 0.5535992895022287
+        }
+      ]
+    }
+  ]
+}
