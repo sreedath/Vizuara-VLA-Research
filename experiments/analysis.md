@@ -2524,3 +2524,56 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Cross-prompt calibration mostly transfers well** (drops of 0.013-0.029): Using a centroid calibrated with one prompt works reasonably well for inference with a different prompt. The exception is the "different" prompt (-0.107 drop), which uses substantially different wording.
 
 5. **Prompt sensitivity is moderate but manageable**: The 0.115 AUROC range across prompts suggests that prompt selection matters but is not a critical bottleneck. Using the deployment prompt for calibration (self-calibration) is always optimal.
+
+---
+
+## Finding 49: Embedding Space Visualization (Real OpenVLA-7B, Experiment 55)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Samples**: 64 (24 ID: 12 highway + 12 urban; 40 OOD: 8 each of noise, indoor, inverted, blackout, blank)
+- **Analysis**: PCA (50 components), clustering metrics, inter/intra distances
+
+### PCA Variance Decomposition
+
+| Components | Cumulative Variance |
+|-----------|-------------------|
+| PC1 | 8.9% |
+| PC1+PC2 | 16.0% |
+| Top 10 | 47.8% |
+| Top 50 | 99.9% |
+
+### Clustering Metrics
+
+| Metric | Value |
+|--------|-------|
+| **AUROC (cosine to ID centroid)** | **0.986** |
+| ID intra-cluster distance | 0.511 |
+| OOD intra-cluster distance | 0.589 |
+| Inter-cluster distance | 0.376 |
+| Separation ratio | 0.64 |
+| Silhouette score (10-d PCA) | 0.111 |
+
+### Per-Scenario PCA Centroids
+
+| Scenario | PC1 | PC2 | Type |
+|----------|-----|-----|------|
+| highway | 25.1 | -6.0 | ID |
+| urban | -39.2 | -5.2 | ID |
+| noise | 14.8 | -6.7 | OOD |
+| indoor | 15.7 | -11.7 | OOD |
+| inverted | 10.8 | 1.0 | OOD |
+| blackout | 0.4 | -1.8 | OOD |
+| blank | -20.6 | 35.9 | OOD |
+
+### Key Insights
+
+1. **Cosine distance achieves 0.986 AUROC despite low silhouette (0.111)**: The silhouette score is low because OOD scenarios are spread across the embedding space (they don't form a single tight cluster). But cosine distance still works because it measures distance from the ID centroid — all OOD points are far from ID, even if they're also far from each other.
+
+2. **Variance is highly distributed**: PC1 only explains 8.9%, confirming that the 4096-d hidden state uses many dimensions. This is why PCA reduction (prior experiment) works — the OOD signal is not concentrated in a few PCs but distributed across many.
+
+3. **Highway and urban form distinct ID subclusters**: Highway (25.1, -6.0) and urban (-39.2, -5.2) are far apart in PC1, explaining why a single global centroid (which falls between them) has higher intra-cluster distance. This motivates per-scene centroids for realistic images.
+
+4. **Blank is a geometric outlier**: Blank images map to (-20.6, 35.9), far from all other scenarios in PC2. This makes them trivially detectable via cosine distance.
+
+5. **Noise, indoor, and inverted cluster near highway**: These OOD scenarios have PC1 values (10.8-15.7) close to highway (25.1), making them harder to separate in the first principal component. The OOD signal must come from higher-order PCs.
