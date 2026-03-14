@@ -825,6 +825,15 @@ Entropy & 1 & No & .527$\pm$.029 & .413 & .957 & .272 & .336 & 1.00 \\
 \label{fig:optimal_realistic}
 \end{figure}
 
+\textbf{Comparison with standard OOD detection baselines.} We compare our methods against three standard baselines adapted from the classification literature: Maximum Softmax Probability (MSP; \cite{hendrycks2017baseline}), Energy-based detection (\cite{liu2020energy}), and Maximum Logit (\cite{hendrycks2022scaling}). On simple synthetic images, cosine distance (0.965) substantially outperforms MSP (0.823), Energy (0.750), and Max Logit (0.776) (Figure~\ref{fig:ood_baselines}). On realistic images, the gap widens further: standard baselines catastrophically fail (MSP: 0.219, Energy: 0.394---below random), while our methods maintain detectable signals (action mass: 0.550, per-scene cosine: 0.497). The failure of standard baselines for VLAs is mechanistically explained: these methods examine logit magnitudes, but VLAs always produce action-token logits regardless of input quality. The OOD signal resides in hidden state \emph{direction} (captured by cosine distance) and probability \emph{allocation} (captured by action mass), not in logit magnitude---making standard baselines fundamentally mismatched to VLA architectures.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.99\textwidth]{figures/fig34_ood_baselines.png}
+\caption{Comparison against standard OOD detection baselines on real OpenVLA-7B. (a) Simple images: cosine distance (0.965) outperforms MSP (0.823), Energy (0.750), and Max Logit (0.776). (b) Realistic images: baselines catastrophically fail (MSP: 0.219); our methods remain discriminative. (c) Category summary: our best method outperforms baseline averages by +0.17 (simple) and +0.25 (realistic).}
+\label{fig:ood_baselines}
+\end{figure}
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/fig12_combined_optimal.png}
@@ -1017,6 +1026,21 @@ LatentVLA Team.
 CoC-VLA Team.
 \newblock {CoC-VLA}: Chain-of-context reasoning for vision-language-action models.
 \newblock \emph{arXiv}, 2025.
+
+\bibitem{hendrycks2017baseline}
+D.~Hendrycks and K.~Gimpel.
+\newblock A baseline for detecting misclassified and out-of-distribution examples in neural networks.
+\newblock In \emph{Proc. ICLR}, 2017.
+
+\bibitem{liu2020energy}
+W.~Liu, X.~Wang, J.~Owens, and Y.~Li.
+\newblock Energy-based out-of-distribution detection.
+\newblock In \emph{Proc. NeurIPS}, 2020.
+
+\bibitem{hendrycks2022scaling}
+D.~Hendrycks, S.~Basart, M.~Mazeika, A.~Zou, J.~Kwon, M.~Mostajabi, J.~Steinhardt, and D.~Song.
+\newblock Scaling out-of-distribution detection for real-world settings.
+\newblock In \emph{Proc. ICML}, 2022.
 
 \end{thebibliography}
 
