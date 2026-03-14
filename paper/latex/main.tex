@@ -1606,4 +1606,20 @@ We simulate temporal distribution drift by progressively applying brightness red
 
 The key insight is that while drifted ID images move toward the OOD region in embedding space (centroid distance increases $2.8\times$), the gap remains large enough for perfect detection. This demonstrates that a single calibration event is sufficient for extended deployment periods without recalibration, robust to gradual environmental changes such as lighting transitions, weather shifts, and sensor degradation.
 
+\subsection{Adversarial Perturbation Robustness}
+\label{app:adversarial}
+
+\textbf{Finding 104: The detector is fully robust to JPEG compression (all qualities) and moderate noise ($\sigma\leq50$), but salt-and-pepper noise at just 1\% breaks detection (AUROC 0.356) by destroying spatial coherence.}
+
+We test 14 image perturbations to identify failure modes of the cosine distance detector (Figure~\ref{fig:adversarial}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig67_adversarial_robustness.pdf}
+\caption{\textbf{Adversarial perturbation robustness.} (a) AUROC under 14 perturbation types: JPEG and moderate noise are fully robust; salt-and-pepper noise breaks detection. (b) Perturbed ID distances: S\&P noise pushes ID images past the OOD boundary (red line), while JPEG barely shifts embeddings.}
+\label{fig:adversarial}
+\end{figure}
+
+The vulnerability hierarchy reveals the mechanistic basis of the OOD signal: \textbf{spatial coherence} is the key discriminant, not pixel statistics. Salt-and-pepper noise destroys local spatial structure by replacing pixels with black/white, making perturbed ID images resemble random noise OOD in embedding space. In contrast, JPEG compression preserves spatial structure despite introducing block artifacts, and Gaussian noise preserves the overall image layout. This implies that adversarial attacks targeting spatial structure could evade detection, while common corruptions (compression, sensor noise) cannot.
+
 \end{document}

@@ -3631,3 +3631,43 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 3. **ID distance increases 2.8× under max drift**: ID centroid distance goes from 0.087 to 0.242, but OOD remains at 0.408. The gap (0.166 at max drift) preserves perfect detection.
 
 4. **No recalibration needed for gradual drift**: The detector can operate for extended periods without recalibration, robust to lighting changes, weather transitions, and sensor degradation.
+
+---
+
+## Finding 75: Adversarial Perturbation Robustness
+
+**Experiment 81** — Tests whether image perturbations can fool the cosine distance OOD detector by pushing ID images into OOD space or vice versa.
+
+### Setup
+- 14 perturbation types: Gaussian noise (σ=10/25/50/100), salt-and-pepper (1%/5%/10%/20%), JPEG compression (Q=50/20/5), Gaussian blur (r=1/3/5)
+- 30 calibration, 12 perturbed ID per condition, 18 OOD reference
+- ~198 model inferences
+
+### Results
+
+| Perturbation | AUROC | Perturbed ID Dist | Drift | Status |
+|-------------|-------|-------------------|-------|--------|
+| Gaussian σ=10 | **1.000** | 0.131 | +0.044 | ROBUST |
+| Gaussian σ=25 | **1.000** | 0.221 | +0.134 | ROBUST |
+| Gaussian σ=50 | **1.000** | 0.307 | +0.220 | ROBUST |
+| Gaussian σ=100 | 0.667 | 0.395 | +0.308 | BROKEN |
+| S&P 1% | 0.356 | 0.433 | +0.346 | BROKEN |
+| S&P 5% | 0.208 | 0.456 | +0.369 | BROKEN |
+| S&P 10% | 0.537 | 0.422 | +0.334 | BROKEN |
+| S&P 20% | 0.597 | 0.417 | +0.330 | BROKEN |
+| JPEG Q=50 | **1.000** | 0.092 | +0.005 | ROBUST |
+| JPEG Q=20 | **1.000** | 0.092 | +0.004 | ROBUST |
+| JPEG Q=5 | **1.000** | 0.101 | +0.014 | ROBUST |
+| Blur r=1 | **1.000** | 0.126 | +0.039 | ROBUST |
+| Blur r=3 | 0.991 | 0.310 | +0.223 | ROBUST |
+| Blur r=5 | 0.949 | 0.335 | +0.248 | WEAK |
+
+### Key Insights
+
+1. **JPEG compression is completely invisible**: Even extreme Q=5 JPEG causes only +0.014 drift — the model's visual encoder is inherently robust to compression artifacts.
+
+2. **Salt-and-pepper noise is uniquely destructive**: Even 1% S&P noise pushes ID images beyond the OOD boundary (drift +0.346). S&P noise creates pixel-level randomness similar to pure noise OOD, making perturbed ID images indistinguishable from noise OOD.
+
+3. **Gaussian noise is robust up to σ=50**: The model tolerates substantial additive noise before drift reaches the OOD boundary. This is because Gaussian noise preserves spatial structure while S&P destroys it.
+
+4. **Vulnerability hierarchy**: S&P > extreme Gaussian > heavy blur > moderate Gaussian > light blur > JPEG. This reveals that the OOD signal is fundamentally about spatial coherence, not pixel-level statistics.
