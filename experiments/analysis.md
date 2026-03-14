@@ -4319,3 +4319,44 @@ Hidden state AUROC: **1.000** (for reference)
 5. **OOD amplifies variance in task-relevant dimensions**: Dimensions with clear scene-dependent behavior (x, y) show 5-∞× variance amplification. Dimensions with arbitrary mappings (roll, yaw) show no consistent effect.
 
 6. **Implications for safety monitoring**: Monitoring just the x-dimension action consistency could serve as a lightweight OOD indicator (0.984 AUROC) without any hidden state extraction.
+
+---
+
+## Finding 92: Ensemble Weight Optimization
+
+**Experiment 98** — Grid search over cosine, attention max, and norm deviation weights for optimal ensemble detection.
+
+### Setup
+- 20 calibration, 20 ID, 32 OOD samples
+- 3 features: cosine distance, attention max, norm deviation
+- Grid search with 0.1 step size over weight simplex
+- ~72 model inferences (with attention extraction)
+
+### Individual Feature AUROCs
+| Feature | AUROC |
+|---------|-------|
+| Cosine distance | 1.000 |
+| Norm deviation | 0.917 |
+| Attention max | 0.895 |
+
+### Top Ensembles by Cohen's d
+
+| Cosine | Attn | Norm | AUROC | Cohen's d |
+|--------|------|------|-------|-----------|
+| **0.9** | **0.0** | **0.1** | **1.000** | **6.15** |
+| 0.8 | 0.0 | 0.2 | 1.000 | 6.12 |
+| 1.0 | 0.0 | 0.0 | 1.000 | 5.79 |
+| 0.7 | 0.0 | 0.3 | 1.000 | 5.65 |
+| 0.8 | 0.1 | 0.1 | 1.000 | 5.57 |
+
+### Key Insights
+
+1. **Optimal ensemble: 90% cosine + 10% norm**: d=6.15, a 6% improvement over pure cosine (d=5.79). The norm signal adds marginal benefit.
+
+2. **Attention max hurts the ensemble**: All top ensembles have 0% attention weight. Adding attention reduces d because it's noisy (AUROC=0.895) and partially correlated with cosine.
+
+3. **Cosine dominates**: The weight must be ≥0.6 for AUROC=1.000. Below 0.5, performance degrades.
+
+4. **Norm provides a small boost**: 10-20% norm weight improves d by 5-6% by capturing the magnitude signal that cosine (direction-only) misses.
+
+5. **Diminishing returns from ensembling**: The improvement from 5.79→6.15 (+6%) is modest. For simplicity, pure cosine is nearly optimal.

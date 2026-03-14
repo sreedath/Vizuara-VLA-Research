@@ -1882,4 +1882,20 @@ We analyze which of the 7 action dimensions are most affected by OOD inputs (Fig
 
 The dimension sensitivity hierarchy ($x > y > $ gripper $ > z > $ pitch $ > $ yaw $ > $ roll) matches physical intuition: forward and lateral directions are semantically tied to visual scene layout, while orientation dimensions have weaker visual grounding. The zero-variance $x$ dimension under ID is particularly striking---for the ``drive forward'' prompt, the model produces the same forward action token for every driving scene, but OOD inputs disrupt this consistency. This suggests that action consistency monitoring could serve as a lightweight, hidden-state-free OOD indicator.
 
+\subsection{Ensemble Weight Optimization}
+\label{app:ensemble_optimization}
+
+\textbf{Finding 121: Optimal ensemble is 90\% cosine + 10\% norm deviation ($d = 6.15$), a 6\% improvement over pure cosine ($d = 5.79$). Attention max hurts the ensemble---all top configurations assign it zero weight.}
+
+We perform a grid search over cosine distance, attention max, and norm deviation weights (Figure~\ref{fig:ensemble_optimization}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig84_ensemble_optimization.pdf}
+\caption{\textbf{Ensemble optimization.} (a) Cohen's $d$ heatmap for cosine-norm weight combinations (attention=0): peak at cos=0.9, norm=0.1. (b) Individual vs ensemble: cosine (1.000) dominates; attention (0.895) and norm (0.917) are supplementary. (c) Top 10 ensembles: cosine-heavy weights dominate; attention weight is consistently zero.}
+\label{fig:ensemble_optimization}
+\end{figure}
+
+The optimization reveals that the cosine distance signal is so strong that ensembling provides only marginal improvement. The 10\% norm weight captures the magnitude signal that cosine (which operates on normalized directions) ignores, adding a small but consistent boost. The attention feature, despite its moderate individual AUROC (0.895), hurts the ensemble because its noise overwhelms its signal when combined with the already-near-perfect cosine component. This confirms the practical recommendation: use pure cosine distance for simplicity, or add 10\% norm weighting for maximum separation margin.
+
 \end{document}
