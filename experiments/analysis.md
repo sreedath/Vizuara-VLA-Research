@@ -4920,3 +4920,64 @@ Inter-domain distance (highway↔urban centroid): **0.266**
 5. **LDA achieves perfect AUROC in 1 dimension (d=17.22)**: The supervised LDA finds the optimal 1D projection for ID vs OOD separation. This is the most compact possible detector but requires labeled OOD data for fitting.
 
 6. **Random projections work at 64+ dims**: Random-64 achieves 1.000 AUROC (d=27.43), demonstrating that the OOD signal survives arbitrary linear projections. This supports the finding that the signal is distributed across all dimensions.
+
+---
+
+## Finding 105: Action Token Vocabulary Analysis
+
+**Experiment 111** — Analyzes the distribution of action tokens produced by OpenVLA-7B for ID vs OOD inputs across all 7 action dimensions.
+
+### Setup
+- 15 samples per category, 90 total inferences
+- 6 categories: highway, urban (ID); noise, indoor, twilight, snow (OOD)
+- 7 action dimensions (OpenVLA's 256-bin action tokenization)
+- Metrics: unique token count, Shannon entropy, mode consistency
+
+### Vocabulary Size (Unique Tokens per Dimension)
+
+| Dimension | ID Unique | OOD Unique | Overlap | ID-Only | OOD-Only |
+|-----------|-----------|------------|---------|---------|----------|
+| 0 | 2 | 11 | 2 | 0 | 9 |
+| 1 | 6 | 23 | 1 | 5 | 22 |
+| 2 | 10 | 32 | 3 | 7 | 29 |
+| 3 | 9 | 34 | 2 | 7 | 32 |
+| 4 | 10 | 40 | 4 | 6 | 36 |
+| 5 | 13 | 36 | 6 | 7 | 30 |
+| 6 | 7 | 20 | 2 | 5 | 18 |
+
+### Entropy (Shannon, bits)
+
+| Dimension | ID Entropy | OOD Entropy | Gap |
+|-----------|-----------|-------------|-----|
+| 0 | 0.21 | 2.51 | 2.30 |
+| 1 | 2.02 | 4.02 | 2.01 |
+| 2 | 2.81 | 4.57 | 1.76 |
+| 3 | 2.58 | 4.63 | 2.04 |
+| 4 | 2.80 | 5.12 | 2.33 |
+| 5 | 3.15 | 4.88 | 1.74 |
+| 6 | 1.85 | 3.15 | 1.31 |
+
+### Category Consistency
+
+| Category | Group | Mean Consistency |
+|----------|-------|-----------------|
+| Urban | ID | 0.695 |
+| Highway | ID | 0.619 |
+| Twilight | OOD | 0.476 |
+| Snow | OOD | 0.429 |
+| Indoor | OOD | 0.410 |
+| Noise | OOD | 0.210 |
+
+### Key Insights
+
+1. **ID actions are concentrated, OOD actions are dispersed**: ID uses 2–13 unique tokens per dimension while OOD uses 11–40. The model "knows" what action to take for driving scenes (narrow distribution) but is confused by OOD inputs (broad distribution).
+
+2. **Entropy gap is consistent across all 7 dimensions**: ID entropy ranges 0.21–3.15 bits, OOD entropy ranges 2.51–5.12 bits. The gap (1.31–2.33 bits) is present in every dimension, providing a potential per-dimension OOD signal.
+
+3. **Dimension 0 shows the strongest concentration**: ID uses only 2 unique tokens (entropy 0.21) vs OOD's 11 tokens (entropy 2.51). This dimension likely encodes a coarse action category (e.g., forward vs stop) that is highly constrained for driving scenes.
+
+4. **Minimal token overlap between ID and OOD**: Overlap ranges 1–6 tokens across dimensions, meaning OOD inputs produce largely novel action tokens not seen in ID data. This could enable a vocabulary-based OOD detector.
+
+5. **Consistency correlates with domain proximity**: Highway (0.619) and urban (0.695) are most consistent. Among OOD categories, twilight (0.476) — which is closest to a driving scene — is most consistent, while pure noise (0.210) is least consistent.
+
+6. **Action vocabulary analysis provides a complementary OOD signal**: Unlike hidden-state cosine distance, this operates in the output space. The entropy gap and vocabulary divergence could serve as lightweight, post-hoc OOD indicators without needing hidden state access.
