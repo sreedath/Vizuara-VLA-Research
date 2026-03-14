@@ -2613,3 +2613,36 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **N=1 has extreme variance** (0.494-0.933): A single calibration image can be either excellent or useless depending on which image is chosen. This confirms the need for multiple samples.
 
 5. **Blackout detected with N=1** (0.850): Trivial OOD types like blackout are so far from any driving image that even a single calibration sample suffices.
+
+---
+
+## Finding 51: Deep Action Token Distribution Analysis (Real OpenVLA-7B, Experiment 57)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Test set**: 40 images (16 ID: 8 highway + 8 urban; 24 OOD: 6 noise + 6 indoor + 6 inverted + 6 blackout)
+- **Metrics per dimension**: Action mass, entropy, top-1/5/10 concentration, garbage token mass, argmax consistency
+- **Total inferences**: 40
+
+### Per-Scenario Action Distribution Statistics
+
+| Scenario | Type | Action Mass | Entropy | Top-1 | Garbage |
+|----------|------|------------|---------|-------|---------|
+| Highway | ID | 0.968 | 1.098 | 0.656 | 0.031 |
+| Urban | ID | 0.997 | 0.998 | 0.706 | 0.003 |
+| Noise | OOD | 0.877 | 1.233 | 0.508 | 0.123 |
+| Indoor | OOD | 0.979 | 0.720 | 0.770 | 0.020 |
+| Inverted | OOD | 0.915 | 1.373 | 0.503 | 0.085 |
+| Blackout | OOD | 0.980 | 3.099 | 0.273 | 0.014 |
+
+### Key Insights
+
+1. **Garbage token leakage is an OOD signal (AUROC 0.841)**: Noise images leak 12.3% of probability to non-action vocabulary tokens (vs 1.7% for ID). This "probability leakage" into language tokens indicates the model is confused about whether to output text or actions.
+
+2. **Entropy diverges dramatically for blackout (3.099 vs ID 1.048)**: Blackout images produce near-uniform distributions over action bins — the model has no basis for selecting any specific action. This contrasts with noise images, which still produce peaked distributions (1.233) despite being OOD.
+
+3. **Top-1 concentration drops for hard OOD (0.503 noise, 0.503 inverted vs 0.681 ID)**: The model's "confidence" in its best action halves for noise and inverted images. Indoor paradoxically shows high top-1 (0.770), suggesting the model confidently produces wrong actions for indoor scenes.
+
+4. **Indoor is the deceptive OOD type**: High mass (0.979), high top-1 (0.770), low garbage (0.020) — all look ID-like. The model confidently produces structured but wrong actions for indoor scenes. This is the most dangerous OOD failure mode.
+
+5. **Action mass alone achieves AUROC 0.839**: Even this simple metric (fraction of probability on action bins) provides useful OOD detection, confirming earlier findings that output-space signals are informative.

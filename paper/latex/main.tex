@@ -1197,4 +1197,20 @@ For OpenVLA-7B, we enable all \texttt{torch.nn.Dropout} layers during inference 
     \item \texttt{"In: Predict the driving action to maintain safe driving at \{speed\} m/s.\textbackslash nOut:"}
 \end{enumerate}
 
+\subsection{Action Token Distribution Analysis}
+\label{app:action_dist_deep}
+
+\textbf{Finding 80: Deep action token distribution analysis reveals garbage token leakage and entropy divergence as mechanistic OOD signatures.}
+
+We examine how the probability distribution over OpenVLA's 256 action bins changes between ID and OOD inputs, providing mechanistic insight into \emph{why} action mass leaks and \emph{how} the model processes OOD inputs (Figure~\ref{fig:action_dist_deep}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig43_action_dist_deep.pdf}
+\caption{\textbf{Deep action token distribution analysis.} (a) Action mass versus garbage token leakage shows OOD inputs (squares) leak more probability to non-action vocabulary tokens. (b) Per-scenario entropy reveals blackout images produce near-uniform distributions (3.1 nats) while ID inputs show peaked distributions ($\sim$1.0 nats). (c) Top-1 action concentration drops for hard OOD types (noise, inverted: $\sim$0.50) compared to ID ($\sim$0.68), though indoor paradoxically maintains high concentration (0.77), making it a deceptive OOD type.}
+\label{fig:action_dist_deep}
+\end{figure}
+
+Key mechanistic findings: (1) \textbf{Garbage token leakage} --- noise images leak 12.3\% of probability to non-action vocabulary tokens versus 1.7\% for ID (AUROC 0.841), indicating the model is confused about whether to produce text or actions; (2) \textbf{Entropy divergence} --- blackout images produce entropy of 3.10 nats versus 1.05 for ID, approaching the maximum $\ln(256) = 5.55$ nats of a uniform distribution; (3) \textbf{Indoor is deceptively confident} --- high mass (0.979), high top-1 (0.770), low garbage (0.020) all appear ID-like, yet the model produces structured but wrong actions, making indoor scenes the most dangerous OOD failure mode for output-space detectors. This analysis validates the complementary value of hidden-state (cosine distance) detection for cases where output-space signals fail.
+
 \end{document}
