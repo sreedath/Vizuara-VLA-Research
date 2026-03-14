@@ -1,0 +1,434 @@
+{
+  "experiment": "threshold_sensitivity",
+  "experiment_number": 61,
+  "timestamp": "20260314_182206",
+  "n_cal": 30,
+  "n_test": 70,
+  "auroc_cosine": 0.9408333333333334,
+  "auroc_mass": 0.6908333333333333,
+  "auroc_combined": 0.9258333333333334,
+  "cal_cosine_mean": 0.4760870138804118,
+  "cal_cosine_std": 0.11769125702542342,
+  "test_data": [
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.6911998987197876,
+      "mass": 0.9040220379829407
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.5830855965614319,
+      "mass": 0.9155713277203696
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.5928424596786499,
+      "mass": 0.9980407612664359
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.38038843870162964,
+      "mass": 0.9974706258092608
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.38401365280151367,
+      "mass": 0.9933493648256574
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.3720892071723938,
+      "mass": 0.9921867166246686
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.5635840892791748,
+      "mass": 0.9459592529705593
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.5766142010688782,
+      "mass": 0.9992890102522713
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.489901065826416,
+      "mass": 0.9933282392365592
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.5681197047233582,
+      "mass": 0.9723843591553825
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.5921469330787659,
+      "mass": 0.9194070441382272
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.6836282014846802,
+      "mass": 0.9006326794624329
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.59487384557724,
+      "mass": 0.9252971495900836
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.5816513001918793,
+      "mass": 0.8777188786438533
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cosine": 0.6002834439277649,
+      "mass": 0.8320792104516711
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.6882566213607788,
+      "mass": 0.9976276755332947
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.6265735626220703,
+      "mass": 0.9939128160476685
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.4216731786727905,
+      "mass": 0.9984003220285688
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.5240644216537476,
+      "mass": 0.9979104655129569
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.30539822578430176,
+      "mass": 0.9938397322382245
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.6349504590034485,
+      "mass": 0.9991002082824707
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.7504295408725739,
+      "mass": 0.9980846387999398
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.3052760362625122,
+      "mass": 0.9991236243929181
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.6224069893360138,
+      "mass": 0.9988421372004918
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.6378543376922607,
+      "mass": 0.9973152279853821
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.6218922734260559,
+      "mass": 0.9956480179514203
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.7359725832939148,
+      "mass": 0.9815799593925476
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.30863845348358154,
+      "mass": 0.999218191419329
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.305875301361084,
+      "mass": 0.9977100746972221
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cosine": 0.3025885820388794,
+      "mass": 0.9709457414490836
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cosine": 0.76123908162117,
+      "mass": 0.7293386822815852
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cosine": 0.8622096329927444,
+      "mass": 0.9747335229601178
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cosine": 0.8451299667358398,
+      "mass": 0.9940604397228786
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cosine": 0.8781004399061203,
+      "mass": 0.9026227593421936
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cosine": 0.7481313049793243,
+      "mass": 0.8363375828734466
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cosine": 0.8040622174739838,
+      "mass": 0.8229344018868038
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cosine": 0.7758208364248276,
+      "mass": 0.8447539931138246
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cosine": 0.8485640287399292,
+      "mass": 0.9712563923427037
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cosine": 0.8651076406240463,
+      "mass": 0.9149128454072135
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cosine": 0.781032919883728,
+      "mass": 0.9429593852588108
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cosine": 0.6723659634590149,
+      "mass": 0.9794037171772548
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cosine": 0.6871657371520996,
+      "mass": 0.9845308916909354
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cosine": 0.6423178911209106,
+      "mass": 0.9415263448442731
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cosine": 0.7272792458534241,
+      "mass": 0.9956739119121006
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cosine": 0.6565468013286591,
+      "mass": 0.9875051464353289
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cosine": 0.6877416968345642,
+      "mass": 0.9878061498914447
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cosine": 0.7467002272605896,
+      "mass": 0.9970031721251351
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cosine": 0.7449029088020325,
+      "mass": 0.9972483430589948
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cosine": 0.7430471181869507,
+      "mass": 0.9970965300287519
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cosine": 0.7390919327735901,
+      "mass": 0.9936792424746922
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cosine": 0.6118572950363159,
+      "mass": 0.9745496000562396
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cosine": 0.6835115253925323,
+      "mass": 0.9946487205369132
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cosine": 0.5832987427711487,
+      "mass": 0.8576744393711644
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cosine": 0.8301981985569,
+      "mass": 0.9687425919941494
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cosine": 0.649278312921524,
+      "mass": 0.8665822882737432
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cosine": 0.8431972116231918,
+      "mass": 0.8270129987171718
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cosine": 0.6471161842346191,
+      "mass": 0.9995136090687343
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cosine": 0.8049038052558899,
+      "mass": 0.9803801604679653
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cosine": 0.8534727096557617,
+      "mass": 0.9917825034686497
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cosine": 0.7066806554794312,
+      "mass": 0.8694456730570111
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cosine": 0.8476424217224121,
+      "mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cosine": 0.8476424217224121,
+      "mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cosine": 0.8476424217224121,
+      "mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cosine": 0.8476424217224121,
+      "mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cosine": 0.8476424217224121,
+      "mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cosine": 0.8476424217224121,
+      "mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cosine": 0.8476424217224121,
+      "mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cosine": 0.8476424217224121,
+      "mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cosine": 0.8476424217224121,
+      "mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cosine": 0.8476424217224121,
+      "mass": 0.9801911541393825
+    }
+  ]
+}
