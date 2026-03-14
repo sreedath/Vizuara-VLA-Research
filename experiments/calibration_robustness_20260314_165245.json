@@ -1,0 +1,157 @@
+{
+  "experiment": "calibration_robustness",
+  "experiment_number": 45,
+  "timestamp": "20260314_165245",
+  "n_cal_pool": 40,
+  "n_test": 52,
+  "size_sensitivity": [
+    {
+      "size": 2,
+      "combo_mean": 0.6663690476190476,
+      "combo_std": 0.04206232216102949,
+      "cos_mean": 0.5904761904761905,
+      "cos_std": 0.05609467721443261
+    },
+    {
+      "size": 4,
+      "combo_mean": 0.7125,
+      "combo_std": 0.031838283619800796,
+      "cos_mean": 0.6395833333333334,
+      "cos_std": 0.060982135594598565
+    },
+    {
+      "size": 8,
+      "combo_mean": 0.6910714285714287,
+      "combo_std": 0.047512902532148855,
+      "cos_mean": 0.6211309523809523,
+      "cos_std": 0.043421792886817426
+    },
+    {
+      "size": 12,
+      "combo_mean": 0.7139880952380951,
+      "combo_std": 0.05314312915957007,
+      "cos_mean": 0.6395833333333334,
+      "cos_std": 0.06586330369213676
+    },
+    {
+      "size": 16,
+      "combo_mean": 0.7139880952380953,
+      "combo_std": 0.030546213269809972,
+      "cos_mean": 0.64375,
+      "cos_std": 0.038993774577261865
+    },
+    {
+      "size": 24,
+      "combo_mean": 0.7422619047619048,
+      "combo_std": 0.033558444804356984,
+      "cos_mean": 0.6818452380952381,
+      "cos_std": 0.03672189717901707
+    },
+    {
+      "size": 32,
+      "combo_mean": 0.7514880952380952,
+      "combo_std": 0.004980119205559956,
+      "cos_mean": 0.7017857142857145,
+      "cos_std": 0.008908708063747463
+    },
+    {
+      "size": 40,
+      "combo_mean": 0.7559523809523809,
+      "combo_std": 0.0,
+      "cos_mean": 0.7023809523809523,
+      "cos_std": 0.0
+    }
+  ],
+  "composition": [
+    {
+      "name": "highway only (10)",
+      "combo_global": 0.7470238095238095,
+      "cos_global": 0.75,
+      "combo_perscene": 0.7470238095238095,
+      "cos_perscene": 0.75
+    },
+    {
+      "name": "urban only (10)",
+      "combo_global": 0.5580357142857143,
+      "cos_global": 0.53125,
+      "combo_perscene": 0.5580357142857143,
+      "cos_perscene": 0.53125
+    },
+    {
+      "name": "night only (10)",
+      "combo_global": 0.6398809523809523,
+      "cos_global": 0.5580357142857143,
+      "combo_perscene": 0.6398809523809523,
+      "cos_perscene": 0.5580357142857143
+    },
+    {
+      "name": "foggy only (10)",
+      "combo_global": 0.6860119047619048,
+      "cos_global": 0.5967261904761905,
+      "combo_perscene": 0.6860119047619048,
+      "cos_perscene": 0.5967261904761905
+    },
+    {
+      "name": "highway+urban (20)",
+      "combo_global": 0.7574404761904762,
+      "cos_global": 0.7276785714285714,
+      "combo_perscene": 0.7172619047619048,
+      "cos_perscene": 0.7127976190476191
+    },
+    {
+      "name": "highway+night (20)",
+      "combo_global": 0.7455357142857142,
+      "cos_global": 0.6979166666666667,
+      "combo_perscene": 0.7559523809523809,
+      "cos_perscene": 0.7083333333333334
+    },
+    {
+      "name": "all 4 scenes (40)",
+      "combo_global": 0.7559523809523809,
+      "cos_global": 0.7023809523809523,
+      "combo_perscene": 0.8125,
+      "cos_perscene": 0.7723214285714285
+    },
+    {
+      "name": "all 4 scenes (20)",
+      "combo_global": 0.7440476190476191,
+      "cos_global": 0.6919642857142857,
+      "combo_perscene": 0.7782738095238095,
+      "cos_perscene": 0.7157738095238095
+    }
+  ],
+  "transfer": [
+    {
+      "cal_scene": "highway",
+      "overall": 0.7470238095238095,
+      "snow": 0.5654761904761905,
+      "flooded": 0.6547619047619048,
+      "offroad": 0.8095238095238095,
+      "tunnel": 0.8809523809523809
+    },
+    {
+      "cal_scene": "urban",
+      "overall": 0.5580357142857143,
+      "snow": 0.35714285714285715,
+      "flooded": 0.7619047619047619,
+      "offroad": 0.4523809523809524,
+      "tunnel": 0.6488095238095238
+    },
+    {
+      "cal_scene": "night",
+      "overall": 0.6398809523809523,
+      "snow": 0.5119047619047619,
+      "flooded": 0.7142857142857143,
+      "offroad": 0.7440476190476191,
+      "tunnel": 0.6011904761904762
+    },
+    {
+      "cal_scene": "foggy",
+      "overall": 0.6860119047619048,
+      "snow": 0.3392857142857143,
+      "flooded": 0.8809523809523809,
+      "offroad": 0.6309523809523809,
+      "tunnel": 0.880952380952381
+    }
+  ]
+}

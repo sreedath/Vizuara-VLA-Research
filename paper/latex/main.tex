@@ -789,6 +789,15 @@ Entropy & 1 & No & .527$\pm$.029 & .413 & .957 & .272 & .336 & 1.00 \\
 \label{fig:action_plausibility}
 \end{figure}
 
+\textbf{Finding 68: Calibration robustness---composition matters more than size, and 24 samples suffice.} A comprehensive robustness study testing calibration set sizes (2--40), compositions (single-condition vs.\ diverse), and cross-condition transfer reveals that calibration quality depends more on diversity than quantity (Figure~\ref{fig:calibration_robustness}). Even 2 calibration samples achieve AUROC = 0.666, while 40 samples reach 0.756---a modest gain that plateaus after $\sim$24 samples. Highway-only calibration (0.747) outperforms urban-only (0.558) because highway images create a tighter centroid. Per-scene centroids with all 4 driving conditions achieve the best single-frame result (0.812). Cross-condition transfer analysis reveals that calibration is asymmetric: highway calibration transfers well to offroad (0.810) and tunnel (0.881) but poorly to snow (0.565), while foggy calibration excels at detecting floods (0.881). The 0.7$\times$cosine + 0.3$\times$mass combination consistently outperforms cosine alone across all calibration sizes, adding 0.05--0.08 AUROC.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.99\textwidth]{figures/fig32_calibration_robustness.png}
+\caption{Calibration robustness (40 calibration pool, 52 test). (a) AUROC vs.\ calibration size: performance plateaus after $\sim$24 samples, with combo consistently beating cosine. (b) Composition: per-scene centroids with all 4 conditions yields best result (0.812). (c) Transfer heatmap: highway $\to$ offroad/tunnel transfers well (0.81, 0.88); foggy $\to$ flood is strong (0.88). Urban-only calibration transfers poorly.}
+\label{fig:calibration_robustness}
+\end{figure}
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/fig6_reliability_diagram.png}
@@ -830,6 +839,36 @@ Entropy & 1 & No & .527$\pm$.029 & .413 & .957 & .272 & .336 & 1.00 \\
 \includegraphics[width=0.99\textwidth]{figures/fig27_attention_analysis.png}
 \caption{Attention pattern analysis on real OpenVLA-7B (70 samples). (a) OOD scenarios exhibit lower attention entropy than in-distribution, with blackout and blank showing the most concentrated attention. (b) Attention-based OOD detection: sign-corrected attention metrics achieve 0.83--0.91 AUROC, far below cosine distance (0.982). (c) Cosine distance correlates negatively with attention entropy ($r = -0.56$): higher cosine distance = more concentrated attention.}
 \label{fig:attention_analysis}
+\end{figure}
+
+\textbf{Zero-overhead OOD detection.} A critical practical finding is that cosine distance and action mass add \emph{literally zero} computational overhead to baseline VLA inference (Table~\ref{tab:compute_cost}; Figure~\ref{fig:compute_cost}). On OpenVLA-7B, baseline action generation takes 294 ms. Adding \texttt{output\_scores=True} and \texttt{output\_hidden\_states=True} to capture both OOD signals costs 294 ms---identical within measurement noise. These outputs are byproducts of normal autoregressive generation that the model computes anyway. Post-processing (cosine distance: 7.6\,$\mu$s; centroid: 35.4\,$\mu$s) is negligible. In contrast, MC Dropout ($N$=20) costs 5,390 ms---an 18$\times$ overhead that is incompatible with the 100\,ms budget for 10\,Hz autonomous driving. Our pipeline thus achieves the Pareto frontier: higher AUROC (0.984) at zero additional latency, making it uniquely suitable for real-time deployment.
+
+\begin{table}[t]
+\centering
+\caption{Computational cost comparison of UQ methods on OpenVLA-7B (BF16, single GPU).}
+\label{tab:compute_cost}
+\small
+\begin{tabular}{lrrl}
+\toprule
+\textbf{Method} & \textbf{Latency (ms)} & \textbf{Overhead} & \textbf{AUROC} \\
+\midrule
+Baseline (no UQ) & 293.9 & --- & --- \\
++ Action mass & 291.4 & 0.0\% & 0.949 \\
++ Cosine distance & 294.0 & 0.0\% & 0.984 \\
++ Both (cos + mass) & 294.0 & 0.0\% & 0.917* \\
+MC Dropout ($N$=5) & 1,385 & +371\% & 0.626 \\
+MC Dropout ($N$=10) & 2,707 & +821\% & 0.626 \\
+MC Dropout ($N$=20) & 5,390 & +1,734\% & 0.626 \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize *AUROC on realistic images; simple images: 0.984}
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.99\textwidth]{figures/fig33_compute_cost.png}
+\caption{Computational cost analysis on real OpenVLA-7B. (a) Cosine distance and action mass extraction add zero overhead (``FREE''); MC Dropout scales linearly with passes (5--20$\times$). (b) Pareto frontier: cosine distance achieves the highest AUROC at the lowest latency. (c) Post-processing costs are $<$100\,$\mu$s---0.03\% of inference time.}
+\label{fig:compute_cost}
 \end{figure}
 
 \textbf{Representational vs.\ behavioral signals: complementary regimes.} A key finding of our work is that the optimal OOD detection signal depends on the distribution shift magnitude. For large shifts (pixel-level corruption, semantic mismatch), cosine distance in hidden state space achieves near-perfect detection (AUROC = 0.984). But for subtle, realistic shifts (off-road terrain, snow-covered roads), the model's hidden state representations overlap with in-distribution scenes, causing cosine distance to degrade (AUROC = 0.461). In this regime, \emph{behavioral} signals---action spread (0.732), action mass (0.745)---provide substantially better detection. The mechanism is that OOD scenes cause the model to produce erratic action patterns (high spread across dimensions) even when the hidden state direction appears normal. This establishes a principled two-tier detection framework: cosine distance as the primary detector for large shifts, augmented by action plausibility monitoring for subtle shifts.
