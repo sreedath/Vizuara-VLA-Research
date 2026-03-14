@@ -1,0 +1,111 @@
+{
+  "experiment": "calset_size",
+  "experiment_number": 70,
+  "timestamp": "20260314_192609",
+  "n_cal_pool": 40,
+  "n_test": 50,
+  "n_repeats": 5,
+  "cal_sizes": [
+    1,
+    2,
+    3,
+    5,
+    8,
+    10,
+    15,
+    20,
+    30
+  ],
+  "results": {
+    "1": {
+      "all_mean": 1.0,
+      "all_std": 0.0,
+      "all_min": 1.0,
+      "all_max": 1.0,
+      "far_mean": 1.0,
+      "far_std": 0.0,
+      "near_mean": 1.0,
+      "near_std": 0.0
+    },
+    "2": {
+      "all_mean": 1.0,
+      "all_std": 0.0,
+      "all_min": 1.0,
+      "all_max": 1.0,
+      "far_mean": 1.0,
+      "far_std": 0.0,
+      "near_mean": 1.0,
+      "near_std": 0.0
+    },
+    "3": {
+      "all_mean": 1.0,
+      "all_std": 0.0,
+      "all_min": 1.0,
+      "all_max": 1.0,
+      "far_mean": 1.0,
+      "far_std": 0.0,
+      "near_mean": 1.0,
+      "near_std": 0.0
+    },
+    "5": {
+      "all_mean": 1.0,
+      "all_std": 0.0,
+      "all_min": 1.0,
+      "all_max": 1.0,
+      "far_mean": 1.0,
+      "far_std": 0.0,
+      "near_mean": 1.0,
+      "near_std": 0.0
+    },
+    "8": {
+      "all_mean": 1.0,
+      "all_std": 0.0,
+      "all_min": 1.0,
+      "all_max": 1.0,
+      "far_mean": 1.0,
+      "far_std": 0.0,
+      "near_mean": 1.0,
+      "near_std": 0.0
+    },
+    "10": {
+      "all_mean": 1.0,
+      "all_std": 0.0,
+      "all_min": 1.0,
+      "all_max": 1.0,
+      "far_mean": 1.0,
+      "far_std": 0.0,
+      "near_mean": 1.0,
+      "near_std": 0.0
+    },
+    "15": {
+      "all_mean": 1.0,
+      "all_std": 0.0,
+      "all_min": 1.0,
+      "all_max": 1.0,
+      "far_mean": 1.0,
+      "far_std": 0.0,
+      "near_mean": 1.0,
+      "near_std": 0.0
+    },
+    "20": {
+      "all_mean": 1.0,
+      "all_std": 0.0,
+      "all_min": 1.0,
+      "all_max": 1.0,
+      "far_mean": 1.0,
+      "far_std": 0.0,
+      "near_mean": 1.0,
+      "near_std": 0.0
+    },
+    "30": {
+      "all_mean": 1.0,
+      "all_std": 0.0,
+      "all_min": 1.0,
+      "all_max": 1.0,
+      "far_mean": 1.0,
+      "far_std": 0.0,
+      "near_mean": 1.0,
+      "near_std": 0.0
+    }
+  }
+}

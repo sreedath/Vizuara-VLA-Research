@@ -3210,3 +3210,39 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Product and voting rules underperform averaging**: Product (0.985) and voting (0.984) are worse than simple averaging (1.000) because they are more sensitive to one signal being wrong.
 
 5. **Cosine alone already achieves 1.000**: The ensemble doesn't improve over cosine alone on these benchmarks, but provides robustness — if the calibration set is noisy, the attention signal can compensate.
+
+---
+
+## Finding 64: Even a Single Calibration Sample Achieves Perfect Detection
+
+**Experiment 70** — Calibration set size sensitivity analysis.
+
+### Setup
+- Calibration pool: 40 samples (20 highway, 20 urban)
+- Test set: 50 samples (20 ID, 14 far-OOD, 8 near-OOD, 8 indoor)
+- Cal sizes tested: 1, 2, 3, 5, 8, 10, 15, 20, 30
+- 5 random subset repetitions per size
+
+### Results
+
+| Cal Size | All AUROC | Std | Far AUROC | Near AUROC |
+|----------|-----------|-----|-----------|------------|
+| 1 | **1.000** | 0.000 | 1.000 | 1.000 |
+| 2 | **1.000** | 0.000 | 1.000 | 1.000 |
+| 3 | **1.000** | 0.000 | 1.000 | 1.000 |
+| 5 | **1.000** | 0.000 | 1.000 | 1.000 |
+| 8 | **1.000** | 0.000 | 1.000 | 1.000 |
+| 10 | **1.000** | 0.000 | 1.000 | 1.000 |
+| 15 | **1.000** | 0.000 | 1.000 | 1.000 |
+| 20 | **1.000** | 0.000 | 1.000 | 1.000 |
+| 30 | **1.000** | 0.000 | 1.000 | 1.000 |
+
+### Key Insights
+
+1. **Perfect detection with just 1 calibration sample**: The cosine distance separation is so large (Cohen's d=5.18 from Exp 68) that even a single example is sufficient to establish a centroid that perfectly separates ID from OOD.
+
+2. **Zero variance across random subsets**: All 5 repetitions at every calibration size achieve identical 1.000 AUROC. The centroid location is stable because ID embeddings cluster extremely tightly.
+
+3. **Practical implication: "one-shot calibration"**: Deployment requires only a single forward pass on a known-good input to calibrate the OOD detector. This eliminates the calibration data collection burden entirely.
+
+4. **This is a direct consequence of the massive effect size**: With d=5.18, the overlap between ID and OOD distributions is essentially zero, so any point in the ID cluster serves as an adequate centroid.

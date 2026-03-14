@@ -1430,4 +1430,20 @@ We evaluate 9 ensemble strategies for combining multiple OOD detection signals (
 
 The key finding is that even simple fusion rules (averaging, maximum) close the gap between calibrated cosine and calibration-free attention. Including weak detectors (MSP, energy) in the ensemble \emph{hurts} performance (Avg-all-5 = 0.966 vs.\ Avg-top-3 = 1.000), confirming that signal quality matters more than quantity. The weight sweep reveals a clear phase transition: below cos\_w = 0.3, near-OOD detection degrades rapidly; above 0.5, both far and near OOD achieve perfect detection. This suggests a practical deployment recipe: average normalized cosine distance and attention max with equal weights.
 
+\subsection{One-Shot Calibration}
+\label{app:calset_size}
+
+\textbf{Finding 93: Even a single calibration sample achieves perfect AUROC (1.000) across all OOD types, with zero variance across 5 random subset repetitions.}
+
+We systematically vary the calibration set size from $N=1$ to $N=30$ (Figure~\ref{fig:calset_size}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/fig56_calset_size.pdf}
+\caption{\textbf{Calibration set size sensitivity.} (a) AUROC remains at 1.000 for \emph{all} calibration sizes, including $N=1$. (b) Zero variance across 5 random subset repetitions at every size. The massive effect size ($d=5.18$) means even a single ID example provides a sufficient centroid.}
+\label{fig:calset_size}
+\end{figure}
+
+This result has important practical implications: the ``calibrated'' cosine distance method requires only \textbf{one forward pass} on a known-good input to calibrate. This effectively reduces the distinction between ``calibrated'' and ``calibration-free'' methods---cosine distance requires trivially minimal calibration (one sample) while achieving strictly superior detection, especially on near-OOD scenarios.
+
 \end{document}
