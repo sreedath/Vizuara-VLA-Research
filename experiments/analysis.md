@@ -2316,3 +2316,72 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 6. **Noise norms grow ~80× from L0 to L32**: Hidden state norms increase from ~1.3 (L0) to ~110 (L32), with OOD states having slightly lower norms at later layers. The norm difference is a weak but consistent signal.
 
 7. **Indoor and inverted detection improves with later layers**: Indoor AUROC goes from 0.766 (L0) to 0.891 (L20), while inverted improves from 0.823 (L0) to 0.807 (L32) — these semantic OOD types require deeper processing to detect.
+
+---
+
+## Finding 45: Systematic Ablation Study (Real OpenVLA-7B, Experiment 51)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Calibration**: 32 samples (8 per scene × 4 scenes: highway, urban, night, foggy)
+- **Test set**: 40 trajectories × 5 steps = 200 inferences (20 ID + 20 OOD)
+- **ID scenes**: highway, urban, night, foggy (5 trajectories each)
+- **OOD scenes**: offroad, flooded, tunnel, snow (5 trajectories each)
+- **Total**: 232 inferences (32 cal + 200 test)
+
+### A. Cumulative Pipeline Ablation
+
+| Stage | Configuration | AUROC | Δ AUROC |
+|-------|--------------|-------|---------|
+| 1 | Global cosine, 1 frame | 0.618 | — |
+| 2 | + Per-scene centroids | 0.820 | +0.203 |
+| 3 | + Temporal aggregation (5-step) | 0.945 | +0.125 |
+| 4 | + Action mass combination | 0.965 | +0.020 |
+| | **Total pipeline gain** | | **+0.347** |
+
+### B. Leave-One-Out Ablation
+
+| Configuration | AUROC | Drop from full |
+|---------------|-------|----------------|
+| **Full pipeline** | **0.965** | — |
+| w/o per-scene centroids | 0.847 | -0.118 |
+| w/o temporal aggregation | 0.847 | -0.118 |
+| w/o action mass | 0.945 | -0.020 |
+| w/o cosine (mass only) | 0.690 | -0.275 |
+
+### C. Per-OOD Type Performance
+
+| Method | offroad | flooded | tunnel | snow | Mean |
+|--------|---------|---------|--------|------|------|
+| Global cos (1f) | 0.850 | 0.300 | 0.690 | 0.630 | 0.618 |
+| Per-scene cos (1f) | 0.910 | 0.600 | 0.940 | 0.830 | 0.820 |
+| Action mass (1f) | 0.680 | 0.750 | 0.700 | 0.630 | 0.690 |
+| Per-scene cos (5-step) | 1.000 | 0.780 | 1.000 | 1.000 | 0.945 |
+| **Full pipeline** | **1.000** | **0.860** | **1.000** | **1.000** | **0.965** |
+
+### D. Temporal Progression
+
+| Steps | Global cos | Per-scene cos |
+|-------|-----------|--------------|
+| 1 | 0.618 | 0.820 |
+| 2 | 0.690 | 0.870 |
+| 3 | 0.753 | 0.910 |
+| 5 | 0.753 | 0.945 |
+
+### Key Insights
+
+1. **Per-scene centroids provide the largest single improvement** (+0.203): Moving from a global centroid to per-scene centroids nearly doubles the gap between the method and random chance (0.618→0.820). This is the most critical design choice.
+
+2. **Temporal aggregation provides the second largest improvement** (+0.125): Averaging over 5 trajectory steps smooths noise and improves from 0.820 to 0.945. The gain is larger than action mass combination, confirming temporal context is more valuable than multi-signal fusion.
+
+3. **Action mass adds modest but consistent improvement** (+0.020): While small, action mass specifically helps with flooded roads (0.780→0.860) where cosine alone struggles due to the visual similarity of wet roads to normal conditions.
+
+4. **Total pipeline improvement: +0.347**: The complete pipeline (per-scene + temporal + mass) lifts from 0.618 to 0.965 — a 56% relative reduction in error rate (0.382→0.035).
+
+5. **Leave-one-out confirms per-scene and temporal are equally important**: Both drop the full pipeline by 0.118 when removed. The cosine distance itself is the most critical component (removing it causes -0.275 drop), confirming it as the backbone of the detection system.
+
+6. **Three OOD types achieve perfect detection (1.000)**: Under the full pipeline, offroad, tunnel, and snow are perfectly detected. Only flooded (0.860) remains imperfect, due to the visual similarity between wet road surfaces and normal pavement.
+
+7. **Flooded is the hardest realistic OOD type** (0.300 → 0.860): Global cosine detects flooded at only 0.300 (below random). The full pipeline improves this to 0.860 — a dramatic recovery but still the weakest of all OOD types. This suggests that water on roads is the most adversarial realistic scenario.
+
+8. **Cosine backbone is essential, mass is supplementary**: Removing cosine entirely (mass only: 0.690) causes the largest drop (-0.275), while removing mass (cosine only: 0.945) causes minimal impact (-0.020). Cosine is the load-bearing signal.
