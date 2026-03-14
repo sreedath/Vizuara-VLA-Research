@@ -690,3 +690,50 @@ This should give us the best of all worlds:
 5. **Brightness reduction is worst augmentation (0.690)**: Darkening images makes easy scenes look more like night/OOD in terms of action mass.
 
 6. **Center crop is most robust (0.854)**: Nearly matching original, suggesting action mass is spatially stable.
+
+---
+
+## Finding 15: Selective Prediction with Action Mass (Real OpenVLA-7B, Experiment 21)
+
+### Setup
+- **Model**: OpenVLA-7B
+- **Samples**: 110 across 6 scenarios (40 easy, 30 hard, 40 OOD)
+- **Signals**: 6 uncertainty signals tested at 8 coverage levels
+- **Total inferences**: 1,870
+
+### AUROC Comparison
+
+| Signal | Easy vs OOD | Easy vs Hard | Easy vs All | Passes | AUROC/pass |
+|--------|-------------|-------------|------------|--------|-----------|
+| **Action Mass (T=1.0)** | **0.877** | 0.742 | 0.818 | 1 | **0.877** |
+| Combined (Mass+MCEnt) | 0.873 | 0.799 | 0.841 | 11 | 0.079 |
+| Action Mass (T=0.25) | 0.869 | 0.777 | 0.829 | 1 | 0.869 |
+| **Aug Ensemble Mass** | 0.856 | **0.859** | **0.858** | 5 | 0.171 |
+| MC Entropy (p=0.20) | 0.824 | 0.620 | 0.737 | 10 | 0.082 |
+| Entropy (T=1.0) | 0.742 | 0.777 | 0.762 | 1 | 0.742 |
+
+### OOD Rejection Rate at Coverage Levels
+
+| Coverage | Action Mass | MC Entropy | Aug Ensemble | Combined |
+|----------|------------|-----------|-------------|---------|
+| 30% | **92.5%** | 85.0% | 87.5% | **92.5%** |
+| 50% | 72.5% | **82.5%** | 67.5% | 72.5% |
+| 70% | **55.0%** | **55.0%** | 45.0% | **57.5%** |
+| 80% | **40.0%** | 37.5% | 32.5% | 37.5% |
+
+### Key Insights
+
+1. **Single-pass action mass has best cost-effectiveness**: AUROC/pass = 0.877, meaning 1 forward pass achieves the highest per-computation-unit OOD detection. MC entropy requires 10× more computation for lower AUROC.
+
+2. **Aug ensemble mass is best all-around signal**: AUROC 0.856 for OOD, 0.859 for hard, 0.858 for all non-easy — the most balanced signal at 5 forward passes.
+
+3. **At aggressive abstention (30% coverage): action mass rejects 92.5% of OOD**: Nearly perfect safety at the cost of only keeping 30% of samples.
+
+4. **MC entropy excels at 50% coverage**: 82.5% OOD rejection vs 72.5% for action mass. This suggests MC entropy better separates the middle of the uncertainty distribution.
+
+5. **Combined signals don't substantially beat single action mass**: AUROC 0.873 vs 0.877, not worth 11× computational cost.
+
+6. **Practical recommendation hierarchy**:
+   - Budget: Single-pass action mass (1 pass, AUROC=0.877)
+   - Balanced: Augmentation ensemble mass (5 passes, best all-around AUROC=0.858)
+   - Maximum coverage: Combined mass + MC entropy (11 passes, best at aggressive coverage)
