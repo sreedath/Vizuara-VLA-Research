@@ -1686,4 +1686,20 @@ We benchmark four inference modes to quantify the computational cost of OOD dete
 
 The near-zero overhead arises because the model already computes hidden states during the forward pass; \texttt{output\_hidden\_states=True} simply prevents their deallocation. Combined with the 7.6\,$\mu$s cosine distance computation, the total OOD detection overhead is \textbf{0.2\,ms per inference}---making it a genuine zero-cost add-on to any VLA deployment pipeline.
 
+\subsection{Mixed Batch Detection}
+\label{app:mixed_batch}
+
+\textbf{Finding 109: Perfect AUROC (1.000) at all contamination rates from 1\% to 50\%. At realistic 1\% OOD rate, the detector correctly ranks all inputs despite the base rate challenge.}
+
+We simulate realistic deployment where OOD inputs are rare events within mostly-ID batches (Figure~\ref{fig:mixed_batch}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig72_mixed_batch.pdf}
+\caption{\textbf{Mixed batch detection.} (a) Perfect AUROC and AP across all contamination rates. (b) Precision at $\mu+3\sigma$ threshold increases with contamination rate due to the base rate effect; the Youden threshold (0.247) would achieve 100\% precision at all rates.}
+\label{fig:mixed_batch}
+\end{figure}
+
+The precision analysis reveals an important deployment consideration: at low contamination rates, even a small FPR can produce more false positives than true positives (the \emph{base rate fallacy}). Using the data-driven Youden threshold instead of the calibration-based $\mu+3\sigma$ eliminates this issue entirely due to the non-overlapping score distributions.
+
 \end{document}

@@ -3825,3 +3825,35 @@ Post-processing:
 3. **Post-processing is negligible**: Cosine distance computation takes 7.6 microseconds — 4 orders of magnitude faster than the forward pass. This means OOD detection adds zero computational cost beyond what the model already does.
 
 4. **Total OOD detection overhead**: 0.2ms (model) + 0.008ms (cosine) = **0.2ms total**, or **0.3% of inference time**. This makes hidden-state OOD detection a zero-cost add-on to any VLA deployment.
+
+---
+
+## Finding 80: Mixed Batch Detection
+
+**Experiment 86** — Tests detection at realistic contamination rates (1%-50%) where OOD inputs are rare within mostly-ID batches.
+
+### Setup
+- 60 ID pool, 30 OOD pool images pre-extracted
+- Simulated batches of 50 images at 5 contamination rates
+- 5 random trials per rate, μ+3σ threshold
+- ~90 model inferences (pool building only)
+
+### Results
+
+| Contamination | AUROC | Avg Precision | Precision at μ+3σ |
+|--------------|-------|---------------|-------------------|
+| 1% (1 OOD) | **1.000** | 1.000 | 0.633 |
+| 5% (2 OOD) | **1.000** | 1.000 | 0.633 |
+| 10% (5 OOD) | **1.000** | 1.000 | 0.730 |
+| 25% (12 OOD) | **1.000** | 1.000 | 0.927 |
+| 50% (25 OOD) | **1.000** | 1.000 | 0.977 |
+
+### Key Insights
+
+1. **Perfect AUROC at ALL contamination rates**: Even finding 1 OOD image in 50 (1% rate) yields AUROC=1.000. The ranking is always correct.
+
+2. **Precision affected by base rate**: At 1% contamination, precision is 63.3% because the μ+3σ threshold catches some ID samples. This is the base rate fallacy — when OOD is rare, even low FPR produces many false positives relative to true positives.
+
+3. **Precision improves with contamination**: At 50%, precision reaches 97.7%. In practice, this means the system works better (higher precision) precisely when the situation is more dangerous (more OOD inputs).
+
+4. **Practical deployment consideration**: For 1% contamination rate, using the Youden threshold (0.247) instead of μ+3σ would achieve 100% precision since ID and OOD distributions don't overlap.

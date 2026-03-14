@@ -1,0 +1,63 @@
+{
+  "experiment": "mixed_batch",
+  "experiment_number": 86,
+  "timestamp": "20260314_202448",
+  "n_cal": 30,
+  "id_pool_size": 60,
+  "ood_pool_size": 30,
+  "batch_size": 50,
+  "n_trials": 5,
+  "threshold": 0.10488691487403184,
+  "results": {
+    "0.01": {
+      "contamination_rate": 0.01,
+      "n_id": 49,
+      "n_ood": 1,
+      "mean_auroc": 1.0,
+      "std_auroc": 4.965068306494546e-17,
+      "mean_ap": 1.0,
+      "std_ap": 0.0,
+      "mean_precision": 0.6333333333333333
+    },
+    "0.05": {
+      "contamination_rate": 0.05,
+      "n_id": 48,
+      "n_ood": 2,
+      "mean_auroc": 1.0,
+      "std_auroc": 4.965068306494546e-17,
+      "mean_ap": 1.0,
+      "std_ap": 0.0,
+      "mean_precision": 0.6333333333333333
+    },
+    "0.10": {
+      "contamination_rate": 0.1,
+      "n_id": 45,
+      "n_ood": 5,
+      "mean_auroc": 1.0,
+      "std_auroc": 4.965068306494546e-17,
+      "mean_ap": 1.0,
+      "std_ap": 0.0,
+      "mean_precision": 0.7301587301587302
+    },
+    "0.25": {
+      "contamination_rate": 0.25,
+      "n_id": 38,
+      "n_ood": 12,
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "mean_ap": 1.0,
+      "std_ap": 0.0,
+      "mean_precision": 0.9274725274725275
+    },
+    "0.50": {
+      "contamination_rate": 0.5,
+      "n_id": 25,
+      "n_ood": 25,
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "mean_ap": 1.0,
+      "std_ap": 1.4043333874306804e-16,
+      "mean_precision": 0.976923076923077
+    }
+  }
+}
