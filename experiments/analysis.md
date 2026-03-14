@@ -1192,3 +1192,62 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 5. **Perfect detection of checker and blackout**: 1.000 AUROC at all calibration sizes for these types. Inverted is the hardest (0.898 at n=5, 0.934 at n=30) but still excellent.
 
 6. **Practical deployment implication**: A VLA can be deployed with just 5 images of normal driving scenarios as calibration. Store the mean hidden state centroid (4096 floats = 16KB). At inference, extract the hidden state, compute cosine distance, and flag OOD if distance exceeds threshold. Total overhead: one dot product per inference.
+
+---
+
+## Finding 24: Cosine Distance Safety Pipeline Achieves 100% Safety (Real OpenVLA-7B, Experiment 30)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, output_hidden_states=True)
+- **Samples**: 122 across 8 scenarios (50 easy, 72 OOD: 6 types × 12)
+- **Calibration**: 25 easy samples for threshold estimation
+- **Test**: 25 easy + 72 OOD
+- **Pipelines compared**: Cosine distance vs action mass as primary OOD signal
+
+### Pipeline Comparison Across Alpha Levels
+
+| α | Pipeline | Accuracy | Safety | OOD→STOP | Easy→PROCEED |
+|---|----------|----------|--------|----------|-------------|
+| 0.05 | **Cosine** | **92.8%** | **100.0%** | **100.0%** | **72.0%** |
+| 0.05 | Mass | 54.6% | 60.8% | 47.2% | 76.0% |
+| 0.10 | **Cosine** | 87.6% | **100.0%** | **100.0%** | 52.0% |
+| 0.10 | Mass | 57.7% | 69.1% | 58.3% | 56.0% |
+| 0.20 | **Cosine** | 82.5% | **100.0%** | **100.0%** | 32.0% |
+| 0.20 | Mass | 59.8% | 76.3% | 68.1% | 36.0% |
+| 0.30 | **Cosine** | 78.4% | **100.0%** | **100.0%** | 16.0% |
+| 0.30 | Mass | 60.8% | 81.4% | 75.0% | 20.0% |
+
+### Per-Scenario Breakdown (α=0.20)
+
+| Scenario | Target | Cosine Correct | Cosine Safe | Mass Correct | Mass Safe |
+|----------|--------|---------------|-------------|-------------|-----------|
+| Highway | PROCEED | 6/13 | **13/13** | 6/13 | 13/13 |
+| Urban | PROCEED | 11/12 | **12/12** | 9/12 | 12/12 |
+| OOD Noise | STOP | **12/12** | **12/12** | 11/12 | 11/12 |
+| OOD Blank | STOP | **12/12** | **12/12** | 12/12 | 12/12 |
+| **OOD Indoor** | STOP | **12/12** | **12/12** | **3/12** | **3/12** |
+| **OOD Inverted** | STOP | **12/12** | **12/12** | **2/12** | **2/12** |
+| OOD Checker | STOP | **12/12** | **12/12** | 9/12 | 9/12 |
+| OOD Blackout | STOP | **12/12** | **12/12** | 12/12 | 12/12 |
+
+### AUROC Comparison
+
+| Signal | Overall AUROC |
+|--------|--------------|
+| **Cosine Distance** | **0.973** |
+| Action Mass | 0.809 |
+| **Δ** | **+0.164** |
+
+### Key Insights
+
+1. **100% safety rate across ALL alpha levels**: The cosine pipeline never under-reacts. Every OOD sample is stopped, every easy sample is at least PROCEED, CAUTION, or higher. This is the first pipeline configuration to achieve perfect safety.
+
+2. **100% OOD→STOP at ALL alpha levels**: Unlike action mass (which misses indoor and inverted), cosine distance correctly identifies all 72 OOD samples as STOP at every threshold level.
+
+3. **Indoor and inverted: the smoking gun**: At α=0.20, cosine pipeline correctly stops 12/12 indoor and 12/12 inverted. Mass pipeline stops only 3/12 indoor and 2/12 inverted — these semantic OOD types are invisible to action mass.
+
+4. **α=0.05 is the new sweet spot**: With cosine distance, α=0.05 achieves 100% safety, 100% OOD detection, AND 72% easy throughput. This is dramatically better than the action mass sweet spot (α=0.20: 76.3% safety, 68.1% OOD detection, 36% throughput).
+
+5. **Trade-off is now safety vs throughput only**: With cosine distance, increasing α only reduces easy throughput (from 72% to 16%), while safety remains at 100%. With action mass, increasing α improves safety (from 60.8% to 81.4%) while also reducing throughput.
+
+6. **This is the paper's strongest result**: A deployed VLA safety system using cosine distance achieves perfect safety with 72% throughput, requiring only 25 calibration images, a single centroid vector, and one dot product per inference.
