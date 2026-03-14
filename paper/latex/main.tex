@@ -542,6 +542,13 @@ Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism beh
 \end{tabular}
 \end{table}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig8_per_dimension_confidence.png}
+\caption{Per-dimension confidence of OpenVLA-7B averaged across all scenarios ($N$=200). The lateral dimension (dim~0) has the lowest confidence (0.364), while the gripper dimension (dim~6) is near-deterministic (0.775)---a 2.1$\times$ range that necessitates per-dimension calibration.}
+\label{fig:per_dim}
+\end{figure}
+
 \textbf{Finding 14: OpenVLA uses only $\sim$6 of 256 bins.} The effective perplexity (exponential of entropy) is 5.7, meaning the model concentrates its probability mass on fewer than 3\% of available bins. The gripper dimension is near-deterministic (perplexity = 1.8), while the lateral dimension shows the most uncertainty (perplexity = 15.9).
 
 \textbf{Finding 15: Temperature scaling reveals a fundamental per-dimension mismatch.} A temperature sweep ($T \in \{0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0\}$) on 100 real samples shows that confidence decreases monotonically from 0.78 ($T$=0.5) to 0.06 ($T$=5.0), while the highway--OOD gap peaks at $T$=1.5 ($\Delta$=0.090) before collapsing at high temperatures. Critically, per-dimension optimal temperatures diverge: dimensions 0--5 are best calibrated at $T$=5.0 (minimizing cross-scenario spread), while dimension 6 (gripper) requires $T$=0.5---the \emph{opposite} extreme. No single temperature can calibrate all dimensions simultaneously, confirming that per-dimension learned calibration strategies are essential for driving VLAs.
@@ -557,14 +564,25 @@ Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism beh
 
 \textbf{Uncertainty combination.} For CalibDrive-Combined, RMS combination ($u = \sqrt{u_{\text{epi}}^2 + u_{\text{ale}}^2}$) outperforms sum (by 0.03 ECE), max (by 0.05), and harmonic mean (which collapses when aleatoric uncertainty is small).
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig6_reliability_diagram.png}
+\caption{Reliability diagrams showing the gap between predicted confidence and actual accuracy. (a) Baseline VLA: severe overconfidence with ECE = 0.40. (b) After MC Dropout calibration: substantially improved alignment with ECE = 0.17. The gap (shaded) represents the calibration error.}
+\label{fig:reliability}
+\end{figure}
+
 %==============================================================================
 \section{Discussion}
 \label{sec:discussion}
 %==============================================================================
 
-\textbf{Why are driving VLAs miscalibrated?} We identify three contributing factors: (1) \textbf{Training objective mismatch}---VLAs are trained with cross-entropy on tokenized actions, which does not directly optimize for calibration in continuous action space; (2) \textbf{Domain shift}---VLAs trained on diverse robotics data encounter distribution shift when applied to driving-specific scenarios; (3) \textbf{Long-tail underrepresentation}---safety-critical scenarios are rare in training data, leading to overconfident extrapolation.
+\textbf{Why are driving VLAs miscalibrated?} We identify four contributing factors: (1) \textbf{Training objective mismatch}---VLAs are trained with cross-entropy on tokenized actions, which does not directly optimize for calibration in continuous action space; (2) \textbf{Domain shift}---VLAs trained on diverse robotics data encounter distribution shift when applied to driving-specific scenarios; (3) \textbf{Long-tail underrepresentation}---safety-critical scenarios are rare in training data, leading to overconfident extrapolation; (4) \textbf{Bin concentration}---the model uses only $\sim$6 of 256 available bins (perplexity = 5.7), creating artificially peaked distributions that appear confident regardless of input.
 
-\textbf{Practical implications.} Our results suggest that deployed driving VLAs should: (a) always pair predictions with calibrated uncertainty estimates; (b) use conformal prediction or ensemble-based methods rather than temperature scaling; (c) implement selective prediction with conservative abstention thresholds for safety-critical scenarios.
+\textbf{The zero-dropout problem.} Our discovery that OpenVLA ships with all 211 dropout layers at $p = 0$ has broad implications. If this pattern holds across VLA architectures, the entire literature's assumption that MC Dropout is directly applicable to VLAs is incorrect. Practitioners must actively inject or reconfigure dropout, which changes the model's computational graph and may require careful tuning of the dropout rate (our experiments test rates from 0.01 to 0.3).
+
+\textbf{Multi-signal uncertainty is essential.} Our selective prediction experiments reveal that no single uncertainty signal is optimal for all hazard types: mean entropy best detects OOD inputs (AUROC = 0.786), while max per-dimension entropy best detects hard-but-in-distribution scenarios (rejecting 96\% at 50\% coverage). Per-dimension temperature calibration improves AUROC by 15\% over uncalibrated baselines. This suggests that production safety systems should combine multiple complementary uncertainty signals rather than relying on any single metric.
+
+\textbf{Practical implications.} Our results suggest that deployed driving VLAs should: (a) always pair predictions with calibrated uncertainty estimates; (b) use entropy rather than raw confidence as the primary uncertainty signal; (c) apply per-dimension calibration rather than global temperature scaling; (d) combine mean entropy (for OOD detection) with max-dimension entropy (for in-distribution difficulty detection); (e) implement selective prediction with conservative abstention thresholds for safety-critical scenarios.
 
 \textbf{Limitations.} Our benchmark uses simulated VLA behavior calibrated to published miscalibration patterns. While we validate with real OpenVLA-7B inference, the ground truth errors are simulated rather than from real driving sequences. Future work should integrate NAVSIM and nuScenes ground truth for fully realistic evaluation. Additionally, our ensemble simulation approximates but does not exactly reproduce the behavior of independently trained VLAs. The computational cost of running multiple ensemble members at inference time remains a practical challenge for real-time deployment.
 
