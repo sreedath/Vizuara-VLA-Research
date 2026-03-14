@@ -206,26 +206,60 @@ def run_benchmark():
     # ==========================================
     print("\n--- Phase 4: Selective Prediction Analysis ---")
 
-    # Use best method's confidences for selective prediction
-    best_confidences = ensemble_result["confidences"]
+    # Compare selective prediction across methods
+    method_confidences = {
+        "Baseline": combined["confidences"],
+        "MC Dropout": mc_result["confidences"],
+        "Deep Ensemble": ensemble_result["confidences"],
+        "Temp Scaling": ts_result["calibrated_confidences"],
+        "Conformal": cp_result["confidences"],
+    }
 
-    sp = SelectivePredictor()
-    sp_detailed = sp.evaluate(best_confidences, combined["errors"], 2.0)
+    selective_results = {}
+    for method_name, confs in method_confidences.items():
+        sp = SelectivePredictor()
+        sp_res = sp.evaluate(confs, combined["errors"], 2.0)
+        selective_results[method_name] = sp_res
 
-    print(f"\nCoverage vs Failure Rate (Deep Ensemble):")
-    print(f"{'Coverage':>10} {'FailRate':>10} {'SelError':>10}")
-    print("-" * 35)
-    for point in sp_detailed["coverage_curve"]:
-        if point["coverage"] > 0 and point["threshold"] % 0.1 < 0.02:
+        # Print key points on the coverage curve
+        print(f"\n  {method_name} — AUROC: {sp_res['auroc_failure_detection']:.4f}")
+
+        # Find failure rate at coverage 90%, 80%, 70%, 50%
+        target_coverages = [0.9, 0.8, 0.7, 0.5]
+        for target in target_coverages:
+            best_point = min(
+                sp_res["coverage_curve"],
+                key=lambda p: abs(p["coverage"] - target)
+            )
+            if best_point["coverage"] > 0:
+                print(
+                    f"    Coverage={best_point['coverage']:.2f}: "
+                    f"FailRate={best_point['selective_failure_rate']:.4f}, "
+                    f"SelError={best_point['selective_error']:.3f}"
+                )
+
+    # Summary: collision rate reduction at 80% coverage
+    print(f"\n  Collision Rate Reduction at ~80% Coverage:")
+    baseline_full_failure = combined["errors"][combined["errors"] > 2.0].shape[0] / len(combined["errors"])
+    print(f"    Full coverage failure rate: {baseline_full_failure:.4f}")
+    for method_name, sp_res in selective_results.items():
+        point_80 = min(
+            sp_res["coverage_curve"],
+            key=lambda p: abs(p["coverage"] - 0.8)
+        )
+        if point_80["coverage"] > 0:
+            reduction = (1 - point_80["selective_failure_rate"] / max(baseline_full_failure, 1e-8)) * 100
             print(
-                f"{point['coverage']:>10.3f} "
-                f"{point['selective_failure_rate']:>10.4f} "
-                f"{point['selective_error']:>10.4f}"
+                f"    {method_name:<20}: FailRate={point_80['selective_failure_rate']:.4f} "
+                f"(Reduction: {reduction:+.1f}%)"
             )
 
     all_results["selective_prediction"] = {
-        "auroc": sp_detailed["auroc_failure_detection"],
-        "coverage_curve": sp_detailed["coverage_curve"],
+        method: {
+            "auroc": res["auroc_failure_detection"],
+            "coverage_curve": res["coverage_curve"],
+        }
+        for method, res in selective_results.items()
     }
 
     # ==========================================
