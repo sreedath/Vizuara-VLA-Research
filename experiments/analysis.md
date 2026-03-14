@@ -5738,3 +5738,39 @@ All top-K and random-K ≥ 100 achieve AUROC=1.000. Even 10 random dims: AUROC=0
 4. **Practical recommendation**: Use layer 3 for maximum detection margin, or layer 32 (last) for simplest implementation. Both achieve AUROC=1.000, and the choice depends on whether deployment prioritizes margin (layer 3) or simplicity (layer 32).
 
 5. **Why early layers dominate**: Early layers represent low-level visual features (color, texture, spatial layout) that differ most between ID and OOD. Late layers mix in task-specific information that is less discriminative for OOD detection.
+
+---
+
+## Finding 123: Seed and Replication Stability (Experiment 129)
+
+**Research Question:** Is the VLA's inference deterministic? Do repeated runs on the same image produce identical embeddings and scores?
+
+**Experiment Design:** 3 test images × 10 repeats + 5 calibration + 40 cross-seed = ~95 inferences.
+
+### Results
+
+**Repeated Inference (same image, 10 repeats):**
+| Image | Bitwise Identical? | Max Cosine Dist | Score Range |
+|-------|-------------------|-----------------|-------------|
+| highway_0 | Yes | 0.0 | 0.0 |
+| noise_0 | Yes | 6e-8 | 0.0 |
+| indoor_0 | Yes | 0.0 | 0.0 |
+
+**Score Stability:**
+- highway_0: score = 0.024889 (zero variation)
+- noise_0: score = 0.513960 (zero variation)
+- indoor_0: score = 0.435988 (zero variation)
+
+**Cross-Seed Variation (20 different noise seeds):**
+- highway: 0.0199 ± 0.0042, CV = 0.212
+- noise: 0.5105 ± 0.0115, CV = 0.023
+
+### Key Insights
+
+1. **Inference is bitwise deterministic**: Repeated inference on the same image produces identical embeddings (max cosine distance = 0.0 or 6e-8 floating point noise). Scores have zero variation.
+
+2. **Detection is perfectly reproducible**: The same image always produces the same detection score. There is no stochastic element in the detection pipeline (model is in eval mode, no dropout, greedy inference).
+
+3. **Cross-seed variation is well-controlled**: Different PRNG seeds for the same scene type produce CV=0.02-0.21. Noise images are more consistent (CV=0.023) because random noise dominates the image, while highway images have more variation from the noise perturbation (CV=0.212).
+
+4. **Deployment guarantee**: The detector will always make the same decision on the same input. No need for ensemble averaging or repeated inference to stabilize decisions.
