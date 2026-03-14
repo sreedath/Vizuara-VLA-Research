@@ -1,0 +1,906 @@
+{
+  "timestamp": "20260314_153546",
+  "n_folds": 5,
+  "samples": [
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 0,
+      "action_mass": 0.8570165240338871
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 1,
+      "action_mass": 0.9251508116722107
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 2,
+      "action_mass": 0.9993944934436253
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 3,
+      "action_mass": 0.9445112177303859
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 4,
+      "action_mass": 0.9982396534511021
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 5,
+      "action_mass": 0.9974308609962463
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 6,
+      "action_mass": 0.9975023695400783
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 7,
+      "action_mass": 0.9966305834906442
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 8,
+      "action_mass": 0.9980175750596183
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 9,
+      "action_mass": 0.9952335357666016
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 10,
+      "action_mass": 0.8109853084066084
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 11,
+      "action_mass": 0.9987899490765163
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 12,
+      "action_mass": 0.8669945044176919
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 13,
+      "action_mass": 0.9976336445127215
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 14,
+      "action_mass": 0.9970532315117973
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 15,
+      "action_mass": 0.9970380749021258
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 16,
+      "action_mass": 0.8567210892049063
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 17,
+      "action_mass": 0.9932107584817069
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 18,
+      "action_mass": 0.8519492159040445
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 19,
+      "action_mass": 0.9918371438980103
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 20,
+      "action_mass": 0.9972552231379918
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 21,
+      "action_mass": 0.9925011822155544
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 22,
+      "action_mass": 0.9905500922884259
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 23,
+      "action_mass": 0.9937682918139866
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 24,
+      "action_mass": 0.9990367208208356
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 25,
+      "action_mass": 0.7174767793289253
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 26,
+      "action_mass": 0.9962917736598423
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 27,
+      "action_mass": 0.8599475861660072
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 28,
+      "action_mass": 0.8879784728799548
+    },
+    {
+      "scenario": "highway",
+      "difficulty": "easy",
+      "idx": 29,
+      "action_mass": 0.995870556150164
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 0,
+      "action_mass": 0.9952499270439148
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 1,
+      "action_mass": 0.9979011501584735
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 2,
+      "action_mass": 0.860052730355944
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 3,
+      "action_mass": 0.8956299722194672
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 4,
+      "action_mass": 0.9912463256290981
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 5,
+      "action_mass": 0.9981305258614677
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 6,
+      "action_mass": 0.9994587898254395
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 7,
+      "action_mass": 0.9812932014465332
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 8,
+      "action_mass": 0.999252370425633
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 9,
+      "action_mass": 0.9940650037356785
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 10,
+      "action_mass": 0.996968252318246
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 11,
+      "action_mass": 0.9981148157800946
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 12,
+      "action_mass": 0.9988780702863421
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 13,
+      "action_mass": 0.9882168173789978
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 14,
+      "action_mass": 0.8588523183550153
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 15,
+      "action_mass": 0.9861174140657697
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 16,
+      "action_mass": 0.8573232870548964
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 17,
+      "action_mass": 0.9931585959025792
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 18,
+      "action_mass": 0.9958547609192985
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 19,
+      "action_mass": 0.9911877172333854
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 20,
+      "action_mass": 0.9882671151842389
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 21,
+      "action_mass": 0.9762424400874546
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 22,
+      "action_mass": 0.9951225774628776
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 23,
+      "action_mass": 0.9787434254373822
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 24,
+      "action_mass": 0.998565307685307
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 25,
+      "action_mass": 0.9983275958469936
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 26,
+      "action_mass": 0.9920159918921334
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 27,
+      "action_mass": 0.8554387459797519
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 28,
+      "action_mass": 0.995885329587119
+    },
+    {
+      "scenario": "urban",
+      "difficulty": "easy",
+      "idx": 29,
+      "action_mass": 0.9986313836915153
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.8853613989693778
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.8218137848889455
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.702771113227105
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.782184020940414
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.9966181346348354
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.9802074772971017
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.9765681198665074
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.96707912002291
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.7801133053643363
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.8500338281903949
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.9782889059611729
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.8211317306434337
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.7836556301585266
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.9980681368282863
+    },
+    {
+      "scenario": "ood_noise",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.7365313672593662
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.7960213486970004
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.7974216505619032
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.8026223982784099
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.8971155796732221
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.7871399600491193
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.757446044257709
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.7737290002405643
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.8993774397032601
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.9091531123433795
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.8703190173421588
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.7796765693596431
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.7957191041537693
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.7203888928259923
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.8374893580164228
+    },
+    {
+      "scenario": "ood_blank",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.789840101281048
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.9978434443473816
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.992472163268498
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.9959219523838588
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.9970249618802752
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.9943041120256696
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.9985184158597674
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.9955223032406398
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.9929167457989284
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.9935221161161151
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.8562560935305166
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.9936965448515755
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.9951567394392831
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.9950947165489197
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.9935588666370937
+    },
+    {
+      "scenario": "ood_indoor",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.9955030083656311
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.9963885801179069
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.9984070914132255
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.8251199435575732
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.9985805920192173
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.9995055794715881
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.998693014894213
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.9985867994172233
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.99898213999612
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.9968328731400626
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.9992835691996983
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.9982493690082005
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.9973402449062893
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.9602859445980617
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.9983102679252625
+    },
+    {
+      "scenario": "ood_inverted",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.9988951853343419
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.9661772080830165
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.9734423671449933
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.9793415325028556
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.9900036454200745
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.9719789028167725
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.9795607498713902
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.9880734086036682
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.9804765411785671
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.9771962506430489
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.9829116633960179
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.9832283428737095
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.8682225325277874
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.9837290985243661
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.8682370749967439
+    },
+    {
+      "scenario": "ood_checker",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.9937234350613185
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 0,
+      "action_mass": 0.8449305125645229
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 1,
+      "action_mass": 0.8479221974100385
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 2,
+      "action_mass": 0.8416160472801754
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 3,
+      "action_mass": 0.8566356556756156
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 4,
+      "action_mass": 0.8511589850698199
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 5,
+      "action_mass": 0.8530726432800293
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 6,
+      "action_mass": 0.8451100417545864
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 7,
+      "action_mass": 0.8507148623466492
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 8,
+      "action_mass": 0.8261555156537465
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 9,
+      "action_mass": 0.8444718888827732
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 10,
+      "action_mass": 0.8948878305298942
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 11,
+      "action_mass": 0.8419436344078609
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 12,
+      "action_mass": 0.8687720469066075
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 13,
+      "action_mass": 0.8582527424607959
+    },
+    {
+      "scenario": "ood_blackout",
+      "difficulty": "ood",
+      "idx": 14,
+      "action_mass": 0.8636241725512913
+    }
+  ]
+}
