@@ -13,10 +13,14 @@ from dataclasses import dataclass
 from typing import Optional
 
 import numpy as np
-import torch
-import torch.nn as nn
 from scipy.optimize import minimize
-from scipy.stats import norm
+
+try:
+    import torch
+    import torch.nn as nn
+    HAS_TORCH = True
+except ImportError:
+    HAS_TORCH = False
 
 
 @dataclass(frozen=True)
@@ -72,106 +76,80 @@ class TemperatureScaling:
         return exp_scaled / exp_scaled.sum(axis=1, keepdims=True)
 
 
-class MCDropoutEstimator:
-    """Monte Carlo Dropout for uncertainty estimation.
+if HAS_TORCH:
+    class MCDropoutEstimator:
+        """Monte Carlo Dropout for uncertainty estimation.
 
-    Enables dropout at inference time and runs multiple forward
-    passes to estimate predictive uncertainty.
-    """
-
-    def __init__(self, num_samples: int = 20, dropout_rate: float = 0.1):
-        self.num_samples = num_samples
-        self.dropout_rate = dropout_rate
-
-    def estimate(
-        self,
-        model: nn.Module,
-        inputs: dict,
-        forward_fn,
-    ) -> dict:
-        """Run MC Dropout inference.
-
-        Args:
-            model: The VLA model.
-            inputs: Preprocessed model inputs.
-            forward_fn: Function that takes (model, inputs) and returns predictions.
-
-        Returns:
-            Dict with mean, std, entropy, and individual predictions.
+        Enables dropout at inference time and runs multiple forward
+        passes to estimate predictive uncertainty.
         """
-        # Enable dropout
-        for m in model.modules():
-            if isinstance(m, nn.Dropout):
-                m.train()
 
-        predictions = []
-        for _ in range(self.num_samples):
-            with torch.no_grad():
-                pred = forward_fn(model, inputs)
-                predictions.append(pred.cpu().numpy())
+        def __init__(self, num_samples: int = 20, dropout_rate: float = 0.1):
+            self.num_samples = num_samples
+            self.dropout_rate = dropout_rate
 
-        # Restore eval mode
-        model.eval()
+        def estimate(
+            self,
+            model: nn.Module,
+            inputs: dict,
+            forward_fn,
+        ) -> dict:
+            """Run MC Dropout inference."""
+            for m in model.modules():
+                if isinstance(m, nn.Dropout):
+                    m.train()
 
-        predictions = np.array(predictions)  # (N_samples, ...)
-        mean = predictions.mean(axis=0)
-        std = predictions.std(axis=0)
-        entropy = 0.5 * np.log(2 * np.pi * np.e * (std ** 2 + 1e-8))
+            predictions = []
+            for _ in range(self.num_samples):
+                with torch.no_grad():
+                    pred = forward_fn(model, inputs)
+                    predictions.append(pred.cpu().numpy())
 
-        return {
-            "mean": mean,
-            "std": std,
-            "entropy": entropy,
-            "predictions": predictions,
-            "num_samples": self.num_samples,
-        }
-
-
-class DeepEnsemble:
-    """Deep Ensemble uncertainty estimation.
-
-    Aggregates predictions from M independently trained models
-    to capture both aleatoric and epistemic uncertainty.
-    """
-
-    def __init__(self, models: list[nn.Module]):
-        self.models = models
-        self.num_models = len(models)
-
-    def estimate(self, inputs: dict, forward_fn) -> dict:
-        """Run ensemble inference.
-
-        Args:
-            inputs: Preprocessed model inputs.
-            forward_fn: Function that takes (model, inputs) and returns predictions.
-
-        Returns:
-            Dict with mean, std, entropy, and individual model predictions.
-        """
-        predictions = []
-        for model in self.models:
             model.eval()
-            with torch.no_grad():
-                pred = forward_fn(model, inputs)
-                predictions.append(pred.cpu().numpy())
 
-        predictions = np.array(predictions)
-        mean = predictions.mean(axis=0)
-        std = predictions.std(axis=0)
+            predictions = np.array(predictions)
+            mean = predictions.mean(axis=0)
+            std = predictions.std(axis=0)
+            entropy = 0.5 * np.log(2 * np.pi * np.e * (std ** 2 + 1e-8))
 
-        # Epistemic uncertainty from disagreement between models
-        epistemic = std
-        # Total entropy
-        entropy = 0.5 * np.log(2 * np.pi * np.e * (std ** 2 + 1e-8))
+            return {
+                "mean": mean,
+                "std": std,
+                "entropy": entropy,
+                "predictions": predictions,
+                "num_samples": self.num_samples,
+            }
 
-        return {
-            "mean": mean,
-            "std": std,
-            "epistemic_uncertainty": epistemic,
-            "entropy": entropy,
-            "predictions": predictions,
-            "num_models": self.num_models,
-        }
+    class DeepEnsemble:
+        """Deep Ensemble uncertainty estimation."""
+
+        def __init__(self, models: list[nn.Module]):
+            self.models = models
+            self.num_models = len(models)
+
+        def estimate(self, inputs: dict, forward_fn) -> dict:
+            """Run ensemble inference."""
+            predictions = []
+            for model in self.models:
+                model.eval()
+                with torch.no_grad():
+                    pred = forward_fn(model, inputs)
+                    predictions.append(pred.cpu().numpy())
+
+            predictions = np.array(predictions)
+            mean = predictions.mean(axis=0)
+            std = predictions.std(axis=0)
+            epistemic = std
+            entropy = 0.5 * np.log(2 * np.pi * np.e * (std ** 2 + 1e-8))
+
+            return {
+                "mean": mean,
+                "std": std,
+                "epistemic_uncertainty": epistemic,
+                "entropy": entropy,
+                "predictions": predictions,
+                "num_models": self.num_models,
+            }
 
 
 class ConformalPredictor:

@@ -246,7 +246,7 @@ def sparsification_error(
     pred_curve = np.array(pred_curve)
     sparsification_err = pred_curve - oracle_curve
 
-    ause = float(np.trapz(sparsification_err, fractions))
+    ause = float(np.trapezoid(sparsification_err, fractions))
 
     return {
         "ause": ause,
