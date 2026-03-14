@@ -1,0 +1,200 @@
+{
+  "experiment": "multi_layer_fusion",
+  "experiment_number": 92,
+  "timestamp": "20260314_204644",
+  "n_cal": 20,
+  "n_id": 16,
+  "n_ood": 24,
+  "n_layers": 33,
+  "strategies": {
+    "last_layer": {
+      "auroc": 1.0,
+      "cohens_d": 5.73057660433497,
+      "id_mean": 0.08761005476117134,
+      "ood_mean": 0.3747015868624051,
+      "per_category": {
+        "indoor": 1.0,
+        "twilight": 1.0,
+        "snow": 1.0,
+        "noise": 1.0
+      },
+      "layers": [
+        32
+      ],
+      "total_dim": 4096
+    },
+    "layer_24": {
+      "auroc": 1.0,
+      "cohens_d": 5.175958342434234,
+      "id_mean": 0.03500388190150261,
+      "ood_mean": 0.16454018155733743,
+      "per_category": {
+        "indoor": 1.0,
+        "twilight": 1.0,
+        "snow": 1.0,
+        "noise": 1.0
+      },
+      "layers": [
+        24
+      ],
+      "total_dim": 4096
+    },
+    "early_late": {
+      "auroc": 1.0,
+      "cohens_d": 5.344443295321753,
+      "id_mean": 0.05207926407456398,
+      "ood_mean": 0.23887520531813303,
+      "per_category": {
+        "indoor": 1.0,
+        "twilight": 1.0,
+        "snow": 1.0,
+        "noise": 1.0
+      },
+      "layers": [
+        0,
+        8,
+        16,
+        24,
+        32
+      ],
+      "total_dim": 20480
+    },
+    "every_4th": {
+      "auroc": 1.0,
+      "cohens_d": 5.314676445157069,
+      "id_mean": 0.0406702384352684,
+      "ood_mean": 0.1892272358139356,
+      "per_category": {
+        "indoor": 1.0,
+        "twilight": 1.0,
+        "snow": 1.0,
+        "noise": 1.0
+      },
+      "layers": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28,
+        32
+      ],
+      "total_dim": 36864
+    },
+    "last_4": {
+      "auroc": 1.0,
+      "cohens_d": 5.9324843195407295,
+      "id_mean": 0.036359310150146484,
+      "ood_mean": 0.16580828030904135,
+      "per_category": {
+        "indoor": 1.0,
+        "twilight": 1.0,
+        "snow": 1.0,
+        "noise": 1.0
+      },
+      "layers": [
+        29,
+        30,
+        31,
+        32
+      ],
+      "total_dim": 16384
+    },
+    "last_8": {
+      "auroc": 1.0,
+      "cohens_d": 5.794917754732171,
+      "id_mean": 0.03399583324790001,
+      "ood_mean": 0.15649290134509405,
+      "per_category": {
+        "indoor": 1.0,
+        "twilight": 1.0,
+        "snow": 1.0,
+        "noise": 1.0
+      },
+      "layers": [
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32
+      ],
+      "total_dim": 32768
+    },
+    "weighted_avg": {
+      "auroc": 1.0,
+      "cohens_d": 4.974263088156362,
+      "id_mean": 0.02525267649253389,
+      "ood_mean": 0.12111390969845175,
+      "per_category": {
+        "indoor": 1.0,
+        "twilight": 1.0,
+        "snow": 1.0,
+        "noise": 1.0
+      },
+      "method": "weighted_avg_linear"
+    }
+  },
+  "pca_results": {
+    "pca_4": {
+      "auroc": 1.0,
+      "cohens_d": 11.06164684017115,
+      "id_mean": 0.46524897578625896,
+      "ood_mean": 1.4945613433361729,
+      "per_category": {
+        "indoor": 1.0,
+        "twilight": 1.0,
+        "snow": 1.0,
+        "noise": 1.0
+      },
+      "n_components": 4,
+      "explained_var": 0.7811782360076904
+    },
+    "pca_8": {
+      "auroc": 1.0,
+      "cohens_d": 15.504728465882645,
+      "id_mean": 0.47354484432806154,
+      "ood_mean": 1.4630188110563724,
+      "per_category": {
+        "indoor": 1.0,
+        "twilight": 1.0,
+        "snow": 1.0,
+        "noise": 1.0
+      },
+      "n_components": 8,
+      "explained_var": 0.9066587686538696
+    },
+    "pca_16": {
+      "auroc": 1.0,
+      "cohens_d": 15.578666331181125,
+      "id_mean": 0.48811418351233726,
+      "ood_mean": 1.4545902508655437,
+      "per_category": {
+        "indoor": 1.0,
+        "twilight": 1.0,
+        "snow": 1.0,
+        "noise": 1.0
+      },
+      "n_components": 16,
+      "explained_var": 0.9399431943893433
+    },
+    "pca_32": {
+      "auroc": 1.0,
+      "cohens_d": 15.370782148589,
+      "id_mean": 0.4993713282352652,
+      "ood_mean": 1.4460329631217093,
+      "per_category": {
+        "indoor": 1.0,
+        "twilight": 1.0,
+        "snow": 1.0,
+        "noise": 1.0
+      },
+      "n_components": 32,
+      "explained_var": 0.9763360023498535
+    }
+  }
+}

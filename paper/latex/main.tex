@@ -1784,4 +1784,22 @@ The mechanism is geometric: single-domain centroids are biased toward one region
 
 This finding complements the calibration set size analysis (Experiment~70): even $N=1$ achieves perfect AUROC, but \emph{which} sample matters for the magnitude of separation. A deployment protocol should include at least one sample from each expected ID domain to maximize the safety margin.
 
+\subsection{Multi-Layer Hidden State Fusion}
+\label{app:multi_layer_fusion}
+
+\textbf{Finding 115: PCA-8 of concatenated multi-layer hidden states achieves Cohen's $d$ = 15.50---nearly 3$\times$ the last-layer baseline ($d$ = 5.73). The OOD discriminant lives in an $\sim$8-dimensional subspace of the multi-layer representation.}
+
+We extract hidden states from all 33 layers and compare concatenation, PCA reduction, and weighted averaging strategies (Figure~\ref{fig:multi_layer_fusion}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig78_multi_layer_fusion.pdf}
+\caption{\textbf{Multi-layer fusion.} (a) Raw concatenation strategies: last-4-layers performs best ($d=5.93$) but improvements over last-layer-only ($d=5.73$) are modest. (b) PCA reduction of every-4th-layer features: PCA-8 achieves $d=15.50$ with 90.7\% explained variance, nearly 3$\times$ the baseline. (c) Dimension-efficiency tradeoff: PCA reduction (red stars) dominates concatenation (blue circles) at every dimension count.}
+\label{fig:multi_layer_fusion}
+\end{figure}
+
+The key insight is that OOD information exists across layers but is diluted by noise dimensions. Raw concatenation increases dimensionality from 4,096 to 36,864 without improving discriminability because the high-dimensional space contains mostly shared, non-diagnostic variation. PCA concentrates the \emph{layer-varying} signal---the directions along which ID and OOD differ most across depth---into just 8 components. This dimensionality reduction acts as a denoising step, revealing the true OOD discriminant subspace.
+
+The practical implication is significant: by extracting every-4th-layer features and applying PCA-8, we achieve a 3$\times$ larger effect size using 8-dimensional features instead of 4,096-dimensional ones. This simultaneously improves detection margins \emph{and} reduces memory/compute requirements.
+
 \end{document}

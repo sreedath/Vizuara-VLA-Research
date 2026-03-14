@@ -4031,3 +4031,52 @@ Summary: AUROC = 1.000 ± 0.000, Cohen's d = 5.58 ± 0.14
 5. **Highway-only is the weakest calibrator**: highway_only is the only configuration with AUROC < 1.000 (0.992), failing on snow detection (0.969). The highway centroid is biased away from snow's embedding region.
 
 6. **Centroid geometry explains the effect**: Highway and urban centroids are far apart (cos=0.265), but each is close to the mixed centroid (0.059, 0.080). The mixed centroid interpolates between domain clusters, creating a more representative ID reference point.
+
+---
+
+## Finding 86: Multi-Layer Hidden State Fusion
+
+**Experiment 92** — Tests whether combining hidden states from multiple transformer layers improves OOD detection beyond using only the last layer.
+
+### Setup
+- 20 mixed calibration, 16 ID, 24 OOD samples
+- 33 layers total (embedding + 32 transformer layers)
+- 7 concatenation strategies + weighted average + PCA reductions
+- ~60 model inferences (each extracting all hidden states)
+
+### Concatenation Strategy Results
+
+| Strategy | Layers | Total Dim | AUROC | Cohen's d |
+|----------|--------|-----------|-------|-----------|
+| Last layer | [32] | 4,096 | 1.000 | 5.73 |
+| Layer 24 | [24] | 4,096 | 1.000 | 5.18 |
+| Early+Late | [0,8,16,24,32] | 20,480 | 1.000 | 5.34 |
+| Every 4th | [0,4,...,32] | 36,864 | 1.000 | 5.31 |
+| **Last 4** | **[29-32]** | **16,384** | **1.000** | **5.93** |
+| Last 8 | [25-32] | 32,768 | 1.000 | 5.79 |
+| Weighted avg | all | 4,096 | 1.000 | 4.97 |
+
+### PCA of Multi-Layer Features (every-4th, 36,864-dim → PCA)
+
+| PCA Dims | AUROC | Cohen's d | Explained Var |
+|----------|-------|-----------|---------------|
+| 4 | 1.000 | 11.06 | 78.1% |
+| **8** | **1.000** | **15.50** | **90.7%** |
+| 16 | 1.000 | 15.58 | 94.0% |
+| 32 | 1.000 | 15.37 | 97.6% |
+
+### Key Insights
+
+1. **PCA of multi-layer features is transformative**: PCA-8 of concatenated every-4th-layer features achieves d=15.50 — nearly 3× the last-layer baseline (d=5.73). This is the highest effect size observed in any experiment.
+
+2. **Concatenation alone doesn't help much**: Simply concatenating more layers (d=5.31-5.93) barely improves over the last layer (d=5.73). The information is there but redundant in high dimensions.
+
+3. **PCA concentrates the OOD signal**: By projecting 36,864 dims → 8 dims, PCA eliminates noise dimensions and concentrates the discriminative signal. The first 8 PCs capture 90.7% of variance and nearly all the OOD structure.
+
+4. **Last 4 layers is the best concatenation**: d=5.93 from layers 29-32, outperforming all other raw concatenation strategies. The final layers carry the most refined OOD signal.
+
+5. **Weighted averaging is worst**: d=4.97 — averaging dilutes the OOD signal because early layers contribute noise that obscures the late-layer discrimination.
+
+6. **Diminishing returns past PCA-8**: PCA-8 (d=15.50) ≈ PCA-16 (d=15.58) ≈ PCA-32 (d=15.37). The OOD discriminant lives in an ~8-dimensional subspace of the multi-layer representation.
+
+7. **Practical recommendation**: For maximum separation, use every-4th-layer concatenation with PCA-8. For simplicity, use last-layer cosine. The 3× improvement in d provides larger safety margins for threshold selection.
