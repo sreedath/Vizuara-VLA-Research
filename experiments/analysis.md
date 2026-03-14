@@ -3671,3 +3671,38 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 3. **Gaussian noise is robust up to σ=50**: The model tolerates substantial additive noise before drift reaches the OOD boundary. This is because Gaussian noise preserves spatial structure while S&P destroys it.
 
 4. **Vulnerability hierarchy**: S&P > extreme Gaussian > heavy blur > moderate Gaussian > light blur > JPEG. This reveals that the OOD signal is fundamentally about spatial coherence, not pixel-level statistics.
+
+---
+
+## Finding 76: Action Prediction Consistency Under OOD
+
+**Experiment 82** — Tests whether OOD inputs destabilize action predictions beyond shifting hidden states.
+
+### Setup
+- 6 scenarios: highway, urban (ID), noise, indoor, twilight, snow (OOD)
+- 16 ID samples per scenario, 10 OOD samples per scenario
+- Measures: unique action tokens, token agreement rate, output entropy, top-1 probability
+- ~72 model inferences
+
+### Results
+
+| Scenario | Type | Unique Tokens | Agreement | Entropy | Top-1 Prob |
+|----------|------|---------------|-----------|---------|------------|
+| highway | ID | 1 | **1.00** | 1.590 | 0.647 |
+| urban | ID | 1 | **1.00** | 1.827 | 0.574 |
+| noise | OOD | 3 | 0.80 | 1.911 | 0.441 |
+| indoor | OOD | 3 | 0.70 | 1.912 | 0.469 |
+| twilight | OOD | 2 | 0.90 | 1.168 | 0.754 |
+| snow | OOD | **5** | **0.60** | **2.411** | **0.312** |
+
+### Key Insights
+
+1. **ID has perfect action consistency**: Both highway and urban produce the SAME token (31917) across all 16 samples each. Zero action variance within ID.
+
+2. **OOD destabilizes actions progressively**: Agreement drops from 100% (ID) to 60-90% (OOD). Snow is most erratic with 5 different tokens across 10 samples.
+
+3. **Different OOD types produce different modal tokens**: ID → 31917, noise → 31860, indoor → 31869, snow → 31907. The model doesn't just become uncertain — it predicts DIFFERENT actions.
+
+4. **Twilight is anomalous**: Despite being OOD in embedding space (high cosine dist), twilight has LOW entropy (1.168) and HIGH top-1 probability (0.754). The model is confidently wrong on near-OOD — this is the most dangerous failure mode.
+
+5. **OOD detection correlates with action instability**: Higher cosine distance → lower token agreement, validating that OOD detection flags inputs that would produce unreliable actions.

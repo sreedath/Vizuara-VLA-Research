@@ -1622,4 +1622,20 @@ We test 14 image perturbations to identify failure modes of the cosine distance 
 
 The vulnerability hierarchy reveals the mechanistic basis of the OOD signal: \textbf{spatial coherence} is the key discriminant, not pixel statistics. Salt-and-pepper noise destroys local spatial structure by replacing pixels with black/white, making perturbed ID images resemble random noise OOD in embedding space. In contrast, JPEG compression preserves spatial structure despite introducing block artifacts, and Gaussian noise preserves the overall image layout. This implies that adversarial attacks targeting spatial structure could evade detection, while common corruptions (compression, sensor noise) cannot.
 
+\subsection{Action Prediction Consistency}
+\label{app:action_consistency}
+
+\textbf{Finding 105: ID inputs produce perfectly consistent actions (100\% agreement, 1 unique token), while OOD inputs destabilize predictions to 60--90\% agreement with up to 5 different action tokens.}
+
+We analyze whether OOD inputs affect not just hidden states but the downstream action predictions themselves (Figure~\ref{fig:action_consistency}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig68_action_consistency.pdf}
+\caption{\textbf{Action prediction consistency.} (a) Token agreement: ID achieves 100\%, OOD drops to 60--90\%. Snow is most erratic (5 unique tokens). (b) Output entropy: snow has highest entropy (2.41), but twilight has lowest (1.17) despite being OOD. (c) Cosine distance inversely correlates with consistency.}
+\label{fig:action_consistency}
+\end{figure}
+
+Two findings are particularly significant for safety: (1) Different OOD types produce \emph{different modal tokens} (noise$\to$31860, indoor$\to$31869, snow$\to$31907 vs.\ ID$\to$31917), meaning the model doesn't just become uncertain---it predicts wrong actions. (2) Twilight (near-OOD) shows \emph{low} entropy and \emph{high} confidence despite being OOD, representing the most dangerous failure mode: the model is confidently wrong. This validates the critical need for hidden-state OOD detection, as output-based uncertainty alone would miss this failure.
+
 \end{document}

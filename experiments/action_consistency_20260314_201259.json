@@ -1,0 +1,86 @@
+{
+  "experiment": "action_consistency",
+  "experiment_number": 82,
+  "timestamp": "20260314_201259",
+  "n_cal": 30,
+  "results": {
+    "highway": {
+      "n_samples": 16,
+      "unique_action_tokens": 1,
+      "token_agreement_rate": 1.0,
+      "modal_token": 31917,
+      "mean_entropy": 1.5896607413887978,
+      "std_entropy": 0.37266032495799817,
+      "mean_top_prob": 0.6466146688908339,
+      "std_top_prob": 0.12180245095982946,
+      "mean_cosine_dist": 0.08317247405648232,
+      "is_ood": false
+    },
+    "urban": {
+      "n_samples": 16,
+      "unique_action_tokens": 1,
+      "token_agreement_rate": 1.0,
+      "modal_token": 31917,
+      "mean_entropy": 1.827406257390976,
+      "std_entropy": 0.5276389922096144,
+      "mean_top_prob": 0.5736443530768156,
+      "std_top_prob": 0.16099662774784823,
+      "mean_cosine_dist": 0.09435857087373734,
+      "is_ood": false
+    },
+    "noise": {
+      "n_samples": 10,
+      "unique_action_tokens": 3,
+      "token_agreement_rate": 0.8,
+      "modal_token": 31860,
+      "mean_entropy": 1.9111600637435913,
+      "std_entropy": 0.40679274195443393,
+      "mean_top_prob": 0.4411577254533768,
+      "std_top_prob": 0.16482319345143043,
+      "mean_cosine_dist": 0.4348850965499878,
+      "is_ood": true
+    },
+    "indoor": {
+      "n_samples": 10,
+      "unique_action_tokens": 3,
+      "token_agreement_rate": 0.7,
+      "modal_token": 31869,
+      "mean_entropy": 1.9117284655570983,
+      "std_entropy": 0.3520627265849999,
+      "mean_top_prob": 0.46859381794929506,
+      "std_top_prob": 0.14442162635577935,
+      "mean_cosine_dist": 0.3509074568748474,
+      "is_ood": true
+    },
+    "twilight": {
+      "n_samples": 10,
+      "unique_action_tokens": 2,
+      "token_agreement_rate": 0.9,
+      "modal_token": 31860,
+      "mean_entropy": 1.167760080099106,
+      "std_entropy": 0.49306446354373806,
+      "mean_top_prob": 0.754238024353981,
+      "std_top_prob": 0.15301089966360235,
+      "mean_cosine_dist": 0.439692223072052,
+      "is_ood": true
+    },
+    "snow": {
+      "n_samples": 10,
+      "unique_action_tokens": 5,
+      "token_agreement_rate": 0.6,
+      "modal_token": 31907,
+      "mean_entropy": 2.4114968538284303,
+      "std_entropy": 0.355196212188823,
+      "mean_top_prob": 0.31201268583536146,
+      "std_top_prob": 0.14151879362932204,
+      "mean_cosine_dist": 0.2686877191066742,
+      "is_ood": true
+    }
+  },
+  "summary": {
+    "id_mean_entropy": 1.7085334993898869,
+    "ood_mean_entropy": 1.8505363658070562,
+    "id_mean_agreement": 1.0,
+    "ood_mean_agreement": 0.75
+  }
+}

@@ -1,114 +1,93 @@
-"""Generate Figure 23: Action Prediction Consistency Under Distribution Shift."""
+"""Generate Figure 68: Action Prediction Consistency."""
 import json
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-RESULTS = "/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/experiments/action_consistency_20260314_155047.json"
 OUT_DIR = "/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/paper/figures"
 
-with open(RESULTS) as f:
-    data = json.load(f)
+scenarios = ['highway', 'urban', 'noise', 'indoor', 'twilight', 'snow']
+is_ood = [False, False, True, True, True, True]
+unique_tokens = [1, 1, 3, 3, 2, 5]
+agreements = [1.00, 1.00, 0.80, 0.70, 0.90, 0.60]
+entropies = [1.590, 1.827, 1.911, 1.912, 1.168, 2.411]
+top_probs = [0.647, 0.574, 0.441, 0.469, 0.754, 0.312]
+cos_dists = [0.083, 0.094, 0.435, 0.351, 0.440, 0.269]
 
-results = data['results']
-corruptions = ['noise', 'darken', 'invert', 'blur', 'occlude']
-severities = [0.25, 0.50, 0.75, 1.0]
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
 
-fig, axes = plt.subplots(1, 3, figsize=(14, 4))
+colors = ['#4CAF50' if not ood else '#F44336' for ood in is_ood]
 
-colors = {'noise': '#e41a1c', 'darken': '#377eb8', 'invert': '#4daf4a',
-          'blur': '#984ea3', 'occlude': '#ff7f00'}
-markers = {'noise': 'o', 'darken': 's', 'invert': '^', 'blur': 'D', 'occlude': 'v'}
-
-# Panel (a): Token agreement vs severity
+# Panel (a): Token agreement rate
 ax = axes[0]
-for c in corruptions:
-    means = [1.0]  # severity 0 = perfect agreement
-    for sev in severities:
-        vals = [r['token_agreement'] for r in results
-                if r['corruption'] == c and r['severity'] == sev]
-        means.append(np.mean(vals))
-    ax.plot([0.0] + severities, means, marker=markers[c], color=colors[c],
-            label=c.capitalize(), linewidth=2, markersize=6)
+bars = ax.bar(range(len(scenarios)), agreements, 0.6, color=colors,
+              edgecolor='black', linewidth=0.5, alpha=0.85)
+ax.set_xticks(range(len(scenarios)))
+ax.set_xticklabels(scenarios, fontsize=10, rotation=30, ha='right')
+ax.set_ylabel('Token Agreement Rate', fontsize=11)
+ax.set_title('(a) Action Consistency', fontsize=12, fontweight='bold')
+ax.set_ylim(0.4, 1.1)
+ax.axhline(y=1.0, color='green', linestyle='--', alpha=0.3)
+ax.grid(True, alpha=0.3, axis='y')
 
-ax.set_xlabel('Corruption Severity', fontsize=11)
-ax.set_ylabel('Token Agreement (7-dim)', fontsize=11)
-ax.set_title('(a) Action Token Agreement', fontsize=12, fontweight='bold')
-ax.legend(fontsize=8, loc='upper right')
-ax.set_xlim(-0.02, 1.02)
-ax.set_ylim(-0.05, 1.05)
-ax.grid(True, alpha=0.3)
+for bar, v, u in zip(bars, agreements, unique_tokens):
+    ax.text(bar.get_x() + bar.get_width()/2., bar.get_height() + 0.02,
+            f'{v:.0%}\n({u} tok)', ha='center', va='bottom', fontsize=8, fontweight='bold')
 
-# Panel (b): Cosine dist vs action L2 scatter
+ax.annotate('ID: Perfect\nconsistency', xy=(0.5, 1.0), xytext=(0.5, 0.55),
+            fontsize=10, color='darkgreen', fontweight='bold',
+            arrowprops=dict(arrowstyle='->', color='darkgreen'))
+ax.annotate('Snow: Most\nerratic (5 tokens)', xy=(5, 0.6), xytext=(3.5, 0.48),
+            fontsize=9, color='darkred', fontweight='bold',
+            arrowprops=dict(arrowstyle='->', color='darkred'))
+
+# Panel (b): Entropy comparison
 ax = axes[1]
-cos_dists = [r['cos_dist'] for r in results]
-action_l2s = [r['action_l2'] for r in results]
-corr_colors = [colors[r['corruption']] for r in results]
+bars = ax.bar(range(len(scenarios)), entropies, 0.6, color=colors,
+              edgecolor='black', linewidth=0.5, alpha=0.85)
+ax.set_xticks(range(len(scenarios)))
+ax.set_xticklabels(scenarios, fontsize=10, rotation=30, ha='right')
+ax.set_ylabel('Output Entropy', fontsize=11)
+ax.set_title('(b) Action Distribution Entropy', fontsize=12, fontweight='bold')
+ax.grid(True, alpha=0.3, axis='y')
 
-for c in corruptions:
-    c_cos = [r['cos_dist'] for r in results if r['corruption'] == c]
-    c_l2 = [r['action_l2'] for r in results if r['corruption'] == c]
-    ax.scatter(c_cos, c_l2, color=colors[c], alpha=0.5, s=20,
-              label=c.capitalize(), marker=markers[c])
+for bar, v in zip(bars, entropies):
+    ax.text(bar.get_x() + bar.get_width()/2., bar.get_height() + 0.03,
+            f'{v:.2f}', ha='center', va='bottom', fontsize=9, fontweight='bold')
 
-# Correlation line
-z = np.polyfit(cos_dists, action_l2s, 1)
-p = np.poly1d(z)
-x_line = np.linspace(min(cos_dists), max(cos_dists), 100)
-ax.plot(x_line, p(x_line), 'k--', linewidth=1.5, alpha=0.7)
-
-r = np.corrcoef(cos_dists, action_l2s)[0, 1]
-ax.set_xlabel('Cosine Distance', fontsize=11)
-ax.set_ylabel('Action L2 Distance', fontsize=11)
-ax.set_title(f'(b) Cosine Dist vs Action L2 (r={r:+.2f})', fontsize=12, fontweight='bold')
-ax.legend(fontsize=8, loc='lower right')
-ax.grid(True, alpha=0.3)
-
-# Panel (c): Binned action quality by cosine distance
+# Panel (c): Cosine distance vs agreement scatter
 ax = axes[2]
-bins = [(0.0, 0.55), (0.55, 0.65), (0.65, 0.75), (0.75, 0.85), (0.85, 1.0)]
-bin_labels = ['<0.55', '0.55-\n0.65', '0.65-\n0.75', '0.75-\n0.85', '>0.85']
-agree_means = []
-agree_stds = []
-l2_means = []
+for i, (cd, ag, name) in enumerate(zip(cos_dists, agreements, scenarios)):
+    c = colors[i]
+    marker = 's' if is_ood[i] else 'o'
+    ax.scatter(cd, ag, c=c, s=120, marker=marker, edgecolors='black',
+               linewidth=0.5, zorder=5)
+    ax.annotate(name, (cd, ag), textcoords="offset points",
+                xytext=(8, 5), fontsize=9)
 
-for lo, hi in bins:
-    bin_samples = [r for r in results if lo <= r['cos_dist'] < hi]
-    if bin_samples:
-        agree_means.append(np.mean([r['token_agreement'] for r in bin_samples]))
-        agree_stds.append(np.std([r['token_agreement'] for r in bin_samples]))
-        l2_means.append(np.mean([r['action_l2'] for r in bin_samples]))
-    else:
-        agree_means.append(0)
-        agree_stds.append(0)
-        l2_means.append(0)
-
-x = np.arange(len(bins))
-width = 0.35
-
-bars1 = ax.bar(x - width/2, agree_means, width, yerr=agree_stds,
-               label='Token Agreement', color='#2196F3', alpha=0.8, capsize=3)
-
-ax2 = ax.twinx()
-bars2 = ax2.bar(x + width/2, l2_means, width,
-                label='Action L2', color='#FF5722', alpha=0.8)
-
-ax.set_xlabel('Cosine Distance Bin', fontsize=11)
-ax.set_ylabel('Token Agreement', fontsize=11, color='#2196F3')
-ax2.set_ylabel('Action L2 Distance', fontsize=11, color='#FF5722')
-ax.set_title('(c) Action Quality by Cosine Bin', fontsize=12, fontweight='bold')
-ax.set_xticks(x)
-ax.set_xticklabels(bin_labels, fontsize=9)
-ax.set_ylim(0, 0.35)
-ax2.set_ylim(0, 200)
-
-lines1, labels1 = ax.get_legend_handles_labels()
-lines2, labels2 = ax2.get_legend_handles_labels()
-ax.legend(lines1 + lines2, labels1 + labels2, fontsize=8, loc='upper right')
+ax.set_xlabel('Cosine Distance to Centroid', fontsize=11)
+ax.set_ylabel('Token Agreement Rate', fontsize=11)
+ax.set_title('(c) OOD Distance vs Consistency', fontsize=12, fontweight='bold')
 ax.grid(True, alpha=0.3)
+
+# Add correlation line
+from numpy.polynomial import polynomial as P
+coefs = P.polyfit(cos_dists, agreements, 1)
+x_fit = np.linspace(0, 0.5, 100)
+y_fit = P.polyval(x_fit, coefs)
+ax.plot(x_fit, y_fit, 'k--', alpha=0.3, linewidth=1)
+
+# Correlation coefficient
+r = np.corrcoef(cos_dists, agreements)[0, 1]
+ax.text(0.35, 0.95, f'r = {r:.2f}', fontsize=10, fontweight='bold')
+
+from matplotlib.patches import Patch
+legend_elements = [Patch(facecolor='#4CAF50', label='ID'),
+                   Patch(facecolor='#F44336', label='OOD')]
+ax.legend(handles=legend_elements, fontsize=9)
 
 plt.tight_layout()
-plt.savefig(f'{OUT_DIR}/fig23_action_consistency.png', dpi=200, bbox_inches='tight')
-plt.savefig(f'{OUT_DIR}/fig23_action_consistency.pdf', dpi=200, bbox_inches='tight')
-print("Saved fig23_action_consistency.png/pdf")
+plt.savefig(f'{OUT_DIR}/fig68_action_consistency.png', dpi=200, bbox_inches='tight')
+plt.savefig(f'{OUT_DIR}/fig68_action_consistency.pdf', dpi=200, bbox_inches='tight')
+print("Saved fig68_action_consistency.png/pdf")
