@@ -5226,3 +5226,54 @@ Oracle weights: [1.0, 0.0, 0.0, 0.0] — pure cosine.
 5. **Euclidean distance works but with lower d (18.47)**: Magnitude differences between ID and OOD contribute to detection, but the norm-independent cosine metric provides 2.9× better separation.
 
 6. **Practical recommendation: cosine distance remains optimal**: Simple, efficient (O(d) per sample), no covariance estimation needed, and achieves the highest separation. The only scenario where Mahalanobis might help is with much larger calibration sets (>1000).
+
+---
+
+## Finding 111: Attention Pattern OOD Analysis
+
+**Experiment 117** — Extracts attention weights from the last transformer layer and tests whether attention-based features can detect OOD inputs.
+
+### Setup
+- 10 samples per category, 60 total inferences
+- 32 attention heads, 280-token sequence
+- Attention features: entropy, max weight, top-5 concentration, first-quarter attention
+
+### Detector Results
+
+| Detector | AUROC |
+|----------|-------|
+| Cosine distance (baseline) | 1.000 |
+| Max attention weight | 1.000 |
+| Attention entropy | 0.995 |
+| Top-5 concentration | 0.930 |
+| First-quarter attention | 0.928 |
+
+### Per-Category Attention Stats
+
+| Category | Group | Entropy | Max Attn | Top-5 | First-Q |
+|----------|-------|---------|----------|-------|---------|
+| Highway | ID | 2.498 | 0.305 | 0.694 | 0.329 |
+| Urban | ID | 2.350 | 0.320 | 0.733 | 0.346 |
+| Snow | OOD | 2.139 | 0.354 | 0.772 | 0.385 |
+| Indoor | OOD | 2.148 | 0.348 | 0.777 | 0.416 |
+| Twilight | OOD | 2.318 | 0.334 | 0.731 | 0.351 |
+| Noise | OOD | 2.174 | 0.356 | 0.759 | 0.363 |
+
+### Per-Head AUROC
+- Best: Head 7 (AUROC=1.000), Head 16 (0.998)
+- Worst: Head 1 (0.515), Head 14 (0.560)
+- 2 heads achieve AUROC≥0.99, 7 heads achieve AUROC≥0.90
+
+### Key Insights
+
+1. **Max attention weight achieves perfect AUROC=1.000**: OOD inputs produce higher max attention weights — the model concentrates attention more when confused. This is a novel attention-based OOD detector.
+
+2. **Attention entropy is also excellent (AUROC=0.995)**: OOD inputs have lower entropy (more concentrated attention), which seems counterintuitive — the model attends to fewer positions when the input is unfamiliar.
+
+3. **Head 7 alone achieves perfect AUROC**: A single attention head captures the full OOD signal. This head likely specializes in visual scene understanding.
+
+4. **OOD attention is more concentrated, not more diffuse**: Contrary to the intuition that confusion leads to diffuse attention, OOD inputs produce more peaked attention patterns. The model "locks on" to specific positions rather than distributing attention broadly.
+
+5. **Twilight is the hardest OOD category for attention**: Its stats (entropy 2.318, max 0.334) are closest to ID, consistent with twilight being the most ID-like OOD category.
+
+6. **Attention OOD detection is complementary but not superior to cosine distance**: Both achieve AUROC=1.000, but attention requires extracting attention weights (more memory-intensive) vs a simple hidden state vector.

@@ -2186,4 +2186,20 @@ We compare six distance metrics for centroid-based OOD detection: cosine, Euclid
 
 The Mahalanobis analysis reveals a fundamental limitation of covariance-based methods in the high-dimensional, low-sample regime ($p = 4096, n = 20$). Full Mahalanobis distance requires inverting a $4096 \times 4096$ covariance matrix estimated from 20 samples---a severely underdetermined problem ($n \ll p$). Even state-of-the-art shrinkage estimators (Ledoit-Wolf, OAS) produce noisy precision matrices that amplify estimation error, reducing $d$ from 53.44 to 6.60 and introducing false negatives (AUROC drops to 0.985). Diagonal Mahalanobis (per-dimension variance normalization) partially addresses this by estimating only $p$ parameters instead of $p^2$, achieving $d = 42.73$---better than Euclidean ($d = 18.47$) but worse than cosine ($d = 53.44$). The PCA-4 Mahalanobis failure ($d = -0.56$) demonstrates that the highest-variance directions are not the most discriminative---a finding consistent with our feature importance analysis (Finding 133). Cosine distance's success is explained by its implicit normalization: by projecting onto the unit hypersphere, it ignores magnitude variation (which is noisy) and focuses on directional information (which is discriminative). This makes cosine uniquely suitable for the calibration-free paradigm where only a handful of ID samples are available.
 
+\subsection{Attention Pattern OOD Analysis}
+\label{app:attention_ood}
+
+\textbf{Finding 140: Max attention weight achieves AUROC $= 1.000$ as an OOD detector. Head 7 alone achieves perfect detection. OOD inputs produce more concentrated attention (lower entropy, higher max weight), contrary to the intuition that confusion leads to diffuse attention. Attention entropy AUROC $= 0.995$.}
+
+We extract last-layer attention weights and test whether attention-based features can detect OOD inputs (Figure~\ref{fig:attention_ood}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig103_attention_ood.pdf}
+\caption{\textbf{Attention OOD analysis.} (a) Detector comparison: max attention and cosine distance both achieve AUROC $= 1.000$; attention entropy achieves 0.995. (b) Per-category attention stats: ID inputs have higher entropy (more diffuse attention) while OOD inputs concentrate attention more. (c) Per-head AUROC: Head 7 achieves perfect detection; most heads have AUROC $> 0.7$; a few heads carry no OOD signal.}
+\label{fig:attention_ood}
+\end{figure}
+
+The attention analysis reveals a surprising mechanism: OOD inputs cause the model to \emph{concentrate} rather than \emph{diffuse} its attention. ID driving scenes have attention entropy $\sim$2.4 and max attention $\sim$0.31, while OOD inputs have lower entropy ($\sim$2.15) and higher max attention ($\sim$0.35). This pattern suggests that the model ``locks on'' to a few familiar-looking tokens when the overall scene is unfamiliar, rather than distributing attention broadly in search of relevant features. Head 7 alone achieves perfect AUROC, indicating that at least one attention head specializes in scene-level understanding and responds distinctively to OOD content. The practical value of attention-based detection is limited compared to cosine distance (both achieve AUROC $= 1.000$), because extracting attention weights requires $O(H \cdot L^2)$ memory (32 heads $\times$ $280^2$ sequence length) versus a single 4,096-dimensional vector for cosine distance. However, attention-based detection provides a complementary signal that could serve as a secondary verification channel in safety-critical deployments.
+
 \end{document}
