@@ -512,7 +512,62 @@ This should give us the best of all worlds:
 
 - [x] Gradient distribution shift (11 alpha levels × 15 samples × 10 MC = 1,665 inferences)
 
-**Total real OpenVLA-7B inferences to date**: ~20,000+
+**Total real OpenVLA-7B inferences to date**: ~21,000+
 
 **In Progress:**
 - [ ] Additional experiment iterations
+
+---
+
+## Finding 12: Full Vocabulary Analysis (Real OpenVLA-7B, Experiment 18)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, no dropout)
+- **Samples**: 80 across 6 scenarios
+- **Analysis**: Full 32k vocabulary softmax (not just 256 action bins)
+- **Key metric**: Fraction of probability mass on action bins vs non-action tokens
+
+### Action Mass Per Scenario
+
+| Scenario | Action Mass | Action Conf | Action Entropy | Full Entropy | Ratio |
+|----------|------------|-------------|---------------|-------------|-------|
+| Highway | 0.957 | 0.505 | 1.439 | 1.481 | 1.03 |
+| Urban | **0.994** | **0.752** | **0.806** | **0.828** | 1.03 |
+| Night | 0.898 | 0.199 | **3.041** | **3.116** | 1.02 |
+| Rain | 0.877 | 0.321 | 2.372 | 2.423 | 1.02 |
+| OOD Noise | 0.844 | 0.544 | 1.353 | 1.411 | 1.04 |
+| OOD Blank | **0.824** | 0.423 | 1.814 | 1.949 | **1.07** |
+
+### Action Mass Per Dimension
+
+| Dim | Action Mass | ± |
+|-----|------------|---|
+| 0 (lateral) | 0.984 | 0.021 |
+| 1 (longitudinal) | **0.820** | **0.223** |
+| 2 (z) | 0.935 | 0.147 |
+| 3 (roll) | 0.953 | 0.134 |
+| 4 (pitch) | 0.961 | 0.091 |
+| 5 (yaw) | 0.965 | 0.120 |
+| 6 (gripper) | **0.686** | **0.426** |
+
+### AUROC Comparison (Easy vs OOD)
+
+| Signal | AUROC |
+|--------|-------|
+| **Neg Action Mass** | **0.949** |
+| Full Entropy | 0.786 |
+| Action Entropy | 0.763 |
+
+### Key Insights
+
+1. **Action mass is the BEST OOD detection signal (AUROC=0.949)**: The fraction of probability that falls on action tokens vs non-action tokens is a dramatically better OOD detector than entropy (0.786). OOD inputs cause probability to leak into non-action vocabulary tokens.
+
+2. **Urban has near-perfect action mass (99.4%)**: For well-understood structured scenes, essentially all probability goes to action bins. OOD blank has the lowest (82.4%).
+
+3. **Dim 6 (gripper) has lowest action mass (68.6%)**: Over 30% of probability mass leaks to non-action tokens for the gripper dimension, suggesting the model is uncertain about whether to produce an action at all.
+
+4. **Dim 1 (longitudinal) has highest variance in action mass (±22.3%)**: Speed-related predictions are most inconsistent about staying within action vocabulary.
+
+5. **Full vs action entropy ratio ≈ 1.02-1.07**: Non-action tokens add little to entropy (most of the leaked mass is spread thin across 32k tokens), but the total leaked mass is highly diagnostic.
+
+6. **This discovery redefines our best UQ approach**: Action mass (AUROC=0.949) > Cumulative trajectory confidence (0.925) > Optimal dropout entropy (0.932) > Raw entropy (0.873). The simplest computation (just sum the action-bin probabilities) produces the best result.
