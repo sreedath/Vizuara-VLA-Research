@@ -642,6 +642,15 @@ Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism beh
 \label{fig:cosine_ood}
 \end{figure}
 
+\textbf{Finding 54: Cosine distance is robust to calibration set size and layer choice.} Testing across 5 LLM layers (0, 8, 16, 24, 31) and 6 calibration set sizes (5--30 samples, 20 bootstrap splits each), we find remarkable stability. With \textbf{as few as 5 calibration images}, cosine distance achieves AUROC = \textbf{0.968} $\pm$ 0.006---only 0.013 below the 30-sample performance (0.981 $\pm$ 0.006). The middle layer (16) slightly outperforms the last layer (0.990 vs.\ 0.988), suggesting the model builds domain-discriminative representations before the final layers focus on next-token prediction. Across all configurations, cosine distance beats action mass by $+$0.23 AUROC (e.g., 0.968 vs.\ 0.736 at $n_{\text{cal}}$=5). Bootstrap standard deviations are $\leq$0.010, confirming that the centroid is stable because hidden state representations are highly structured. The practical implication: a deployed VLA needs only 5 normal driving images to establish a 16KB centroid vector that provides near-perfect OOD detection (Figure~\ref{fig:cosine_robustness}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.99\textwidth]{figures/fig20_cosine_robustness.png}
+\caption{Cosine distance robustness on real OpenVLA-7B (150 samples, 5 layers, 6 calibration sizes). (a) Layer-wise analysis: middle layer 16 peaks at 0.990, early layers are weaker ($\sim$0.89). (b) Calibration size sensitivity: 5 samples (AUROC = 0.968) nearly match 30 samples (0.981), both far exceeding action mass (0.74). (c) Per-type breakdown confirms robust detection even with minimal calibration.}
+\label{fig:cosine_robustness}
+\end{figure}
+
 \textbf{Finding 48: Leaked probability flows to rare Unicode ``garbage tokens.''} Decoding the non-action tokens that receive leaked probability reveals that all top recipients are rare Unicode characters: a Chinese character meaning ``loyalty'' (31\% of total leaked mass), mathematical $\top$, Korean honorifics, and Greek diacriticals. These are vocabulary entries with minimal training signal that serve as probability sinks when the model is uncertain. OOD inputs leak to \emph{different} tokens than easy inputs (Jaccard overlap = 0.25), suggesting that leaked token identity---not just total leaked mass---carries diagnostic information. The z-axis dimension (dim~2) shows the most extreme leak ratio: OOD inputs leak 62$\times$ more probability than easy inputs on this dimension.
 
 \textbf{Finding 47: Per-dimension conformal achieves perfect hard scenario detection on dim 0.} Applying conformal thresholds per action dimension reveals that dimension 0 (lateral) achieves \textbf{0\% false positive rate on easy samples and 100\% flag rate on hard scenarios} at $\alpha$=0.10. This is because easy driving scenes produce near-deterministic lateral actions (action mass $>$0.997), while hard scenarios produce broader lateral distributions. Prediction set sizes scale naturally with difficulty: easy samples have 0.3 dimensions flagged on average vs.\ 1.9 for hard/OOD samples---a 6$\times$ difference.

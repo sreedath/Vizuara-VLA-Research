@@ -1138,3 +1138,57 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 6. **Combining all signals achieves 0.923 — LOWER than cosine alone (0.979)**: Adding noisy signals (action mass, entropy, L2) actually dilutes the cosine signal. This reinforces our earlier finding that signal combination hurts when one signal dominates.
 
 7. **Revised recommendation**: For deployed VLAs with access to even a small calibration set (25 samples), use hidden state cosine distance as the primary OOD detector. It requires only a single forward pass with `output_hidden_states=True`, storing a single 4096-d centroid vector, and computing one dot product per inference.
+
+---
+
+## Finding 23: Cosine Distance is Robust Across Calibration Sizes and Layers (Real OpenVLA-7B, Experiment 29)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, output_hidden_states=True)
+- **Samples**: 150 across 8 scenarios (60 easy, 90 OOD: 6 types × 15)
+- **Layers tested**: 0, 8, 16, 24, 31 (of 32 total)
+- **Calibration sizes**: 5, 10, 15, 20, 25, 30 easy samples
+- **Bootstrap**: 20 random calibration splits per size
+
+### Layer-Wise Cosine Distance AUROC (All Easy as Calibration)
+
+| Layer | Overall AUROC | Noise | Blank | Indoor | Inverted | Checker | Blackout |
+|-------|--------------|-------|-------|--------|----------|---------|----------|
+| 0 | 0.891 | 0.878 | 0.871 | 0.828 | 0.970 | 0.797 | 1.000 |
+| 8 | 0.889 | 0.877 | 0.853 | 0.807 | 0.942 | 0.873 | 0.983 |
+| **16** | **0.990** | 0.991 | 0.991 | 0.978 | 0.980 | **1.000** | **1.000** |
+| 24 | 0.988 | **1.000** | **1.000** | **0.997** | 0.932 | **1.000** | **1.000** |
+| 31 | 0.988 | 0.993 | 0.993 | 0.979 | 0.961 | **1.000** | **1.000** |
+
+### Calibration Set Size Sensitivity (Last Layer, 20 Bootstrap Splits)
+
+| n_cal | Mean AUROC | ± | 95% CI |
+|-------|-----------|---|--------|
+| **5** | **0.968** | 0.006 | [0.959, 0.980] |
+| 10 | 0.979 | 0.006 | [0.966, 0.986] |
+| 15 | 0.978 | 0.007 | [0.967, 0.989] |
+| 20 | 0.978 | 0.010 | [0.963, 0.992] |
+| 25 | 0.980 | 0.009 | [0.959, 0.991] |
+| **30** | **0.981** | 0.006 | [0.968, 0.990] |
+
+### Cosine Distance vs Action Mass (Matched Test Sets)
+
+| n_cal | Cosine | Action Mass | Δ |
+|-------|--------|------------|---|
+| 5 | 0.968 ± 0.006 | 0.736 ± 0.010 | **+0.232** |
+| 10 | 0.979 ± 0.006 | 0.738 ± 0.008 | **+0.241** |
+| 25 | 0.980 ± 0.009 | 0.744 ± 0.025 | **+0.236** |
+
+### Key Insights
+
+1. **As few as 5 calibration samples achieve AUROC = 0.968**: The cosine distance signal is so strong that minimal calibration data suffices. The difference between 5 and 30 samples is only 0.013 AUROC.
+
+2. **Middle layers (16) slightly outperform the last layer (31)**: Layer 16 achieves 0.990 vs 0.988 for layer 31. Early layers (0, 8) are significantly worse (~0.89). This suggests the model builds domain-discriminative representations in the middle of the network, before the final layers start focusing on next-token prediction.
+
+3. **Cosine distance beats action mass by +0.23 AUROC consistently**: The gap is stable across all calibration sizes (0.232 to 0.241), confirming cosine distance is fundamentally superior for OOD detection.
+
+4. **Extremely robust to calibration split**: Bootstrap std ≤ 0.010 across all configurations. The centroid is stable because the hidden state representation is highly structured.
+
+5. **Perfect detection of checker and blackout**: 1.000 AUROC at all calibration sizes for these types. Inverted is the hardest (0.898 at n=5, 0.934 at n=30) but still excellent.
+
+6. **Practical deployment implication**: A VLA can be deployed with just 5 images of normal driving scenarios as calibration. Store the mean hidden state centroid (4096 floats = 16KB). At inference, extract the hidden state, compute cosine distance, and flag OOD if distance exceeds threshold. Total overhead: one dot product per inference.
