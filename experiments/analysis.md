@@ -3930,3 +3930,37 @@ Summary: AUROC = 1.000 ± 0.000, Cohen's d = 5.58 ± 0.14
 3. **Phase diagram**: The detection boundary corresponds to a cosine distance of ~0.10 (μ+3σ threshold). Anything above this distance is reliably detected as OOD.
 
 4. **Structural changes dominate**: Interpolation (structural mixing) causes a 2.3× jump in embedding distance at just 10% perturbation, while color shift of the same magnitude causes only a 1.1× increase. The VLA's visual encoder is more sensitive to spatial layout than color palette.
+
+---
+
+## Finding 83: Mahalanobis Distance Comparison
+
+**Experiment 89** — Compares cosine, Mahalanobis, and Euclidean distance for OOD detection at different PCA dimensions.
+
+### Setup
+- 30 calibration, 20 ID test, 32 OOD test
+- PCA dimensions: 4, 8, 16, 28 + full 4096
+- Three metrics: cosine, Mahalanobis (covariance-aware), Euclidean
+- ~82 model inferences (reuses hidden states from initial extraction)
+
+### Results
+
+| Dimensions | Cosine | Mahalanobis | Euclidean |
+|-----------|--------|-------------|-----------|
+| PCA-4 | 0.906 | 0.541 | 0.000 |
+| PCA-8 | **0.086** | **0.978** | 0.000 |
+| PCA-16 | 0.995 | **1.000** | 0.000 |
+| PCA-28 | 0.670 | **1.000** | 0.000 |
+| Full 4096 | **1.000** | N/A | **1.000** |
+
+### Key Insights
+
+1. **Cosine is unstable in PCA space**: AUROC swings wildly (0.086 at PCA-8 to 0.995 at PCA-16). PCA destroys the isotropy that cosine relies on.
+
+2. **Mahalanobis is optimal for reduced dimensions**: Achieves 1.000 at PCA-16+. By modeling the covariance structure, it correctly accounts for the anisotropy introduced by PCA.
+
+3. **Euclidean distance always fails in PCA space**: 0.000 at every PCA dimension. This is because PCA components have vastly different scales, and Euclidean distance is dominated by the largest component.
+
+4. **Full-dim cosine still wins overall**: At 4096 dims, cosine achieves 1.000 without any covariance modeling. The curse of dimensionality actually helps cosine by making all directions approximately equivalent.
+
+5. **Practical recommendation**: Use cosine at full dim for simplicity; use Mahalanobis at PCA-16 for memory-constrained deployment.

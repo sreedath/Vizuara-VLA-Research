@@ -145,7 +145,7 @@ def main():
     print(f"  ID: {len(id_hidden)}, OOD: {len(ood_hidden)}", flush=True)
 
     # Test at different PCA dimensions
-    pca_dims = [4, 8, 16, 32, 64, 128]
+    pca_dims = [4, 8, 16, 28]  # max = n_cal - 2 = 28
     results = {}
 
     for d in pca_dims:

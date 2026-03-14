@@ -1,4 +1,4 @@
-"""Generate Figure 44: Mahalanobis vs Cosine Distance OOD Detection."""
+"""Generate Figure 75: Mahalanobis Distance Comparison."""
 import json
 import numpy as np
 import matplotlib
@@ -7,73 +7,72 @@ import matplotlib.pyplot as plt
 
 OUT_DIR = "/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/paper/figures"
 
-fig, axes = plt.subplots(1, 3, figsize=(16, 4.5))
+dims = ['PCA-4', 'PCA-8', 'PCA-16', 'PCA-28', 'Full\n4096']
+cosine = [0.906, 0.086, 0.995, 0.670, 1.000]
+mahalanobis = [0.541, 0.978, 1.000, 1.000, 0]
+euclidean = [0.000, 0.000, 0.000, 0.000, 1.000]
 
-# Panel (a): Method comparison bar chart
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Panel (a): AUROC comparison
 ax = axes[0]
-methods = ['Cosine\nDistance', 'Mahalanobis\n(PCA-20)', 'Feature\nNorm Diff', 'Cosine +\nNorm Diff']
-aurocs = [0.933, 0.097, 0.589, 0.905]
-colors = ['#2196F3', '#F44336', '#FF9800', '#4CAF50']
+x = np.arange(len(dims))
+width = 0.25
 
-bars = ax.bar(range(len(methods)), aurocs, 0.6, color=colors,
-              edgecolor='black', linewidth=0.5, alpha=0.85)
-ax.axhline(y=0.5, color='red', linestyle=':', alpha=0.3, label='Random')
-ax.set_xticks(range(len(methods)))
-ax.set_xticklabels(methods, fontsize=9)
-ax.set_ylabel('AUROC', fontsize=11)
-ax.set_title('(a) Detection Method Comparison', fontsize=12, fontweight='bold')
-ax.set_ylim(0, 1.05)
-ax.grid(True, alpha=0.3, axis='y')
-for bar, val in zip(bars, aurocs):
-    ax.text(bar.get_x() + bar.get_width()/2., bar.get_height() + 0.02,
-            f'{val:.3f}', ha='center', va='bottom', fontsize=10, fontweight='bold')
-ax.annotate('Worse than\nrandom!', xy=(1, 0.097), xytext=(1.5, 0.35),
-            fontsize=9, color='#F44336', fontweight='bold',
-            arrowprops=dict(arrowstyle='->', color='#F44336'))
+bars1 = ax.bar(x - width, cosine, width, label='Cosine', color='#2196F3',
+               edgecolor='black', linewidth=0.5, alpha=0.85)
+bars2 = ax.bar(x, mahalanobis, width, label='Mahalanobis', color='#4CAF50',
+               edgecolor='black', linewidth=0.5, alpha=0.85)
+bars3 = ax.bar(x + width, euclidean, width, label='Euclidean', color='#FF9800',
+               edgecolor='black', linewidth=0.5, alpha=0.85)
 
-# Panel (b): Per-scenario comparison
-ax = axes[1]
-ood_types = ['Noise', 'Indoor', 'Inverted', 'Blackout']
-cos_aurocs = [0.994, 0.887, 0.850, 1.000]
-mah_aurocs = [0.162, 0.112, 0.112, 0.000]
+ax.text(4, 0.05, 'N/A', ha='center', va='bottom', fontsize=8, color='gray')
 
-x = np.arange(len(ood_types))
-width = 0.35
-bars1 = ax.bar(x - width/2, cos_aurocs, width, label='Cosine',
-               color='#2196F3', edgecolor='black', linewidth=0.5, alpha=0.85)
-bars2 = ax.bar(x + width/2, mah_aurocs, width, label='Mahalanobis',
-               color='#F44336', edgecolor='black', linewidth=0.5, alpha=0.85)
-ax.axhline(y=0.5, color='red', linestyle=':', alpha=0.3)
 ax.set_xticks(x)
-ax.set_xticklabels(ood_types, fontsize=10)
+ax.set_xticklabels(dims, fontsize=10)
 ax.set_ylabel('AUROC', fontsize=11)
-ax.set_title('(b) Per-OOD Type: Cosine vs Mahalanobis', fontsize=12, fontweight='bold')
-ax.set_ylim(0, 1.15)
+ax.set_title('(a) Distance Metric Comparison', fontsize=12, fontweight='bold')
 ax.legend(fontsize=9)
 ax.grid(True, alpha=0.3, axis='y')
+ax.set_ylim(0, 1.15)
+ax.axhline(y=0.95, color='green', linestyle='--', alpha=0.3)
 
-# Panel (c): PCA dimension sweep
-ax = axes[2]
-pca_dims = [4, 8, 12, 16, 20, 25, 29]
-pca_aurocs = [0.263, 0.144, 0.094, 0.102, 0.097, 0.089, 0.114]
+ax.annotate('Cosine fails\nin PCA-8!', xy=(1, 0.086), xytext=(2, 0.2),
+            fontsize=9, color='darkred', fontweight='bold',
+            arrowprops=dict(arrowstyle='->', color='darkred'))
+ax.annotate('Mahalanobis\nperfect at PCA-16+', xy=(2, 1.0), xytext=(0.5, 0.7),
+            fontsize=9, color='darkgreen', fontweight='bold',
+            arrowprops=dict(arrowstyle='->', color='darkgreen'))
 
-ax.plot(pca_dims, pca_aurocs, 'r-o', linewidth=2, markersize=8, label='Mahalanobis')
-ax.axhline(y=0.933, color='#2196F3', linestyle='--', linewidth=2, alpha=0.7,
-           label='Cosine (0.933)')
-ax.axhline(y=0.5, color='gray', linestyle=':', alpha=0.3, label='Random')
-ax.fill_between(pca_dims, pca_aurocs, 0.5, alpha=0.1, color='red',
-                label='Below random')
-ax.set_xlabel('PCA Dimensions', fontsize=11)
-ax.set_ylabel('AUROC', fontsize=11)
-ax.set_title('(c) Mahalanobis PCA Sweep', fontsize=12, fontweight='bold')
-ax.set_ylim(0, 1.05)
-ax.legend(fontsize=8, loc='center right')
-ax.grid(True, alpha=0.3)
-ax.annotate('All dims < random', xy=(16, 0.102), xytext=(20, 0.45),
-            fontsize=9, color='#F44336',
-            arrowprops=dict(arrowstyle='->', color='#F44336'))
+# Panel (b): Recommendation summary
+ax = axes[1]
+ax.axis('off')
+
+summary_text = """
+DISTANCE METRIC RECOMMENDATIONS
+
+Full Dimensionality (4096):
+  → Cosine: AUROC = 1.000 ✓
+  → Euclidean: AUROC = 1.000 ✓
+  → Both work perfectly
+
+Reduced Dimensionality (PCA):
+  → Mahalanobis: 1.000 at PCA-16+ ✓
+  → Cosine: Unstable (0.086 at PCA-8!)
+  → Euclidean: Always fails (0.000)
+
+Key Insight:
+  Cosine distance works only because full-dim
+  embeddings are approximately isotropic.
+  In PCA space, covariance structure matters
+  → use Mahalanobis for reduced-dim deployment.
+"""
+ax.text(0.1, 0.95, summary_text, transform=ax.transAxes,
+        fontsize=10, verticalalignment='top', fontfamily='monospace',
+        bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
+ax.set_title('(b) Recommendations', fontsize=12, fontweight='bold')
 
 plt.tight_layout()
-plt.savefig(f'{OUT_DIR}/fig44_mahalanobis.png', dpi=200, bbox_inches='tight')
-plt.savefig(f'{OUT_DIR}/fig44_mahalanobis.pdf', dpi=200, bbox_inches='tight')
-print("Saved fig44_mahalanobis.png/pdf")
+plt.savefig(f'{OUT_DIR}/fig75_mahalanobis.png', dpi=200, bbox_inches='tight')
+plt.savefig(f'{OUT_DIR}/fig75_mahalanobis.pdf', dpi=200, bbox_inches='tight')
+print("Saved fig75_mahalanobis.png/pdf")

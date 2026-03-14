@@ -1,0 +1,40 @@
+{
+  "experiment": "mahalanobis",
+  "experiment_number": 89,
+  "timestamp": "20260314_203558",
+  "n_cal": 30,
+  "n_id": 20,
+  "n_ood": 32,
+  "results": {
+    "4": {
+      "cosine_auroc": 0.90625,
+      "mahalanobis_auroc": 0.540625,
+      "euclidean_auroc": 0.0,
+      "pca_variance_explained": 0.843294620513916
+    },
+    "8": {
+      "cosine_auroc": 0.0859375,
+      "mahalanobis_auroc": 0.978125,
+      "euclidean_auroc": 0.0,
+      "pca_variance_explained": 0.8967959880828857
+    },
+    "16": {
+      "cosine_auroc": 0.9953124999999999,
+      "mahalanobis_auroc": 1.0,
+      "euclidean_auroc": 0.0,
+      "pca_variance_explained": 0.9542763233184814
+    },
+    "28": {
+      "cosine_auroc": 0.6703124999999999,
+      "mahalanobis_auroc": 1.0,
+      "euclidean_auroc": 0.0,
+      "pca_variance_explained": 0.9979808926582336
+    },
+    "4096": {
+      "cosine_auroc": 1.0,
+      "euclidean_auroc": 1.0,
+      "mahalanobis_auroc": null,
+      "pca_variance_explained": 1.0
+    }
+  }
+}

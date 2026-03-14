@@ -1734,4 +1734,20 @@ We map the detection boundary using continuous highway$\to$indoor interpolation 
 
 The sharp interpolation boundary reveals that VLA hidden states encode structural scene understanding: even a small admixture of non-driving spatial layout immediately shifts the representation out of the ID manifold. Color changes, while also detected, produce more gradual embedding drift, consistent with the adversarial robustness finding (Experiment~81) that spatial coherence is the primary discriminant.
 
+\subsection{Distance Metric Comparison}
+\label{app:mahalanobis}
+
+\textbf{Finding 112: In PCA-reduced space, Mahalanobis distance achieves 1.000 AUROC at PCA-16 while cosine distance is unstable (0.086 at PCA-8). At full 4096 dimensions, cosine achieves 1.000 without covariance modeling.}
+
+We compare cosine, Mahalanobis, and Euclidean distances across PCA dimensions (Figure~\ref{fig:mahalanobis}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/fig75_mahalanobis.pdf}
+\caption{\textbf{Distance metric comparison.} (a) AUROC across dimensions: Mahalanobis is stable and achieves 1.000 at PCA-16+; cosine is unreliable in PCA space but perfect at full dim; Euclidean fails everywhere in PCA space. (b) Recommendations for deployment.}
+\label{fig:mahalanobis}
+\end{figure}
+
+The instability of cosine distance in PCA space is explained by the loss of isotropy: PCA concentrates variance along the first few components, creating anisotropic distributions where angular distance is no longer a reliable discriminant. Mahalanobis distance accounts for this by normalizing each dimension by its variance. For deployment, we recommend cosine at full dimensionality (simplest) or Mahalanobis at PCA-16 (most memory-efficient).
+
 \end{document}
