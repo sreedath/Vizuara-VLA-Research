@@ -459,6 +459,14 @@ OOD (blank) & 30 & 0.519 & 0.073 & 1.409 & 0.240 \\
 
 \textbf{Finding 20: Zero speed--confidence correlation.} The model's confidence is completely independent of driving speed (Pearson $r = 0.028$, $p = 0.697$; Spearman $r = 0.022$, $p = 0.757$), despite speed being a critical factor in driving safety and difficulty.
 
+\subsubsection{Real-Model Selective Prediction}
+
+We evaluate five uncertainty signals for selective prediction on 120 real OpenVLA-7B samples: mean entropy, negative confidence, max per-dimension entropy, negative margin, and negative top-5 mass.
+
+\textbf{Finding 21: Entropy achieves the best OOD discrimination on real VLAs.} Computing a pairwise AUROC for easy-vs-OOD sample separation, mean entropy achieves 0.786, significantly outperforming negative confidence (0.722) and max per-dimension entropy (0.618). At 50\% coverage, entropy-based abstention rejects 60\% of OOD samples versus 48\% for confidence-based abstention.
+
+\textbf{Finding 22: Different uncertainty signals are optimal for different hazard types.} For OOD detection (random noise), mean entropy and negative top-5 mass perform best (AUROC 0.786, 0.782). For hard-but-in-distribution scenarios (night, rain, fog), max per-dimension entropy dominates, rejecting 96\% of hard samples at 50\% coverage versus 78\% for mean entropy. This suggests that a multi-signal approach---using mean entropy for OOD detection and per-dimension max entropy for in-distribution difficulty---could provide complementary safety coverage.
+
 \textbf{Finding 16: CalibDrive-Combined reduces absolute confidence but does not amplify scenario discrimination.} Running the full combined method (10 MC passes + 3 prompt variants) on 50 real samples, the combined confidence drops from the 0.54--0.60 baseline range to 0.22--0.27, indicating the method is appropriately more conservative. However, the uncertainty gap between highway and OOD scenarios is 0.012 (vs.\ baseline confidence gap of 0.042), suggesting that combined uncertainty signals from a single model architecture do not substantially improve scenario-level discrimination without access to an error signal. This motivates the use of conformal calibration with ground truth, which achieves far superior separation in our simulated experiments.
 
 \subsection{Logit Distribution Analysis}
@@ -490,7 +498,7 @@ Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism beh
 
 \textbf{Finding 14: OpenVLA uses only $\sim$6 of 256 bins.} The effective perplexity (exponential of entropy) is 5.7, meaning the model concentrates its probability mass on fewer than 3\% of available bins. The gripper dimension is near-deterministic (perplexity = 1.8), while the lateral dimension shows the most uncertainty (perplexity = 15.9).
 
-\textbf{Finding 15: Temperature scaling analysis reveals structural overconfidence.} At the default temperature ($T = 1.0$), mean max probability is 0.60. Raising $T$ to 2.0 reduces max probability to 0.34 but inflates perplexity to 24.6. There is no single temperature that achieves good calibration across all dimensions simultaneously, confirming that per-dimension or learned calibration strategies are needed.
+\textbf{Finding 15: Temperature scaling reveals a fundamental per-dimension mismatch.} A temperature sweep ($T \in \{0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0\}$) on 100 real samples shows that confidence decreases monotonically from 0.78 ($T$=0.5) to 0.06 ($T$=5.0), while the highway--OOD gap peaks at $T$=1.5 ($\Delta$=0.090) before collapsing at high temperatures. Critically, per-dimension optimal temperatures diverge: dimensions 0--5 are best calibrated at $T$=5.0 (minimizing cross-scenario spread), while dimension 6 (gripper) requires $T$=0.5---the \emph{opposite} extreme. No single temperature can calibrate all dimensions simultaneously, confirming that per-dimension learned calibration strategies are essential for driving VLAs.
 
 \subsection{Ablation Studies}
 \label{sec:ablations}
