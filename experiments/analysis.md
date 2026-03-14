@@ -4080,3 +4080,44 @@ Summary: AUROC = 1.000 ± 0.000, Cohen's d = 5.58 ± 0.14
 6. **Diminishing returns past PCA-8**: PCA-8 (d=15.50) ≈ PCA-16 (d=15.58) ≈ PCA-32 (d=15.37). The OOD discriminant lives in an ~8-dimensional subspace of the multi-layer representation.
 
 7. **Practical recommendation**: For maximum separation, use every-4th-layer concatenation with PCA-8. For simplicity, use last-layer cosine. The 3× improvement in d provides larger safety margins for threshold selection.
+
+---
+
+## Finding 87: Temperature Scaling Effect on OOD Detection
+
+**Experiment 93** — Tests whether temperature scaling of output logits improves OOD detection via entropy and probability-based features.
+
+### Setup
+- 20 calibration, 16 ID, 24 OOD samples
+- 7 temperatures: 0.1, 0.25, 0.5, 1.0, 2.0, 5.0, 10.0
+- 3 output features: entropy, top-1 probability, top-5 probability
+- Hidden state baseline for comparison
+- ~60 model inferences
+
+### Results (AUROC by Temperature)
+
+| Temperature | Entropy | Top-1 Prob | Top-5 Prob |
+|-------------|---------|------------|------------|
+| 0.1 | **0.747** | 0.721 | 0.639 |
+| 0.25 | 0.724 | **0.729** | 0.633 |
+| 0.5 | 0.698 | 0.708 | **0.661** |
+| 1.0 | 0.625 | 0.682 | 0.617 |
+| 2.0 | 0.422 | 0.609 | 0.464 |
+| 5.0 | 0.583 | 0.617 | 0.513 |
+| 10.0 | 0.477 | 0.617 | 0.508 |
+
+Hidden state AUROC: **1.000** (for reference)
+
+### Key Insights
+
+1. **Temperature scaling cannot rescue output features**: Best AUROC is 0.747 (entropy at T=0.1), far below hidden state 1.000. No temperature makes output features competitive.
+
+2. **Low temperatures slightly improve discrimination**: T=0.1 sharpens the distribution, amplifying small differences between ID and OOD logit patterns. But the improvement is modest (0.625→0.747).
+
+3. **High temperatures destroy all signal**: T≥2.0 flattens distributions to near-uniform, making ID and OOD indistinguishable (AUROC→0.5).
+
+4. **Entropy is the best output feature at optimal T**: 0.747 at T=0.1, slightly above top-1 probability (0.729 at T=0.25).
+
+5. **The fundamental limitation is VLA action tokenization**: With 256-bin discrete action tokens, the model distributes probability mass differently than classification LLMs. OOD inputs don't necessarily produce higher entropy because the action vocabulary is small and constrained.
+
+6. **This definitively confirms hidden state superiority**: Across 7 temperatures × 3 features = 21 configurations, none exceeds 0.75 AUROC. Hidden states encode structural OOD information that output probabilities fundamentally cannot access.

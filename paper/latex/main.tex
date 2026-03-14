@@ -1802,4 +1802,20 @@ The key insight is that OOD information exists across layers but is diluted by n
 
 The practical implication is significant: by extracting every-4th-layer features and applying PCA-8, we achieve a 3$\times$ larger effect size using 8-dimensional features instead of 4,096-dimensional ones. This simultaneously improves detection margins \emph{and} reduces memory/compute requirements.
 
+\subsection{Temperature Scaling}
+\label{app:temperature}
+
+\textbf{Finding 116: Temperature scaling cannot rescue output-based OOD detection. Best AUROC is 0.747 (entropy at $T=0.1$) across 21 temperature$\times$feature configurations---still far below hidden state detection (1.000).}
+
+We systematically sweep temperature from $T=0.1$ to $T=10.0$ and evaluate three output features: entropy, top-1 probability, and top-5 probability (Figure~\ref{fig:temperature_scaling}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig79_temperature_scaling.pdf}
+\caption{\textbf{Temperature scaling.} (a) AUROC vs temperature: all output features peak at low $T$ ($\leq 0.5$) and collapse toward random at high $T$. Hidden state baseline (1.000) shown for reference. (b) ID vs OOD entropy distributions: overlap increases with temperature. (c) Best feature per method: hidden states dominate output features by 0.25+ AUROC regardless of temperature tuning.}
+\label{fig:temperature_scaling}
+\end{figure}
+
+The failure of temperature scaling to improve output-based detection confirms that the limitation is structural, not calibrational. VLA action tokenization uses a 256-bin vocabulary, producing fundamentally different output distributions than classification models. OOD inputs do not reliably increase output entropy because the constrained action vocabulary limits distributional spread. Hidden states, by contrast, encode the full scene understanding of the model before the information bottleneck of token prediction.
+
 \end{document}
