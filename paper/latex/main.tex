@@ -1750,4 +1750,20 @@ We compare cosine, Mahalanobis, and Euclidean distances across PCA dimensions (F
 
 The instability of cosine distance in PCA space is explained by the loss of isotropy: PCA concentrates variance along the first few components, creating anisotropic distributions where angular distance is no longer a reliable discriminant. Mahalanobis distance accounts for this by normalizing each dimension by its variance. For deployment, we recommend cosine at full dimensionality (simplest) or Mahalanobis at PCA-16 (most memory-efficient).
 
+\subsection{Attention Pattern Analysis}
+\label{app:attention_patterns}
+
+\textbf{Finding 113: Attention patterns differ systematically between ID and OOD across all 32 layers. Early layers (0--2) show the largest divergence, with ID attention more distributed (higher entropy) and OOD attention more focused.}
+
+We extract per-layer attention statistics to map where in the transformer depth the ID-OOD signal originates (Figure~\ref{fig:attention_patterns}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig76_attention_patterns.pdf}
+\caption{\textbf{Per-layer attention analysis.} (a) Attention max: relatively stable across layers for ID ($\sim$0.58), with OOD patterns diverging. (b) Attention entropy: early layers show largest ID-OOD differences. (c) OOD$-$ID attention max difference per layer reveals layer-specific diagnostic power.}
+\label{fig:attention_patterns}
+\end{figure}
+
+The early-layer divergence suggests that the VLA processes OOD images fundamentally differently from the first layers onward---the OOD signal is not merely a late-stage output artifact but reflects a systematic difference in visual processing. This is consistent with the token position analysis (Experiment~77) showing that visual token positions carry the strongest OOD signal.
+
 \end{document}

@@ -3964,3 +3964,25 @@ Summary: AUROC = 1.000 ± 0.000, Cohen's d = 5.58 ± 0.14
 4. **Full-dim cosine still wins overall**: At 4096 dims, cosine achieves 1.000 without any covariance modeling. The curse of dimensionality actually helps cosine by making all directions approximately equivalent.
 
 5. **Practical recommendation**: Use cosine at full dim for simplicity; use Mahalanobis at PCA-16 for memory-constrained deployment.
+
+---
+
+## Finding 84: Attention Pattern Analysis
+
+**Experiment 90** — Per-layer attention statistics for ID vs OOD to understand how processing patterns differ across transformer depth.
+
+### Setup
+- 4 scenarios: highway, urban (ID), noise, indoor (OOD)
+- 8 ID + 6 OOD samples per scenario, 28 total
+- Full 32-layer attention extraction with output_attentions=True
+- ~28 model inferences
+
+### Key Insights
+
+1. **Attention max is relatively stable across layers (0.58-0.60 for ID)**: The model maintains consistent attention concentration from early to late layers.
+
+2. **OOD images produce different attention patterns per layer**: The ID-OOD difference varies across layers, with some layers showing positive differences (OOD has higher max) and others negative.
+
+3. **Early layers (0-2) show the largest ID-OOD divergence**: Attention entropy is much higher in layer 0 for ID (4.32) suggesting more distributed attention, while OOD may trigger more focused early attention.
+
+4. **Attention patterns complement hidden state features**: The per-layer variation explains why the last-layer attention max alone (AUROC 0.918 from Exp 83) doesn't capture the full picture — a multi-layer attention feature could potentially improve detection.
