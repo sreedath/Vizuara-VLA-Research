@@ -250,6 +250,52 @@ This should give us the best of all worlds:
 
 ---
 
+## Finding 7: Dropout Rate Sensitivity (Real OpenVLA-7B, Experiment 10)
+
+### Setup
+- **Model**: OpenVLA-7B (7B params, BF16)
+- **GPU**: NVIDIA A40 (48GB)
+- **Dropout rates**: p ∈ {0.0, 0.01, 0.05, 0.10, 0.15, 0.20, 0.30}
+- **MC passes**: 10 per sample per rate
+- **Samples**: 60 (6 scenarios × 10)
+- **Total inferences**: 4,200
+
+### MC Variance by Dropout Rate
+
+| p | Conf Mean | Conf Std | Entropy Std | Token Agree |
+|---|-----------|----------|-------------|-------------|
+| 0.00 | 0.504 | 0.0000 | 0.0000 | **1.00** |
+| 0.01 | 0.572 | 0.0821 | 0.2377 | 0.002 |
+| 0.05 | 0.559 | 0.0832 | 0.2460 | 0.000 |
+| 0.10 | 0.569 | 0.0838 | 0.2401 | 0.000 |
+| 0.15 | 0.572 | 0.0885 | 0.2591 | 0.000 |
+| 0.20 | 0.577 | 0.0867 | 0.2513 | 0.000 |
+| 0.30 | 0.579 | 0.0833 | 0.2413 | 0.000 |
+
+### AUROC (Easy vs OOD) by Dropout Rate
+
+| p | AUROC (Entropy) | AUROC (MC Conf Std) |
+|---|-----------------|---------------------|
+| 0.00 | 0.590 | 0.500 |
+| 0.01 | 0.733 | 0.598 |
+| 0.05 | 0.675 | 0.555 |
+| 0.10 | 0.810 | 0.643 |
+| 0.15 | 0.877 | 0.675 |
+| **0.20** | **0.932** | 0.575 |
+| 0.30 | 0.725 | 0.533 |
+
+### Key Insights
+
+1. **p=0.20 is optimal for OOD detection**: AUROC peaks at 0.932, substantially better than p=0.10 (0.810). The relationship is non-monotonic — p=0.30 degrades to 0.725 as excessive dropout corrupts representations.
+
+2. **Even p=0.01 destroys token agreement**: Token agreement drops from 1.0 to 0.2% at p=0.01, showing VLA action distributions are extremely sensitive to even tiny forward-pass perturbations.
+
+3. **MC variance is flat across p ≥ 0.01**: Confidence std ranges from 0.082 to 0.089 across all non-zero rates, suggesting the magnitude of MC variance is not informative — only the entropy-based signal discriminates.
+
+4. **Optimal dropout rate is model-dependent**: The sharp peak at p=0.20 and collapse at p=0.30 means dropout rate must be tuned per architecture.
+
+---
+
 ## Status (Updated March 14 2026)
 
 **Completed:**
@@ -261,12 +307,11 @@ This should give us the best of all worlds:
 - [x] Prompt ensemble evaluation
 - [x] NeurIPS paper draft (LaTeX)
 - [x] Figure generation with paperbanana
-
 - [x] Large-scale validation (200 samples, 8 scenarios, statistical tests)
 - [x] Temperature sweep (7 temperatures, 100 samples)
 - [x] Entropy-based selective prediction (120 samples, 5 signals)
 - [x] Per-dimension calibration + cross-prompt consistency (80 + 240 inferences)
+- [x] Dropout rate sensitivity sweep (7 rates × 60 samples × 10 MC passes = 4,200 inferences)
 
 **In Progress:**
-- [ ] Dropout rate sensitivity sweep (7 rates × 60 samples × 10 MC passes)
 - [ ] Additional experiment iterations

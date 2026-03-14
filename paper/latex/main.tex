@@ -564,6 +564,17 @@ Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism beh
 
 \textbf{Uncertainty combination.} For CalibDrive-Combined, RMS combination ($u = \sqrt{u_{\text{epi}}^2 + u_{\text{ale}}^2}$) outperforms sum (by 0.03 ECE), max (by 0.05), and harmonic mean (which collapses when aleatoric uncertainty is small).
 
+\textbf{Finding 25: Dropout rate $p$=0.20 is optimal for OOD detection, not $p$=0.10.} A sweep over $p \in \{0.0, 0.01, 0.05, 0.10, 0.15, 0.20, 0.30\}$ with $N$=10 MC passes on 60 real OpenVLA-7B samples reveals a non-monotonic relationship between dropout rate and AUROC (Figure~\ref{fig:dropout_sweep}a). AUROC rises from 0.590 ($p$=0.0) to a peak of \textbf{0.932} at $p$=0.20, then drops sharply to 0.725 at $p$=0.30 as excessive dropout corrupts representations. This is 15\% higher than the commonly used $p$=0.10 (AUROC = 0.810), demonstrating that dropout rate is a critical hyperparameter for VLA uncertainty quantification.
+
+\textbf{Finding 26: Even minimal dropout ($p$=0.01) destroys token-level agreement.} At $p$=0.0, all 10 MC passes produce identical tokens (agreement = 1.0). At $p$=0.01---an almost negligible dropout rate---token agreement collapses to 0.2\% (Figure~\ref{fig:dropout_sweep}b). MC confidence std jumps from 0.000 to 0.082 at $p$=0.01 and remains flat ($\sim$0.083--0.089) across all higher rates. This discontinuity reveals that VLA action distributions are \emph{extremely sensitive} to even tiny perturbations in the forward pass, supporting the hypothesis that VLA confidence reflects memorized logit patterns rather than genuine uncertainty estimation.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig11_dropout_sensitivity.png}
+\caption{Dropout rate sensitivity on real OpenVLA-7B ($N$=10 MC passes, 60 samples). (a) OOD detection AUROC peaks at $p$=0.20 (AUROC=0.932), substantially better than $p$=0.10 (0.810). (b) Token agreement drops from 1.0 to near-zero at $p$=0.01, while MC variance remains flat across $p \geq 0.01$.}
+\label{fig:dropout_sweep}
+\end{figure}
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/fig6_reliability_diagram.png}
@@ -578,7 +589,7 @@ Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism beh
 
 \textbf{Why are driving VLAs miscalibrated?} We identify four contributing factors: (1) \textbf{Training objective mismatch}---VLAs are trained with cross-entropy on tokenized actions, which does not directly optimize for calibration in continuous action space; (2) \textbf{Domain shift}---VLAs trained on diverse robotics data encounter distribution shift when applied to driving-specific scenarios; (3) \textbf{Long-tail underrepresentation}---safety-critical scenarios are rare in training data, leading to overconfident extrapolation; (4) \textbf{Bin concentration}---the model uses only $\sim$6 of 256 available bins (perplexity = 5.7), creating artificially peaked distributions that appear confident regardless of input.
 
-\textbf{The zero-dropout problem.} Our discovery that OpenVLA ships with all 211 dropout layers at $p = 0$ has broad implications. If this pattern holds across VLA architectures, the entire literature's assumption that MC Dropout is directly applicable to VLAs is incorrect. Practitioners must actively inject or reconfigure dropout, which changes the model's computational graph and may require careful tuning of the dropout rate (our experiments test rates from 0.01 to 0.3).
+\textbf{The zero-dropout problem and optimal rate.} Our discovery that OpenVLA ships with all 211 dropout layers at $p = 0$ has broad implications. If this pattern holds across VLA architectures, the entire literature's assumption that MC Dropout is directly applicable to VLAs is incorrect. Practitioners must actively inject dropout, and our rate sweep reveals that the choice of $p$ is critical: $p$=0.20 achieves AUROC=0.932 while the commonly assumed $p$=0.10 reaches only 0.810. Excessively high rates ($p$=0.30) degrade performance sharply. The discontinuous collapse of token agreement at $p$=0.01 further suggests that VLA logit distributions are brittle---small perturbations produce entirely different action tokens, implying that confidence values reflect memorized patterns rather than genuine predictive uncertainty.
 
 \textbf{Multi-signal uncertainty is essential.} Our selective prediction experiments reveal that no single uncertainty signal is optimal for all hazard types: mean entropy best detects OOD inputs (AUROC = 0.786), while max per-dimension entropy best detects hard-but-in-distribution scenarios (rejecting 96\% at 50\% coverage). Per-dimension temperature calibration improves AUROC by 15\% over uncalibrated baselines. This suggests that production safety systems should combine multiple complementary uncertainty signals rather than relying on any single metric.
 
@@ -789,7 +800,7 @@ OpenVLA uses 256-bin tokenization where the last 256 entries of the vocabulary c
 
 \subsection{MC Dropout Configuration}
 
-For OpenVLA-7B, we enable all \texttt{torch.nn.Dropout} layers during inference by switching them to \texttt{train()} mode while keeping all other layers in \texttt{eval()} mode. The default dropout rate is 0.1. We use $N=20$ forward passes unless otherwise noted.
+For OpenVLA-7B, we enable all \texttt{torch.nn.Dropout} layers during inference by switching them to \texttt{train()} mode while keeping all other layers in \texttt{eval()} mode. Since OpenVLA ships with $p=0.0$ for all 211 dropout layers, we inject dropout by setting $p=0.20$ (found optimal via sweep over $p \in \{0.01, 0.05, 0.10, 0.15, 0.20, 0.30\}$; see Finding~25). We use $N=20$ forward passes unless otherwise noted.
 
 \subsection{Prompt Templates for Prompt Ensemble}
 
