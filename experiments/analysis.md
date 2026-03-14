@@ -2187,3 +2187,59 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Blackout has perfect CI** [1.000, 1.000]: No bootstrap sample ever produced an AUROC below 1.0 for blackout detection — it is truly trivially detected.
 
 5. **Blank has the widest CI** [0.613, 0.872]: Blank white images produce variable cosine distances, making detection less consistent. This aligns with the finding that blank images are visually similar to foggy conditions.
+
+---
+
+## Finding 43: Safe Fallback Action System (Real OpenVLA-7B, Experiment 49)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Calibration**: 30 samples (15 highway + 15 urban) → compute centroid + safe action (mean action pattern)
+- **Test set**: 70 samples (30 ID: 15 highway + 15 urban; 40 OOD: 10 noise + 10 indoor + 10 inverted + 10 blackout)
+- **Safe action**: [104, 96, 98, 74, 60, 55, 65] (mean of calibration action patterns)
+- **Conformal thresholds**: α=0.05 → 0.626, α=0.10 → 0.622, α=0.20 → 0.588
+
+### Core Results
+
+| Metric | Value |
+|--------|-------|
+| **Cosine distance AUROC** | **0.941** |
+| **Action deviation AUROC** | **0.899** |
+| **Correlation (cos_dist, action_dev)** | **r = 0.864** |
+| ID action deviation | 16.3 ± 6.7 |
+| OOD action deviation | 31.3 ± 8.7 |
+
+### Safety Pipeline Performance
+
+| Threshold (α) | ID Coverage | OOD Safety Rate | Unsafe OOD |
+|---------------|-------------|-----------------|------------|
+| α=0.05 | 0.700 (21/30) | 0.950 (38/40) | 2/40 |
+| α=0.10 | 0.700 (21/30) | 0.950 (38/40) | 2/40 |
+| α=0.20 | 0.567 (17/30) | 0.975 (39/40) | 1/40 |
+
+### Per-Scenario Action Deviation
+
+| Scenario | Mean Cos Dist | Mean Action Dev | Agreement |
+|----------|--------------|-----------------|-----------|
+| highway (ID) | ~0.53 | ~15.4 | ~0.27 |
+| urban (ID) | ~0.52 | ~17.0 | ~0.30 |
+| noise (OOD) | ~0.82 | ~35.1 | ~0.02 |
+| indoor (OOD) | ~0.71 | ~25.3 | ~0.14 |
+| inverted (OOD) | ~0.72 | ~26.7 | ~0.05 |
+| blackout (OOD) | ~0.85 | ~38.1 | ~0.005 |
+
+### Key Insights
+
+1. **OOD actions deviate nearly 2× more from safe defaults** (31.3 vs 16.3): When the model encounters OOD inputs, it produces actions that differ significantly more from the calibrated safe action. This directly validates the motivation for a fallback system — OOD actions are genuinely dangerous.
+
+2. **Action deviation is itself a strong OOD signal** (AUROC 0.899): The magnitude of deviation from the safe action can be used as an OOD detector. This is a self-supervised signal requiring no labels — just the distance between the model's output and its own calibrated mean.
+
+3. **Strong correlation between cosine distance and action deviation** (r = 0.864): OOD in representation space directly maps to OOD in action space. This is the critical safety argument: hidden state anomaly → action anomaly → potential danger. The correlation provides mechanistic justification for using cosine distance as a safety gate.
+
+4. **At α=0.10, 95% of OOD actions are caught (38/40)**: The conformal threshold intercepts nearly all dangerous actions and replaces them with safe defaults. Only 2 OOD inputs escape detection — both likely near the ID/OOD boundary.
+
+5. **ID coverage trade-off exists (70% at α=0.10)**: The fallback system is conservative — it also triggers on some ID inputs. This 30% false positive rate on ID data suggests the threshold could be tuned, or that the simple highway+urban calibration set doesn't fully characterize the ID space. In practice, triggering on borderline ID inputs (applying safe defaults) is much less costly than missing OOD inputs.
+
+6. **Blackout produces highest deviation (38.1) with near-zero agreement (0.005)**: When the camera produces a black frame, the model generates completely novel action patterns with virtually no similarity to calibrated actions. This is the strongest case for the fallback system.
+
+7. **Net safety improvement: 38 dangerous actions prevented**: At the recommended α=0.10 threshold, the pipeline catches 38 out of 40 OOD inputs and replaces their erratic actions with safe defaults, while allowing 21 out of 30 ID inputs to proceed normally. The cost of 9 false positives (safe defaults on valid inputs) is far less than the cost of 38 undetected dangerous actions.

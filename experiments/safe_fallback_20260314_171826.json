@@ -1,0 +1,1216 @@
+{
+  "experiment": "safe_fallback",
+  "experiment_number": 49,
+  "timestamp": "20260314_171826",
+  "n_cal": 30,
+  "n_test": 70,
+  "safe_action": [
+    104,
+    96,
+    98,
+    74,
+    60,
+    55,
+    65
+  ],
+  "thresholds": {
+    "0.05": 0.626028461754322,
+    "0.1": 0.6220309317111969,
+    "0.2": 0.5881710112094879
+  },
+  "results": [
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.6911998987197876,
+      "actions": [
+        109,
+        98,
+        61,
+        81,
+        44,
+        17,
+        1
+      ],
+      "action_dev": 24.142857142857142,
+      "agreement": 0.2,
+      "action_mass": 0.9040220379829407
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.5830855965614319,
+      "actions": [
+        109,
+        98,
+        93,
+        81,
+        63,
+        23,
+        64
+      ],
+      "action_dev": 7.857142857142857,
+      "agreement": 0.2761904761904762,
+      "action_mass": 0.9155713277203696
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.5928424596786499,
+      "actions": [
+        109,
+        70,
+        92,
+        71,
+        44,
+        35,
+        55
+      ],
+      "action_dev": 12.285714285714286,
+      "agreement": 0.24761904761904768,
+      "action_mass": 0.9980407612664359
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.38038843870162964,
+      "actions": [
+        109,
+        70,
+        92,
+        71,
+        37,
+        52,
+        64
+      ],
+      "action_dev": 9.571428571428571,
+      "agreement": 0.3714285714285713,
+      "action_mass": 0.9974706258092608
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.38401365280151367,
+      "actions": [
+        109,
+        70,
+        92,
+        71,
+        37,
+        52,
+        64
+      ],
+      "action_dev": 9.571428571428571,
+      "agreement": 0.3714285714285713,
+      "action_mass": 0.9933493648256574
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.3720892071723938,
+      "actions": [
+        109,
+        70,
+        92,
+        71,
+        37,
+        52,
+        64
+      ],
+      "action_dev": 9.571428571428571,
+      "agreement": 0.3714285714285713,
+      "action_mass": 0.9921867166246686
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.5635840892791748,
+      "actions": [
+        109,
+        70,
+        42,
+        61,
+        78,
+        54,
+        64
+      ],
+      "action_dev": 17.142857142857142,
+      "agreement": 0.27142857142857146,
+      "action_mass": 0.9459592529705593
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.5766142010688782,
+      "actions": [
+        109,
+        67,
+        80,
+        24,
+        38,
+        47,
+        64
+      ],
+      "action_dev": 19.0,
+      "agreement": 0.20000000000000007,
+      "action_mass": 0.9992890102522713
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.489901065826416,
+      "actions": [
+        109,
+        70,
+        92,
+        71,
+        37,
+        45,
+        56
+      ],
+      "action_dev": 11.714285714285714,
+      "agreement": 0.2904761904761904,
+      "action_mass": 0.9933282392365592
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.5681197047233582,
+      "actions": [
+        109,
+        98,
+        89,
+        117,
+        66,
+        77,
+        57
+      ],
+      "action_dev": 13.571428571428571,
+      "agreement": 0.15714285714285717,
+      "action_mass": 0.9723843591553825
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.5921469330787659,
+      "actions": [
+        109,
+        98,
+        93,
+        10,
+        92,
+        30,
+        64
+      ],
+      "action_dev": 19.142857142857142,
+      "agreement": 0.2571428571428572,
+      "action_mass": 0.9194070441382272
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.6836282014846802,
+      "actions": [
+        109,
+        98,
+        61,
+        81,
+        74,
+        17,
+        43
+      ],
+      "action_dev": 17.857142857142858,
+      "agreement": 0.2,
+      "action_mass": 0.9006326794624329
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.59487384557724,
+      "actions": [
+        109,
+        98,
+        93,
+        10,
+        92,
+        30,
+        64
+      ],
+      "action_dev": 19.142857142857142,
+      "agreement": 0.2571428571428572,
+      "action_mass": 0.9252971495900836
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.5816513001918793,
+      "actions": [
+        109,
+        98,
+        93,
+        10,
+        92,
+        6,
+        64
+      ],
+      "action_dev": 22.571428571428573,
+      "agreement": 0.25238095238095243,
+      "action_mass": 0.8777188786438533
+    },
+    {
+      "scenario": "highway",
+      "is_ood": false,
+      "cos_dist": 0.6002834439277649,
+      "actions": [
+        109,
+        98,
+        93,
+        10,
+        92,
+        9,
+        64
+      ],
+      "action_dev": 22.142857142857142,
+      "agreement": 0.25238095238095243,
+      "action_mass": 0.8320792104516711
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.6882566213607788,
+      "actions": [
+        109,
+        120,
+        92,
+        63,
+        73,
+        61,
+        85
+      ],
+      "action_dev": 12.142857142857142,
+      "agreement": 0.1714285714285715,
+      "action_mass": 0.9976276755332947
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.6265735626220703,
+      "actions": [
+        109,
+        115,
+        114,
+        81,
+        136,
+        8,
+        52
+      ],
+      "action_dev": 26.142857142857142,
+      "agreement": 0.30952380952380953,
+      "action_mass": 0.9939128160476685
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.4216731786727905,
+      "actions": [
+        109,
+        115,
+        114,
+        81,
+        69,
+        59,
+        35
+      ],
+      "action_dev": 12.857142857142858,
+      "agreement": 0.3238095238095238,
+      "action_mass": 0.9984003220285688
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.5240644216537476,
+      "actions": [
+        109,
+        115,
+        119,
+        94,
+        32,
+        72,
+        70
+      ],
+      "action_dev": 16.428571428571427,
+      "agreement": 0.2142857142857143,
+      "action_mass": 0.9979104655129569
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.30539822578430176,
+      "actions": [
+        109,
+        115,
+        114,
+        81,
+        59,
+        59,
+        69
+      ],
+      "action_dev": 8.0,
+      "agreement": 0.38095238095238104,
+      "action_mass": 0.9938397322382245
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.6349504590034485,
+      "actions": [
+        109,
+        115,
+        114,
+        81,
+        136,
+        8,
+        52
+      ],
+      "action_dev": 26.142857142857142,
+      "agreement": 0.30952380952380953,
+      "action_mass": 0.9991002082824707
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.7504295408725739,
+      "actions": [
+        41,
+        90,
+        85,
+        67,
+        66,
+        66,
+        85
+      ],
+      "action_dev": 18.0,
+      "agreement": 0.014285714285714285,
+      "action_mass": 0.9980846387999398
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.3052760362625122,
+      "actions": [
+        109,
+        115,
+        114,
+        81,
+        59,
+        59,
+        69
+      ],
+      "action_dev": 8.0,
+      "agreement": 0.38095238095238104,
+      "action_mass": 0.9991236243929181
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.6224069893360138,
+      "actions": [
+        109,
+        115,
+        114,
+        81,
+        136,
+        8,
+        52
+      ],
+      "action_dev": 26.142857142857142,
+      "agreement": 0.30952380952380953,
+      "action_mass": 0.9988421372004918
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.6378543376922607,
+      "actions": [
+        109,
+        98,
+        114,
+        78,
+        6,
+        93,
+        47
+      ],
+      "action_dev": 19.571428571428573,
+      "agreement": 0.2,
+      "action_mass": 0.9973152279853821
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.6218922734260559,
+      "actions": [
+        109,
+        115,
+        114,
+        81,
+        136,
+        8,
+        52
+      ],
+      "action_dev": 26.142857142857142,
+      "agreement": 0.30952380952380953,
+      "action_mass": 0.9956480179514203
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.7359725832939148,
+      "actions": [
+        109,
+        98,
+        114,
+        52,
+        127,
+        107,
+        105
+      ],
+      "action_dev": 29.142857142857142,
+      "agreement": 0.2,
+      "action_mass": 0.9815799593925476
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.30863845348358154,
+      "actions": [
+        109,
+        115,
+        114,
+        81,
+        59,
+        59,
+        69
+      ],
+      "action_dev": 8.0,
+      "agreement": 0.38095238095238104,
+      "action_mass": 0.999218191419329
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.305875301361084,
+      "actions": [
+        109,
+        115,
+        114,
+        81,
+        59,
+        59,
+        69
+      ],
+      "action_dev": 8.0,
+      "agreement": 0.38095238095238104,
+      "action_mass": 0.9977100746972221
+    },
+    {
+      "scenario": "urban",
+      "is_ood": false,
+      "cos_dist": 0.3025885820388794,
+      "actions": [
+        109,
+        115,
+        114,
+        81,
+        59,
+        59,
+        69
+      ],
+      "action_dev": 8.0,
+      "agreement": 0.38095238095238104,
+      "action_mass": 0.9709457414490836
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cos_dist": 0.76123908162117,
+      "actions": [
+        41,
+        72,
+        27,
+        191,
+        35,
+        70,
+        64
+      ],
+      "action_dev": 45.142857142857146,
+      "agreement": 0.0857142857142857,
+      "action_mass": 0.7293386822815852
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cos_dist": 0.8622096329927444,
+      "actions": [
+        52,
+        42,
+        45,
+        56,
+        53,
+        37,
+        52
+      ],
+      "action_dev": 30.714285714285715,
+      "agreement": 0.009523809523809523,
+      "action_mass": 0.9747335229601178
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cos_dist": 0.8451299667358398,
+      "actions": [
+        45,
+        42,
+        65,
+        80,
+        82,
+        51,
+        50
+      ],
+      "action_dev": 27.571428571428573,
+      "agreement": 0.0,
+      "action_mass": 0.9940604397228786
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cos_dist": 0.8781004399061203,
+      "actions": [
+        52,
+        50,
+        161,
+        49,
+        67,
+        110,
+        90
+      ],
+      "action_dev": 39.0,
+      "agreement": 0.014285714285714285,
+      "action_mass": 0.9026227593421936
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cos_dist": 0.7481313049793243,
+      "actions": [
+        81,
+        5,
+        60,
+        115,
+        8,
+        66,
+        64
+      ],
+      "action_dev": 36.714285714285715,
+      "agreement": 0.07142857142857142,
+      "action_mass": 0.8363375828734466
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cos_dist": 0.8040622174739838,
+      "actions": [
+        52,
+        50,
+        191,
+        73,
+        88,
+        97,
+        65
+      ],
+      "action_dev": 37.42857142857143,
+      "agreement": 0.0,
+      "action_mass": 0.8229344018868038
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cos_dist": 0.7758208364248276,
+      "actions": [
+        52,
+        20,
+        95,
+        54,
+        46,
+        46,
+        52
+      ],
+      "action_dev": 26.714285714285715,
+      "agreement": 0.009523809523809523,
+      "action_mass": 0.8447539931138246
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cos_dist": 0.8485640287399292,
+      "actions": [
+        49,
+        42,
+        124,
+        45,
+        25,
+        43,
+        28
+      ],
+      "action_dev": 35.42857142857143,
+      "agreement": 0.0,
+      "action_mass": 0.9712563923427037
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cos_dist": 0.8651076406240463,
+      "actions": [
+        81,
+        191,
+        34,
+        97,
+        46,
+        40,
+        52
+      ],
+      "action_dev": 35.285714285714285,
+      "agreement": 0.009523809523809523,
+      "action_mass": 0.9149128454072135
+    },
+    {
+      "scenario": "noise",
+      "is_ood": true,
+      "cos_dist": 0.781032919883728,
+      "actions": [
+        81,
+        10,
+        65,
+        22,
+        39,
+        36,
+        42
+      ],
+      "action_dev": 36.714285714285715,
+      "agreement": 0.0,
+      "action_mass": 0.9429593852588108
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cos_dist": 0.6723659634590149,
+      "actions": [
+        109,
+        32,
+        52,
+        53,
+        95,
+        46,
+        50
+      ],
+      "action_dev": 27.857142857142858,
+      "agreement": 0.1333333333333333,
+      "action_mass": 0.9794037171772548
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cos_dist": 0.6871657371520996,
+      "actions": [
+        109,
+        32,
+        52,
+        53,
+        95,
+        46,
+        50
+      ],
+      "action_dev": 27.857142857142858,
+      "agreement": 0.1333333333333333,
+      "action_mass": 0.9845308916909354
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cos_dist": 0.6423178911209106,
+      "actions": [
+        109,
+        32,
+        86,
+        106,
+        80,
+        40,
+        64
+      ],
+      "action_dev": 21.285714285714285,
+      "agreement": 0.20000000000000007,
+      "action_mass": 0.9415263448442731
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cos_dist": 0.7272792458534241,
+      "actions": [
+        109,
+        32,
+        52,
+        53,
+        80,
+        42,
+        66
+      ],
+      "action_dev": 24.285714285714285,
+      "agreement": 0.1333333333333333,
+      "action_mass": 0.9956739119121006
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cos_dist": 0.6565468013286591,
+      "actions": [
+        109,
+        105,
+        127,
+        96,
+        117,
+        87,
+        64
+      ],
+      "action_dev": 22.142857142857142,
+      "agreement": 0.20000000000000007,
+      "action_mass": 0.9875051464353289
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cos_dist": 0.6877416968345642,
+      "actions": [
+        109,
+        99,
+        141,
+        24,
+        43,
+        79,
+        70
+      ],
+      "action_dev": 21.0,
+      "agreement": 0.1333333333333333,
+      "action_mass": 0.9878061498914447
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cos_dist": 0.7467002272605896,
+      "actions": [
+        109,
+        32,
+        52,
+        53,
+        80,
+        42,
+        45
+      ],
+      "action_dev": 27.0,
+      "agreement": 0.1333333333333333,
+      "action_mass": 0.9970031721251351
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cos_dist": 0.7449029088020325,
+      "actions": [
+        109,
+        32,
+        52,
+        53,
+        80,
+        42,
+        45
+      ],
+      "action_dev": 27.0,
+      "agreement": 0.1333333333333333,
+      "action_mass": 0.9972483430589948
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cos_dist": 0.7430471181869507,
+      "actions": [
+        109,
+        32,
+        52,
+        53,
+        80,
+        42,
+        45
+      ],
+      "action_dev": 27.0,
+      "agreement": 0.1333333333333333,
+      "action_mass": 0.9970965300287519
+    },
+    {
+      "scenario": "indoor",
+      "is_ood": true,
+      "cos_dist": 0.7390919327735901,
+      "actions": [
+        109,
+        32,
+        52,
+        53,
+        80,
+        42,
+        45
+      ],
+      "action_dev": 27.0,
+      "agreement": 0.1333333333333333,
+      "action_mass": 0.9936792424746922
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cos_dist": 0.6118572950363159,
+      "actions": [
+        81,
+        122,
+        87,
+        91,
+        55,
+        64,
+        47
+      ],
+      "action_dev": 15.571428571428571,
+      "agreement": 0.0,
+      "action_mass": 0.9745496000562396
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cos_dist": 0.6835115253925323,
+      "actions": [
+        81,
+        127,
+        104,
+        73,
+        39,
+        27,
+        52
+      ],
+      "action_dev": 17.571428571428573,
+      "agreement": 0.009523809523809523,
+      "action_mass": 0.9946487205369132
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cos_dist": 0.5832987427711487,
+      "actions": [
+        109,
+        96,
+        104,
+        161,
+        38,
+        53,
+        64
+      ],
+      "action_dev": 17.571428571428573,
+      "agreement": 0.20000000000000007,
+      "action_mass": 0.8576744393711644
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cos_dist": 0.8301981985569,
+      "actions": [
+        102,
+        7,
+        172,
+        13,
+        39,
+        41,
+        1
+      ],
+      "action_dev": 46.42857142857143,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9687425919941494
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cos_dist": 0.649278312921524,
+      "actions": [
+        81,
+        61,
+        81,
+        50,
+        51,
+        71,
+        64
+      ],
+      "action_dev": 17.857142857142858,
+      "agreement": 0.06666666666666667,
+      "action_mass": 0.8665822882737432
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cos_dist": 0.8431972116231918,
+      "actions": [
+        102,
+        7,
+        172,
+        59,
+        6,
+        34,
+        72
+      ],
+      "action_dev": 37.42857142857143,
+      "agreement": 0.0,
+      "action_mass": 0.8270129987171718
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cos_dist": 0.6471161842346191,
+      "actions": [
+        109,
+        96,
+        104,
+        111,
+        58,
+        80,
+        59
+      ],
+      "action_dev": 11.571428571428571,
+      "agreement": 0.14761904761904762,
+      "action_mass": 0.9995136090687343
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cos_dist": 0.8049038052558899,
+      "actions": [
+        81,
+        32,
+        109,
+        59,
+        31,
+        41,
+        56
+      ],
+      "action_dev": 23.571428571428573,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9803801604679653
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cos_dist": 0.8534727096557617,
+      "actions": [
+        102,
+        7,
+        172,
+        13,
+        43,
+        47,
+        13
+      ],
+      "action_dev": 43.285714285714285,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9917825034686497
+    },
+    {
+      "scenario": "inverted",
+      "is_ood": true,
+      "cos_dist": 0.7066806554794312,
+      "actions": [
+        102,
+        7,
+        172,
+        26,
+        39,
+        68,
+        64
+      ],
+      "action_dev": 35.42857142857143,
+      "agreement": 0.06666666666666667,
+      "action_mass": 0.8694456730570111
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cos_dist": 0.8476424217224121,
+      "actions": [
+        103,
+        191,
+        126,
+        78,
+        191,
+        57,
+        59
+      ],
+      "action_dev": 38.142857142857146,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cos_dist": 0.8476424217224121,
+      "actions": [
+        103,
+        191,
+        126,
+        78,
+        191,
+        57,
+        59
+      ],
+      "action_dev": 38.142857142857146,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cos_dist": 0.8476424217224121,
+      "actions": [
+        103,
+        191,
+        126,
+        78,
+        191,
+        57,
+        59
+      ],
+      "action_dev": 38.142857142857146,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cos_dist": 0.8476424217224121,
+      "actions": [
+        103,
+        191,
+        126,
+        78,
+        191,
+        57,
+        59
+      ],
+      "action_dev": 38.142857142857146,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cos_dist": 0.8476424217224121,
+      "actions": [
+        103,
+        191,
+        126,
+        78,
+        191,
+        57,
+        59
+      ],
+      "action_dev": 38.142857142857146,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cos_dist": 0.8476424217224121,
+      "actions": [
+        103,
+        191,
+        126,
+        78,
+        191,
+        57,
+        59
+      ],
+      "action_dev": 38.142857142857146,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cos_dist": 0.8476424217224121,
+      "actions": [
+        103,
+        191,
+        126,
+        78,
+        191,
+        57,
+        59
+      ],
+      "action_dev": 38.142857142857146,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cos_dist": 0.8476424217224121,
+      "actions": [
+        103,
+        191,
+        126,
+        78,
+        191,
+        57,
+        59
+      ],
+      "action_dev": 38.142857142857146,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cos_dist": 0.8476424217224121,
+      "actions": [
+        103,
+        191,
+        126,
+        78,
+        191,
+        57,
+        59
+      ],
+      "action_dev": 38.142857142857146,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9801911541393825
+    },
+    {
+      "scenario": "blackout",
+      "is_ood": true,
+      "cos_dist": 0.8476424217224121,
+      "actions": [
+        103,
+        191,
+        126,
+        78,
+        191,
+        57,
+        59
+      ],
+      "action_dev": 38.142857142857146,
+      "agreement": 0.0047619047619047615,
+      "action_mass": 0.9801911541393825
+    }
+  ],
+  "cos_auroc": 0.9408333333333334,
+  "dev_auroc": 0.8991666666666667,
+  "correlation_cos_dev": 0.8641428097811733
+}
