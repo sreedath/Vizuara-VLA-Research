@@ -398,6 +398,54 @@ This should give us the best of all worlds:
 
 ---
 
+## Finding 10: Attention Pattern Analysis (Real OpenVLA-7B, Experiment 13)
+
+### Setup
+- **Model**: OpenVLA-7B (32 layers, 32 heads)
+- **Samples**: 80 across 6 scenarios
+- **Layers analyzed**: 0, 8, 16, 24, 31
+- **Metrics**: Attention entropy, top-10 mass, attention-uncertainty correlation
+
+### Per-Scenario Attention Statistics
+
+| Scenario | Confidence | Action Entropy | Attn Entropy | Top-10% Mass |
+|----------|-----------|---------------|-------------|-------------|
+| Highway | 0.519 | 1.376 | 2.201 | 0.778 |
+| Urban | **0.695** | **0.891** | **2.289** | 0.765 |
+| Night | **0.247** | **2.690** | **2.089** | **0.787** |
+| Rain | 0.487 | 1.605 | 2.163 | 0.783 |
+| OOD Noise | 0.555 | 1.267 | 2.240 | 0.769 |
+| OOD Blank | 0.494 | 1.542 | 2.110 | **0.793** |
+
+### Attention-Uncertainty Correlation
+
+| Pair | r (Pearson) | p-value | ρ (Spearman) |
+|------|-------------|---------|-------------|
+| Action Entropy vs Attn Entropy | **-0.744** | <0.0001 | **-0.749** |
+| Confidence vs Attn Entropy | **+0.748** | <0.0001 | — |
+| Confidence vs Top-10 Mass | **-0.585** | <0.0001 | — |
+
+### AUROC Using Attention as Uncertainty Signal
+
+| Signal | AUROC (Easy vs OOD) | AUROC (Easy vs Hard) |
+|--------|---------------------|----------------------|
+| Attn Entropy | 0.247 | 0.003 |
+| Neg Top-10 Mass | 0.291 | — |
+
+### Key Insights
+
+1. **Strong NEGATIVE correlation (r=-0.744)**: When the model is uncertain about actions, attention is MORE focused. When confident, attention is diffuse. This is inverted from expectations.
+
+2. **Attention entropy is ANTI-predictive for OOD**: AUROC=0.247, worse than random (0.5). OOD noise has higher attention entropy (2.240) than night (2.089).
+
+3. **Attention is nearly perfectly anti-predictive for hard scenarios**: AUROC=0.003 means attention reliably predicts the WRONG difficulty class.
+
+4. **Layer-wise pattern**: Layer 0 has broadest attention (entropy=4.248), layer 8 is most focused (1.170), later layers become slightly more diffuse.
+
+5. **Interpretation**: VLAs attend broadly when they recognize patterns (structured scenes) and narrow focus when uncertain (novel inputs offer fewer recognizable features). This means attention-based uncertainty methods will fail for VLA safety.
+
+---
+
 ## Status (Updated March 14 2026)
 
 **Completed:**
@@ -416,6 +464,7 @@ This should give us the best of all worlds:
 - [x] Dropout rate sensitivity sweep (7 rates × 60 samples × 10 MC passes = 4,200 inferences)
 - [x] Combined optimal UQ (100 samples, 8 scenarios, 2,400 inferences)
 - [x] Action distribution analysis (140 samples, 8 scenarios)
+- [x] Attention pattern analysis (80 samples, 5 layers, 6 scenarios)
 
 **In Progress:**
 - [ ] Additional experiment iterations
