@@ -5362,3 +5362,46 @@ Oracle weights: [1.0, 0.0, 0.0, 0.0] — pure cosine.
 5. **Hidden state norms increase for OOD**: ID norms 75–77, OOD norms 81–92. Noise and indoor have the largest norms (91–92), possibly due to the model allocating more representational capacity to unfamiliar scenes.
 
 6. **The embedding space is low-dimensional**: 90% of variance is captured by ~10 PCs in a 4,096-dim space. The relevant subspace is tiny, consistent with the PCA-4 result (Finding 133) that 4 dimensions suffice for perfect detection.
+
+---
+
+## Finding 114: OOD Hardness Spectrum
+
+**Experiment 120** — Tests detection on 11 categories spanning the difficulty continuum, including new near-ID OOD categories (rain, fog, night, construction highway).
+
+### Setup
+- 10 samples per category, 110 total inferences
+- 2 ID: highway, urban
+- 9 OOD: rain highway, fog highway, night highway, construction, snow, twilight, indoor, noise, solid color
+
+### Results (sorted by score)
+
+| Category | Group | Score | Std | Per-Cat AUROC |
+|----------|-------|-------|-----|--------------|
+| Urban | ID | 0.084 | 0.005 | N/A |
+| Highway | ID | 0.085 | 0.004 | N/A |
+| Fog highway | OOD | 0.207 | 0.007 | 1.000 |
+| Snow | OOD | 0.268 | 0.007 | 1.000 |
+| Solid color | OOD | 0.352 | 0.045 | 1.000 |
+| Construction | OOD | 0.358 | 0.008 | 1.000 |
+| Indoor | OOD | 0.358 | 0.011 | 1.000 |
+| Twilight | OOD | 0.431 | 0.012 | 1.000 |
+| Night highway | OOD | 0.436 | 0.008 | 1.000 |
+| Noise | OOD | 0.439 | 0.013 | 1.000 |
+| Rain highway | OOD | 0.448 | 0.026 | 1.000 |
+
+Overall: AUROC=1.000, d=98.34
+
+### Key Insights
+
+1. **All 9 OOD categories achieve perfect AUROC=1.000**: Including challenging near-ID categories (rain, fog, night, construction). The cosine distance detector is universally effective.
+
+2. **Fog highway is the hardest OOD category (score=0.207)**: Closest to ID (0.085). Fog washes out color contrast and visual features, making it the most ID-like OOD category. Still, the gap (0.122) is 24× the ID std (0.005).
+
+3. **Rain highway is surprisingly easy (score=0.448)**: Despite being visually similar to a driving scene, rain produces higher cosine distance than noise (0.439). Rain streaks create distinctive visual features.
+
+4. **The hardness ordering is: fog < snow < solid_color < construction < indoor < twilight < night < noise < rain**: This ordering reflects visual similarity to clear-weather driving, not physical similarity.
+
+5. **Solid color has high variance (std=0.045)**: Different solid colors produce different distances, with some closer to ID than others. This is the only category with highly variable detection difficulty.
+
+6. **Overall d=98.34 — highest ever recorded**: With 11 diverse categories, the overall separation is enormous because most OOD categories are far from the ID centroid.

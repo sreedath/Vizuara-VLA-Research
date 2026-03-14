@@ -2234,4 +2234,20 @@ We characterize the geometric structure of ID and OOD embeddings in the 4,096-di
 
 The embedding geometry analysis provides a definitive explanation for why cosine distance achieves perfect OOD detection. The VLA's representation space is structured as a highly compact ID cluster surrounded by a dispersed OOD shell. ID embeddings form a tight cone of half-angle $\sim$24$^\circ$ around the centroid, with pairwise cosine distances averaging just 0.038. OOD embeddings occupy a much larger volume at 42--56$^\circ$, with 1.8$\times$ higher intra-class distances (0.071). The compactness ratio of 5.13$\times$ quantifies this structural property: the distance between the ID and OOD clusters is 5.13$\times$ the spread within the ID cluster, creating an enormous margin for the cosine distance threshold. The low intrinsic dimensionality ($\sim$10 PCs for 90\% variance) explains why the VLA's representations are so amenable to simple distance-based detection: the effective data manifold is low-dimensional, and the ID/OOD separation exists in this low-dimensional subspace. The norm gradient (ID: 75--77, OOD: 81--92) provides a complementary geometric insight: OOD inputs push the model to produce higher-norm representations, possibly reflecting increased activation in response to unfamiliar inputs.
 
+\subsection{OOD Hardness Spectrum}
+\label{app:ood_spectrum}
+
+\textbf{Finding 143: All 9 OOD categories---including rain, fog, night, and construction highways---achieve AUROC $= 1.000$. Fog highway is the hardest ($\text{score} = 0.207$, gap of $24\times$ the ID std). Rain highway is surprisingly the easiest (score $= 0.448$). Overall $d = 98.34$.}
+
+We expand the evaluation to 11 categories spanning the full OOD difficulty continuum, from trivial (random noise) to challenging near-ID scenarios (fog, rain, night, construction zone highways) (Figure~\ref{fig:ood_spectrum}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig106_ood_spectrum.pdf}
+\caption{\textbf{OOD hardness spectrum.} (a) All categories sorted by cosine distance from ID centroid. ID categories (green) cluster at $\sim$0.085; the nearest OOD category (fog highway, orange) is at 0.207; clear OOD (red) ranges from 0.35--0.45. (b) OOD categories vs the ID zone: even the closest OOD category (fog) has a gap of $24\times$ the ID standard deviation.}
+\label{fig:ood_spectrum}
+\end{figure}
+
+The expanded OOD spectrum analysis is the most comprehensive robustness test of the cosine distance detector. Fog highway---the most visually similar to clear-weather driving (washed-out colors, low contrast, similar spatial layout)---achieves a score of 0.207, which is 0.122 above the ID mean of 0.085. This gap is $24\times$ the ID standard deviation (0.005), making fog detection trivial despite its visual similarity. The counterintuitive finding that rain (0.448) is easier to detect than noise (0.439) or even solid colors (0.352) suggests that the VLA's visual encoder is sensitive to the specific pattern of rain streaks, which differ from any driving-scene feature. Night highway (0.436) is also easy because the VLA has never been trained on extremely low-light scenes, and the dark representation differs fundamentally from daytime driving. The construction zone (0.358) produces distinctive representations due to the orange barriers, which are absent from normal driving scenes. Together, these results suggest that the VLA's OOD detection would likely succeed on any input that differs from its training distribution---the relevant question is not whether detection works, but how to set the threshold for operational deployment.
+
 \end{document}

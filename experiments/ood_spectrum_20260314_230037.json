@@ -1,0 +1,97 @@
+{
+  "experiment": "ood_spectrum",
+  "experiment_number": 120,
+  "timestamp": "20260314_230037",
+  "overall_auroc": 1.0,
+  "overall_d": 98.33920742495863,
+  "per_category": {
+    "highway": {
+      "group": "ID",
+      "mean_score": 0.0849804162979126,
+      "std_score": 0.003680082904706762,
+      "min_score": 0.07783854007720947,
+      "max_score": 0.09178769588470459,
+      "auroc": null
+    },
+    "urban": {
+      "group": "ID",
+      "mean_score": 0.08385972380638122,
+      "std_score": 0.005204672520649277,
+      "min_score": 0.07320022583007812,
+      "max_score": 0.09100574254989624,
+      "auroc": null
+    },
+    "rain_highway": {
+      "group": "OOD",
+      "mean_score": 0.4484338641166687,
+      "std_score": 0.025922560563156283,
+      "min_score": 0.3984624743461609,
+      "max_score": 0.4871214032173157,
+      "auroc": 1.0
+    },
+    "fog_highway": {
+      "group": "OOD",
+      "mean_score": 0.20649637579917907,
+      "std_score": 0.006948216526010235,
+      "min_score": 0.19536662101745605,
+      "max_score": 0.2206031084060669,
+      "auroc": 1.0
+    },
+    "night_highway": {
+      "group": "OOD",
+      "mean_score": 0.4355036437511444,
+      "std_score": 0.00821422225367035,
+      "min_score": 0.41290777921676636,
+      "max_score": 0.44243431091308594,
+      "auroc": 1.0
+    },
+    "construction": {
+      "group": "OOD",
+      "mean_score": 0.35776718258857726,
+      "std_score": 0.008178026670091642,
+      "min_score": 0.3419819474220276,
+      "max_score": 0.3715156316757202,
+      "auroc": 1.0
+    },
+    "snow": {
+      "group": "OOD",
+      "mean_score": 0.26834850311279296,
+      "std_score": 0.007038050592031203,
+      "min_score": 0.2545076012611389,
+      "max_score": 0.27720141410827637,
+      "auroc": 1.0
+    },
+    "twilight": {
+      "group": "OOD",
+      "mean_score": 0.4312207639217377,
+      "std_score": 0.011664745081624756,
+      "min_score": 0.4067215919494629,
+      "max_score": 0.4426293969154358,
+      "auroc": 1.0
+    },
+    "indoor": {
+      "group": "OOD",
+      "mean_score": 0.3582844495773315,
+      "std_score": 0.010809399478058779,
+      "min_score": 0.33324432373046875,
+      "max_score": 0.369767427444458,
+      "auroc": 1.0
+    },
+    "noise": {
+      "group": "OOD",
+      "mean_score": 0.4390897214412689,
+      "std_score": 0.012644492841748468,
+      "min_score": 0.4153229594230652,
+      "max_score": 0.4545872211456299,
+      "auroc": 1.0
+    },
+    "solid_color": {
+      "group": "OOD",
+      "mean_score": 0.35157402157783507,
+      "std_score": 0.045255593914889175,
+      "min_score": 0.28797584772109985,
+      "max_score": 0.42787712812423706,
+      "auroc": 1.0
+    }
+  }
+}
