@@ -4843,3 +4843,41 @@ Inter-domain distance (highway↔urban centroid): **0.266**
 5. **Single pixel changes are largely invisible**: Changing one pixel by ≤10 intensity produces < 0.004 score change. Only extreme single-pixel changes at specific positions (corner at delta=127: 0.355) trigger detection.
 
 6. **The detector has a natural noise floor of ~0.004**: Score changes below 0.004 are within the natural variation of similar-but-different highway images. This sets the effective sensitivity floor.
+
+---
+
+## Finding 103: Token Position Analysis
+
+**Experiment 109** — Tests which token position in the 280-token hidden state sequence carries the most OOD-discriminative information, comparing 7 pooling strategies and 21 individual positions.
+
+### Setup
+- 10 samples per category, 60 total inferences
+- Sequence length: 280 tokens, each 4096-dim
+- 7 pooling strategies: last, first, mean, max, second-last, last-quarter-mean, middle
+- Position-by-position AUROC at 21 evenly-spaced positions
+
+### Pooling Strategy Results
+
+| Strategy | AUROC | Cohen's d |
+|----------|-------|-----------|
+| **Mean pooling** | **1.000** | **88.97** |
+| Last-quarter mean | 1.000 | 80.88 |
+| Last token | 1.000 | 71.24 |
+| Second-last | 1.000 | 26.53 |
+| Max pooling | 1.000 | 23.00 |
+| Middle token | 0.958 | 2.84 |
+| First token | 0.500 | 0.00 |
+
+### Key Insights
+
+1. **Mean pooling achieves d=88.97** — 25% higher than last-token (d=71.24). Averaging across all 280 positions concentrates the distributed OOD signal and cancels position-specific noise.
+
+2. **First token is completely uninformative (AUROC=0.500)**: Position 0 carries no OOD signal whatsoever — it represents the beginning-of-sequence token, which is image-independent.
+
+3. **OOD signal increases toward sequence end**: Position-by-position d rises from 0 (pos 0) through variable mid-sequence values to 71.24 (pos 279). The autoregressive generation concentrates visual information in later positions.
+
+4. **Mid-sequence positions are unreliable**: AUROC varies from 0.82 to 1.00 between positions 84 and 252. Some positions (98: AUROC=0.865, 182: AUROC=0.820) carry weak OOD signal.
+
+5. **Last-quarter mean (d=80.88) is a practical compromise**: It captures most of the mean-pooling benefit while avoiding early positions that carry no signal. Useful when full sequence pooling is computationally expensive.
+
+6. **The OOD signal is distributed, not localized**: No single position outperforms mean pooling. The information is spread across the full sequence, consistent with the transformer's distributed attention mechanism.

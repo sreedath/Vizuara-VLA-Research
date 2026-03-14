@@ -2058,4 +2058,20 @@ We systematically perturb a base highway image to map the detector's sensitivity
 
 The sensitivity analysis reveals that the VLA's hidden state representation has a natural noise floor: perturbations that do not meaningfully alter the visual content (sub-pixel noise, single-pixel changes) are absorbed by the image processor's quantization. Detection onset occurs at the perceptual threshold---roughly $\sigma = 10$ Gaussian noise or 10\% noise blending---consistent with the sequential detection result that 5\% interpolation triggers an alert (Finding 122). The practical implication is that the detector will not produce false positives from sensor noise, compression artifacts, or minor lighting fluctuations, but will catch any perturbation visible to a human observer.
 
+\subsection{Token Position Analysis}
+\label{app:token_position}
+
+\textbf{Finding 132: Mean pooling across all 280 token positions achieves $d = 88.97$, 25\% higher than last-token ($d = 71.24$). First token carries zero OOD signal (AUROC = 0.500). OOD information concentrates toward sequence end.}
+
+We analyze which positions in the 280-token hidden state sequence carry OOD-discriminative information (Figure~\ref{fig:token_position}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig95_token_position.pdf}
+\caption{\textbf{Token position analysis.} (a) Pooling strategies: mean pooling ($d=88.97$) exceeds last-token ($d=71.24$); first token is useless ($d=0$). (b) Position-by-position AUROC: early positions ($<14$) carry no signal; mid-sequence varies from 0.82 to 1.00; last positions are most discriminative. (c) Cohen's $d$ by position: signal increases monotonically toward sequence end with high-$d$ peaks at positions 70 and 266--279.}
+\label{fig:token_position}
+\end{figure}
+
+The token position analysis reveals that the OOD signal in the VLA's hidden states is distributed across the full sequence but concentrates in later positions---consistent with the autoregressive architecture's causal attention, which allows later positions to attend to the entire preceding context including all image tokens. Mean pooling achieves $d=88.97$ by aggregating this distributed signal: each position contributes a partial signal, and averaging cancels position-specific noise while preserving the shared OOD component. The first token (position 0) is completely uninformative because it represents the BOS token, which receives no image attention in the causal mask. For practical deployment, mean pooling is recommended if the full hidden state sequence is accessible; otherwise, last-token extraction (our default) provides $d=71.24$, which is already excellent.
+
 \end{document}
