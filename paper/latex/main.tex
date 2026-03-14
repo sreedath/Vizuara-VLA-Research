@@ -2026,4 +2026,20 @@ We test whether centroids calibrated on a single driving sub-domain (highway-onl
 
 The cross-domain analysis reveals the most critical practical limitation of centroid-based detection: calibration diversity determines whether the detector generalizes. A highway-only centroid positions urban driving (0.281) closer to snow (0.300) than to itself (0.018), producing the first imperfect AUROC (0.995) in our entire experimental series. The fix is simple but essential: mixed calibration. Including both highway and urban samples produces $d=42.30$---a $24\times$ improvement over single-domain calibration. The inter-domain distance of 0.266 shows that highway and urban are distinct sub-clusters within the broader ``driving'' manifold. For deployment, this means the calibration set must sample the full diversity of the target operating domain, not just a single representative scenario.
 
+\subsection{Inference Stability}
+\label{app:inference_stability}
+
+\textbf{Finding 130: The VLA produces bit-exact identical embeddings across 20 repeated inferences of the same image (19/19 exact matches, zero variance across all 4,096 dimensions). Detection scores are perfectly deterministic.}
+
+We test whether repeated forward passes on the same input produce identical hidden states (Figure~\ref{fig:inference_stability}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig93_inference_stability.pdf}
+\caption{\textbf{Inference stability.} (a) Same-image repeated passes show zero pairwise cosine distance, while different images show 0.032 mean distance. (b) Detection scores are perfectly deterministic: highway 0.0164 and noise 0.5438 with zero std. (c) 100\% bit-exact match rate for both ID and OOD inputs.}
+\label{fig:inference_stability}
+\end{figure}
+
+The perfect determinism confirms a crucial deployment property: the detection threshold calibrated during testing will behave identically in production. There is no need for score averaging, repeated inference, or stochastic uncertainty estimation. The VLA in eval mode with \texttt{torch.no\_grad()} is fully deterministic---no dropout, no sampling, no numerical instability accumulates across passes. This means the detector's per-frame latency is exactly one forward pass ($\sim$65ms) with no overhead from ensembling or averaging.
+
 \end{document}

@@ -4748,3 +4748,35 @@ Inter-domain distance (highway↔urban centroid): **0.266**
 5. **The 0.019 near-miss is the narrowest gap we've observed**: Across all 106 experiments, this is the closest any ID sample has come to being misclassified as OOD. It occurs only when calibration lacks ID diversity.
 
 6. **Critical deployment lesson**: Always calibrate with diverse ID samples. A highway-only calibration set would misclassify some urban driving as OOD (0.5% error rate). Mixed calibration eliminates this completely.
+
+---
+
+## Finding 101: Embedding Stability Under Repeated Inference
+
+**Experiment 107** — Tests whether the same image produces identical hidden states across 20 repeated forward passes. Critical for deployment reliability.
+
+### Setup
+- Same highway image: 20 repeated passes
+- Same noise image: 20 repeated passes
+- Different highway images: 20 different images (comparison)
+- ~60 model inferences
+
+### Results
+
+| Test | Pairwise Cosine Dist | Score Std | Bit-Exact |
+|------|---------------------|-----------|-----------|
+| Same highway (20×) | **0.000000** | **0.000000** | **19/19** |
+| Same noise (20×) | **0.000000** | **0.000000** | **19/19** |
+| Different highways | 0.031630 | — | — |
+
+### Key Insights
+
+1. **100% bit-exact determinism**: All 19/19 repeated passes produce the exact same embedding, to every bit. Zero variance across all 4,096 dimensions for both ID and OOD inputs.
+
+2. **Score stability is perfect**: Highway score is 0.016395 across all 20 passes (std=0). Noise score is 0.543822 across all 20 passes (std=0). No stochastic variation whatsoever.
+
+3. **Model is fully deterministic in eval mode**: With `model.eval()` and `torch.no_grad()`, the VLA produces identical outputs for identical inputs. No dropout, no stochastic sampling, no numerical instability.
+
+4. **Different images show meaningful variation**: Different highway images have mean pairwise cosine distance of 0.032, confirming the model encodes per-image differences — the determinism isn't because the model is ignoring the input.
+
+5. **Deployment implication**: Detection scores are perfectly reproducible. A threshold set in testing will behave identically in production. No need for score averaging or repeated inference.

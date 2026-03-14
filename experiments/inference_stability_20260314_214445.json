@@ -1,0 +1,51 @@
+{
+  "experiment": "inference_stability",
+  "experiment_number": 107,
+  "timestamp": "20260314_214445",
+  "same_highway": {
+    "n_passes": 20,
+    "pairwise_cosine": {
+      "mean": 5.960464477539063e-08,
+      "max": 5.960464477539063e-08,
+      "min": 5.960464477539063e-08,
+      "std": 0.0
+    },
+    "bit_exact_matches": 19,
+    "per_dim_variance_mean": 0.0,
+    "per_dim_variance_max": 0.0,
+    "score_mean": 0.01639503240585327,
+    "score_std": 0.0,
+    "score_range": [
+      0.01639503240585327,
+      0.01639503240585327
+    ]
+  },
+  "same_noise": {
+    "n_passes": 20,
+    "pairwise_cosine": {
+      "mean": 0.0,
+      "max": 0.0,
+      "min": 0.0,
+      "std": 0.0
+    },
+    "bit_exact_matches": 19,
+    "per_dim_variance_mean": 0.0,
+    "per_dim_variance_max": 0.0,
+    "score_mean": 0.5438216924667358,
+    "score_std": 0.0,
+    "score_range": [
+      0.5438216924667358,
+      0.5438216924667358
+    ]
+  },
+  "different_highway": {
+    "n_images": 20,
+    "pairwise_cosine": {
+      "mean": 0.031629823383532076,
+      "max": 0.06757998466491699,
+      "min": 0.013443827629089355
+    },
+    "per_dim_variance_mean": 0.04369130730628967,
+    "per_dim_variance_max": 1.1467187404632568
+  }
+}
