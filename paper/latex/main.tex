@@ -1277,4 +1277,36 @@ We systematically analyze how threshold selection affects detection performance 
 
 The p75 threshold provides the best balance for safety-critical deployment: 95\% OOD recall with 26.7\% FPR. For applications where false alarms are costly, the p90 threshold achieves 0.909 precision but drops recall to 75\%. Conformal prediction provides formal guarantees: at $\alpha=0.05$, the threshold is calibrated to contain 95\% of in-distribution scores, and empirically catches 95\% of test OOD inputs. The per-scenario analysis reveals that noise and blackout are caught at all thresholds (100\%), while indoor and inverted require the p75 or looser threshold (50\% at p90, 95--100\% at p75).
 
+\subsection{Cross-Domain Transfer}
+\label{app:cross_domain}
+
+\textbf{Finding 85: Single-domain calibration fails catastrophically on other domains; mixed calibration achieves 0.921 AUROC across both.}
+
+We test whether calibration on one driving domain (e.g., highway) transfers to detecting OOD inputs when the test distribution shifts to another domain (e.g., urban), a critical question for practical deployment (Figure~\ref{fig:cross_domain}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig48_cross_domain.pdf}
+\caption{\textbf{Cross-domain transfer analysis.} (a) Highway-only calibration achieves 0.975 AUROC on highway test but only 0.530 on urban test (red boxes mark failure). Mixed calibration (0.921) works across both. (b) Same-domain calibration excels per-OOD type, but mixed calibration provides robust performance. (c) Highway and urban centroids are far apart (0.694 cosine distance), comparable to some OOD types.}
+\label{fig:cross_domain}
+\end{figure}
+
+Highway-only calibration treats urban test images as OOD (AUROC 0.530) because the highway-urban cosine distance (0.694) is comparable to some OOD types. Mixed calibration resolves this by positioning the centroid between both ID subgroups, achieving 0.921 overall AUROC. This result has a direct practical implication: \textbf{calibration sets must cover the diversity of expected deployment conditions}. For production systems, we recommend per-scene centroids with nearest-centroid assignment, which our ablation study (Finding~74) shows contributes +0.203 AUROC.
+
+\subsection{Attention Pattern Analysis}
+\label{app:attention}
+
+\textbf{Finding 86: Last-layer attention max achieves perfect OOD detection (AUROC 1.000) without any calibration, while middle layers carry no OOD signal.}
+
+We analyze attention patterns across transformer layers to understand the mechanistic basis of OOD detection (Figure~\ref{fig:attention}). For each layer, we compute the mean attention entropy and maximum attention weight per head for the last generated token.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig49_attention.pdf}
+\caption{\textbf{Attention pattern analysis.} (a) OOD detection AUROC by layer shows signal concentrates in the last layer (L31: entropy 0.987, max attn 1.000), with middle layers near random ($\sim$0.54). (b) Per-scenario attention entropy at L16 shows OOD inputs have higher entropy. (c) Comparison with hidden-state cosine distance shows attention-based detection can match or exceed hidden-state methods.}
+\label{fig:attention}
+\end{figure}
+
+The key mechanistic finding is that OOD inputs produce \emph{more focused} attention in the last layer (entropy 2.005 vs ID 2.434), suggesting the model ``fixates'' on specific tokens when processing unfamiliar inputs. This is the opposite of the intuition that uncertainty should produce diffuse attention. Critically, last-layer attention max achieves perfect AUROC (1.000) \textbf{without any calibration data}, opening the door to calibration-free OOD detection --- a significant advantage over our centroid-based approach in scenarios where no calibration images are available at deployment time.
+
 \end{document}

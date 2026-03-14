@@ -1,0 +1,45 @@
+{
+  "experiment": "attention_analysis",
+  "experiment_number": 63,
+  "timestamp": "20260314_183049",
+  "n_samples": 40,
+  "n_valid": 40,
+  "layers_analyzed": [
+    "L31",
+    "L28",
+    "L24",
+    "L16"
+  ],
+  "summary": {
+    "blackout": {
+      "n": 6,
+      "mean_entropy": 1.687462104484439,
+      "mean_max_attn": 0.42462158203125
+    },
+    "highway": {
+      "n": 8,
+      "mean_entropy": 1.5741236845497042,
+      "mean_max_attn": 0.4469490051269531
+    },
+    "indoor": {
+      "n": 6,
+      "mean_entropy": 1.744649420492351,
+      "mean_max_attn": 0.42026011149088544
+    },
+    "inverted": {
+      "n": 6,
+      "mean_entropy": 1.6078495637824137,
+      "mean_max_attn": 0.4483439127604167
+    },
+    "noise": {
+      "n": 6,
+      "mean_entropy": 1.8277761479839683,
+      "mean_max_attn": 0.40675099690755206
+    },
+    "urban": {
+      "n": 8,
+      "mean_entropy": 1.6512876104097813,
+      "mean_max_attn": 0.43697357177734375
+    }
+  }
+}

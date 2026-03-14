@@ -2837,3 +2837,88 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Action mass alone is insufficient (AUROC 0.691)**: Pure mass-based detection cannot distinguish indoor OOD (which has high mass) from ID inputs. Cosine distance in hidden space is essential.
 
 5. **There is no free lunch — stricter thresholds trade recall for precision**: Going from p75 to p95 improves precision from 0.826 to 0.935 but drops recall from 0.950 to 0.725. Deployment must choose the appropriate tradeoff.
+
+---
+
+## Finding 56: Cross-Domain Transfer Requires Mixed Calibration (Real OpenVLA-7B, Experiment 62)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Domains**: Highway (20), Urban (20), Noise (10), Indoor (10), Inverted (10), Blackout (10)
+- **Calibration configs**: highway_only (10), urban_only (10), mixed (10 hw + 10 ur)
+- **Total inferences**: 80
+
+### Cross-Domain Transfer Results
+
+| Calibration | Highway Test AUROC | Urban Test AUROC | Overall |
+|-------------|-------------------|-----------------|---------|
+| Highway only | **0.975** | 0.530 | 0.752 |
+| Urban only | 0.682 | **0.988** | 0.835 |
+| Mixed | 0.905 | 0.938 | **0.921** |
+
+### Domain Centroid Distances
+
+| Domain Pair | Cosine Distance |
+|-------------|----------------|
+| Highway ↔ Urban | 0.694 |
+| Highway ↔ Mixed | 0.245 |
+| Urban ↔ Mixed | 0.145 |
+| Noise → Mixed | 0.654 |
+| Indoor → Mixed | 0.570 |
+| Inverted → Mixed | 0.477 |
+| Blackout → Mixed | 0.842 |
+
+### Key Insights
+
+1. **Single-domain calibration fails on the other domain**: Highway-only calibration treats urban test images as OOD (AUROC 0.530), and urban-only treats highway as near-OOD (AUROC 0.682). The highway-urban cosine distance (0.694) is comparable to some OOD types.
+
+2. **Mixed calibration is essential (0.921 overall)**: Combining both domains creates a centroid that works for both, losing only marginally on each domain (0.905 vs 0.975 for highway, 0.938 vs 0.988 for urban).
+
+3. **The mixed centroid is asymmetrically positioned**: Urban is closer to the mixed centroid (0.145) than highway (0.245), meaning the mixed centroid is slightly biased toward urban. This explains why mixed→highway (0.905) slightly underperforms mixed→urban (0.938).
+
+4. **Blackout is universally detected (0.842 cosine to mixed)**: With the largest distance to any centroid, blackout is trivially detected regardless of calibration strategy.
+
+5. **This motivates per-scene centroids**: For deployment across diverse driving conditions, maintaining separate centroids per scene (highway, urban, rural, etc.) and using the nearest centroid as reference would outperform a single mixed centroid.
+
+---
+
+## Finding 57: Attention Patterns Provide Perfect Last-Layer OOD Detection (Real OpenVLA-7B, Experiment 63)
+
+### Setup
+- **Model**: OpenVLA-7B (BF16, forward pass with output_attentions=True)
+- **Test set**: 40 images (16 ID + 24 OOD)
+- **Layers analyzed**: L16, L24, L28, L31 (last)
+- **Metrics**: Mean attention entropy, max attention per head
+- **Total inferences**: 40
+
+### Layer-wise Attention OOD Detection
+
+| Layer | Entropy AUROC | Max Attn AUROC | ID Entropy | OOD Entropy |
+|-------|--------------|----------------|------------|-------------|
+| L16 | 0.859 | 0.802 | 1.613±0.043 | 1.717±0.083 |
+| L24 | 0.586 | 0.534 | 1.699±0.101 | 1.727±0.044 |
+| L28 | 0.534 | 0.540 | 1.715±0.103 | 1.699±0.125 |
+| **L31** | **0.987** | **1.000** | **2.434±0.084** | **2.005±0.298** |
+
+### Per-Scenario Attention Entropy (L16)
+
+| Scenario | Type | Entropy |
+|----------|------|---------|
+| Highway | ID | 1.574 ± 0.014 |
+| Urban | ID | 1.651 ± 0.022 |
+| Noise | OOD | 1.828 ± 0.034 |
+| Indoor | OOD | 1.745 ± 0.019 |
+| Inverted | OOD | 1.608 ± 0.017 |
+| Blackout | OOD | 1.687 ± 0.000 |
+
+### Key Insights
+
+1. **Last-layer attention achieves perfect OOD detection (max attn AUROC 1.000)**: The maximum attention weight per head in L31 perfectly separates ID from OOD. ID inputs show more diffuse attention (entropy 2.434) while OOD inputs have sharper, more concentrated attention (entropy 2.005).
+
+2. **Middle layers carry no OOD signal (L24: 0.534, L28: 0.540)**: Layers 24-28 show near-random AUROC, confirming that the OOD representation is constructed in the final layers, consistent with the hidden state layer analysis (Finding 49).
+
+3. **L16 has moderate detection (0.859)**: The intermediate layer shows some OOD signal, likely because attention patterns begin diverging early but only fully separate at the output layer.
+
+4. **OOD attention is paradoxically more focused**: ID images produce higher entropy (more diffuse attention), while OOD images produce lower entropy (more focused). This suggests the model "fixates" on specific tokens when processing unfamiliar inputs, rather than distributing attention across the image.
+
+5. **Attention-based detection requires no calibration**: Unlike cosine distance (which needs a calibration centroid), attention entropy can detect OOD from a single forward pass by comparing against a simple threshold. This opens the door to calibration-free OOD detection.

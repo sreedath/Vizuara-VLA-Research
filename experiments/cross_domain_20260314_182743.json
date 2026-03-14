@@ -1,0 +1,53 @@
+{
+  "experiment": "cross_domain",
+  "experiment_number": 62,
+  "timestamp": "20260314_182743",
+  "n_per_domain": {
+    "highway": 20,
+    "urban": 20,
+    "noise": 10,
+    "indoor": 10,
+    "inverted": 10,
+    "blackout": 10
+  },
+  "results": {
+    "highway_only": {
+      "highway_vs_noise": 1.0,
+      "highway_vs_indoor": 0.97,
+      "highway_vs_inverted": 0.9299999999999999,
+      "highway_vs_blackout": 1.0,
+      "urban_vs_noise": 0.77,
+      "urban_vs_indoor": 0.13999999999999999,
+      "urban_vs_inverted": 0.21,
+      "urban_vs_blackout": 1.0,
+      "overall": 0.7525
+    },
+    "urban_only": {
+      "highway_vs_noise": 1.0,
+      "highway_vs_indoor": 0.18,
+      "highway_vs_inverted": 0.55,
+      "highway_vs_blackout": 1.0,
+      "urban_vs_noise": 1.0,
+      "urban_vs_indoor": 0.98,
+      "urban_vs_inverted": 0.97,
+      "urban_vs_blackout": 1.0,
+      "overall": 0.835
+    },
+    "mixed": {
+      "highway_vs_noise": 1.0,
+      "highway_vs_indoor": 0.9400000000000001,
+      "highway_vs_inverted": 0.68,
+      "highway_vs_blackout": 1.0,
+      "urban_vs_noise": 1.0,
+      "urban_vs_indoor": 0.8600000000000001,
+      "urban_vs_inverted": 0.89,
+      "urban_vs_blackout": 1.0,
+      "overall": 0.92125
+    }
+  },
+  "domain_distances": {
+    "hw_ur": 0.6941350102424622,
+    "hw_mx": 0.245202898979187,
+    "ur_mx": 0.14461249113082886
+  }
+}
