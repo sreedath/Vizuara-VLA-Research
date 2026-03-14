@@ -2364,4 +2364,24 @@ We decode the 7-dimensional action vectors (bins 0--255 from token IDs 31744--31
 
 The action analysis reveals that OOD detection is not merely a representation-space curiosity but has direct safety implications. When the VLA encounters an OOD input, it does not ``refuse'' to act or output a safe default; instead, it commands a systematically different trajectory. The consistent x-translation shift of $-36$ to $-48$ bins means the model would steer the vehicle differently when it encounters an unfamiliar scene. Combined with the 24\% increase in action variability, this creates a dangerous combination: the model both changes direction and becomes less consistent. Our cosine distance detector intercepts these OOD inputs before the actions reach the control system, providing a critical safety layer.
 
+\subsection{Token Confidence Analysis}
+\label{app:token_confidence}
+
+\textbf{Finding 159: The model's own confidence (softmax probability) is NOT an effective OOD detector---AUROC = 0.558, barely above random. The VLA is equally confident in its OOD predictions (0.654) as in ID ones (0.665).}
+
+\textbf{Finding 160: Token entropy is similarly uninformative for OOD detection (AUROC = 0.574, $d' = 0.09$). The action probability distribution has the same shape for ID and OOD inputs.}
+
+\textbf{Finding 161: The VLA is a ``confidently wrong'' system---it predicts systematically biased OOD actions (Finding 156) with the same confidence as correct ID actions. This makes external OOD detection necessary, not optional.}
+
+We analyze the softmax probability (confidence) and entropy of predicted action tokens for ID vs OOD inputs (Figure~\ref{fig:token_confidence}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig113_token_confidence.png}
+\caption{\textbf{Token confidence analysis.} (a) Mean confidence per category: ID (0.665) and OOD (0.654) are nearly identical. (b) Token entropy: similarly indistinguishable. (c) Detection comparison: cosine distance (AUROC = 1.000) vs.\ confidence (AUROC = 0.558) vs.\ entropy (AUROC = 0.574)---internal uncertainty signals fail completely.}
+\label{fig:token_confidence}
+\end{figure}
+
+This finding is perhaps the most important safety result in our study. The VLA's internal uncertainty signal---the softmax probability over action tokens---is uncalibrated for OOD detection. The model produces OOD actions with confidence 0.654, indistinguishable from its ID confidence of 0.665. This means the model cannot self-diagnose OOD inputs; it will confidently execute wrong actions. The cosine distance detector operates on a fundamentally different signal: the geometry of the hidden-state representation, which encodes scene identity even though the action-prediction head does not use this information for calibration. This decoupling between representation quality and prediction confidence is a well-known phenomenon in large language models, but we provide the first demonstration in the VLA setting with direct safety implications.
+
 \end{document}

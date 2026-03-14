@@ -5658,3 +5658,42 @@ All top-K and random-K ≥ 100 achieve AUROC=1.000. Even 10 random dims: AUROC=0
 4. **Safety implication**: The systematic x_translation bias for OOD inputs means the model would command a different trajectory when encountering unfamiliar scenes — potentially steering the vehicle in an unexpected direction. This validates the need for OOD detection before action execution.
 
 5. **Gripper dimension is most variable**: Gripper (dim 6) varies widely even within ID (66.4 for highway, 119.8 for urban), suggesting this dimension encodes task-specific rather than scene-specific information.
+
+---
+
+## Finding 121: Token Confidence Analysis (Experiment 127)
+
+**Research Question:** Can the model's own confidence (softmax probability) in its action predictions serve as an OOD detector?
+
+**Experiment Design:** 60 inferences with output_scores=True. For each action token, record the max softmax probability and the entropy over the action token distribution (256 bins).
+
+### Results
+
+**Detection Performance:**
+| Method | AUROC | D-prime |
+|--------|-------|---------|
+| Cosine distance (embedding) | 1.000 | 44.7 |
+| Token confidence (−max prob) | 0.558 | 0.16 |
+| Token entropy | 0.574 | 0.09 |
+
+**Per-Category Confidence and Entropy:**
+| Category | Mean Confidence | Mean Entropy |
+|----------|----------------|-------------|
+| highway (ID) | 0.649 ± 0.063 | 1.205 ± 0.164 |
+| urban (ID) | 0.680 ± 0.068 | 1.007 ± 0.180 |
+| noise (OOD) | 0.628 ± 0.058 | 1.220 ± 0.131 |
+| indoor (OOD) | 0.665 ± 0.070 | 1.104 ± 0.203 |
+| twilight (OOD) | 0.655 ± 0.088 | 1.108 ± 0.217 |
+| snow (OOD) | 0.666 ± 0.070 | 1.066 ± 0.181 |
+
+### Key Insights
+
+1. **Token confidence is NOT an effective OOD detector**: AUROC=0.558 is barely above random (0.5). The model is equally "confident" in its OOD predictions as in ID ones.
+
+2. **The VLA is overconfident on OOD inputs**: Mean confidence for OOD (0.654) is within 1.6% of ID (0.665). The model doesn't "know it doesn't know" — it predicts wrong actions with the same confidence as correct ones.
+
+3. **This overconfidence motivates external detection**: Since the model's internal uncertainty signal (softmax probability) fails to detect OOD, an external mechanism like cosine distance is essential. The model will confidently execute wrong actions without external oversight.
+
+4. **Entropy is similarly uninformative**: Token entropy for OOD (1.124) barely differs from ID (1.106). The action probability distribution is equally flat/peaked for both.
+
+5. **This is a critical safety finding**: The VLA is a "confidently wrong" system on OOD inputs. It produces systematically biased actions (Exp 126) with the same confidence as correct actions. This makes external OOD detection not just useful but necessary for safe deployment.

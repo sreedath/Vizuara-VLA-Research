@@ -1,0 +1,65 @@
+{
+  "experiment": "token_confidence",
+  "experiment_number": 127,
+  "timestamp": "20260314_234219",
+  "detection": {
+    "confidence_auroc": 0.5575,
+    "confidence_d": 0.1644498805933883,
+    "entropy_auroc": 0.57375,
+    "entropy_d": 0.09136473594734942,
+    "id_conf_mean": 0.6645418772074794,
+    "ood_conf_mean": 0.6534696993650868,
+    "id_ent_mean": 1.1060007444454512,
+    "ood_ent_mean": 1.1241661985115425
+  },
+  "per_category": {
+    "highway": {
+      "group": "ID",
+      "mean_confidence": 0.6491689489356108,
+      "std_confidence": 0.06344440549772319,
+      "mean_entropy": 1.2054135470899514,
+      "std_entropy": 0.16396348368772717,
+      "mean_min_conf": 0.34151913821697233
+    },
+    "urban": {
+      "group": "ID",
+      "mean_confidence": 0.6799148054793477,
+      "std_confidence": 0.06759016483013039,
+      "mean_entropy": 1.0065879418009511,
+      "std_entropy": 0.18003252961827038,
+      "mean_min_conf": 0.3144995853304863
+    },
+    "noise": {
+      "group": "OOD",
+      "mean_confidence": 0.6282659684973104,
+      "std_confidence": 0.058235590330740744,
+      "mean_entropy": 1.219733472284861,
+      "std_entropy": 0.13067941151112178,
+      "mean_min_conf": 0.30786204934120176
+    },
+    "indoor": {
+      "group": "OOD",
+      "mean_confidence": 0.6651514393410513,
+      "std_confidence": 0.06969558176777148,
+      "mean_entropy": 1.1035921874848955,
+      "std_entropy": 0.20288909917459913,
+      "mean_min_conf": 0.34471341222524643
+    },
+    "twilight": {
+      "group": "OOD",
+      "mean_confidence": 0.6548788241243788,
+      "std_confidence": 0.08819239856345971,
+      "mean_entropy": 1.1075996907600971,
+      "std_entropy": 0.21701033121326013,
+      "mean_min_conf": 0.33109292238950727
+    },
+    "snow": {
+      "group": "OOD",
+      "mean_confidence": 0.665582565497607,
+      "std_confidence": 0.06950130348371138,
+      "mean_entropy": 1.0657394435163172,
+      "std_entropy": 0.18069725876797457,
+      "mean_min_conf": 0.269403687864542
+    }
+  }
+}
