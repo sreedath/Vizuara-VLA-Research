@@ -579,6 +579,8 @@ Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism beh
 \label{fig:perturbation}
 \end{figure}
 
+\textbf{Finding 36: Uncertainty estimates are reliable across independent runs.} Three independent MC Dropout runs ($N$=20 each, $p$=0.20) on 80 samples show consistent AUROC: 0.921, 0.944, and 0.899 (range = 0.045). The entropy-based scenario discrimination is stable despite moderate sample-level rank correlation ($\rho = 0.33$--$0.53$). This means a single MC Dropout run provides reliable aggregate uncertainty estimates, though individual sample rankings have $\sim$50\% noise.
+
 \textbf{Finding 35: Cumulative trajectory confidence achieves AUROC = 0.925 for OOD detection.} Multi-step trajectory analysis (10 steps $\times$ 5 MC passes per step, 40 samples) reveals that while single-step confidence shows minimal scenario discrimination with MC Dropout (highway: 0.586 vs OOD: 0.561), the \emph{product} of per-step confidences amplifies these differences: cumulative confidence achieves AUROC = 0.925 for easy-vs-OOD detection, approaching the single-pass optimal dropout AUROC of 0.932 from a different angle. Confidence drift across trajectory steps is modest (std $\approx$ 0.04) and uniform, confirming that the model lacks temporal dynamics---each step is treated independently, with no accumulation of uncertainty over the trajectory horizon.
 
 \subsection{Ablation Studies}
