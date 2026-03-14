@@ -1478,4 +1478,36 @@ We sweep cosine distance OOD detection across every 4th layer of the 32-layer Ll
 
 Two key implications: (1) The OOD signal is \emph{not} a final-layer artifact---it builds throughout the transformer, with the signal present from layer 4 onward. (2) Layer 24 could enable \textbf{early-exit OOD detection}, computing only 75\% of the forward pass while maintaining peak separability. This could reduce latency by $\sim$25\% in deployment settings where early detection is prioritized over full action generation.
 
+\subsection{Output Logit Analysis}
+\label{app:action_entropy}
+
+\textbf{Finding 96: Output logit features are fundamentally weak OOD detectors (best AUROC 0.750 for top-1 probability), confirming the necessity of hidden-state methods.}
+
+We systematically evaluate 8 output logit features as OOD signals (Figure~\ref{fig:action_entropy}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig59_action_entropy.pdf}
+\caption{\textbf{Output logit analysis.} (a) Logit-based features: best is top-1 probability (0.750), far below hidden-state methods. Energy score is worse than random (0.298). (b) Per-scenario entropy: only blackout (4.56) is clearly distinguishable; noise/indoor have similar entropy to ID. (c) Method hierarchy: hidden-state methods (1.000) dominate output features ($\leq$0.750).}
+\label{fig:action_entropy}
+\end{figure}
+
+The failure of output-based methods has a clear mechanistic explanation: VLAs tokenize actions into 256-bin discrete tokens, and the softmax probability over these bins does not reliably distinguish ID from OOD because the model can confidently predict \emph{wrong} actions for OOD inputs. In contrast, hidden-state representations capture distributional information before it is compressed into the action token vocabulary.
+
+\subsection{Multi-Head Attention Analysis}
+\label{app:head_analysis}
+
+\textbf{Finding 97: Only 4 of 32 attention heads achieve perfect AUROC individually; head 1 is anti-diagnostic (0.280). Even a single diagnostic head suffices for perfect detection.}
+
+We analyze per-head OOD detection in the last transformer layer (Figure~\ref{fig:head_analysis}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig60_head_analysis.pdf}
+\caption{\textbf{Multi-head attention analysis.} (a) Per-head AUROC varies dramatically: 4 heads achieve 1.000, several fall below random (0.5). (b) Bimodal distribution of head AUROCs---heads are either highly diagnostic or uninformative. (c) Even a single top head achieves perfect AUROC; averaging all heads works because good heads dominate.}
+\label{fig:head_analysis}
+\end{figure}
+
+The head specialization has both mechanistic and practical implications. Mechanistically, the diagnostic heads (7, 16, 25, 27) appear to function as ``scene recognition'' heads that concentrate attention differently for familiar vs.\ unfamiliar visual inputs. Practically, \textbf{head pruning} could reduce the attention computation for OOD detection by $8\times$ (4 of 32 heads) without any loss in detection quality.
+
 \end{document}

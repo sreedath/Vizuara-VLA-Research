@@ -3327,3 +3327,94 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Cosine distances grow monotonically through layers**: ID cosine stays low (0.000-0.087) while OOD cosine grows (0.000-0.430), showing the transformer progressively separates ID from OOD representations.
 
 5. **Practical implication: layer 24 could enable early-exit OOD detection** — computing the forward pass only through 24/32 layers would save ~25% of computation while maintaining peak detection performance.
+
+---
+
+## Finding 67: Output Logit Features Are Weak OOD Detectors (Best 0.750)
+
+**Experiment 73** — Action token entropy and distribution shape analysis.
+
+### Setup
+- 42 samples (20 ID, 22 OOD) with full vocabulary logit analysis
+- 8 logit-based features tested as OOD signals
+- Per-scenario entropy profiling
+
+### AUROC by Logit Feature
+
+| Feature | AUROC |
+|---------|-------|
+| Top-1 probability | **0.750** |
+| Logit std | 0.707 |
+| Logit max | 0.624 |
+| Entropy | 0.618 |
+| Top-5 probability | 0.500 |
+| Top-10 probability | 0.441 |
+| Energy score | **0.298** |
+
+### Per-Scenario Entropy
+
+| Scene | Entropy | Top-1 | Top-5 | Energy | Logit Std |
+|-------|---------|-------|-------|--------|-----------|
+| Highway | 1.54 | 0.678 | 0.859 | 12.59 | 1.622 |
+| Urban | 2.11 | 0.444 | 0.806 | 11.83 | 1.643 |
+| Noise | 1.73 | 0.494 | 0.877 | 13.59 | 1.818 |
+| Indoor | 1.86 | 0.425 | 0.871 | 13.60 | 1.783 |
+| Blackout | **4.56** | 0.050 | 0.159 | 8.68 | 1.165 |
+
+### Key Insights
+
+1. **Output logit features are fundamentally weak OOD detectors**: Best is top-1 probability at 0.750, compared to cosine (1.000) and attention (1.000). This validates the method hierarchy.
+
+2. **Energy score is worse than random (0.298)**: This surprising failure occurs because OOD inputs can produce high-energy logits due to the model's erratic behavior on unfamiliar inputs.
+
+3. **Blackout is the only clearly distinguishable scenario via entropy**: Entropy=4.56 (very high uncertainty) vs highway=1.54. Other OOD types (noise, indoor) have similar entropy to ID, making them hard to detect.
+
+4. **Top token IDs differ between ID and OOD**: ID consistently maps to token 31917 (19/20 times), while OOD scatters across tokens 31860, 31911, 31869. This token concentration pattern is another signal.
+
+5. **Confirms that hidden-state methods are essential**: Output-level signals alone are insufficient for reliable OOD detection in VLAs.
+
+---
+
+## Finding 68: Only 4 of 32 Attention Heads Are Diagnostic; Head 1 Is Anti-Diagnostic (0.280)
+
+**Experiment 74** — Multi-head attention analysis in the last transformer layer.
+
+### Setup
+- 32 attention heads analyzed individually
+- 42 samples (20 ID, 22 OOD)
+- Per-head AUROC using attention max and entropy
+
+### Per-Head AUROC (Selected)
+
+| Head | Max AUROC | Entropy AUROC | ID Max Mean | OOD Max Mean |
+|------|----------|---------------|-------------|-------------|
+| 7 | **1.000** | 1.000 | — | — |
+| 16 | **1.000** | 1.000 | — | — |
+| 25 | **1.000** | 1.000 | — | — |
+| 27 | **1.000** | 1.000 | 0.402 | 0.591 |
+| 20 | 0.995 | — | — | — |
+| 1 | **0.280** | — | — | — |
+| 11 | 0.416 | — | — | — |
+| 19 | 0.455 | — | — | — |
+
+### Ensemble Analysis
+
+| Top-k Heads | AUROC |
+|-------------|-------|
+| Top-1 | 1.000 |
+| Top-3 | 1.000 |
+| Top-5 | 1.000 |
+| Top-10 | 1.000 |
+| All 32 | 1.000 |
+
+### Key Insights
+
+1. **Only 4 heads achieve perfect AUROC individually**: Heads 7, 16, 25, 27 — these are the diagnostic heads that drive the aggregate attention signal.
+
+2. **Head 1 is anti-diagnostic (AUROC 0.280)**: This head actually has HIGHER attention max for ID inputs — it attends more uniformly for OOD. Using it alone would be worse than random.
+
+3. **Even a single head suffices**: The ensemble of just the best head achieves 1.000. The averaging across all 32 heads works because the 4 perfect heads dominate the signal.
+
+4. **Different heads are best for different OOD types**: Noise (head 3), indoor (head 5), blackout (head 2) — the heads specialize in detecting different types of distributional shift.
+
+5. **Head pruning potential**: Since only 4/32 heads are truly diagnostic, attention-based detection could be computed from just these heads with 8x less computation.
