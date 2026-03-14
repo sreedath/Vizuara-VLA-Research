@@ -1856,3 +1856,68 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 7. **Per-scene centroids are essential**: Global centroid temporal (0.625) << per-scene temporal (0.824). Without scene-specific references, temporal aggregation barely helps.
 
 8. **Mean is better than max for aggregation**: 8-step mean (0.824) > 8-step max (0.730). Max is too sensitive to individual noisy frames. Mean provides more stable discrimination.
+
+---
+
+## Finding 37: Action Plausibility as OOD Signal (Real OpenVLA-7B, Experiment 43)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Part A**: Simple images — 20 cal (highway + urban), 32 test (16 ID + 16 OOD: noise, indoor)
+- **Part B**: Realistic images — 16 cal (highway + urban), 40 test (16 ID + 24 OOD: snow, offroad, tunnel)
+- **Signals**: Action spread (std of bin indices), action roughness (mean abs diff between consecutive dims), center deviation, action mass, max confidence, entropy, entropy std
+
+### Part A: Simple Images — AUROC Comparison
+
+| Signal | AUROC |
+|--------|-------|
+| **Cosine distance** | **0.984** |
+| Center deviation | 0.945 |
+| Action mass (inv) | 0.793 |
+| Mean max conf (inv) | 0.781 |
+| Action roughness | 0.756 |
+| Action range | 0.699 |
+| Action spread | 0.688 |
+| Mean action entropy | 0.695 |
+| Max action entropy | 0.562 |
+| Entropy std | 0.508 |
+
+### Part B: Realistic Images — AUROC Comparison
+
+| Signal | AUROC |
+|--------|-------|
+| **Action mass (inv)** | **0.745** |
+| **Action spread** | **0.732** |
+| Action range | 0.711 |
+| Action roughness | 0.672 |
+| Entropy std | 0.664 |
+| Center deviation | 0.547 |
+| Per-scene cosine | 0.544 |
+| Max action entropy | 0.508 |
+| Mean max conf (inv) | 0.477 |
+| Cosine distance | 0.461 |
+| Mean action entropy | 0.333 |
+
+### Per-Scenario Mean Values (Realistic)
+
+| Scenario | OOD | Cosine | Spread | Roughness | Center Dev | Entropy | Mass |
+|----------|-----|--------|--------|-----------|------------|---------|------|
+| highway_r | No | 0.601 | 17.6 | 22.1 | 63.0 | 1.311 | 0.966 |
+| urban_r | No | 0.738 | 34.2 | 41.0 | 65.0 | 1.231 | 0.908 |
+| offroad | Yes | 0.631 | 41.8 | 57.6 | 70.6 | 1.128 | 0.877 |
+| snow | Yes | 0.728 | 38.5 | 31.7 | 46.8 | 1.048 | 0.939 |
+| tunnel | Yes | 0.599 | 24.5 | 28.8 | 79.7 | 1.326 | 0.763 |
+
+### Key Insights
+
+1. **CRITICAL FINDING: For realistic images, action-level signals OUTPERFORM cosine distance.** Action spread (0.732) and action mass (0.745) both beat cosine (0.461) and per-scene cosine (0.544). This reverses the finding from simple images where cosine dominates (0.984 vs 0.688).
+
+2. **The signals are complementary, not redundant**: Cosine distance captures representational distance (hidden state direction), while action spread captures behavioral anomaly (the model producing erratic action patterns). Offroad has cosine=0.631 (overlaps ID) but spread=41.8 (way above highway=17.6). This means action plausibility catches cases that cosine misses.
+
+3. **Offroad detection is finally feasible**: The spread signal distinguishes offroad (41.8) from highway (17.6) even though their cosine distances overlap (0.631 vs 0.601). The model produces wider-ranging action bins for unfamiliar terrain.
+
+4. **Center deviation flips between simple and realistic**: For simple images, center deviation is strong (0.945) because OOD noise causes extreme bin predictions. For realistic images, it's weak (0.547) because all scenarios produce plausible-looking bin values.
+
+5. **Combined signal for simple images works perfectly** (0.984) because cosine already dominates. For realistic images, the naive combination (0.6*cos + 0.2*spread + 0.2*rough = 0.557) is poor because the cosine component dilutes the signal. An action-only combination should work better.
+
+6. **The practical implication**: For realistic OOD detection, monitor the model's action outputs (spread across dims, consistency of bin predictions) rather than just its hidden states. A unified pipeline should use cosine distance for large distribution shifts and action plausibility for subtle shifts.
