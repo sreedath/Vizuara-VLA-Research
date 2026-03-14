@@ -568,6 +568,17 @@ Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism beh
 
 \textbf{Finding 32: Attention entropy is anti-correlated with action uncertainty.} Extracting attention patterns from 5 layers (0, 8, 16, 24, 31) across 80 samples reveals a strong negative correlation between action entropy and attention entropy ($r = -0.744$, $p < 10^{-4}$, $\rho = -0.749$). When the model is \emph{uncertain} about actions (high action entropy, e.g., night driving), attention is \emph{focused} on fewer tokens. When \emph{confident} (low action entropy, e.g., urban), attention is broadly diffuse. This inverted relationship means attention entropy is \emph{anti-predictive} for OOD detection (AUROC = 0.247, below random) and hard scenario detection (AUROC = 0.003). Attention patterns thus cannot serve as a useful uncertainty signal---the model attends broadly when it has a strong prior (structured scenes) and narrows focus when uncertain, consistent with a pattern-matching rather than reasoning-based prediction strategy.
 
+\textbf{Finding 33: Imperceptible pixel noise ($\sigma$=1) changes 51\% of action tokens.} Input perturbation analysis on 40 samples (Figure~\ref{fig:perturbation}a) reveals that adding Gaussian noise with $\sigma$=1 (invisible to humans) changes the majority of predicted action tokens. Night driving is most sensitive (token agreement drops to 34\% at $\sigma$=1), while OOD noise images are paradoxically \emph{most robust} (83\% agreement). This suggests VLA action predictions are driven by fine-grained pixel patterns rather than semantic features.
+
+\textbf{Finding 34: Gaussian noise increases night confidence by 3$\times$.} Adding noise to dark night images increases the model's confidence from 0.196 to 0.560 (Figure~\ref{fig:perturbation}b)---approaching the confidence level of random noise inputs (0.558). This reveals that the noise itself drives a default high-confidence mode, and the model's low confidence on night scenes is fragile rather than calibrated.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.99\textwidth]{figures/fig14_perturbation_sensitivity.png}
+\caption{Input perturbation sensitivity on 40 real OpenVLA-7B samples. (a) At $\sigma$=1 (imperceptible noise), 51\% of action tokens change. (b) Adding noise to night scenes \emph{increases} confidence by 3$\times$. (c) Per-dimension stability at $\sigma$=10: dim 0 (lateral) is most robust, while dims 4--5 are near random.}
+\label{fig:perturbation}
+\end{figure}
+
 \subsection{Ablation Studies}
 \label{sec:ablations}
 

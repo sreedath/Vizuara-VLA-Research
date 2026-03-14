@@ -1,0 +1,7428 @@
+{
+  "timestamp": "20260314_121959",
+  "noise_levels": [
+    0,
+    1,
+    5,
+    10,
+    25,
+    50
+  ],
+  "brightness_shifts": [
+    -30,
+    -15,
+    0,
+    15,
+    30
+  ],
+  "per_sample": {
+    "highway": [
+      {
+        "scenario": "highway",
+        "difficulty": "easy",
+        "idx": 0,
+        "base_conf": 0.5339206004141696,
+        "base_entropy": 1.263352186227816,
+        "base_tokens": [
+          109,
+          62,
+          104,
+          105,
+          66,
+          53,
+          64
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.5339206004141696,
+            "mean_entropy": 1.263352186227816,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              62,
+              104,
+              105,
+              66,
+              53,
+              64
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.46604165757510047,
+            "mean_entropy": 1.679990388785622,
+            "token_agree_vs_clean": 0.5714285714285714,
+            "dim_tokens": [
+              109,
+              62,
+              104,
+              106,
+              9,
+              62,
+              64
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.5343709862802446,
+            "mean_entropy": 1.5278740056923457,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              44,
+              88,
+              30
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.5538425095207962,
+            "mean_entropy": 1.3648379137129771,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              132,
+              94,
+              63,
+              57,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5572318343611316,
+            "mean_entropy": 1.2192257727895464,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              25,
+              164,
+              89,
+              43,
+              48,
+              46
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5739943020853303,
+            "mean_entropy": 1.319649841104235,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              41,
+              72,
+              66,
+              35,
+              22,
+              56,
+              145
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.44342692535078876,
+            "mean_entropy": 1.5975956634514918,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              109,
+              62,
+              91,
+              134,
+              22,
+              45,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.47917679405888824,
+            "mean_entropy": 1.5308512960161482,
+            "token_agree_vs_clean": 0.5714285714285714,
+            "dim_tokens": [
+              109,
+              62,
+              104,
+              106,
+              82,
+              42,
+              64
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.5339206004141696,
+            "mean_entropy": 1.263352186227816,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              62,
+              104,
+              105,
+              66,
+              53,
+              64
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.48369466084614876,
+            "mean_entropy": 1.5469324673925127,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              109,
+              62,
+              48,
+              76,
+              50,
+              58,
+              64
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.5927493813174006,
+            "mean_entropy": 1.3519835472106934,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              59,
+              30,
+              68,
+              77
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "highway",
+        "difficulty": "easy",
+        "idx": 1,
+        "base_conf": 0.422303741709829,
+        "base_entropy": 1.8217398268835885,
+        "base_tokens": [
+          72,
+          105,
+          91,
+          181,
+          99,
+          99,
+          92
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.422303741709829,
+            "mean_entropy": 1.8217398268835885,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              72,
+              105,
+              91,
+              181,
+              99,
+              99,
+              92
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.4940766687023077,
+            "mean_entropy": 1.5258450039795466,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              72,
+              172,
+              24,
+              70,
+              73,
+              41,
+              62
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.5614960467938739,
+            "mean_entropy": 1.2739232352801733,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              50,
+              49,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.6530703948146278,
+            "mean_entropy": 1.0261233385120119,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              91,
+              89,
+              117,
+              83,
+              36,
+              40
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.6504982124305828,
+            "mean_entropy": 1.183361532608038,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              100,
+              115,
+              191,
+              55,
+              18,
+              23,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5844733654565287,
+            "mean_entropy": 1.2368302986557995,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              103,
+              132,
+              48,
+              59,
+              70,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.35793516365133576,
+            "mean_entropy": 2.036855527332851,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              72,
+              68,
+              67,
+              56,
+              58,
+              67,
+              62
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.4592249331026803,
+            "mean_entropy": 1.7123815076691764,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              72,
+              172,
+              24,
+              70,
+              73,
+              41,
+              62
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.422303741709829,
+            "mean_entropy": 1.8217398268835885,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              72,
+              105,
+              91,
+              181,
+              99,
+              99,
+              92
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.4589135635629893,
+            "mean_entropy": 1.399329430290631,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              91,
+              141,
+              52,
+              95,
+              53,
+              64
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.5049449957233677,
+            "mean_entropy": 1.4346140282494682,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              69,
+              61,
+              94
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "highway",
+        "difficulty": "easy",
+        "idx": 2,
+        "base_conf": 0.4958408502422577,
+        "base_entropy": 1.5088550703866142,
+        "base_tokens": [
+          109,
+          120,
+          92,
+          60,
+          55,
+          49,
+          32
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.4958408502422577,
+            "mean_entropy": 1.5088550703866142,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              55,
+              49,
+              32
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.5816845370691943,
+            "mean_entropy": 1.2055625404630388,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              102,
+              100,
+              111,
+              93,
+              48,
+              66,
+              70
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.5317733913908788,
+            "mean_entropy": 1.2594532583441054,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              62,
+              59,
+              85,
+              82,
+              60,
+              60
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.6373289495568633,
+            "mean_entropy": 1.0622812572733633,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              67,
+              132,
+              84,
+              32,
+              54,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.6579760341409033,
+            "mean_entropy": 0.9913569042902723,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              91,
+              170,
+              87,
+              56,
+              68,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.616676667369481,
+            "mean_entropy": 1.142661954675402,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              42,
+              30,
+              65,
+              48,
+              36,
+              1
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.5232279430483074,
+            "mean_entropy": 1.30540731549263,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              55,
+              49,
+              32
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.4979336072858827,
+            "mean_entropy": 1.3366473615169525,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              55,
+              49,
+              32
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.4958408502422577,
+            "mean_entropy": 1.5088550703866142,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              55,
+              49,
+              32
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.4900192853789089,
+            "mean_entropy": 1.4480008099427712,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              111,
+              81,
+              49,
+              91,
+              13,
+              48,
+              64
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.5285399561985704,
+            "mean_entropy": 1.3881858863626673,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              111,
+              132,
+              104,
+              96,
+              180,
+              55,
+              64
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "highway",
+        "difficulty": "easy",
+        "idx": 3,
+        "base_conf": 0.4614522837077337,
+        "base_entropy": 1.5183499200003487,
+        "base_tokens": [
+          109,
+          120,
+          92,
+          60,
+          33,
+          68,
+          69
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.4614522837077337,
+            "mean_entropy": 1.5183499200003487,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              33,
+              68,
+              69
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.4498516933295351,
+            "mean_entropy": 1.543885009629386,
+            "token_agree_vs_clean": 0.5714285714285714,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              55,
+              49,
+              32
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.5174250759606376,
+            "mean_entropy": 1.4473465851375036,
+            "token_agree_vs_clean": 0.5714285714285714,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              44,
+              88,
+              30
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.39394441789653084,
+            "mean_entropy": 1.7284450429890836,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              91,
+              87,
+              62,
+              52,
+              16,
+              9
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5039068087414451,
+            "mean_entropy": 1.3034359642437525,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              45,
+              31,
+              181,
+              59,
+              60,
+              47,
+              55
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.7351318941848198,
+            "mean_entropy": 0.8302325521196637,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              41,
+              72,
+              33,
+              191,
+              5,
+              45,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.5091291250240926,
+            "mean_entropy": 1.2716513151629312,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              99,
+              4,
+              191,
+              52,
+              67,
+              66,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.525503585267275,
+            "mean_entropy": 1.466931800829752,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              116,
+              72,
+              44,
+              191,
+              10,
+              38,
+              64
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.4614522837077337,
+            "mean_entropy": 1.5183499200003487,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              33,
+              68,
+              69
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.5421306337655475,
+            "mean_entropy": 1.3339620679616928,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              77,
+              120,
+              62,
+              98
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.4830784693301901,
+            "mean_entropy": 1.5686333520071847,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              120,
+              114,
+              58,
+              28,
+              92,
+              68
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "highway",
+        "difficulty": "easy",
+        "idx": 4,
+        "base_conf": 0.5548867630844861,
+        "base_entropy": 1.2732153577463967,
+        "base_tokens": [
+          109,
+          120,
+          92,
+          60,
+          44,
+          88,
+          30
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.5548867630844861,
+            "mean_entropy": 1.2732153577463967,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              44,
+              88,
+              30
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.5577617305355911,
+            "mean_entropy": 1.249708993094308,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              44,
+              88,
+              30
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.47583795017352554,
+            "mean_entropy": 1.4607865256922585,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              72,
+              172,
+              24,
+              70,
+              3,
+              73,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.703069992572943,
+            "mean_entropy": 0.8476933720189014,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              61,
+              106,
+              64,
+              13,
+              55,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5676444882415104,
+            "mean_entropy": 0.9257888932313237,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              152,
+              108,
+              62,
+              45,
+              38,
+              1
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5392219004250729,
+            "mean_entropy": 1.1951290330339117,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              41,
+              65,
+              19,
+              48,
+              17,
+              52,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.47903802810816143,
+            "mean_entropy": 1.5530858082430703,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              102,
+              53,
+              80,
+              48,
+              52,
+              74,
+              92
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.3951681054572886,
+            "mean_entropy": 1.7575649682964598,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              102,
+              100,
+              64,
+              75,
+              32,
+              52,
+              64
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.5548867630844861,
+            "mean_entropy": 1.2732153577463967,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              44,
+              88,
+              30
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.5390719626227312,
+            "mean_entropy": 1.1607520409992762,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              72,
+              60,
+              81,
+              61,
+              52,
+              65,
+              64
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.5649321515638757,
+            "mean_entropy": 1.2935937302453178,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              102,
+              100,
+              115,
+              59,
+              75,
+              79,
+              59
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "highway",
+        "difficulty": "easy",
+        "idx": 5,
+        "base_conf": 0.45719368804349914,
+        "base_entropy": 1.6429250751222884,
+        "base_tokens": [
+          109,
+          120,
+          92,
+          60,
+          30,
+          68,
+          78
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.45719368804349914,
+            "mean_entropy": 1.6429250751222884,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              30,
+              68,
+              78
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.4725005402944162,
+            "mean_entropy": 1.5268584758700203,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              99,
+              4,
+              94,
+              74,
+              58,
+              18,
+              64
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.6199087088586224,
+            "mean_entropy": 1.1416258641651698,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              77,
+              37,
+              55,
+              49
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.6044999425490515,
+            "mean_entropy": 1.3036272823810577,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              99,
+              4,
+              191,
+              13,
+              19,
+              42,
+              17
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.49922056894362876,
+            "mean_entropy": 1.33298784121871,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              152,
+              108,
+              62,
+              45,
+              18,
+              58
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5846799317711712,
+            "mean_entropy": 1.0477883954376581,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              103,
+              132,
+              110,
+              51,
+              86,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.6444283875837181,
+            "mean_entropy": 1.2064789849537192,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              99,
+              4,
+              13,
+              80,
+              82,
+              42,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.5936029974303321,
+            "mean_entropy": 1.2350731800002646,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              99,
+              4,
+              13,
+              72,
+              80,
+              57,
+              64
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.45719368804349914,
+            "mean_entropy": 1.6429250751222884,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              30,
+              68,
+              78
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.4959940917435744,
+            "mean_entropy": 1.3002788509641374,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              77,
+              21,
+              54,
+              62
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.7098975954383744,
+            "mean_entropy": 0.9173654913902283,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              77,
+              21,
+              54,
+              94
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "highway",
+        "difficulty": "easy",
+        "idx": 6,
+        "base_conf": 0.5731652074285134,
+        "base_entropy": 1.2116484031347292,
+        "base_tokens": [
+          100,
+          115,
+          119,
+          44,
+          23,
+          70,
+          69
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.5731652074285134,
+            "mean_entropy": 1.2116484031347292,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              100,
+              115,
+              119,
+              44,
+              23,
+              70,
+              69
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.4528899617306679,
+            "mean_entropy": 1.6732862506593977,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              102,
+              105,
+              124,
+              78,
+              40,
+              83,
+              89
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.5035214730495208,
+            "mean_entropy": 1.580743432044983,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              181,
+              96,
+              64,
+              70,
+              73
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.4837124915993201,
+            "mean_entropy": 1.379971253020423,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              67,
+              132,
+              84,
+              54,
+              57,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5746119774325567,
+            "mean_entropy": 1.167265395908284,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              62,
+              104,
+              183,
+              150,
+              80,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5099044869884649,
+            "mean_entropy": 1.24641322770289,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              41,
+              72,
+              27,
+              191,
+              36,
+              34,
+              77
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.3853735064108315,
+            "mean_entropy": 1.817930934684617,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              116,
+              72,
+              164,
+              24,
+              1,
+              24,
+              62
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.40838823895466647,
+            "mean_entropy": 1.6144299251692635,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              69,
+              61,
+              42
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.5731652074285134,
+            "mean_entropy": 1.2116484031347292,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              100,
+              115,
+              119,
+              44,
+              23,
+              70,
+              69
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.480184842975291,
+            "mean_entropy": 1.3605296967684157,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              67,
+              132,
+              84,
+              32,
+              54,
+              64
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.5422304012128835,
+            "mean_entropy": 1.2078553452083725,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              110,
+              141,
+              55,
+              8,
+              88,
+              64
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "highway",
+        "difficulty": "easy",
+        "idx": 7,
+        "base_conf": 0.47678156536662014,
+        "base_entropy": 1.5431622862815857,
+        "base_tokens": [
+          109,
+          120,
+          92,
+          60,
+          30,
+          68,
+          78
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.47678156536662014,
+            "mean_entropy": 1.5431622862815857,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              30,
+              68,
+              78
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.5291881308715854,
+            "mean_entropy": 1.3821251754249846,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              62,
+              48,
+              72,
+              40,
+              58,
+              64
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.71471074762768,
+            "mean_entropy": 0.8346257315008968,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              67,
+              132,
+              97,
+              20,
+              58,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.5164044117691329,
+            "mean_entropy": 1.3670505051101958,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              58,
+              30,
+              80,
+              77
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.6143785172491008,
+            "mean_entropy": 1.2700219064551805,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              62,
+              104,
+              55,
+              6,
+              61,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5502013165230865,
+            "mean_entropy": 1.2086498463453446,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              103,
+              173,
+              103,
+              55,
+              44,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.48136128204857437,
+            "mean_entropy": 1.5675555297306605,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              116,
+              78,
+              60,
+              112,
+              52,
+              58,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.5639590669654678,
+            "mean_entropy": 1.3118489405938558,
+            "token_agree_vs_clean": 0.5714285714285714,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              44,
+              88,
+              30
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.47678156536662014,
+            "mean_entropy": 1.5431622862815857,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              30,
+              68,
+              78
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.5350266685308552,
+            "mean_entropy": 1.3399924353062553,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              67,
+              132,
+              84,
+              32,
+              58,
+              64
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.545113739481491,
+            "mean_entropy": 1.291703811760239,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              67,
+              132,
+              84,
+              32,
+              58,
+              64
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "highway",
+        "difficulty": "easy",
+        "idx": 8,
+        "base_conf": 0.44684675196703855,
+        "base_entropy": 1.801329595702035,
+        "base_tokens": [
+          72,
+          154,
+          92,
+          97,
+          49,
+          74,
+          99
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.44684675196703855,
+            "mean_entropy": 1.801329595702035,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              72,
+              154,
+              92,
+              97,
+              49,
+              74,
+              99
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.5056261183066124,
+            "mean_entropy": 1.4956878551415034,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              72,
+              102,
+              94,
+              75,
+              55,
+              71,
+              55
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.6042249760065629,
+            "mean_entropy": 1.1586115658283234,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              102,
+              100,
+              111,
+              93,
+              48,
+              66,
+              70
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.48712991230560915,
+            "mean_entropy": 1.432450430733817,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              62,
+              60,
+              76,
+              74,
+              54,
+              65
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.6182015422820459,
+            "mean_entropy": 1.080338533435549,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              99,
+              2,
+              8,
+              53,
+              48,
+              30,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.6843172382944119,
+            "mean_entropy": 1.0088137643677848,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              42,
+              30,
+              145,
+              8,
+              32,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.49512552601794013,
+            "mean_entropy": 1.4625410191860055,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              21,
+              161,
+              158,
+              100,
+              32,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.4230064662852303,
+            "mean_entropy": 1.6197997033596039,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              72,
+              68,
+              100,
+              61,
+              58,
+              69,
+              66
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.44684675196703855,
+            "mean_entropy": 1.801329595702035,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              72,
+              154,
+              92,
+              97,
+              49,
+              74,
+              99
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.558674125701235,
+            "mean_entropy": 1.1525273195334844,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              72,
+              102,
+              94,
+              75,
+              55,
+              71,
+              55
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.5073920514933745,
+            "mean_entropy": 1.2344372485365187,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              120,
+              119,
+              96,
+              21,
+              79,
+              64
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "highway",
+        "difficulty": "easy",
+        "idx": 9,
+        "base_conf": 0.5120147483688833,
+        "base_entropy": 1.4784548595699303,
+        "base_tokens": [
+          102,
+          4,
+          19,
+          79,
+          86,
+          63,
+          64
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.5120147483688833,
+            "mean_entropy": 1.4784548595699303,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              102,
+              4,
+              19,
+              79,
+              86,
+              63,
+              64
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.492342376436651,
+            "mean_entropy": 1.5861818620136805,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              69,
+              61,
+              93
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.5737171558931285,
+            "mean_entropy": 1.3384908054556166,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              62,
+              104,
+              106,
+              82,
+              42,
+              85
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.6141315913280012,
+            "mean_entropy": 1.1050905244691032,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              120,
+              92,
+              60,
+              50,
+              57,
+              53
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5646815827728635,
+            "mean_entropy": 1.2375912853988535,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              41,
+              65,
+              19,
+              48,
+              40,
+              37,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5449014030553072,
+            "mean_entropy": 1.2458382525614329,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              49,
+              58,
+              136,
+              44,
+              45,
+              40,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.5738111797913292,
+            "mean_entropy": 1.2198108465953348,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              102,
+              53,
+              65,
+              84,
+              9,
+              57,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.5532566990319874,
+            "mean_entropy": 1.185440875727571,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              102,
+              53,
+              65,
+              84,
+              9,
+              57,
+              64
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.5120147483688833,
+            "mean_entropy": 1.4784548595699303,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              102,
+              4,
+              19,
+              79,
+              86,
+              63,
+              64
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.575551764796966,
+            "mean_entropy": 1.2706821938560202,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              102,
+              4,
+              81,
+              27,
+              33,
+              66,
+              64
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.5046486971118692,
+            "mean_entropy": 1.4693336657115392,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              102,
+              100,
+              115,
+              95,
+              38,
+              70,
+              70
+            ]
+          }
+        ]
+      }
+    ],
+    "urban": [
+      {
+        "scenario": "urban",
+        "difficulty": "easy",
+        "idx": 0,
+        "base_conf": 0.4774336856808504,
+        "base_entropy": 1.266843548842839,
+        "base_tokens": [
+          109,
+          115,
+          119,
+          94,
+          32,
+          72,
+          19
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.4774336856808504,
+            "mean_entropy": 1.266843548842839,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              119,
+              94,
+              32,
+              72,
+              19
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.686534475972766,
+            "mean_entropy": 0.9432287953261819,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.7853631991707172,
+            "mean_entropy": 0.5698869834387941,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.6146793176810975,
+            "mean_entropy": 1.0665137214320046,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              129,
+              77,
+              17,
+              77,
+              107
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.706085818917127,
+            "mean_entropy": 0.9624896602971214,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              93,
+              48,
+              30,
+              79,
+              70
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5043274890759085,
+            "mean_entropy": 1.3477639632704137,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              191,
+              147,
+              81,
+              18,
+              191,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.5435883255518759,
+            "mean_entropy": 1.4331426109586443,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              72,
+              68,
+              88,
+              13,
+              63,
+              48,
+              62
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.5966007632707295,
+            "mean_entropy": 1.2571483254432678,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              72,
+              68,
+              88,
+              13,
+              63,
+              48,
+              62
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.4774336856808504,
+            "mean_entropy": 1.266843548842839,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              119,
+              94,
+              32,
+              72,
+              19
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.6829764141423644,
+            "mean_entropy": 0.9189842066594532,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              27
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.7342349294988147,
+            "mean_entropy": 0.9156679260943618,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              27
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "urban",
+        "difficulty": "easy",
+        "idx": 1,
+        "base_conf": 0.5379640125764218,
+        "base_entropy": 1.2236441894367869,
+        "base_tokens": [
+          109,
+          99,
+          140,
+          98,
+          8,
+          68,
+          64
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.5379640125764218,
+            "mean_entropy": 1.2236441894367869,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              99,
+              140,
+              98,
+              8,
+              68,
+              64
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.536665218508324,
+            "mean_entropy": 1.1983005298035485,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              111,
+              97,
+              62,
+              48,
+              79,
+              89
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.61264796385673,
+            "mean_entropy": 1.3149141726264912,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              62,
+              43,
+              61,
+              66,
+              52,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.5143753525260385,
+            "mean_entropy": 1.363829998411737,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              41,
+              72,
+              80,
+              53,
+              87,
+              74,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.7741265357498279,
+            "mean_entropy": 0.7368390091827938,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              118,
+              121,
+              86,
+              21,
+              57,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.7414687408238784,
+            "mean_entropy": 0.7183320308270466,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              93,
+              55,
+              116,
+              85,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.5388307958620969,
+            "mean_entropy": 1.390240385064057,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              72,
+              68,
+              88,
+              13,
+              58,
+              50,
+              67
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.593412943358011,
+            "mean_entropy": 1.116177526967866,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              72,
+              68,
+              88,
+              13,
+              53,
+              42,
+              59
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.5379640125764218,
+            "mean_entropy": 1.2236441894367869,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              99,
+              140,
+              98,
+              8,
+              68,
+              64
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.5555394069620947,
+            "mean_entropy": 1.3090709490435464,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              109,
+              99,
+              140,
+              119,
+              38,
+              57,
+              142
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.58572814645552,
+            "mean_entropy": 1.1170731740338462,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              110,
+              65,
+              35,
+              73,
+              80,
+              69
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "urban",
+        "difficulty": "easy",
+        "idx": 2,
+        "base_conf": 0.7529530644417936,
+        "base_entropy": 0.6949763361896787,
+        "base_tokens": [
+          109,
+          115,
+          114,
+          81,
+          59,
+          59,
+          69
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.7529530644417936,
+            "mean_entropy": 0.6949763361896787,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.618572556636666,
+            "mean_entropy": 1.2184071753706252,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              105,
+              141,
+              16,
+              117,
+              124,
+              112
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.7702157403695805,
+            "mean_entropy": 0.7213518481169429,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.5872604774372707,
+            "mean_entropy": 1.1455135090010506,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              118,
+              137,
+              96,
+              8,
+              66,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.6844475711089849,
+            "mean_entropy": 0.8065917427052877,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              99,
+              33,
+              76,
+              17,
+              54,
+              47
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.618135379596455,
+            "mean_entropy": 0.9864362991081309,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              103,
+              132,
+              96,
+              25,
+              71,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.6048909860382585,
+            "mean_entropy": 1.033061615058354,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.7079687974975095,
+            "mean_entropy": 0.8591198176145554,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.7529530644417936,
+            "mean_entropy": 0.6949763361896787,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.7820878801212999,
+            "mean_entropy": 0.6892393433621952,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.7331177129293083,
+            "mean_entropy": 0.7495458063536456,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              116,
+              77,
+              80,
+              111,
+              48,
+              92,
+              64
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "urban",
+        "difficulty": "easy",
+        "idx": 3,
+        "base_conf": 0.8631034189131399,
+        "base_entropy": 0.47349770473582403,
+        "base_tokens": [
+          109,
+          115,
+          114,
+          81,
+          59,
+          59,
+          69
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.8631034189131399,
+            "mean_entropy": 0.47349770473582403,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.9295009503924677,
+            "mean_entropy": 0.3438971979277475,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.8450269371315147,
+            "mean_entropy": 0.5021882660886539,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              27
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.5962994084420326,
+            "mean_entropy": 1.0351687084351266,
+            "token_agree_vs_clean": 0.5714285714285714,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              11,
+              68,
+              53
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.670474581037143,
+            "mean_entropy": 0.8373757153749466,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              102,
+              2,
+              130,
+              191,
+              3,
+              14,
+              46
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5745716285323691,
+            "mean_entropy": 1.260207480836763,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              103,
+              175,
+              106,
+              51,
+              75,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.601905520561947,
+            "mean_entropy": 1.2446791444505965,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              77,
+              32,
+              83,
+              53
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.7665634185661003,
+            "mean_entropy": 0.6241470554045269,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.8631034189131399,
+            "mean_entropy": 0.47349770473582403,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.8897034937454207,
+            "mean_entropy": 0.4259423390030861,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.7858517251912043,
+            "mean_entropy": 0.6644282186669963,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "urban",
+        "difficulty": "easy",
+        "idx": 4,
+        "base_conf": 0.8387319585807639,
+        "base_entropy": 0.5862592988248382,
+        "base_tokens": [
+          109,
+          115,
+          114,
+          81,
+          59,
+          59,
+          69
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.8387319585807639,
+            "mean_entropy": 0.5862592988248382,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.5800935458403585,
+            "mean_entropy": 1.3033339551516943,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              120,
+              114,
+              58,
+              30,
+              81,
+              121
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.8394056445981231,
+            "mean_entropy": 0.5693013753209796,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.37980371363456117,
+            "mean_entropy": 1.5763066836765833,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              102,
+              144,
+              111,
+              99,
+              62,
+              74,
+              95
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.7269095799180801,
+            "mean_entropy": 0.8057699427008629,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              102,
+              150,
+              113,
+              60,
+              44,
+              95,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5134205092265061,
+            "mean_entropy": 1.4600273498467036,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              45,
+              94,
+              109,
+              84,
+              51,
+              35,
+              66
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.5355134795510639,
+            "mean_entropy": 1.4080081284046173,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              77,
+              32,
+              83,
+              53
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.7670324150009568,
+            "mean_entropy": 0.7388570840869632,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.8387319585807639,
+            "mean_entropy": 0.5862592988248382,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.8361707871354204,
+            "mean_entropy": 0.5298418184476239,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.8325427173619516,
+            "mean_entropy": 0.5416572905544724,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "urban",
+        "difficulty": "easy",
+        "idx": 5,
+        "base_conf": 0.5435879445950024,
+        "base_entropy": 1.3438349983521871,
+        "base_tokens": [
+          52,
+          109,
+          100,
+          61,
+          47,
+          67,
+          67
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.5435879445950024,
+            "mean_entropy": 1.3438349983521871,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              109,
+              100,
+              61,
+              47,
+              67,
+              67
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.5525112200552748,
+            "mean_entropy": 1.0354205135788237,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              25,
+              37,
+              57,
+              30,
+              40,
+              64
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.738695886281152,
+            "mean_entropy": 0.9275289816515786,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.50851439616024,
+            "mean_entropy": 1.3506379297801427,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              45,
+              94,
+              74,
+              38,
+              51,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5094920556976655,
+            "mean_entropy": 1.3921696309532439,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              152,
+              133,
+              143,
+              48,
+              89,
+              92
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5915249411368924,
+            "mean_entropy": 0.9759047393287931,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              94,
+              97,
+              49,
+              85,
+              86,
+              69
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.630499504006254,
+            "mean_entropy": 1.1537975413458688,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              72,
+              68,
+              88,
+              13,
+              53,
+              42,
+              70
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.6353573481492594,
+            "mean_entropy": 1.0492460812841142,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              72,
+              68,
+              88,
+              13,
+              53,
+              42,
+              70
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.5435879445950024,
+            "mean_entropy": 1.3438349983521871,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              109,
+              100,
+              61,
+              47,
+              67,
+              67
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.6949284897476528,
+            "mean_entropy": 0.8957870762263026,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.709852645053275,
+            "mean_entropy": 0.8760629934923989,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              27
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "urban",
+        "difficulty": "easy",
+        "idx": 6,
+        "base_conf": 0.44306042176809324,
+        "base_entropy": 1.6853718529704824,
+        "base_tokens": [
+          109,
+          62,
+          91,
+          86,
+          159,
+          30,
+          64
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.44306042176809324,
+            "mean_entropy": 1.6853718529704824,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              62,
+              91,
+              86,
+              159,
+              30,
+              64
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.4736413409479088,
+            "mean_entropy": 1.6276499032974243,
+            "token_agree_vs_clean": 0.5714285714285714,
+            "dim_tokens": [
+              109,
+              62,
+              103,
+              86,
+              76,
+              91,
+              64
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.7357703186254093,
+            "mean_entropy": 0.895543866564237,
+            "token_agree_vs_clean": 0.7142857142857143,
+            "dim_tokens": [
+              109,
+              62,
+              91,
+              86,
+              22,
+              11,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.7172035251654559,
+            "mean_entropy": 0.8241726351635796,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              78,
+              30,
+              15,
+              70
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5760554425274852,
+            "mean_entropy": 1.1040411463805608,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              118,
+              161,
+              55,
+              2,
+              86,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.8246363368102819,
+            "mean_entropy": 0.6151027639529535,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              93,
+              55,
+              116,
+              86,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.44831695941520433,
+            "mean_entropy": 1.5619339176586695,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              78,
+              34,
+              172,
+              68,
+              48,
+              47
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.611118478513222,
+            "mean_entropy": 1.1761585199939353,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.44306042176809324,
+            "mean_entropy": 1.6853718529704824,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              62,
+              91,
+              86,
+              159,
+              30,
+              64
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.7907970820868099,
+            "mean_entropy": 0.7993038852832147,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.7189424543333793,
+            "mean_entropy": 0.8598708499755178,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "urban",
+        "difficulty": "easy",
+        "idx": 7,
+        "base_conf": 0.8674566245891617,
+        "base_entropy": 0.5222024728677103,
+        "base_tokens": [
+          109,
+          115,
+          114,
+          81,
+          59,
+          59,
+          69
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.8674566245891617,
+            "mean_entropy": 0.5222024728677103,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.8634080802047991,
+            "mean_entropy": 0.5187784901687077,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.6989820435011337,
+            "mean_entropy": 0.8444029135363442,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              27
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.5833443038040096,
+            "mean_entropy": 1.111790549573925,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              139,
+              58,
+              3,
+              57,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5257279065259912,
+            "mean_entropy": 1.3366240763238497,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              118,
+              121,
+              86,
+              21,
+              18,
+              59
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.629678606941876,
+            "mean_entropy": 1.1882709520203727,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              99,
+              89,
+              48,
+              92,
+              51,
+              30
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.587680292506657,
+            "mean_entropy": 1.3640975100653512,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              77,
+              32,
+              83,
+              89
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.7912263175267241,
+            "mean_entropy": 0.8372919335961342,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.8674566245891617,
+            "mean_entropy": 0.5222024728677103,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.9068826025655349,
+            "mean_entropy": 0.38774924060063704,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.7972883732265721,
+            "mean_entropy": 0.5347566748304027,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              27
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "urban",
+        "difficulty": "easy",
+        "idx": 8,
+        "base_conf": 0.8970226801783078,
+        "base_entropy": 0.41966342606714796,
+        "base_tokens": [
+          109,
+          115,
+          114,
+          81,
+          59,
+          59,
+          69
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.8970226801783078,
+            "mean_entropy": 0.41966342606714796,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.8962836592594868,
+            "mean_entropy": 0.4795503073504993,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.44522161534334487,
+            "mean_entropy": 1.487442033631461,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              62,
+              116,
+              81,
+              86,
+              42,
+              98
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.6494440257071624,
+            "mean_entropy": 0.9378679586308343,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.6179611469655268,
+            "mean_entropy": 0.989709965178268,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              103,
+              132,
+              96,
+              60,
+              71,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.6065216843986035,
+            "mean_entropy": 1.1343863490952313,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              99,
+              33,
+              76,
+              17,
+              52,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.8034984900951915,
+            "mean_entropy": 0.6654704979487828,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.8554043630005435,
+            "mean_entropy": 0.5225792122738702,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.8970226801783078,
+            "mean_entropy": 0.41966342606714796,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.8976056444508165,
+            "mean_entropy": 0.4509209490248135,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.801017828585912,
+            "mean_entropy": 0.665637598506042,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "urban",
+        "difficulty": "easy",
+        "idx": 9,
+        "base_conf": 0.850510360622216,
+        "base_entropy": 0.5789803394249508,
+        "base_tokens": [
+          109,
+          115,
+          114,
+          81,
+          59,
+          59,
+          69
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.850510360622216,
+            "mean_entropy": 0.5789803394249508,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.7853069040900018,
+            "mean_entropy": 0.7155496986316783,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.6251058529615131,
+            "mean_entropy": 1.2551945533071245,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              109,
+              115,
+              136,
+              96,
+              60,
+              81,
+              121
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.7524710542195429,
+            "mean_entropy": 0.7541187722901148,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.6428724492132213,
+            "mean_entropy": 1.07175155063825,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              109,
+              115,
+              132,
+              78,
+              59,
+              45,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.6416906022286026,
+            "mean_entropy": 0.892923964266499,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              109,
+              44,
+              112,
+              55,
+              45,
+              77,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.6307016227951731,
+            "mean_entropy": 0.9857833726065499,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              116,
+              77,
+              80,
+              111,
+              71,
+              191,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.5593724049960953,
+            "mean_entropy": 1.2232652519430434,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              116,
+              77,
+              80,
+              111,
+              69,
+              110,
+              21
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.850510360622216,
+            "mean_entropy": 0.5789803394249508,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.8661157052562597,
+            "mean_entropy": 0.5652431453179035,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.7239226126706556,
+            "mean_entropy": 0.8267066396240678,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              109,
+              115,
+              114,
+              81,
+              59,
+              59,
+              69
+            ]
+          }
+        ]
+      }
+    ],
+    "night": [
+      {
+        "scenario": "night",
+        "difficulty": "hard",
+        "idx": 0,
+        "base_conf": 0.09771498409150042,
+        "base_entropy": 3.883425780705043,
+        "base_tokens": [
+          79,
+          36,
+          28,
+          49,
+          63,
+          121,
+          72
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.09771498409150042,
+            "mean_entropy": 3.883425780705043,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              79,
+              36,
+              28,
+              49,
+              63,
+              121,
+              72
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.23726442302026685,
+            "mean_entropy": 2.6563236032213484,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              14,
+              12,
+              191,
+              15,
+              11,
+              52
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.15913300264050267,
+            "mean_entropy": 3.7406624385288785,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              147,
+              191,
+              53,
+              63,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.3738940199002849,
+            "mean_entropy": 2.153865762650497,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              21,
+              52,
+              101,
+              72,
+              7,
+              52,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.4299032872598848,
+            "mean_entropy": 1.649190116673708,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              61,
+              106,
+              48,
+              32,
+              55,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.47226991362455323,
+            "mean_entropy": 1.6238850261894495,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              81,
+              29,
+              177,
+              28,
+              63,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.1652254856684659,
+            "mean_entropy": 3.467536245073591,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              133,
+              97,
+              191,
+              110,
+              34
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.16898604256567995,
+            "mean_entropy": 3.3437883853912354,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              61,
+              191,
+              103,
+              129,
+              27,
+              97,
+              122
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.09771498409150042,
+            "mean_entropy": 3.883425780705043,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              79,
+              36,
+              28,
+              49,
+              63,
+              121,
+              72
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.13848559118497952,
+            "mean_entropy": 3.6286444323403493,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              154,
+              81,
+              79,
+              123,
+              117
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.10980210915831963,
+            "mean_entropy": 3.939920221056257,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              191,
+              34,
+              71,
+              35,
+              191,
+              64
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "night",
+        "difficulty": "hard",
+        "idx": 1,
+        "base_conf": 0.1972011935773486,
+        "base_entropy": 2.7591514928000316,
+        "base_tokens": [
+          52,
+          32,
+          102,
+          72,
+          34,
+          49,
+          54
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.1972011935773486,
+            "mean_entropy": 2.7591514928000316,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              32,
+              102,
+              72,
+              34,
+              49,
+              54
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.2603916831820202,
+            "mean_entropy": 2.4298449839864458,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              70,
+              81,
+              85,
+              58,
+              61
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.3032891066189977,
+            "mean_entropy": 2.413513353892735,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              71,
+              81,
+              86,
+              58,
+              55
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.432788708796892,
+            "mean_entropy": 1.8168131751673562,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              65,
+              84,
+              48,
+              55,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.566463470088255,
+            "mean_entropy": 1.1666611297322171,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              109,
+              30,
+              52,
+              191,
+              61,
+              61,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.6147615262976447,
+            "mean_entropy": 1.2571592267070497,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              71,
+              61,
+              84,
+              50,
+              59,
+              52
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.159116190696588,
+            "mean_entropy": 3.4772025176456998,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              133,
+              97,
+              191,
+              110,
+              81
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.20570714616558233,
+            "mean_entropy": 3.0603760672467097,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              132,
+              99,
+              191,
+              58,
+              1
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.1972011935773486,
+            "mean_entropy": 2.7591514928000316,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              32,
+              102,
+              72,
+              34,
+              49,
+              54
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.2597978252711082,
+            "mean_entropy": 2.5227055507046834,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              71,
+              81,
+              86,
+              58,
+              55
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.18990554982385605,
+            "mean_entropy": 3.1507735592978343,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              85,
+              4,
+              174,
+              56,
+              55,
+              31,
+              73
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "night",
+        "difficulty": "hard",
+        "idx": 2,
+        "base_conf": 0.19002921662130978,
+        "base_entropy": 3.1344662734440396,
+        "base_tokens": [
+          103,
+          14,
+          7,
+          191,
+          15,
+          7,
+          64
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.19002921662130978,
+            "mean_entropy": 3.1344662734440396,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              103,
+              14,
+              7,
+              191,
+              15,
+              7,
+              64
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.24937316770005477,
+            "mean_entropy": 2.824353643826076,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              103,
+              14,
+              13,
+              191,
+              16,
+              11,
+              57
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.36823514238523836,
+            "mean_entropy": 2.093007445335388,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              38,
+              109,
+              75,
+              44,
+              40,
+              48
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.3731303458460972,
+            "mean_entropy": 2.1455411996160234,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              61,
+              71,
+              81,
+              85,
+              53,
+              61
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.42787436255263345,
+            "mean_entropy": 1.662276598491839,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              102,
+              191,
+              158,
+              64,
+              18,
+              114,
+              103
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.6634319983098732,
+            "mean_entropy": 0.9957299019609179,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              100,
+              191,
+              139,
+              191,
+              45,
+              66,
+              100
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.14468961102583822,
+            "mean_entropy": 3.5516527720860074,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              103,
+              191,
+              133,
+              97,
+              191,
+              110,
+              34
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.14616341554795392,
+            "mean_entropy": 3.4810522283826555,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              103,
+              191,
+              126,
+              81,
+              191,
+              58,
+              77
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.19002921662130978,
+            "mean_entropy": 3.1344662734440396,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              103,
+              14,
+              7,
+              191,
+              15,
+              7,
+              64
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.21724942303503558,
+            "mean_entropy": 3.0892204216548373,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              103,
+              14,
+              7,
+              191,
+              15,
+              7,
+              64
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.28243253455367956,
+            "mean_entropy": 2.5756811254790852,
+            "token_agree_vs_clean": 0.5714285714285714,
+            "dim_tokens": [
+              103,
+              14,
+              12,
+              191,
+              99,
+              95,
+              64
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "night",
+        "difficulty": "hard",
+        "idx": 3,
+        "base_conf": 0.24094881350727612,
+        "base_entropy": 2.7583953653063094,
+        "base_tokens": [
+          52,
+          38,
+          102,
+          69,
+          44,
+          40,
+          47
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.24094881350727612,
+            "mean_entropy": 2.7583953653063094,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              38,
+              102,
+              69,
+              44,
+              40,
+              47
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.23754220318127475,
+            "mean_entropy": 2.6689478158950806,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              70,
+              72,
+              65,
+              52,
+              68
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.30252572969961633,
+            "mean_entropy": 2.522416523524693,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              52,
+              42,
+              102,
+              66,
+              24,
+              49,
+              58
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.3874954270222035,
+            "mean_entropy": 2.166292199066707,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              52,
+              61,
+              71,
+              181,
+              55,
+              54,
+              47
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5134414908115622,
+            "mean_entropy": 1.5789879645620073,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              100,
+              10,
+              191,
+              34,
+              1,
+              36,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.6558862756795298,
+            "mean_entropy": 0.956658771527665,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              23,
+              49,
+              58,
+              59,
+              38,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.1466625676295237,
+            "mean_entropy": 3.5166228158133372,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              133,
+              97,
+              191,
+              110,
+              27
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.20352310643513177,
+            "mean_entropy": 3.0098619780370166,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              132,
+              99,
+              191,
+              58,
+              62
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.24094881350727612,
+            "mean_entropy": 2.7583953653063094,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              38,
+              102,
+              69,
+              44,
+              40,
+              47
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.23025305582992844,
+            "mean_entropy": 2.851121493748256,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              65,
+              104,
+              72,
+              65,
+              61,
+              79
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.1943968785949886,
+            "mean_entropy": 2.975972844021661,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              65,
+              104,
+              72,
+              21,
+              73,
+              64
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "night",
+        "difficulty": "hard",
+        "idx": 4,
+        "base_conf": 0.19489676575865086,
+        "base_entropy": 3.0597901344299316,
+        "base_tokens": [
+          52,
+          38,
+          102,
+          69,
+          44,
+          40,
+          44
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.19489676575865086,
+            "mean_entropy": 3.0597901344299316,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              38,
+              102,
+              69,
+              44,
+              40,
+              44
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.20049456414414016,
+            "mean_entropy": 3.0843142100742886,
+            "token_agree_vs_clean": 0.7142857142857143,
+            "dim_tokens": [
+              52,
+              38,
+              102,
+              69,
+              44,
+              52,
+              64
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.20702187092128851,
+            "mean_entropy": 2.9842440400804793,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              42,
+              100,
+              66,
+              24,
+              49,
+              54
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.2697660426031607,
+            "mean_entropy": 2.4868349702529877,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              71,
+              134,
+              11,
+              41,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.608254789944901,
+            "mean_entropy": 1.2662671761853355,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              100,
+              191,
+              139,
+              191,
+              100,
+              59,
+              90
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.4382206032364206,
+            "mean_entropy": 1.8290625512599945,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              87,
+              72,
+              65,
+              102,
+              60,
+              65
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.16046092822339597,
+            "mean_entropy": 3.436572108949934,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              133,
+              97,
+              191,
+              110,
+              45
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.14537365285719925,
+            "mean_entropy": 3.682429449898856,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              71,
+              62,
+              191,
+              54,
+              115
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.19489676575865086,
+            "mean_entropy": 3.0597901344299316,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              38,
+              102,
+              69,
+              44,
+              40,
+              44
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.18101695985061703,
+            "mean_entropy": 3.041399836540222,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              52,
+              52,
+              77,
+              69,
+              55,
+              56,
+              55
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.17983216059712318,
+            "mean_entropy": 2.884890709604536,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              65,
+              86,
+              80,
+              52,
+              59
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "night",
+        "difficulty": "hard",
+        "idx": 5,
+        "base_conf": 0.24729084371448865,
+        "base_entropy": 2.812639287539891,
+        "base_tokens": [
+          103,
+          191,
+          17,
+          125,
+          121,
+          35,
+          53
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.24729084371448865,
+            "mean_entropy": 2.812639287539891,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              103,
+              191,
+              17,
+              125,
+              121,
+              35,
+              53
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.24241019001914677,
+            "mean_entropy": 2.697523832321167,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              103,
+              14,
+              17,
+              125,
+              149,
+              45,
+              64
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.21266948059210952,
+            "mean_entropy": 2.7202566351209367,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              42,
+              100,
+              74,
+              44,
+              55,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.3306109117813236,
+            "mean_entropy": 2.495093975748335,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              61,
+              70,
+              49,
+              52,
+              47,
+              63
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5316736638938978,
+            "mean_entropy": 1.4535996637174062,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              63,
+              76,
+              191,
+              43,
+              57,
+              38
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.3968602990376914,
+            "mean_entropy": 1.856771469116211,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              71,
+              85,
+              52,
+              53,
+              54,
+              35
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.1689135986965405,
+            "mean_entropy": 3.3231662682124545,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              103,
+              191,
+              133,
+              97,
+              191,
+              110,
+              109
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.20355727190128325,
+            "mean_entropy": 3.079694948026112,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              103,
+              191,
+              132,
+              99,
+              191,
+              58,
+              62
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.24729084371448865,
+            "mean_entropy": 2.812639287539891,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              103,
+              191,
+              17,
+              125,
+              121,
+              35,
+              53
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.20416672814498793,
+            "mean_entropy": 3.1755001034055437,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              103,
+              191,
+              154,
+              81,
+              62,
+              129,
+              191
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.22450692475912695,
+            "mean_entropy": 3.1326311997004916,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              85,
+              4,
+              185,
+              74,
+              70,
+              73,
+              39
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "night",
+        "difficulty": "hard",
+        "idx": 6,
+        "base_conf": 0.16930099853955902,
+        "base_entropy": 3.358914681843349,
+        "base_tokens": [
+          52,
+          38,
+          45,
+          98,
+          69,
+          58,
+          51
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.16930099853955902,
+            "mean_entropy": 3.358914681843349,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              38,
+              45,
+              98,
+              69,
+              58,
+              51
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.20316718088266564,
+            "mean_entropy": 3.0421860218048096,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              14,
+              17,
+              107,
+              98,
+              36,
+              53
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.27840775718868827,
+            "mean_entropy": 2.3719050756522586,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              52,
+              61,
+              71,
+              81,
+              86,
+              58,
+              56
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.401568027020862,
+            "mean_entropy": 2.1464498383658275,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              70,
+              49,
+              52,
+              47,
+              52
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.3975193067125738,
+            "mean_entropy": 1.6809982827731542,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              63,
+              76,
+              191,
+              42,
+              93,
+              53
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5979462429662842,
+            "mean_entropy": 1.1604730359145574,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              100,
+              11,
+              191,
+              63,
+              74,
+              87,
+              24
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.15900748823601024,
+            "mean_entropy": 3.489853722708566,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              133,
+              97,
+              191,
+              110,
+              34
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.1739544309541156,
+            "mean_entropy": 3.117889684225832,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              103,
+              191,
+              132,
+              99,
+              191,
+              58,
+              62
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.16930099853955902,
+            "mean_entropy": 3.358914681843349,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              38,
+              45,
+              98,
+              69,
+              58,
+              51
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.1655921330147493,
+            "mean_entropy": 3.198927743094308,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              76,
+              191,
+              72,
+              53,
+              10
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.21133070478648103,
+            "mean_entropy": 3.434412888118199,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              191,
+              96,
+              137,
+              73,
+              191,
+              83
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "night",
+        "difficulty": "hard",
+        "idx": 7,
+        "base_conf": 0.18329712990100835,
+        "base_entropy": 3.0726960940020427,
+        "base_tokens": [
+          47,
+          44,
+          94,
+          79,
+          51,
+          66,
+          52
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.18329712990100835,
+            "mean_entropy": 3.0726960940020427,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              47,
+              44,
+              94,
+              79,
+              51,
+              66,
+              52
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.14218777528166948,
+            "mean_entropy": 3.294567738260542,
+            "token_agree_vs_clean": 0.7142857142857143,
+            "dim_tokens": [
+              47,
+              44,
+              94,
+              74,
+              51,
+              68,
+              52
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.32097606507199516,
+            "mean_entropy": 2.19917893409729,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              61,
+              71,
+              81,
+              86,
+              58,
+              55
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.21074938018209805,
+            "mean_entropy": 2.9291705744607106,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              48,
+              71,
+              65,
+              65,
+              61,
+              70,
+              55
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5564034043946108,
+            "mean_entropy": 1.249515222651618,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              65,
+              55,
+              52,
+              59,
+              60,
+              55
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5648127471811082,
+            "mean_entropy": 1.236870750784874,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              71,
+              61,
+              58,
+              37,
+              64,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.1609341865832317,
+            "mean_entropy": 3.420337234224592,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              133,
+              97,
+              191,
+              110,
+              34
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.17360019131169988,
+            "mean_entropy": 3.549180167061942,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              134,
+              191,
+              172,
+              91,
+              132
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.18329712990100835,
+            "mean_entropy": 3.0726960940020427,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              47,
+              44,
+              94,
+              79,
+              51,
+              66,
+              52
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.29129942704655154,
+            "mean_entropy": 2.3619775686945235,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              61,
+              70,
+              81,
+              86,
+              58,
+              55
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.23197557481858025,
+            "mean_entropy": 2.756697961262294,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              61,
+              92,
+              74,
+              40,
+              56,
+              63
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "night",
+        "difficulty": "hard",
+        "idx": 8,
+        "base_conf": 0.19612380409281455,
+        "base_entropy": 3.0552200249263217,
+        "base_tokens": [
+          52,
+          38,
+          102,
+          69,
+          44,
+          40,
+          48
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.19612380409281455,
+            "mean_entropy": 3.0552200249263217,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              38,
+              102,
+              69,
+              44,
+              40,
+              48
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.19681829648843352,
+            "mean_entropy": 3.041361059461321,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              52,
+              38,
+              102,
+              69,
+              44,
+              40,
+              44
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.23220575207967434,
+            "mean_entropy": 2.806128280503409,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              52,
+              42,
+              92,
+              75,
+              46,
+              49,
+              48
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.4780396220390257,
+            "mean_entropy": 1.7483833134174347,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              65,
+              59,
+              63,
+              58,
+              58,
+              51
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5164889513815274,
+            "mean_entropy": 1.5137122358594621,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              100,
+              11,
+              179,
+              63,
+              61,
+              31,
+              57
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.7715065313910887,
+            "mean_entropy": 0.7657041411314692,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              23,
+              49,
+              58,
+              59,
+              38,
+              54
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.14797451527927094,
+            "mean_entropy": 3.490255730492728,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              133,
+              97,
+              191,
+              110,
+              34
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.14904415636652865,
+            "mean_entropy": 3.7697217805044994,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              103,
+              191,
+              134,
+              191,
+              172,
+              44,
+              53
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.19612380409281455,
+            "mean_entropy": 3.0552200249263217,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              38,
+              102,
+              69,
+              44,
+              40,
+              48
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.2646027260404925,
+            "mean_entropy": 2.6523525970322743,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              70,
+              81,
+              86,
+              58,
+              55
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.18764178302477966,
+            "mean_entropy": 3.1325343676975796,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              76,
+              84,
+              72,
+              60,
+              61
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "night",
+        "difficulty": "hard",
+        "idx": 9,
+        "base_conf": 0.24184762005869248,
+        "base_entropy": 2.636022891317095,
+        "base_tokens": [
+          103,
+          14,
+          12,
+          191,
+          16,
+          11,
+          64
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.24184762005869248,
+            "mean_entropy": 2.636022891317095,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              103,
+              14,
+              12,
+              191,
+              16,
+              11,
+              64
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.2061431561438153,
+            "mean_entropy": 2.73001572063991,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              32,
+              102,
+              72,
+              55,
+              45,
+              47
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.15103091593083648,
+            "mean_entropy": 3.2420478888920377,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              42,
+              102,
+              72,
+              90,
+              66,
+              43
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.42730945564418954,
+            "mean_entropy": 1.7855206387383598,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              61,
+              106,
+              58,
+              23,
+              55,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5188145202977751,
+            "mean_entropy": 1.4921111847673143,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              63,
+              76,
+              191,
+              43,
+              57,
+              45
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.4275728913777476,
+            "mean_entropy": 1.7589999096734183,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              96,
+              191,
+              55,
+              67,
+              57,
+              37
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.1810698424492844,
+            "mean_entropy": 3.3222407272883823,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              103,
+              191,
+              133,
+              97,
+              191,
+              110,
+              87
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.21253595376750686,
+            "mean_entropy": 2.7203953436442783,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              103,
+              14,
+              12,
+              191,
+              16,
+              11,
+              64
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.24184762005869248,
+            "mean_entropy": 2.636022891317095,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              103,
+              14,
+              12,
+              191,
+              16,
+              11,
+              64
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.21150490856534404,
+            "mean_entropy": 3.02519462789808,
+            "token_agree_vs_clean": 0.5714285714285714,
+            "dim_tokens": [
+              103,
+              14,
+              7,
+              191,
+              15,
+              7,
+              64
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.16400854765123896,
+            "mean_entropy": 3.1082307270595004,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              61,
+              84,
+              86,
+              51,
+              61,
+              54
+            ]
+          }
+        ]
+      }
+    ],
+    "ood_noise": [
+      {
+        "scenario": "ood_noise",
+        "difficulty": "ood",
+        "idx": 0,
+        "base_conf": 0.6121298998607566,
+        "base_entropy": 0.9825192216251578,
+        "base_tokens": [
+          81,
+          1,
+          59,
+          55,
+          58,
+          68,
+          61
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.6121298998607566,
+            "mean_entropy": 0.9825192216251578,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              81,
+              1,
+              59,
+              55,
+              58,
+              68,
+              61
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.5900672615450389,
+            "mean_entropy": 0.9804835511105401,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              81,
+              38,
+              57,
+              50,
+              40,
+              16,
+              38
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.5254190539745783,
+            "mean_entropy": 1.2273977441447121,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              81,
+              38,
+              57,
+              50,
+              45,
+              16,
+              58
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.6395012976480189,
+            "mean_entropy": 0.9547367542982101,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              81,
+              38,
+              57,
+              50,
+              40,
+              16,
+              38
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.7473163758340811,
+            "mean_entropy": 0.9281817408544677,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              50,
+              173,
+              90,
+              41,
+              68,
+              39
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5572888185388692,
+            "mean_entropy": 1.3070377899067742,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              42,
+              124,
+              75,
+              35,
+              69,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.5747401512591119,
+            "mean_entropy": 1.1747512647083826,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              42,
+              67,
+              53,
+              40,
+              44,
+              38
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.49595838254234065,
+            "mean_entropy": 1.4486754479543638,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              42,
+              124,
+              75,
+              13,
+              46,
+              64
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.6121298998607566,
+            "mean_entropy": 0.9825192216251578,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              81,
+              1,
+              59,
+              55,
+              58,
+              68,
+              61
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.5867393215015422,
+            "mean_entropy": 0.9220341545130525,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              81,
+              38,
+              57,
+              50,
+              29,
+              42,
+              6
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.5711161961234671,
+            "mean_entropy": 1.149166660649436,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              42,
+              45,
+              56,
+              53,
+              23,
+              63
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "ood_noise",
+        "difficulty": "ood",
+        "idx": 1,
+        "base_conf": 0.736132314023396,
+        "base_entropy": 0.8553069276469094,
+        "base_tokens": [
+          52,
+          20,
+          127,
+          59,
+          45,
+          51,
+          64
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.736132314023396,
+            "mean_entropy": 0.8553069276469094,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              45,
+              51,
+              64
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.7260741151719103,
+            "mean_entropy": 0.8699348462479455,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              45,
+              51,
+              64
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.6717605286759796,
+            "mean_entropy": 0.9990437754562923,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              45,
+              51,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.730065170817795,
+            "mean_entropy": 0.8737390616110393,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              45,
+              51,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.7303636631929228,
+            "mean_entropy": 0.9863954952784947,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              45,
+              51,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.49161529175251445,
+            "mean_entropy": 1.4420354621750968,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              57,
+              134,
+              138,
+              50,
+              48,
+              24,
+              70
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.8005557625060162,
+            "mean_entropy": 0.7413162248475211,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              45,
+              51,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.8063905373056492,
+            "mean_entropy": 0.7488652340003422,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              45,
+              51,
+              64
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.736132314023396,
+            "mean_entropy": 0.8553069276469094,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              45,
+              51,
+              64
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.6096328859794699,
+            "mean_entropy": 1.0054453292063303,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              57,
+              49,
+              164,
+              58,
+              31,
+              39,
+              52
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.6746331946670554,
+            "mean_entropy": 1.0505332478455134,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              57,
+              49,
+              113,
+              78,
+              92,
+              74,
+              57
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "ood_noise",
+        "difficulty": "ood",
+        "idx": 2,
+        "base_conf": 0.47992295617536024,
+        "base_entropy": 1.4923713632992335,
+        "base_tokens": [
+          52,
+          20,
+          127,
+          59,
+          47,
+          26,
+          64
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.47992295617536024,
+            "mean_entropy": 1.4923713632992335,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              47,
+              26,
+              64
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.4967205867590991,
+            "mean_entropy": 1.4208691034998213,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              47,
+              26,
+              49
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.6260603838272881,
+            "mean_entropy": 1.194426349231175,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              52,
+              20,
+              49,
+              58,
+              59,
+              73,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.5729743419173897,
+            "mean_entropy": 1.1587547697126865,
+            "token_agree_vs_clean": 0.7142857142857143,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              26,
+              52,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.6697516375185186,
+            "mean_entropy": 1.0026710071334881,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              52,
+              20,
+              49,
+              58,
+              47,
+              49,
+              52
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.7421292737355037,
+            "mean_entropy": 0.8306438199111393,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              38,
+              176,
+              65,
+              55,
+              59,
+              56
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.7181088288692127,
+            "mean_entropy": 0.739493807461778,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              52,
+              20,
+              49,
+              58,
+              47,
+              49,
+              52
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.6986747401578148,
+            "mean_entropy": 0.9043304408966962,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              52,
+              20,
+              49,
+              58,
+              47,
+              49,
+              52
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.47992295617536024,
+            "mean_entropy": 1.4923713632992335,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              59,
+              47,
+              26,
+              64
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.5879705249036343,
+            "mean_entropy": 1.2951019217393227,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              38,
+              191,
+              73,
+              88,
+              43,
+              46
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.48680860501347867,
+            "mean_entropy": 1.2644093211274594,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              38,
+              191,
+              73,
+              87,
+              6,
+              25
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "ood_noise",
+        "difficulty": "ood",
+        "idx": 3,
+        "base_conf": 0.6551405540535793,
+        "base_entropy": 1.0432609362261636,
+        "base_tokens": [
+          41,
+          65,
+          45,
+          59,
+          16,
+          46,
+          64
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.6551405540535793,
+            "mean_entropy": 1.0432609362261636,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              41,
+              65,
+              45,
+              59,
+              16,
+              46,
+              64
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.7311073567395993,
+            "mean_entropy": 0.9149362721613475,
+            "token_agree_vs_clean": 0.7142857142857143,
+            "dim_tokens": [
+              41,
+              65,
+              45,
+              59,
+              52,
+              62,
+              64
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.7066307541087941,
+            "mean_entropy": 0.9208998046815395,
+            "token_agree_vs_clean": 0.7142857142857143,
+            "dim_tokens": [
+              41,
+              65,
+              45,
+              59,
+              52,
+              62,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.7022847223565835,
+            "mean_entropy": 0.9068085003112044,
+            "token_agree_vs_clean": 0.7142857142857143,
+            "dim_tokens": [
+              41,
+              65,
+              45,
+              59,
+              52,
+              62,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5558373670312159,
+            "mean_entropy": 1.214786364563874,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              41,
+              72,
+              27,
+              191,
+              36,
+              42,
+              54
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.47604870844854635,
+            "mean_entropy": 1.501495395387922,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              38,
+              7,
+              38,
+              143,
+              16,
+              44
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.5386036192850083,
+            "mean_entropy": 1.189676877077935,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              41,
+              13,
+              95,
+              58,
+              51,
+              5,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.6788913603740596,
+            "mean_entropy": 0.9638410923736436,
+            "token_agree_vs_clean": 0.7142857142857143,
+            "dim_tokens": [
+              41,
+              65,
+              45,
+              59,
+              52,
+              62,
+              64
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.6551405540535793,
+            "mean_entropy": 1.0432609362261636,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              41,
+              65,
+              45,
+              59,
+              16,
+              46,
+              64
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.7284436596977379,
+            "mean_entropy": 0.8403175601045275,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              41,
+              65,
+              39,
+              158,
+              123,
+              57,
+              64
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.7280463144254673,
+            "mean_entropy": 0.9437736995096202,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              41,
+              65,
+              39,
+              158,
+              123,
+              57,
+              64
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "ood_noise",
+        "difficulty": "ood",
+        "idx": 4,
+        "base_conf": 0.4738386873405481,
+        "base_entropy": 1.6263727332864488,
+        "base_tokens": [
+          52,
+          50,
+          161,
+          73,
+          88,
+          94,
+          19
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.4738386873405481,
+            "mean_entropy": 1.6263727332864488,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              50,
+              161,
+              73,
+              88,
+              94,
+              19
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.5032715090448872,
+            "mean_entropy": 1.614785102861268,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              50,
+              161,
+              73,
+              88,
+              94,
+              19
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.5426105930535932,
+            "mean_entropy": 1.297944962978363,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              52,
+              50,
+              59,
+              57,
+              48,
+              37,
+              58
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.47350766272725353,
+            "mean_entropy": 1.5362238607236318,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              52,
+              50,
+              161,
+              73,
+              88,
+              94,
+              42
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5175898790355525,
+            "mean_entropy": 1.367924036724227,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              45,
+              81,
+              79,
+              53,
+              85,
+              68,
+              61
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.46801001908145257,
+            "mean_entropy": 1.6733533931629998,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              52,
+              50,
+              191,
+              73,
+              144,
+              117,
+              35
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.4869841907642018,
+            "mean_entropy": 1.3268407491476475,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              20,
+              127,
+              64,
+              47,
+              33,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.39344937243589145,
+            "mean_entropy": 1.6322236061096191,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              20,
+              79,
+              76,
+              21,
+              19,
+              40
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.4738386873405481,
+            "mean_entropy": 1.6263727332864488,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              50,
+              161,
+              73,
+              88,
+              94,
+              19
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.5354321014306429,
+            "mean_entropy": 1.3504341234053885,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              52,
+              36,
+              93,
+              73,
+              87,
+              100,
+              69
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.6436356258114528,
+            "mean_entropy": 1.0903056945119585,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              36,
+              93,
+              54,
+              67,
+              90,
+              59
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "ood_noise",
+        "difficulty": "ood",
+        "idx": 5,
+        "base_conf": 0.5983590523093812,
+        "base_entropy": 1.0457050885472978,
+        "base_tokens": [
+          45,
+          81,
+          79,
+          68,
+          58,
+          63,
+          56
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.5983590523093812,
+            "mean_entropy": 1.0457050885472978,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              45,
+              81,
+              79,
+              68,
+              58,
+              63,
+              56
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.5720860199730259,
+            "mean_entropy": 1.1050119527748652,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              45,
+              81,
+              79,
+              68,
+              58,
+              63,
+              56
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.6397067580467437,
+            "mean_entropy": 0.8066409497488556,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              45,
+              73,
+              37,
+              65,
+              29,
+              58,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.6832613228066625,
+            "mean_entropy": 0.8044302944077312,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              45,
+              73,
+              37,
+              65,
+              29,
+              58,
+              64
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.6402677261223021,
+            "mean_entropy": 1.182488031835289,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              42,
+              7,
+              38,
+              4,
+              1,
+              64
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.7503508259827929,
+            "mean_entropy": 0.795841141470841,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              45,
+              73,
+              52,
+              63,
+              52,
+              94,
+              58
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.41133278057388184,
+            "mean_entropy": 1.8434449689728873,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              42,
+              7,
+              57,
+              2,
+              11,
+              11
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.6419679000887486,
+            "mean_entropy": 1.2479268628371105,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              42,
+              7,
+              38,
+              4,
+              1,
+              64
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.5983590523093812,
+            "mean_entropy": 1.0457050885472978,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              45,
+              81,
+              79,
+              68,
+              58,
+              63,
+              56
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.6323292799438724,
+            "mean_entropy": 0.97301605876003,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              45,
+              73,
+              52,
+              63,
+              52,
+              94,
+              58
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.6944134971957393,
+            "mean_entropy": 0.8676179071356144,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              45,
+              73,
+              52,
+              63,
+              52,
+              94,
+              52
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "ood_noise",
+        "difficulty": "ood",
+        "idx": 6,
+        "base_conf": 0.54731148026708,
+        "base_entropy": 1.245677191231932,
+        "base_tokens": [
+          52,
+          42,
+          76,
+          58,
+          29,
+          37,
+          20
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.54731148026708,
+            "mean_entropy": 1.245677191231932,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              42,
+              76,
+              58,
+              29,
+              37,
+              20
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.5127757822166511,
+            "mean_entropy": 1.3112747985869646,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              42,
+              76,
+              58,
+              29,
+              37,
+              20
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.6521862538432494,
+            "mean_entropy": 0.9358801442930209,
+            "token_agree_vs_clean": 0.7142857142857143,
+            "dim_tokens": [
+              52,
+              42,
+              76,
+              58,
+              29,
+              59,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.5305929209351703,
+            "mean_entropy": 1.3742792350905282,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              36,
+              83,
+              84,
+              73,
+              52,
+              51
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.5653558216570468,
+            "mean_entropy": 1.2107498730931963,
+            "token_agree_vs_clean": 0.42857142857142855,
+            "dim_tokens": [
+              52,
+              42,
+              76,
+              54,
+              50,
+              38,
+              49
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.684391255900476,
+            "mean_entropy": 0.9846655896731785,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              52,
+              36,
+              83,
+              60,
+              60,
+              37,
+              52
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.5018722629419817,
+            "mean_entropy": 1.2921904687370573,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              45,
+              73,
+              52,
+              63,
+              52,
+              36,
+              56
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.5565809724171054,
+            "mean_entropy": 1.2792846645627702,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              36,
+              93,
+              56,
+              66,
+              51,
+              57
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.54731148026708,
+            "mean_entropy": 1.245677191231932,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              42,
+              76,
+              58,
+              29,
+              37,
+              20
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.532446761506903,
+            "mean_entropy": 1.2726844776687878,
+            "token_agree_vs_clean": 0.7142857142857143,
+            "dim_tokens": [
+              52,
+              42,
+              84,
+              58,
+              29,
+              37,
+              19
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.5215719173388728,
+            "mean_entropy": 1.3636075293013294,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              45,
+              81,
+              13,
+              59,
+              35,
+              62,
+              64
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "ood_noise",
+        "difficulty": "ood",
+        "idx": 7,
+        "base_conf": 0.4357847935963791,
+        "base_entropy": 1.7264084984874768,
+        "base_tokens": [
+          46,
+          81,
+          127,
+          44,
+          9,
+          34,
+          64
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.4357847935963791,
+            "mean_entropy": 1.7264084984874768,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              46,
+              81,
+              127,
+              44,
+              9,
+              34,
+              64
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.4342547454774744,
+            "mean_entropy": 1.7030519829474673,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              46,
+              81,
+              127,
+              44,
+              9,
+              68,
+              64
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.6045430278309631,
+            "mean_entropy": 1.1536398700305395,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              45,
+              73,
+              52,
+              63,
+              52,
+              81,
+              64
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.5517997990991876,
+            "mean_entropy": 1.1661346299307687,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              45,
+              73,
+              52,
+              63,
+              52,
+              94,
+              116
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.6085874375660075,
+            "mean_entropy": 1.0453826231615884,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              75,
+              84,
+              60,
+              51,
+              56,
+              55
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.4659340799862761,
+            "mean_entropy": 1.7087723527635847,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              36,
+              7,
+              191,
+              44,
+              63,
+              20
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.6224941629827698,
+            "mean_entropy": 1.290073306432792,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              57,
+              46,
+              67,
+              44,
+              37,
+              39,
+              52
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.595935173483616,
+            "mean_entropy": 1.2987332322767802,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              57,
+              46,
+              67,
+              44,
+              37,
+              39,
+              52
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.4357847935963791,
+            "mean_entropy": 1.7264084984874768,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              46,
+              81,
+              127,
+              44,
+              9,
+              34,
+              64
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.6247552443425775,
+            "mean_entropy": 0.9993564465216228,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              45,
+              73,
+              52,
+              63,
+              52,
+              81,
+              41
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.7391995318543894,
+            "mean_entropy": 0.8977270615952355,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              45,
+              73,
+              52,
+              63,
+              52,
+              81,
+              87
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "ood_noise",
+        "difficulty": "ood",
+        "idx": 8,
+        "base_conf": 0.5085434929516743,
+        "base_entropy": 1.3523341417312622,
+        "base_tokens": [
+          46,
+          81,
+          79,
+          53,
+          96,
+          54,
+          57
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.5085434929516743,
+            "mean_entropy": 1.3523341417312622,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              46,
+              81,
+              79,
+              53,
+              96,
+              54,
+              57
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.5033851021225076,
+            "mean_entropy": 1.337866382939475,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              46,
+              81,
+              79,
+              53,
+              96,
+              54,
+              63
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.6358200718309055,
+            "mean_entropy": 1.070105444107737,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              50,
+              43,
+              64,
+              49,
+              37,
+              21
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.561227024286854,
+            "mean_entropy": 1.2789615946156638,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              50,
+              158,
+              60,
+              55,
+              47,
+              52
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.41062533073741775,
+            "mean_entropy": 1.737319222518376,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              50,
+              7,
+              59,
+              1,
+              107,
+              52
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.49158868359126945,
+            "mean_entropy": 1.364497218813215,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              46,
+              67,
+              60,
+              44,
+              43,
+              38
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.4825007505202413,
+            "mean_entropy": 1.7101780679825294,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              46,
+              81,
+              19,
+              24,
+              1,
+              45,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.4738728101889131,
+            "mean_entropy": 1.6985969288008553,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              46,
+              81,
+              127,
+              24,
+              16,
+              36,
+              55
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.5085434929516743,
+            "mean_entropy": 1.3523341417312622,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              46,
+              81,
+              79,
+              53,
+              96,
+              54,
+              57
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.4932548239912036,
+            "mean_entropy": 1.5702623086316245,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              50,
+              161,
+              64,
+              67,
+              56,
+              55
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.47492935068379893,
+            "mean_entropy": 1.4379932582378387,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              52,
+              36,
+              161,
+              64,
+              67,
+              56,
+              75
+            ]
+          }
+        ]
+      },
+      {
+        "scenario": "ood_noise",
+        "difficulty": "ood",
+        "idx": 9,
+        "base_conf": 0.530340872035917,
+        "base_entropy": 1.3743798434734344,
+        "base_tokens": [
+          52,
+          50,
+          43,
+          64,
+          21,
+          14,
+          21
+        ],
+        "noise_results": [
+          {
+            "sigma": 0,
+            "geo_conf": 0.530340872035917,
+            "mean_entropy": 1.3743798434734344,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              50,
+              43,
+              64,
+              21,
+              14,
+              21
+            ]
+          },
+          {
+            "sigma": 1,
+            "geo_conf": 0.506240822985955,
+            "mean_entropy": 1.4135996060711997,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              52,
+              20,
+              43,
+              64,
+              21,
+              14,
+              21
+            ]
+          },
+          {
+            "sigma": 5,
+            "geo_conf": 0.5347960766861466,
+            "mean_entropy": 1.3293133207729884,
+            "token_agree_vs_clean": 0.8571428571428571,
+            "dim_tokens": [
+              52,
+              50,
+              43,
+              64,
+              21,
+              14,
+              2
+            ]
+          },
+          {
+            "sigma": 10,
+            "geo_conf": 0.5716238102860203,
+            "mean_entropy": 1.2123827167919703,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              50,
+              43,
+              64,
+              21,
+              14,
+              21
+            ]
+          },
+          {
+            "sigma": 25,
+            "geo_conf": 0.6135366961557149,
+            "mean_entropy": 1.1386012775557381,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              42,
+              80,
+              60,
+              67,
+              56,
+              57
+            ]
+          },
+          {
+            "sigma": 50,
+            "geo_conf": 0.5779001936122353,
+            "mean_entropy": 1.114800509597574,
+            "token_agree_vs_clean": 0.14285714285714285,
+            "dim_tokens": [
+              52,
+              21,
+              3,
+              191,
+              10,
+              46,
+              64
+            ]
+          }
+        ],
+        "brightness_results": [
+          {
+            "delta": -30,
+            "geo_conf": 0.5872939765715635,
+            "mean_entropy": 1.1226215405123574,
+            "token_agree_vs_clean": 0.0,
+            "dim_tokens": [
+              49,
+              42,
+              124,
+              45,
+              23,
+              52,
+              64
+            ]
+          },
+          {
+            "delta": -15,
+            "geo_conf": 0.48046548189462757,
+            "mean_entropy": 1.4911876661436898,
+            "token_agree_vs_clean": 0.7142857142857143,
+            "dim_tokens": [
+              52,
+              20,
+              43,
+              64,
+              21,
+              14,
+              2
+            ]
+          },
+          {
+            "delta": 0,
+            "geo_conf": 0.530340872035917,
+            "mean_entropy": 1.3743798434734344,
+            "token_agree_vs_clean": 1.0,
+            "dim_tokens": [
+              52,
+              50,
+              43,
+              64,
+              21,
+              14,
+              21
+            ]
+          },
+          {
+            "delta": 15,
+            "geo_conf": 0.6005603733210807,
+            "mean_entropy": 1.1282786416621613,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              52,
+              50,
+              93,
+              54,
+              67,
+              64,
+              64
+            ]
+          },
+          {
+            "delta": 30,
+            "geo_conf": 0.5989192406078012,
+            "mean_entropy": 1.2645395318312305,
+            "token_agree_vs_clean": 0.2857142857142857,
+            "dim_tokens": [
+              52,
+              50,
+              93,
+              54,
+              67,
+              90,
+              64
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

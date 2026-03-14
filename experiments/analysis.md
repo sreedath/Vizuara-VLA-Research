@@ -446,6 +446,47 @@ This should give us the best of all worlds:
 
 ---
 
+## Finding 11: Input Perturbation Sensitivity (Real OpenVLA-7B, Experiment 14)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass)
+- **Samples**: 40 (4 scenarios × 10)
+- **Perturbations**: Gaussian noise σ ∈ {0,1,5,10,25,50}, brightness ∈ {-30,-15,0,+15,+30}
+- **Total inferences**: 400
+
+### Token Agreement vs Gaussian Noise
+
+| σ | Highway | Urban | Night | OOD Noise | All |
+|---|---------|-------|-------|-----------|-----|
+| 0 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| 1 | 0.257 | 0.543 | **0.343** | **0.829** | **0.493** |
+| 5 | 0.143 | 0.557 | 0.114 | 0.443 | 0.314 |
+| 10 | 0.086 | 0.329 | 0.100 | 0.471 | 0.246 |
+| 25 | 0.057 | 0.171 | 0.029 | 0.214 | 0.118 |
+| 50 | 0.043 | 0.157 | 0.043 | 0.114 | 0.089 |
+
+### Confidence Shift with Noise
+
+| σ | Highway | Urban | Night | OOD Noise |
+|---|---------|-------|-------|-----------|
+| 0 | 0.493 | 0.707 | **0.196** | 0.558 |
+| 50 | 0.592 | 0.625 | **0.560** | 0.571 |
+| **Shift** | **+0.099** | **-0.082** | **+0.364** | **+0.013** |
+
+### Key Insights
+
+1. **σ=1 changes 51% of tokens**: Imperceptible noise destroys action predictions. VLA outputs are driven by pixel patterns, not semantics.
+
+2. **Night is most sensitive (34% agreement at σ=1)**: Already-uncertain predictions are least stable.
+
+3. **OOD noise is most robust (83% at σ=1)**: Adding noise to noise barely changes predictions — the model has a stable "noise response mode."
+
+4. **Noise INCREASES night confidence 3×**: From 0.196 to 0.560, approaching OOD noise confidence. The model's low night confidence is fragile.
+
+5. **Dim 0 (lateral) is most robust (60% at σ=10)**: Consistent with it having the broadest distribution (most bins to sample from).
+
+---
+
 ## Status (Updated March 14 2026)
 
 **Completed:**
@@ -465,6 +506,9 @@ This should give us the best of all worlds:
 - [x] Combined optimal UQ (100 samples, 8 scenarios, 2,400 inferences)
 - [x] Action distribution analysis (140 samples, 8 scenarios)
 - [x] Attention pattern analysis (80 samples, 5 layers, 6 scenarios)
+- [x] Input perturbation sensitivity (40 samples, 6 noise + 5 brightness levels = 400 inferences)
+
+**Total real OpenVLA-7B inferences to date**: ~11,000+
 
 **In Progress:**
 - [ ] Additional experiment iterations
