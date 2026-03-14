@@ -2385,3 +2385,58 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 7. **Flooded is the hardest realistic OOD type** (0.300 → 0.860): Global cosine detects flooded at only 0.300 (below random). The full pipeline improves this to 0.860 — a dramatic recovery but still the weakest of all OOD types. This suggests that water on roads is the most adversarial realistic scenario.
 
 8. **Cosine backbone is essential, mass is supplementary**: Removing cosine entirely (mass only: 0.690) causes the largest drop (-0.275), while removing mass (cosine only: 0.945) causes minimal impact (-0.020). Cosine is the load-bearing signal.
+
+---
+
+## Finding 46: Operating Characteristic Curves (Real OpenVLA-7B, Experiment 52)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Calibration**: 32 samples (8 per scene × 4 scenes)
+- **Test set**: 64 trajectories × 5 steps = 320 inferences (32 ID + 32 OOD)
+- **ID scenes**: highway, urban, night, foggy (8 trajectories each)
+- **OOD scenes**: offroad, flooded, tunnel, snow (8 trajectories each)
+
+### AUROC and Average Precision
+
+| Method | AUROC | AP | FPR@95TPR | FPR@99TPR |
+|--------|-------|----|-----------|-----------|
+| Global cosine (1f) | 0.512 | 0.581 | 0.906 | 0.906 |
+| Per-scene cosine (1f) | 0.692 | 0.700 | 0.812 | 0.844 |
+| Action mass (1f) | 0.667 | 0.635 | 0.719 | 0.781 |
+| Per-scene cosine (5s) | 0.894 | 0.927 | 0.688 | 0.812 |
+| **Full pipeline** | **0.900** | **0.932** | **0.656** | **0.812** |
+
+### Coverage-Safety Tradeoff
+
+| Alpha | Threshold | Coverage | Safety | FPR | FNR |
+|-------|-----------|----------|--------|-----|-----|
+| 0.01 | 0.400 | 0.688 | 0.906 | 0.312 | 0.094 |
+| 0.05 | 0.391 | 0.562 | 0.906 | 0.438 | 0.094 |
+| 0.10 | 0.379 | 0.438 | 0.906 | 0.562 | 0.094 |
+| 0.20 | 0.360 | 0.219 | 0.969 | 0.781 | 0.031 |
+| 0.30 | 0.349 | 0.188 | 1.000 | 0.812 | 0.000 |
+
+### Optimal Operating Points
+
+| Metric | Value |
+|--------|-------|
+| Youden's J (optimal) | 0.750 |
+| TPR at optimal | 0.844 |
+| FPR at optimal | 0.094 |
+| Optimal threshold | 0.421 |
+| Equal Error Rate | 0.125 |
+
+### Key Insights
+
+1. **Full pipeline achieves 0.900 AUROC with AP=0.932**: The average precision is notably higher than AUROC, indicating the method ranks OOD inputs well even if the absolute threshold calibration varies.
+
+2. **Youden's J=0.750 at FPR=0.094**: The optimal operating point allows 84.4% of OOD to be detected while only flagging 9.4% of ID inputs. This is a practical operating point for deployment.
+
+3. **EER of 0.125**: At the equal error rate, both false positive and false negative rates are 12.5%. This is competitive for a zero-overhead method.
+
+4. **α=0.30 achieves 100% safety at 18.8% coverage**: For safety-critical deployments, this conservative threshold catches ALL OOD while still allowing nearly 1 in 5 ID trajectories through unchanged.
+
+5. **Global cosine alone is near-random (0.512)**: Confirms the critical importance of per-scene centroids for realistic images — global centroid provides almost no discrimination.
+
+6. **Temporal aggregation provides the largest jump**: From per-scene 1-frame (0.692) to per-scene 5-step (0.894) is a +0.202 improvement, confirming temporal context is essential.
