@@ -1962,4 +1962,20 @@ We extract 14 activation-level statistics from the last hidden state and evaluat
 
 The activation statistics analysis reveals that the ID/OOD distinction is deeply embedded in the distributional properties of the hidden state, not just its direction. ID activations are more negative-biased (mean $-0.025$ vs $-0.003$), more peaked (kurtosis 21.2 vs 14.5), sparser (62.3\% vs 56.2\% within $|x|<1$), and more skewed (1.40 vs 1.05). These properties suggest the model develops a compact, efficient representation for familiar driving scenes, with most activations suppressed near zero. OOD inputs disrupt this structure, activating more neurons above the noise floor---the model ``works harder'' on unfamiliar inputs. Critically, these features require no calibration and could serve as a defense-in-depth layer alongside the cosine distance detector, providing redundant OOD monitoring through complementary mechanisms.
 
+\subsection{KNN-Based OOD Detection}
+\label{app:knn_detection}
+
+\textbf{Finding 126: KNN detection achieves 1.000 AUROC across all 18 configurations (k$\in$\{1,3,5,10,15,20\} $\times$ \{cosine, Euclidean, Manhattan\}), identical to the centroid baseline. The ID manifold is convex---KNN's non-convex modeling capability is unnecessary.}
+
+We test k-nearest-neighbor distance as an alternative to centroid-based detection, comparing each test embedding against the k closest calibration embeddings rather than the centroid (Figure~\ref{fig:knn_detection}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig89_knn_detection.pdf}
+\caption{\textbf{KNN-based detection.} (a) All 18 KNN configurations achieve 1.000 AUROC, matching centroid. (b) Per-category score distributions: ID categories (highway 0.022, urban 0.030) are separated from OOD categories (snow 0.293 to noise 0.453) by a 9$\times$ gap. (c) OOD/ID separation ratio decreases with k (14.6$\times$ at k=1 to 2.7$\times$ at k=20) as averaging dilutes the signal.}
+\label{fig:knn_detection}
+\end{figure}
+
+The KNN analysis confirms that the ID manifold is effectively convex---a single centroid captures its structure as well as arbitrary k-neighbor comparisons. This is consistent with the low-dimensional PCA results (Finding 120): the ID distribution occupies a compact, 9-dimensional subspace where the centroid is representative. The practical implication is that the simpler centroid approach is optimal: it is O(1) per test sample vs O(N) for KNN, requires storing only a single vector rather than the full calibration set, and achieves identical detection performance. KNN would provide value only if the ID distribution were multi-modal (e.g., a model trained on both highway and off-road driving with distinct embedding clusters), which our analysis shows is not the case for the current domain.
+
 \end{document}

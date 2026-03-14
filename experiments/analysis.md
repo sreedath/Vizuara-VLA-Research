@@ -4552,3 +4552,61 @@ Hidden state AUROC: **1.000** (for reference)
 5. **All features are calibration-free**: These statistics require no reference centroid, no calibration set, and no threshold learning. A simple threshold on mean activation or sparsity provides near-perfect detection.
 
 6. **Complementary to cosine distance**: While cosine distance measures direction relative to a calibration centroid, activation statistics measure intrinsic properties. Combining both could provide defense-in-depth OOD monitoring.
+
+---
+
+## Finding 97: KNN-Based OOD Detection
+
+**Experiment 103** — Tests k-nearest-neighbor distance as an alternative to centroid-based cosine distance. KNN can capture non-convex ID manifold shapes that a single centroid cannot.
+
+### Setup
+- 20 calibration embeddings (10 highway + 10 urban)
+- 10 ID test, 60 OOD test (15 per OOD category)
+- 6 k values: 1, 3, 5, 10, 15, 20
+- 3 distance metrics: cosine, Euclidean, Manhattan
+- KNN+centroid ensemble at 11 blend ratios
+- ~90 model inferences
+
+### KNN Results (all 1.000 AUROC)
+
+| Metric | k=1 | k=3 | k=5 | k=10 | k=15 | k=20 |
+|--------|-----|-----|-----|------|------|------|
+| Cosine | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| Euclidean | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| Manhattan | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+
+Centroid cosine: 1.000 AUROC
+
+### Per-Category Scores (cosine k=1)
+
+| Category | Mean Score | Std | Group |
+|----------|-----------|-----|-------|
+| Highway | 0.022 | 0.003 | ID |
+| Urban | 0.030 | 0.002 | ID |
+| Snow | 0.293 | 0.009 | OOD |
+| Indoor | 0.355 | 0.010 | OOD |
+| Twilight | 0.415 | 0.013 | OOD |
+| Noise | 0.453 | 0.012 | OOD |
+
+### Separation Ratios (cosine)
+
+| k | OOD/ID Ratio |
+|---|-------------|
+| k=1 | 14.6× |
+| k=5 | 12.9× |
+| k=10 | 11.2× |
+| k=20 | 2.7× |
+
+### Key Insights
+
+1. **KNN provides no advantage over centroid**: Both achieve 1.000 AUROC. The ID manifold is effectively convex — a single centroid captures its structure perfectly. KNN's ability to model non-convex shapes is unnecessary.
+
+2. **All metrics equivalent**: Cosine, Euclidean, and Manhattan all achieve 1.000 AUROC across all k values. The separation is so large that the choice of distance metric is irrelevant.
+
+3. **k=1 has the best separation ratio (14.6×)**: As k increases, the ratio drops because averaging over more neighbors dilutes the signal. But even at k=20 (averaging all calibration points), the ratio is still 2.7×.
+
+4. **Clear category ordering persists**: Snow (0.293) < Indoor (0.355) < Twilight (0.415) < Noise (0.453). This ordering is consistent with centroid-based detection and reflects OOD severity.
+
+5. **ID gap is clean**: Maximum ID score (urban, 0.033) is 9× lower than minimum OOD score (snow, 0.268). No overlap whatsoever between ID and OOD distributions.
+
+6. **Practical implication**: The centroid approach is optimal for this domain — simpler, faster (O(1) vs O(N) comparison), and equally effective. KNN would only help if the ID distribution were multi-modal or non-convex.
