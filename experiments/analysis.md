@@ -1628,3 +1628,46 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 5. **Random projection outperforms PCA at all dimensions**: RP d=8 (0.889) > PCA d=8 (0.844). Random projection preserves pairwise distances (Johnson-Lindenstrauss lemma) while PCA optimizes for variance, which is not the same as OOD discriminability.
 
 6. **Practical recommendation**: Use full 4096-d space (16KB — trivial storage). Only consider random projection to 512-d if compute is severely constrained.
+
+---
+
+## Finding 33: Attention Pattern Analysis (Real OpenVLA-7B, Experiment 39)
+
+### Setup
+- **Model**: OpenVLA-7B (BF16, output_attentions=True)
+- **Samples**: 70 (30 easy, 40 OOD across 5 types)
+- **Calibration**: 20 clean images for cosine distance baseline
+- **Analysis**: Last-layer attention patterns from forward pass
+
+### Attention Statistics: Easy vs OOD
+
+| Metric | Easy (mean ± std) | OOD (mean ± std) | Δ |
+|--------|------------------|------------------|---|
+| Mean attn entropy | 2.310 ± 0.073 | 1.978 ± 0.317 | -0.332 |
+| Max attn entropy | 3.927 ± 0.184 | 3.280 ± 0.247 | -0.647 |
+| Attn entropy std | 0.536 ± 0.054 | 0.618 ± 0.071 | +0.083 |
+| Max attn value | 0.275 ± 0.006 | 0.307 ± 0.024 | +0.033 |
+| Image attn frac | 0.387 ± 0.008 | 0.404 ± 0.018 | +0.017 |
+
+### Attention-Based OOD Detection AUROC (sign-corrected)
+
+| Signal | AUROC |
+|--------|-------|
+| **Cosine distance** | **0.982** |
+| Top-5 attention | 0.905 |
+| Max attention | 0.887 |
+| Lower attn entropy | 0.855 |
+| Attn entropy std | 0.830 |
+| Action mass | 0.698 |
+
+### Key Insights
+
+1. **OOD inputs produce LOWER attention entropy** (1.978 vs 2.310): The model focuses attention more narrowly on unfamiliar inputs. It concentrates on a few tokens rather than distributing attention broadly.
+
+2. **Attention metrics achieve 0.83-0.91 AUROC** — informative but far weaker than cosine distance (0.982). No attention statistic alone matches hidden-state cosine distance.
+
+3. **Cosine distance correlates with attention patterns** (r = -0.56 to +0.64): The representational shift is partially explained by attention changes, providing mechanistic support for why cosine distance works.
+
+4. **Image vs text attention barely differs** (Δ = 0.017): The model doesn't dramatically shift modality attention for OOD inputs. The OOD signal is in HOW the model attends, not WHERE.
+
+5. **Blackout and blank have lowest attention entropy** (1.50 and 1.73): Inputs with minimal visual information cause the model to focus very narrowly — consistent with these being the most easily detected OOD types.
