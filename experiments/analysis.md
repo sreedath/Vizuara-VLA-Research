@@ -510,7 +510,9 @@ This should give us the best of all worlds:
 - [x] Trajectory-level calibration (40 samples × 10 steps × 5 MC = 2,000 inferences)
 - [x] Uncertainty reliability (80 samples × 20 MC × 3 repeats = 4,800 inferences)
 
-**Total real OpenVLA-7B inferences to date**: ~18,000+
+- [x] Gradient distribution shift (11 alpha levels × 15 samples × 10 MC = 1,665 inferences)
+
+**Total real OpenVLA-7B inferences to date**: ~20,000+
 
 **In Progress:**
 - [ ] Additional experiment iterations
