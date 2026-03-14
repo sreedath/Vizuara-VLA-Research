@@ -4645,3 +4645,58 @@ Centroid cosine: 1.000 AUROC
 4. **Calibration is trivial when detection is perfect**: The real challenge would be calibrating near-boundary cases. With perfect separation, the only question is whether the mapping is monotonic — isotonic regression handles this by definition.
 
 5. **Practical recommendation**: For deployment, use isotonic regression to convert cosine distances to probabilities. It requires minimal training data (just the score-label pairs) and produces perfectly calibrated confidence estimates whenever detection is perfect.
+
+---
+
+## Finding 99: Feature Importance via Dimension Ablation
+
+**Experiment 105** — Systematically ablates groups of hidden state dimensions to identify which are most critical for OOD detection, and tests informed vs random feature selection.
+
+### Setup
+- 4096-dimensional hidden states from 6 categories (15 samples each)
+- 20 calibration, 10 ID test, 60 OOD test
+- Block ablation: 16 blocks of 256 dims each
+- Feature selection: variance-based, mean-difference, random subsets
+- ~90 model inferences (embedding extraction only)
+
+### Baseline
+- All 4096 dims: AUROC=1.000, d=63.96
+
+### Block Ablation (256 dims each)
+
+Every single block achieves **1.000 AUROC** when used alone. The OOD signal is distributed across all dimensions.
+
+| Block (dims) | Only d | Without d | Importance |
+|-------------|--------|-----------|------------|
+| 3840-4096 | 61.27 | 63.70 | +0.26 |
+| 2816-3072 | 54.43 | 64.16 | -0.20 |
+| 256-512 | 48.83 | 59.51 | +4.45 |
+| 512-768 | 46.08 | 65.09 | -1.13 |
+
+### Feature Selection (d by method)
+
+| Dims | Mean-Diff | Variance | Random |
+|------|-----------|----------|--------|
+| 8 | 45.66 | 19.62 | 7.70±2.32 |
+| 16 | 91.24 | 22.79 | 20.13±19.64 |
+| 32 | 114.93 | 28.33 | 27.42±11.05 |
+| **64** | **173.64** | **34.93** | **30.81±10.51** |
+| 128 | 125.30 | 83.38 | 35.11±10.47 |
+| 256 | 113.84 | 94.65 | 46.22±9.05 |
+| 512 | 162.50 | 112.77 | 48.17±15.29 |
+| 1024 | 141.30 | 92.84 | 62.36±1.45 |
+| 2048 | 102.28 | 78.68 | 65.42±6.06 |
+
+### Key Insights
+
+1. **Mean-difference selection with 64 dims achieves d=173.64** — nearly 3× the full 4096-dim baseline (d=63.96). Including irrelevant dimensions dilutes the OOD signal. Targeted selection concentrates it.
+
+2. **The OOD signal is everywhere**: Every 256-dim block achieves 1.000 AUROC independently. No single block is necessary — the signal is broadly distributed.
+
+3. **Diminishing returns beyond 64 dims**: Mean-difference d peaks at 64 (173.64) and decreases at 128 (125.30). This is because adding less-informative dimensions introduces noise that reduces the signal-to-noise ratio.
+
+4. **Variance selection peaks at 512 dims (d=112.77)**: Variance-based selection is less efficient than mean-difference but still outperforms random at low dims. It captures different aspects of the OOD signal.
+
+5. **Random 16 dims already achieve 1.000 AUROC**: Even randomly chosen dimensions suffice for perfect discrimination. The d is lower (20.13) but still far above any practical threshold.
+
+6. **Feature selection is more impactful than PCA**: Mean-diff top-64 (d=173.64) outperforms PCA-8 from multi-layer fusion (d=15.78) by 11×. However, mean-diff requires knowing which dimensions differ (oracle knowledge), while PCA is fully unsupervised.

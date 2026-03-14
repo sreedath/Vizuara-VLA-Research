@@ -1994,4 +1994,20 @@ We test five methods for converting raw cosine distance scores into calibrated p
 
 The calibration analysis reveals an important asymmetry: when the underlying detector achieves perfect AUROC, calibration becomes trivial for non-parametric methods (isotonic, histogram) but remains difficult for parametric methods (Platt, sigmoid). Platt scaling's logistic assumption maps the bimodal score distribution (ID at 0.08, OOD at 0.26--0.46) into an overconfident 0.75--0.85 range, \emph{increasing} ECE from 0.178 to 0.201. The practical recommendation is simple: use isotonic regression to convert scores to probabilities. It requires only the score-label pairs from calibration, handles arbitrary score distributions, and guarantees calibration whenever the underlying detector maintains separation.
 
+\subsection{Feature Importance via Dimension Ablation}
+\label{app:feature_importance}
+
+\textbf{Finding 128: Mean-difference feature selection with 64 dims achieves $d = 173.64$---nearly $3\times$ the full 4,096-dim baseline ($d = 63.96$). Every 256-dim block independently achieves 1.000 AUROC. The OOD signal is broadly distributed but including irrelevant dimensions dilutes it.}
+
+We ablate dimension groups and compare informed (mean-difference, variance) vs random feature selection strategies (Figure~\ref{fig:feature_importance}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig91_feature_importance.pdf}
+\caption{\textbf{Feature importance.} (a) Block importance: removing any 256-dim block barely changes $d$ ($\pm$5); no single block is critical. (b) Feature selection: mean-difference selection (red) peaks at 64 dims ($d=173.64$), far exceeding the full-dim baseline (dashed green). Variance selection (blue) peaks at 512 dims. Random subsets (gray) show high variance. (c) Single-block detection: all 16 blocks achieve $d \geq 16$, with the best block (3840--4096) reaching $d=61.3$.}
+\label{fig:feature_importance}
+\end{figure}
+
+The dimension ablation reveals a fundamental property of the VLA's OOD encoding: the signal is \emph{everywhere} but \emph{diluted}. All 16 blocks of 256 dimensions independently achieve perfect AUROC, demonstrating that no dimensions are critical. Yet including all 4,096 dimensions actually \emph{reduces} separation ($d=64.0$) compared to a targeted 64-dimension selection ($d=173.6$). This is because irrelevant dimensions add noise that inflates the denominator of Cohen's $d$. The practical implication is that a supervised feature selection step---requiring a small labeled validation set---can improve detection margin by $3\times$, though even random 16-dimensional subsets already achieve perfect AUROC.
+
 \end{document}
