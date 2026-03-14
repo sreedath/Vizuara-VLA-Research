@@ -2577,3 +2577,39 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Blank is a geometric outlier**: Blank images map to (-20.6, 35.9), far from all other scenarios in PC2. This makes them trivially detectable via cosine distance.
 
 5. **Noise, indoor, and inverted cluster near highway**: These OOD scenarios have PC1 values (10.8-15.7) close to highway (25.1), making them harder to separate in the first principal component. The OOD signal must come from higher-order PCs.
+
+---
+
+## Finding 50: Calibration Sample Efficiency (Real OpenVLA-7B, Experiment 56)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Calibration pool**: 30 samples (15 highway + 15 urban)
+- **Test set**: 52 samples (20 ID + 32 OOD)
+- **Calibration sizes tested**: 1, 2, 3, 5, 7, 10, 15, 20, 25, 30
+- **Trials**: 5 random subsets per calibration size
+
+### Sample Efficiency Results
+
+| N_cal | Mean AUROC | Std | Min | Max |
+|-------|-----------|-----|-----|-----|
+| 1 | 0.746 | 0.148 | 0.494 | 0.933 |
+| 2 | 0.758 | 0.154 | 0.483 | 0.941 |
+| 3 | 0.793 | 0.085 | 0.717 | 0.911 |
+| 5 | 0.856 | 0.051 | 0.795 | 0.939 |
+| 10 | **0.929** | **0.027** | 0.880 | 0.953 |
+| 15 | 0.913 | 0.023 | 0.883 | 0.938 |
+| 20 | 0.921 | 0.025 | 0.875 | 0.945 |
+| 30 | 0.933 | 0.000 | 0.933 | 0.933 |
+
+### Key Insights
+
+1. **N=10 achieves 95% of max AUROC** (0.929 vs max 0.933): Just 10 calibration images are sufficient for near-optimal detection. This makes deployment practical — 10 images can be collected in minutes.
+
+2. **N=5 is the practical minimum** (0.856 ± 0.051): With only 5 samples, the system already provides useful detection. Below 5, variance becomes too high for reliable deployment.
+
+3. **Diminishing returns after N=10**: Adding more samples beyond 10 provides marginal improvement (0.929 → 0.933). The centroid is already well-estimated with 10 diverse samples.
+
+4. **N=1 has extreme variance** (0.494-0.933): A single calibration image can be either excellent or useless depending on which image is chosen. This confirms the need for multiple samples.
+
+5. **Blackout detected with N=1** (0.850): Trivial OOD types like blackout are so far from any driving image that even a single calibration sample suffices.
