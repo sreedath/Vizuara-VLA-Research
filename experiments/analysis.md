@@ -161,11 +161,54 @@ This should give us the best of all worlds:
 
 ---
 
-## Next Steps
+## Finding 5: Real OpenVLA-7B Results (GPU Experiments, March 14 2026)
 
-1. **Run on real VLA models** (OpenVLA-7B on RunPod GPU)
-2. **Integrate NAVSIM data** for realistic driving scenarios
-3. **Implement CalibDrive-Combined** method
-4. **Generate paper figures** using paperbanana
-5. **Per-scenario deep dive** on failure modes
-6. **Prompt ensemble** evaluation (novel VLA-specific UQ method)
+### Setup
+- **Model**: OpenVLA-7B (7B params, BF16, 15.1 GB VRAM)
+- **GPU**: NVIDIA A40 (48GB)
+- **Scenes**: 95 synthetic driving images (highway, urban, night, rain, OOD)
+- **Inference**: ~0.3s per sample (single pass), ~7.5s for 20-sample MC Dropout
+
+### Key Finding: Tiny Confidence Gap Between Safe and Dangerous
+
+| Scenario | Confidence | Entropy | Top-5 Mass | MC Conf Std | PE Conf Std |
+|----------|-----------|---------|-----------|-------------|-------------|
+| Highway | 0.606 | 1.143 | 0.923 | 0.093 | 0.075 |
+| Urban | 0.544 | 1.318 | 0.910 | 0.089 | 0.088 |
+| Night | 0.512 | 1.390 | 0.873 | 0.098 | 0.090 |
+| Rain | 0.522 | 1.420 | 0.880 | 0.095 | 0.082 |
+| OOD (noise) | 0.591 | 1.228 | 0.918 | 0.099 | 0.082 |
+
+**The confidence gap between highway and OOD is only 0.015!** The model assigns nearly identical confidence to familiar driving scenes and random noise images.
+
+### Discovery: OpenVLA Ships with Zero Dropout
+- All 211 Dropout layers have p=0.0
+- Standard MC Dropout produces zero variance (MC Std = 0.000)
+- Must manually inject dropout (p=0.1) for MC Dropout to work
+- After injection: meaningful conf std = 0.093, mutual information = 1.62
+
+### Prompt Ensemble Results
+- 6 semantically equivalent prompts
+- Confidence std = 0.084 ± 0.022
+- Mean KL divergence between prompt pairs = 8.75 ± 0.58
+- Prompt sensitivity itself is an uncertainty signal
+
+---
+
+## Status (Updated March 14 2026)
+
+**Completed:**
+- [x] Simulated benchmark (4,000 samples, 8 scenarios)
+- [x] UQ method comparison (10 configurations)
+- [x] CalibDrive-Combined method
+- [x] Real OpenVLA-7B experiments on A40 GPU
+- [x] MC Dropout with injected dropout
+- [x] Prompt ensemble evaluation
+- [x] NeurIPS paper draft (LaTeX)
+- [x] Figure generation with paperbanana
+
+**In Progress:**
+- [ ] Deep logit distribution analysis
+- [ ] Temperature sweep on real model
+- [ ] Per-dimension uncertainty decomposition
+- [ ] Additional experiment iterations

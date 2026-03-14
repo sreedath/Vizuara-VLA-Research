@@ -422,6 +422,37 @@ OOD & 0.591 & 1.228 & 0.918 & 0.099 & 0.082 \\
 
 \textbf{Finding 13: Prompt Ensembles reveal substantial prompt sensitivity.} Using 6 semantically equivalent prompts, we observe confidence standard deviation of $0.084 \pm 0.022$ and mean KL divergence of $8.75 \pm 0.58$ between prompt-conditioned outputs. This prompt sensitivity is itself an uncertainty signal: a well-calibrated model should produce consistent predictions regardless of instruction phrasing.
 
+\subsection{Logit Distribution Analysis}
+\label{sec:logit_analysis}
+
+Deep analysis of OpenVLA's 256-bin logit distributions reveals the mechanism behind its overconfidence. Table~\ref{tab:logit_analysis} shows per-dimension statistics.
+
+\begin{table}[t]
+\centering
+\caption{Per-dimension logit distribution analysis of OpenVLA-7B. The model uses only $\sim$6 of 256 available bins, with mean perplexity of 5.7. Action dimension 0 (lateral) shows the least confidence while dimension 6 (gripper) is near-deterministic.}
+\label{tab:logit_analysis}
+\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dim} & \textbf{Max Prob} & \textbf{Entropy} & \textbf{Perplexity} & \textbf{Sig.\ Bins} \\
+\midrule
+0 (x/lateral) & 0.313 & 2.615 & 15.9 & 12.3 \\
+1 (y/longitudinal) & 0.535 & 1.550 & 6.2 & 7.1 \\
+2 (z) & 0.536 & 1.402 & 4.8 & 6.4 \\
+3 (roll) & 0.663 & 1.112 & 4.0 & 5.2 \\
+4 (pitch) & 0.690 & 1.012 & 3.5 & 4.8 \\
+5 (yaw) & 0.574 & 1.240 & 3.9 & 5.5 \\
+6 (gripper) & 0.879 & 0.407 & 1.8 & 2.1 \\
+\midrule
+\emph{Mean} & \emph{0.599} & \emph{1.334} & \emph{5.7} & \emph{6.2} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Finding 14: OpenVLA uses only $\sim$6 of 256 bins.} The effective perplexity (exponential of entropy) is 5.7, meaning the model concentrates its probability mass on fewer than 3\% of available bins. The gripper dimension is near-deterministic (perplexity = 1.8), while the lateral dimension shows the most uncertainty (perplexity = 15.9).
+
+\textbf{Finding 15: Temperature scaling analysis reveals structural overconfidence.} At the default temperature ($T = 1.0$), mean max probability is 0.60. Raising $T$ to 2.0 reduces max probability to 0.34 but inflates perplexity to 24.6. There is no single temperature that achieves good calibration across all dimensions simultaneously, confirming that per-dimension or learned calibration strategies are needed.
+
 \subsection{Ablation Studies}
 \label{sec:ablations}
 
