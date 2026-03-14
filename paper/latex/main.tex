@@ -2074,4 +2074,20 @@ We analyze which positions in the 280-token hidden state sequence carry OOD-disc
 
 The token position analysis reveals that the OOD signal in the VLA's hidden states is distributed across the full sequence but concentrates in later positions---consistent with the autoregressive architecture's causal attention, which allows later positions to attend to the entire preceding context including all image tokens. Mean pooling achieves $d=88.97$ by aggregating this distributed signal: each position contributes a partial signal, and averaging cancels position-specific noise while preserving the shared OOD component. The first token (position 0) is completely uninformative because it represents the BOS token, which receives no image attention in the causal mask. For practical deployment, mean pooling is recommended if the full hidden state sequence is accessible; otherwise, last-token extraction (our default) provides $d=71.24$, which is already excellent.
 
+\subsection{Projection Head Analysis}
+\label{app:projection_head}
+
+\textbf{Finding 133: No projection improves over the full-dim baseline ($d = 68.24$). PCA-4 achieves 1.000 AUROC at $d = 58.27$---a 1000$\times$ dimensionality reduction with 15\% $d$ loss. LDA achieves perfect AUROC in a single dimension ($d = 17.22$).}
+
+We test whether linear projections can improve or efficiently compress the OOD detection signal (Figure~\ref{fig:projection_head}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig96_projection_head.pdf}
+\caption{\textbf{Projection head analysis.} (a) PCA and whitened PCA: $d$ plateaus at PCA-4 ($d=58.27$); whitening degrades performance. (b) Method comparison: full dim is best; LDA achieves perfect AUROC in 1D. (c) PCA (blue) consistently outperforms random projection (gray) at matched dimensionality.}
+\label{fig:projection_head}
+\end{figure}
+
+The projection analysis establishes a clear dimensionality-performance tradeoff. The full 4,096-dimensional hidden state remains optimal ($d=68.24$), but PCA-4 provides a practical alternative: 1,000$\times$ compression with perfect AUROC and only 15\% $d$ reduction. Whitening actively hurts by amplifying noise in low-variance dimensions. LDA's 1D projection ($d=17.22$) demonstrates that the ID/OOD boundary is fundamentally one-dimensional---a single linear combination suffices---but this requires labeled OOD data for fitting, making it unsuitable for the calibration-free paradigm. Random projections confirm the distributed nature of the signal: even arbitrary 64-dimensional subspaces preserve perfect discrimination, though with lower $d$ than PCA.
+
 \end{document}

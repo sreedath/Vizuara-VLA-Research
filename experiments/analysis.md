@@ -4881,3 +4881,42 @@ Inter-domain distance (highway↔urban centroid): **0.266**
 5. **Last-quarter mean (d=80.88) is a practical compromise**: It captures most of the mean-pooling benefit while avoiding early positions that carry no signal. Useful when full sequence pooling is computationally expensive.
 
 6. **The OOD signal is distributed, not localized**: No single position outperforms mean pooling. The information is spread across the full sequence, consistent with the transformer's distributed attention mechanism.
+
+---
+
+## Finding 104: Projection Head Analysis
+
+**Experiment 110** — Tests whether linear projections (PCA, random, LDA, whitened) can improve OOD detection beyond full-dimensional cosine distance.
+
+### Setup
+- 15 samples per category, 90 total inferences
+- 10 calibration, 60 train (for projection fitting), 30 test
+- PCA: 2–32 components; Random: 8–256 dims (5 seeds); LDA: 1D; Whitened PCA: 8–32
+
+### Results
+
+| Method | Dims | AUROC | Cohen's d |
+|--------|------|-------|-----------|
+| **Full dim baseline** | **4096** | **1.000** | **68.24** |
+| PCA-4 | 4 | 1.000 | 58.27 |
+| PCA-8 | 8 | 1.000 | 56.19 |
+| PCA-32 | 32 | 1.000 | 57.13 |
+| Whitened PCA-8 | 8 | 1.000 | 34.27 |
+| LDA (1D) | 1 | 1.000 | 17.22 |
+| Random-64 | 64 | 1.000 | 27.43 |
+| Random-256 | 256 | 1.000 | 47.69 |
+| PCA-2 | 2 | 0.500 | 12.25 |
+
+### Key Insights
+
+1. **No projection improves over full-dim baseline (d=68.24)**: PCA-4 gets d=58.27 (85% of baseline), PCA-32 gets d=57.13 (84%). Projections lose information that contributes to separation.
+
+2. **PCA-2 fails catastrophically (AUROC=0.500)**: Two principal components are insufficient — the top 2 PCs explain only 47% of variance and the OOD discriminant is not aligned with the highest-variance directions.
+
+3. **PCA-4 is the minimum viable projection**: At 4 dimensions (78.6% variance), AUROC is perfect and d=58.27. This is a 1000× dimensionality reduction with only 15% d loss.
+
+4. **Whitening hurts separation**: Whitened PCA-8 (d=34.27) is worse than standard PCA-8 (d=56.19). Equalizing variance across dimensions amplifies noise in low-variance components.
+
+5. **LDA achieves perfect AUROC in 1 dimension (d=17.22)**: The supervised LDA finds the optimal 1D projection for ID vs OOD separation. This is the most compact possible detector but requires labeled OOD data for fitting.
+
+6. **Random projections work at 64+ dims**: Random-64 achieves 1.000 AUROC (d=27.43), demonstrating that the OOD signal survives arbitrary linear projections. This supports the finding that the signal is distributed across all dimensions.
