@@ -2134,3 +2134,56 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 5. **MSP anti-correlates with OOD for realistic images** (0.219 < 0.5): OOD inputs (offroad, snow) actually have HIGHER max probability than ID inputs. This is because the model is "confidently wrong" — the classic miscalibration problem that our paper identifies.
 
 6. **Action mass captures VLA-specific information**: Unlike standard baselines that examine the full vocabulary logits, action mass specifically focuses on the action token vs non-action token split. This VLA-specific design gives it an advantage for realistic images where standard baselines fail.
+
+---
+
+## Finding 42: Bootstrap Confidence Intervals (Real OpenVLA-7B, Experiment 48)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, BF16)
+- **Calibration**: 30 samples (15 highway + 15 urban)
+- **Test set**: 115 samples (40 ID + 75 OOD: noise, blank, indoor, inverted, blackout)
+- **Bootstrap**: 10,000 resamples per test
+
+### 95% Confidence Intervals
+
+| Method | AUROC | 95% CI | ±std |
+|--------|-------|--------|------|
+| **Cosine distance** | **0.881** | **[0.809, 0.939]** | 0.033 |
+| Action mass (1-mass) | 0.765 | [0.666, 0.854] | 0.048 |
+| MSP (1-max prob) | 0.646 | [0.542, 0.745] | 0.052 |
+| Entropy | 0.643 | [0.539, 0.742] | 0.052 |
+| Energy score | 0.628 | [0.522, 0.728] | 0.053 |
+
+### Pairwise Significance Tests
+
+| Comparison | Δ AUROC | p-value | Significant? |
+|------------|---------|---------|-------------|
+| Cosine vs MSP | +0.235 | <0.0001 | **Yes** |
+| Cosine vs Energy | +0.253 | <0.0001 | **Yes** |
+| Cosine vs Entropy | +0.238 | <0.0001 | **Yes** |
+| Cosine vs Action mass | +0.116 | 0.0098 | **Yes** |
+| Action mass vs MSP | +0.119 | 0.0132 | **Yes** |
+| Action mass vs Energy | +0.137 | 0.0148 | **Yes** |
+
+### Per-OOD Type CIs for Cosine Distance
+
+| OOD Type | AUROC | 95% CI |
+|----------|-------|--------|
+| Noise | 0.990 | [0.965, 1.000] |
+| Blank | 0.753 | [0.613, 0.872] |
+| Indoor | 0.848 | [0.740, 0.939] |
+| Inverted | 0.813 | [0.691, 0.913] |
+| Blackout | 1.000 | [1.000, 1.000] |
+
+### Key Insights
+
+1. **ALL comparisons are statistically significant** (p < 0.05). Cosine distance's advantage over every baseline is confirmed with strong statistical evidence. The p-values < 0.0001 for cosine vs standard baselines provide the strongest possible evidence.
+
+2. **Non-overlapping CIs** confirm meaningful differences: Cosine [0.809, 0.939] does not overlap with MSP [0.542, 0.745] or Energy [0.522, 0.728]. This is robust statistical support for our claims.
+
+3. **Cosine distance has tighter CI** (±0.033) than baselines (±0.052-0.053): The smaller variance indicates more consistent detection across bootstrap resamples — cosine distance is not only better but more reliable.
+
+4. **Blackout has perfect CI** [1.000, 1.000]: No bootstrap sample ever produced an AUROC below 1.0 for blackout detection — it is truly trivially detected.
+
+5. **Blank has the widest CI** [0.613, 0.872]: Blank white images produce variable cosine distances, making detection less consistent. This aligns with the finding that blank images are visually similar to foggy conditions.

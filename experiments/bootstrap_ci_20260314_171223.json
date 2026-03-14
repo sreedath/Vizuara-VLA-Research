@@ -1,0 +1,105 @@
+{
+  "experiment": "bootstrap_ci",
+  "experiment_number": 48,
+  "timestamp": "20260314_171223",
+  "n_cal": 30,
+  "n_test": 115,
+  "n_bootstrap": 10000,
+  "ci_results": {
+    "Cosine distance": {
+      "auroc": 0.881,
+      "ci_lo": 0.809423347398031,
+      "ci_hi": 0.9389978213507625,
+      "std": 0.032922764183499216
+    },
+    "Action mass (1-mass)": {
+      "auroc": 0.7646666666666667,
+      "ci_lo": 0.6663570284901008,
+      "ci_hi": 0.853720487713691,
+      "std": 0.0478429370568928
+    },
+    "MSP (1-max prob)": {
+      "auroc": 0.6456666666666667,
+      "ci_lo": 0.5421644578313253,
+      "ci_hi": 0.7451550387596899,
+      "std": 0.052107982116089614
+    },
+    "Entropy": {
+      "auroc": 0.6433333333333333,
+      "ci_lo": 0.5387590075335736,
+      "ci_hi": 0.7421166830076786,
+      "std": 0.052184245245423914
+    },
+    "Energy score": {
+      "auroc": 0.6276666666666666,
+      "ci_lo": 0.5220869676318834,
+      "ci_hi": 0.7275041666666665,
+      "std": 0.0525055046756777
+    }
+  },
+  "pairwise": [
+    {
+      "method_a": "Cosine distance",
+      "method_b": "MSP (1-max prob)",
+      "delta": 0.23533333333333328,
+      "p_value": 0.0
+    },
+    {
+      "method_a": "Cosine distance",
+      "method_b": "Energy score",
+      "delta": 0.2533333333333334,
+      "p_value": 0.0
+    },
+    {
+      "method_a": "Cosine distance",
+      "method_b": "Entropy",
+      "delta": 0.2376666666666667,
+      "p_value": 0.0
+    },
+    {
+      "method_a": "Cosine distance",
+      "method_b": "Action mass (1-mass)",
+      "delta": 0.11633333333333329,
+      "p_value": 0.0098
+    },
+    {
+      "method_a": "Action mass (1-mass)",
+      "method_b": "MSP (1-max prob)",
+      "delta": 0.119,
+      "p_value": 0.0132
+    },
+    {
+      "method_a": "Action mass (1-mass)",
+      "method_b": "Energy score",
+      "delta": 0.13700000000000012,
+      "p_value": 0.0148
+    }
+  ],
+  "per_type": {
+    "noise": {
+      "auroc": 0.99,
+      "ci_lo": 0.965,
+      "ci_hi": 1.0
+    },
+    "blank": {
+      "auroc": 0.7533333333333333,
+      "ci_lo": 0.6133310104529617,
+      "ci_hi": 0.8717948717948718
+    },
+    "indoor": {
+      "auroc": 0.8483333333333334,
+      "ci_lo": 0.7399377969811406,
+      "ci_hi": 0.9391140109890108
+    },
+    "inverted": {
+      "auroc": 0.8133333333333334,
+      "ci_lo": 0.6914878419452887,
+      "ci_hi": 0.9134615384615384
+    },
+    "blackout": {
+      "auroc": 1.0,
+      "ci_lo": 0.9999999999999999,
+      "ci_hi": 1.0
+    }
+  }
+}
