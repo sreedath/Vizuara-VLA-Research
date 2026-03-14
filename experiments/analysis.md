@@ -3054,3 +3054,45 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Output-based methods are insufficient**: MSP (0.733), energy (0.693), and mass (0.746) all fail to distinguish indoor/inverted OOD from ID. These are the standard baselines from the OOD literature that our approach significantly outperforms.
 
 5. **Fusion provides near-perfection (0.999)**: Equal-weight combination of cosine, mass, attn_max, and attn_entropy achieves 0.999 — the most robust configuration.
+
+---
+
+## Finding 61: Near-OOD Detection — Cosine Perfect, Attention Degrades (Real OpenVLA-7B, Experiment 67)
+
+### Setup
+- **Model**: OpenVLA-7B (BF16, forward pass)
+- **Calibration**: 20 samples (10 highway + 10 urban)
+- **ID**: highway (10) + urban (10)
+- **Near-OOD**: twilight (8), wet road (8), construction (8), occluded (8), snow (8)
+- **Far-OOD**: noise (6), blackout (6)
+- **Total inferences**: 92
+
+### Detection AUROC
+
+| Detection Task | Cosine | Attn Max | Attn Entropy |
+|---------------|--------|----------|-------------|
+| Near-OOD | **1.000** | 0.866 | 0.824 |
+| Far-OOD | **1.000** | **1.000** | **1.000** |
+| All OOD | **1.000** | 0.897 | 0.864 |
+
+### Per Near-OOD Type
+
+| Scenario | Cosine AUROC | Attn Max AUROC |
+|----------|-------------|----------------|
+| Twilight | **1.000** | 0.925 |
+| Wet road | **1.000** | **1.000** |
+| Construction | **1.000** | 0.931 |
+| Occluded | **1.000** | **0.475** |
+| Snow | **1.000** | **1.000** |
+
+### Key Insights
+
+1. **Cosine distance achieves perfect 1.000 on ALL near-OOD types**: Even semantically similar scenarios (twilight highway, construction zones) have sufficient embedding distance from the ID centroid for perfect separation.
+
+2. **Attention fails on occluded images (0.475 — worse than random)**: When the camera is partially occluded, the attention patterns resemble ID driving images enough to fool the attention detector. This is the most dangerous failure mode.
+
+3. **Near-OOD is harder for attention (0.866) than far-OOD (1.000)**: Attention-based detection degrades gracefully as OOD inputs become more structurally similar to ID. This confirms that attention is best suited for far-OOD detection.
+
+4. **Cosine distance is the better choice for safety-critical deployment**: Despite requiring calibration, cosine distance achieves perfect detection on both near and far OOD. Attention should be used as a supplementary signal, not the sole detector.
+
+5. **The complementary design is validated**: Use attention for calibration-free screening (catches obvious OOD) and cosine for calibrated detection (catches subtle OOD like occluded cameras).

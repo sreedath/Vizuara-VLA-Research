@@ -1,0 +1,73 @@
+{
+  "experiment": "near_ood",
+  "experiment_number": 67,
+  "timestamp": "20260314_190157",
+  "n_id": 20,
+  "n_near_ood": 40,
+  "n_far_ood": 12,
+  "per_scenario": {
+    "blackout": {
+      "ood_type": "far_ood",
+      "cosine_mean": 0.4815174341201782,
+      "cosine_std": 0.0,
+      "attn_max_mean": 0.50921630859375,
+      "attn_entropy_mean": 1.4999302625656128
+    },
+    "construction": {
+      "ood_type": "near_ood",
+      "cosine_mean": 0.4369765818119049,
+      "cosine_std": 0.021970712048504214,
+      "attn_max_mean": 0.3449993133544922,
+      "attn_entropy_mean": 2.2287585735321045
+    },
+    "highway": {
+      "ood_type": "id",
+      "cosine_mean": 0.08146719336509704,
+      "cosine_std": 0.003099432585667813,
+      "attn_max_mean": 0.3054901123046875,
+      "attn_entropy_mean": 2.504452705383301
+    },
+    "noise": {
+      "ood_type": "far_ood",
+      "cosine_mean": 0.4482446014881134,
+      "cosine_std": 0.0051830661151279446,
+      "attn_max_mean": 0.36463673909505206,
+      "attn_entropy_mean": 2.150596102078756
+    },
+    "occluded": {
+      "ood_type": "near_ood",
+      "cosine_mean": 0.4225039780139923,
+      "cosine_std": 0.052547735959239214,
+      "attn_max_mean": 0.31734657287597656,
+      "attn_entropy_mean": 2.4551042318344116
+    },
+    "snow": {
+      "ood_type": "near_ood",
+      "cosine_mean": 0.2668067663908005,
+      "cosine_std": 0.008199654419643826,
+      "attn_max_mean": 0.35204505920410156,
+      "attn_entropy_mean": 2.142040878534317
+    },
+    "twilight": {
+      "ood_type": "near_ood",
+      "cosine_mean": 0.4405222088098526,
+      "cosine_std": 0.011562779936630657,
+      "attn_max_mean": 0.33177757263183594,
+      "attn_entropy_mean": 2.3375746309757233
+    },
+    "urban": {
+      "ood_type": "id",
+      "cosine_mean": 0.09078053832054138,
+      "cosine_std": 0.008514904950199888,
+      "attn_max_mean": 0.3188690185546875,
+      "attn_entropy_mean": 2.355786752700806
+    },
+    "wet": {
+      "ood_type": "near_ood",
+      "cosine_mean": 0.2628052532672882,
+      "cosine_std": 0.014064437554783425,
+      "attn_max_mean": 0.3564586639404297,
+      "attn_entropy_mean": 2.162594497203827
+    }
+  }
+}

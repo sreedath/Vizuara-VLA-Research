@@ -1382,4 +1382,20 @@ Energy~\citep{liu2020energy} & No & 0.693 & --- & --- & --- & --- \\
 
 The results establish a clear hierarchy: \textbf{attention-based} methods (0.993--1.000) $\gg$ \textbf{hidden-state} methods (0.913--0.969) $\gg$ \textbf{output-based} methods (0.693--0.746). The calibration-free attention max achieves perfect detection across all OOD types, including indoor scenes where cosine distance only achieves 0.849. Standard OOD baselines (MSP, energy score) are insufficient for VLA safety.
 
+\subsection{Near-OOD Detection Challenge}
+\label{app:near_ood}
+
+\textbf{Finding 90: Cosine distance achieves perfect detection (1.000) on near-OOD scenarios (twilight, wet, construction, occluded, snow) where attention-based detection degrades to 0.866.}
+
+We test detection on semantically similar ``near-OOD'' inputs that differ from calibration conditions but retain driving scene structure (Figure~\ref{fig:near_ood}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig53_near_ood.pdf}
+\caption{\textbf{Near-OOD detection challenge.} (a) Clear cosine distance gap between ID ($\sim$0.09) and near-OOD ($\sim$0.26--0.44). (b) Cosine achieves perfect 1.000 across all near-OOD types; attention fails on occluded cameras (0.475). (c) Cosine outperforms attention on near-OOD (1.000 vs 0.866) while both achieve 1.000 on far-OOD.}
+\label{fig:near_ood}
+\end{figure}
+
+This reveals the complementary strengths of our two detection channels: (1) \textbf{Attention} excels on far-OOD (perfect without calibration) but degrades on near-OOD because structurally similar inputs produce similar attention patterns; (2) \textbf{Cosine distance} excels on all OOD types (perfect with calibration) because even subtle distributional shifts create measurable embedding distance. The most dangerous failure mode is occluded cameras, where attention fails (0.475) but cosine succeeds (1.000). For safety-critical deployment, we recommend cosine distance as the primary detector with attention as a calibration-free backup.
+
 \end{document}
