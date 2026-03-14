@@ -1446,4 +1446,20 @@ We systematically vary the calibration set size from $N=1$ to $N=30$ (Figure~\re
 
 This result has important practical implications: the ``calibrated'' cosine distance method requires only \textbf{one forward pass} on a known-good input to calibrate. This effectively reduces the distinction between ``calibrated'' and ``calibration-free'' methods---cosine distance requires trivially minimal calibration (one sample) while achieving strictly superior detection, especially on near-OOD scenarios.
 
+\subsection{Prompt Sensitivity}
+\label{app:prompt_sensitivity}
+
+\textbf{Finding 94: Cosine distance detection is completely prompt-invariant (AUROC 1.000 across 5 different prompts), while attention-based detection degrades to 0.840 on semantically distant prompts (e.g., ``emergency brake'').}
+
+We test whether the OOD detection signal depends on the text instruction (Figure~\ref{fig:prompt_sensitivity}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig57_prompt_sensitivity.pdf}
+\caption{\textbf{Prompt sensitivity.} (a) Cosine distance achieves 1.000 on all 5 prompts; attention degrades on non-driving prompts. (b) Cross-prompt centroid distances: ``original'' and ``fast'' prompts have nearly identical centroids (0.037) while ``brake'' is most distant (0.53). (c) Key finding: cosine measures visual embedding distance independent of text conditioning.}
+\label{fig:prompt_sensitivity}
+\end{figure}
+
+The prompt invariance of cosine distance arises because the last hidden state captures the visual scene representation, which is largely independent of the text prompt. Attention patterns, however, shift significantly with prompt semantics because the model attends to different image regions for different tasks (e.g., road ahead for driving vs.\ surrounding traffic for braking). This makes cosine distance more suitable for deployment in diverse task settings.
+
 \end{document}

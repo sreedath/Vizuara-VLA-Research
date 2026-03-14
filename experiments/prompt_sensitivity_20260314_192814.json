@@ -1,0 +1,231 @@
+{
+  "experiment": "prompt_sensitivity",
+  "experiment_number": 71,
+  "timestamp": "20260314_192814",
+  "prompts": {
+    "original": "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:",
+    "simplified": "In: What action should the robot take to drive forward?\nOut:",
+    "fast": "In: What action should the robot take to drive forward at 60 m/s safely?\nOut:",
+    "lane_change": "In: What action should the robot take to change lanes to the left?\nOut:",
+    "brake": "In: What action should the robot take to emergency brake?\nOut:"
+  },
+  "results": {
+    "original": {
+      "cosine_auroc": 1.0,
+      "attn_auroc": 1.0,
+      "per_scene": {
+        "highway": {
+          "cosine_mean": 0.08107725530862808,
+          "cosine_std": 0.0023530629629323185,
+          "attn_max_mean": 0.30341148376464844,
+          "attn_max_std": 0.005010264326648343,
+          "is_ood": false
+        },
+        "urban": {
+          "cosine_mean": 0.08874418586492538,
+          "cosine_std": 0.006320533768394322,
+          "attn_max_mean": 0.3176689147949219,
+          "attn_max_std": 0.0051648507558121354,
+          "is_ood": false
+        },
+        "noise": {
+          "cosine_mean": 0.449699342250824,
+          "cosine_std": 0.010958668018462354,
+          "attn_max_mean": 0.36151377360026044,
+          "attn_max_std": 0.004981298756678237,
+          "is_ood": true
+        },
+        "indoor": {
+          "cosine_mean": 0.34867238998413086,
+          "cosine_std": 0.008395757334526173,
+          "attn_max_mean": 0.3512776692708333,
+          "attn_max_std": 0.00584976856975288,
+          "is_ood": true
+        },
+        "blackout": {
+          "cosine_mean": 0.4815174341201782,
+          "cosine_std": 0.0,
+          "attn_max_mean": 0.50921630859375,
+          "attn_max_std": 0.0,
+          "is_ood": true
+        }
+      }
+    },
+    "simplified": {
+      "cosine_auroc": 1.0,
+      "attn_auroc": 1.0,
+      "per_scene": {
+        "highway": {
+          "cosine_mean": 0.10573722422122955,
+          "cosine_std": 0.005473009586984337,
+          "attn_max_mean": 0.33870697021484375,
+          "attn_max_std": 0.003846690485140891,
+          "is_ood": false
+        },
+        "urban": {
+          "cosine_mean": 0.13228338211774826,
+          "cosine_std": 0.0069089383979081655,
+          "attn_max_mean": 0.33205413818359375,
+          "attn_max_std": 0.004442764860770361,
+          "is_ood": false
+        },
+        "noise": {
+          "cosine_mean": 0.5487120151519775,
+          "cosine_std": 0.013361877894329879,
+          "attn_max_mean": 0.360748291015625,
+          "attn_max_std": 0.00823797513038229,
+          "is_ood": true
+        },
+        "indoor": {
+          "cosine_mean": 0.4205210208892822,
+          "cosine_std": 0.006587104880415456,
+          "attn_max_mean": 0.3664499918619792,
+          "attn_max_std": 0.005820740823396305,
+          "is_ood": true
+        },
+        "blackout": {
+          "cosine_mean": 0.6044621467590332,
+          "cosine_std": 0.0,
+          "attn_max_mean": 0.52630615234375,
+          "attn_max_std": 0.0,
+          "is_ood": true
+        }
+      }
+    },
+    "fast": {
+      "cosine_auroc": 1.0,
+      "attn_auroc": 1.0,
+      "per_scene": {
+        "highway": {
+          "cosine_mean": 0.08425609022378922,
+          "cosine_std": 0.002437469030989121,
+          "attn_max_mean": 0.28905677795410156,
+          "attn_max_std": 0.005265100042424476,
+          "is_ood": false
+        },
+        "urban": {
+          "cosine_mean": 0.0832146555185318,
+          "cosine_std": 0.0065564751438328146,
+          "attn_max_mean": 0.3169975280761719,
+          "attn_max_std": 0.0063213700483489245,
+          "is_ood": false
+        },
+        "noise": {
+          "cosine_mean": 0.46355800827344257,
+          "cosine_std": 0.011342408736207484,
+          "attn_max_mean": 0.3647562662760417,
+          "attn_max_std": 0.0019059578805500155,
+          "is_ood": true
+        },
+        "indoor": {
+          "cosine_mean": 0.3521830638249715,
+          "cosine_std": 0.011940247500789177,
+          "attn_max_mean": 0.35652414957682294,
+          "attn_max_std": 0.008167783433886727,
+          "is_ood": true
+        },
+        "blackout": {
+          "cosine_mean": 0.48230117559432983,
+          "cosine_std": 0.0,
+          "attn_max_mean": 0.490692138671875,
+          "attn_max_std": 0.0,
+          "is_ood": true
+        }
+      }
+    },
+    "lane_change": {
+      "cosine_auroc": 1.0,
+      "attn_auroc": 0.99609375,
+      "per_scene": {
+        "highway": {
+          "cosine_mean": 0.1044008880853653,
+          "cosine_std": 0.003983143538187544,
+          "attn_max_mean": 0.3642692565917969,
+          "attn_max_std": 0.004759786889013473,
+          "is_ood": false
+        },
+        "urban": {
+          "cosine_mean": 0.13023792952299118,
+          "cosine_std": 0.004197386005423224,
+          "attn_max_mean": 0.3384857177734375,
+          "attn_max_std": 0.006977772665417924,
+          "is_ood": false
+        },
+        "noise": {
+          "cosine_mean": 0.5263028095165888,
+          "cosine_std": 0.006083916941001187,
+          "attn_max_mean": 0.3964894612630208,
+          "attn_max_std": 0.004218916443300389,
+          "is_ood": true
+        },
+        "indoor": {
+          "cosine_mean": 0.40800073742866516,
+          "cosine_std": 0.006381736325968921,
+          "attn_max_mean": 0.3856252034505208,
+          "attn_max_std": 0.009219902241801992,
+          "is_ood": true
+        },
+        "blackout": {
+          "cosine_mean": 0.5484082698822021,
+          "cosine_std": 0.0,
+          "attn_max_mean": 0.499298095703125,
+          "attn_max_std": 0.0,
+          "is_ood": true
+        }
+      }
+    },
+    "brake": {
+      "cosine_auroc": 1.0,
+      "attn_auroc": 0.83984375,
+      "per_scene": {
+        "highway": {
+          "cosine_mean": 0.11011040955781937,
+          "cosine_std": 0.004835653210432554,
+          "attn_max_mean": 0.3277320861816406,
+          "attn_max_std": 0.0045207542582794075,
+          "is_ood": false
+        },
+        "urban": {
+          "cosine_mean": 0.09189053624868393,
+          "cosine_std": 0.004359984020482033,
+          "attn_max_mean": 0.33160400390625,
+          "attn_max_std": 0.007433927938433394,
+          "is_ood": false
+        },
+        "noise": {
+          "cosine_mean": 0.544095903635025,
+          "cosine_std": 0.023716509229138913,
+          "attn_max_mean": 0.34727732340494794,
+          "attn_max_std": 0.004539469799920435,
+          "is_ood": true
+        },
+        "indoor": {
+          "cosine_mean": 0.3597730298837026,
+          "cosine_std": 0.011644430044658434,
+          "attn_max_mean": 0.3331247965494792,
+          "attn_max_std": 0.007732044967707379,
+          "is_ood": true
+        },
+        "blackout": {
+          "cosine_mean": 0.5851165652275085,
+          "cosine_std": 0.0,
+          "attn_max_mean": 0.484893798828125,
+          "attn_max_std": 0.0,
+          "is_ood": true
+        }
+      }
+    }
+  },
+  "centroid_distances": {
+    "original_vs_simplified": 0.38004785776138306,
+    "fast_vs_original": 0.03741562366485596,
+    "fast_vs_simplified": 0.40274906158447266,
+    "fast_vs_lane_change": 0.46717047691345215,
+    "lane_change_vs_original": 0.4530097246170044,
+    "lane_change_vs_simplified": 0.4434159994125366,
+    "brake_vs_original": 0.5231787860393524,
+    "brake_vs_simplified": 0.47669458389282227,
+    "brake_vs_fast": 0.5333523154258728,
+    "brake_vs_lane_change": 0.47011804580688477
+  }
+}

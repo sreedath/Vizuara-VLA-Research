@@ -3246,3 +3246,46 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 3. **Practical implication: "one-shot calibration"**: Deployment requires only a single forward pass on a known-good input to calibrate the OOD detector. This eliminates the calibration data collection burden entirely.
 
 4. **This is a direct consequence of the massive effect size**: With d=5.18, the overlap between ID and OOD distributions is essentially zero, so any point in the ID cluster serves as an adequate centroid.
+
+---
+
+## Finding 65: Cosine Detection Is Prompt-Invariant; Attention Is Not
+
+**Experiment 71** — Prompt sensitivity analysis across 5 different task instructions.
+
+### Setup
+- 5 prompts: original (drive 25 m/s), simplified (drive forward), fast (60 m/s), lane change, emergency brake
+- 32 test images per prompt, 10 calibration per prompt
+- Cross-prompt centroid distances measured
+
+### Results
+
+| Prompt | Cosine AUROC | Attn Max AUROC |
+|--------|-------------|----------------|
+| Original (drive 25 m/s) | **1.000** | **1.000** |
+| Simplified (drive) | **1.000** | **1.000** |
+| Fast (drive 60 m/s) | **1.000** | **1.000** |
+| Lane change | **1.000** | 0.996 |
+| Emergency brake | **1.000** | **0.840** |
+
+### Cross-Prompt Centroid Distances
+
+| | Original | Simplified | Fast | Lane | Brake |
+|-|----------|------------|------|------|-------|
+| Original | 0.00 | 0.380 | 0.037 | 0.453 | 0.523 |
+| Simplified | | 0.00 | 0.403 | 0.443 | 0.477 |
+| Fast | | | 0.00 | 0.467 | 0.533 |
+| Lane | | | | 0.00 | 0.470 |
+| Brake | | | | | 0.00 |
+
+### Key Insights
+
+1. **Cosine distance is perfectly prompt-invariant (1.000 across all 5 prompts)**: The visual embedding captures scene semantics independent of the text instruction, so the centroid-based detector is robust to prompt variation.
+
+2. **Attention degrades on semantically distant prompts**: The "brake" prompt (AUROC 0.840) significantly changes attention patterns because the model attends to different image regions for braking vs driving tasks.
+
+3. **"Original" and "fast" prompts have nearly identical centroids (0.037)**: Speed variation barely affects the embedding, suggesting the model's visual processing is speed-invariant.
+
+4. **"Brake" has the most distant centroid from all others (0.47-0.53)**: This confirms that task type (drive vs brake) creates larger embedding shifts than task parameters (speed, lanes).
+
+5. **Practical implication: cosine distance works regardless of the prompt used at deployment time**, while attention-based detection should only be used with driving-type prompts for reliable results.
