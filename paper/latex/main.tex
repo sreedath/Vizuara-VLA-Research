@@ -2170,4 +2170,20 @@ We test detection performance across 10 prompt formulations: driving-specific (s
 
 The prompt robustness analysis establishes that OOD detection is a property of the VLA's visual representation, not its task understanding. The ``robot generic'' prompt (``pick up the red block'') achieves the highest $d = 57.48$, outperforming all driving-specific prompts. This seemingly paradoxical result has a clear explanation: the prompt determines the representation space's geometry (centroid location, ID distribution tightness), but the ID/OOD separation is dominated by the visual encoder's response to the image. Cross-prompt centroid similarity averages 0.537, meaning different prompts produce centroids that are only moderately correlated---yet detection is always perfect because both the centroid and the test-time OOD scores shift together in the same direction. The adversarial prompts confirm this: even asking the robot to ``solve $x^2 + 3x - 4 = 0$'' yields perfect detection ($d = 37.64$), because the VLA's visual features still distinguish driving scenes from noise/indoor/twilight regardless of the text instruction. The practical implication is that no prompt engineering is needed for OOD detection---any prompt that produces consistent hidden states for ID images will work.
 
+\subsection{Mahalanobis Distance Detection}
+\label{app:mahalanobis_refined}
+
+\textbf{Finding 139: Cosine distance ($d = 53.44$) outperforms all Mahalanobis variants. Diagonal Mahalanobis achieves $d = 42.73$; regularized full Mahalanobis (Ledoit-Wolf, OAS) drops to $d = 6.60$ with AUROC $= 0.985$. PCA-4 Mahalanobis fails catastrophically (AUROC $= 0.337$). Covariance estimation from 20 samples in 4,096 dimensions is fundamentally unreliable.}
+
+We compare six distance metrics for centroid-based OOD detection: cosine, Euclidean, diagonal Mahalanobis, PCA-reduced Mahalanobis, and regularized full Mahalanobis via Ledoit-Wolf and OAS shrinkage estimators (Figure~\ref{fig:mahalanobis_refined}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig102_mahalanobis_refined.pdf}
+\caption{\textbf{Distance metric comparison.} (a) Cohen's $d$ by method: cosine distance ($d = 53.44$) leads; regularized Mahalanobis and PCA variants achieve lower $d$. (b) Per-category normalized scores for the top 3 metrics: all preserve the ID/OOD ordering but with different dynamic ranges. (c) Full-dim methods ranked: cosine $>$ diagonal Mahalanobis $>$ Euclidean $>$ Ledoit-Wolf.}
+\label{fig:mahalanobis_refined}
+\end{figure}
+
+The Mahalanobis analysis reveals a fundamental limitation of covariance-based methods in the high-dimensional, low-sample regime ($p = 4096, n = 20$). Full Mahalanobis distance requires inverting a $4096 \times 4096$ covariance matrix estimated from 20 samples---a severely underdetermined problem ($n \ll p$). Even state-of-the-art shrinkage estimators (Ledoit-Wolf, OAS) produce noisy precision matrices that amplify estimation error, reducing $d$ from 53.44 to 6.60 and introducing false negatives (AUROC drops to 0.985). Diagonal Mahalanobis (per-dimension variance normalization) partially addresses this by estimating only $p$ parameters instead of $p^2$, achieving $d = 42.73$---better than Euclidean ($d = 18.47$) but worse than cosine ($d = 53.44$). The PCA-4 Mahalanobis failure ($d = -0.56$) demonstrates that the highest-variance directions are not the most discriminative---a finding consistent with our feature importance analysis (Finding 133). Cosine distance's success is explained by its implicit normalization: by projecting onto the unit hypersphere, it ignores magnitude variation (which is noisy) and focuses on directional information (which is discriminative). This makes cosine uniquely suitable for the calibration-free paradigm where only a handful of ID samples are available.
+
 \end{document}

@@ -1,0 +1,86 @@
+{
+  "experiment": "mahalanobis_refined",
+  "experiment_number": 116,
+  "timestamp": "20260314_223236",
+  "n_cal": 20,
+  "n_test": 100,
+  "dim": 4096,
+  "results": {
+    "cosine": {
+      "auroc": 1.0,
+      "d": 53.43768001013692
+    },
+    "euclidean": {
+      "auroc": 1.0,
+      "d": 18.473392188195696
+    },
+    "diagonal_mahalanobis": {
+      "auroc": 1.0,
+      "d": 42.731213158713345
+    },
+    "pca_4_mahalanobis": {
+      "auroc": 0.336875,
+      "d": -0.5595106177857265,
+      "dims": 4,
+      "explained_var": 0.8524234890937805
+    },
+    "pca_8_mahalanobis": {
+      "auroc": 0.9668749999999999,
+      "d": 6.4960799731003185,
+      "dims": 8,
+      "explained_var": 0.9204093217849731
+    },
+    "pca_16_mahalanobis": {
+      "auroc": 0.978125,
+      "d": 6.375695702129465,
+      "dims": 16,
+      "explained_var": 0.9872837066650391
+    },
+    "ledoit_wolf": {
+      "auroc": 0.9850000000000001,
+      "d": 6.596505229668413
+    },
+    "oas": {
+      "auroc": 0.9850000000000001,
+      "d": 6.5965480327508965
+    }
+  },
+  "per_category": {
+    "highway": {
+      "group": "ID",
+      "cosine_mean": 0.0848284363746643,
+      "euclidean_mean": 30.687304401397704,
+      "diagonal_maha_mean": 3987.0019653320314
+    },
+    "urban": {
+      "group": "ID",
+      "cosine_mean": 0.08900187909603119,
+      "euclidean_mean": 32.225384902954104,
+      "diagonal_maha_mean": 4866.899035644531
+    },
+    "noise": {
+      "group": "OOD",
+      "cosine_mean": 0.44079600274562836,
+      "euclidean_mean": 76.82357025146484,
+      "diagonal_maha_mean": 54219.1083984375
+    },
+    "indoor": {
+      "group": "OOD",
+      "cosine_mean": 0.3538791298866272,
+      "euclidean_mean": 70.35717010498047,
+      "diagonal_maha_mean": 45861.1291015625
+    },
+    "twilight": {
+      "group": "OOD",
+      "cosine_mean": 0.4368575602769852,
+      "euclidean_mean": 70.89925765991211,
+      "diagonal_maha_mean": 45315.3798828125
+    },
+    "snow": {
+      "group": "OOD",
+      "cosine_mean": 0.2629244953393936,
+      "euclidean_mean": 57.20510005950928,
+      "diagonal_maha_mean": 30128.64931640625
+    }
+  }
+}

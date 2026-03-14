@@ -5188,3 +5188,41 @@ Oracle weights: [1.0, 0.0, 0.0, 0.0] — pure cosine.
 5. **Task-irrelevant prompts work as well as task-relevant ones**: "Pick up the red block" (d=57.48) outperforms all driving-specific prompts. The OOD signal is in the image representation, not the task specification.
 
 6. **Practical implication — no prompt engineering needed**: Any prompt suffices for OOD detection. The calibration and test prompts must match, but the specific wording is irrelevant.
+
+---
+
+## Finding 110: Mahalanobis Distance Detection — Refined
+
+**Experiment 116** — Compares cosine distance, Euclidean distance, diagonal Mahalanobis, PCA-reduced Mahalanobis, and regularized full Mahalanobis (Ledoit-Wolf, OAS) for OOD detection.
+
+### Setup
+- 20 samples per category, 120 total inferences
+- 20 calibration (10 highway + 10 urban), 100 test
+- 6 distance metrics tested
+
+### Results
+
+| Method | Dims | AUROC | Cohen's d |
+|--------|------|-------|-----------|
+| **Cosine distance** | **4096** | **1.000** | **53.44** |
+| Diagonal Mahalanobis | 4096 | 1.000 | 42.73 |
+| Euclidean distance | 4096 | 1.000 | 18.47 |
+| Ledoit-Wolf Mahalanobis | 4096 | 0.985 | 6.60 |
+| OAS Mahalanobis | 4096 | 0.985 | 6.60 |
+| PCA-16 Mahalanobis | 16 | 0.978 | 6.38 |
+| PCA-8 Mahalanobis | 8 | 0.967 | 6.50 |
+| PCA-4 Mahalanobis | 4 | 0.337 | -0.56 |
+
+### Key Insights
+
+1. **Cosine distance is the best metric (d=53.44)**: Direction-based distance outperforms all magnitude-aware alternatives. Cosine achieves perfect AUROC and highest d.
+
+2. **Diagonal Mahalanobis is second-best (d=42.73)**: Per-dimension variance normalization helps but doesn't beat cosine. It weights informative dimensions more but also amplifies noise.
+
+3. **Full Mahalanobis with regularization fails (d=6.60)**: Ledoit-Wolf and OAS both achieve only AUROC=0.985 with d=6.60. The covariance estimate from 20 samples in 4096 dims is too noisy even with shrinkage.
+
+4. **PCA-4 Mahalanobis fails catastrophically (AUROC=0.337)**: The top 4 PCs (85% variance) don't capture the OOD-discriminative dimensions. The Mahalanobis distance in this subspace assigns higher scores to ID than OOD.
+
+5. **Euclidean distance works but with lower d (18.47)**: Magnitude differences between ID and OOD contribute to detection, but the norm-independent cosine metric provides 2.9× better separation.
+
+6. **Practical recommendation: cosine distance remains optimal**: Simple, efficient (O(d) per sample), no covariance estimation needed, and achieves the highest separation. The only scenario where Mahalanobis might help is with much larger calibration sets (>1000).
