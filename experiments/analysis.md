@@ -1251,3 +1251,46 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 5. **Trade-off is now safety vs throughput only**: With cosine distance, increasing α only reduces easy throughput (from 72% to 16%), while safety remains at 100%. With action mass, increasing α improves safety (from 60.8% to 81.4%) while also reducing throughput.
 
 6. **This is the paper's strongest result**: A deployed VLA safety system using cosine distance achieves perfect safety with 72% throughput, requiring only 25 calibration images, a single centroid vector, and one dot product per inference.
+
+---
+
+## Finding 25: Cosine Distance is More Prompt-Robust than Action Mass (Real OpenVLA-7B, Experiment 31)
+
+### Setup
+- **Model**: OpenVLA-7B (single pass, output_hidden_states=True)
+- **Samples**: 78 per prompt × 4 prompts = 312 total inferences
+- **Prompts**: 4 semantically equivalent driving prompts
+- **Analysis**: Per-prompt AUROC, cross-prompt centroid transfer, prompt-averaged centroid
+
+### Per-Prompt AUROC
+
+| Prompt | Cosine AUROC | Mass AUROC | Δ |
+|--------|-------------|-----------|---|
+| p1 | **0.971** | 0.678 | +0.292 |
+| p2 | 0.802 | 0.536 | +0.266 |
+| p3 | 0.906 | 0.457 | +0.449 |
+| p4 | 0.844 | 0.512 | +0.333 |
+| **Mean** | **0.881** | **0.546** | **+0.335** |
+| **Std** | **0.064** | **0.082** | |
+| **Range** | **0.169** | **0.222** | |
+
+### Cross-Prompt Centroid Transfer
+
+| Cal\Test | p1 | p2 | p3 | p4 |
+|----------|------|------|------|------|
+| p1 | 0.971 | 0.864 | 0.703 | 0.874 |
+| p2 | 0.400 | 0.802 | 0.885 | 0.558 |
+| p3 | 0.361 | 0.633 | 0.906 | 0.547 |
+| p4 | 0.461 | 0.656 | 0.873 | 0.844 |
+
+### Key Insights
+
+1. **Cosine distance beats action mass on EVERY prompt**: Δ ranges from +0.266 (p2) to +0.449 (p3). Action mass mean AUROC is 0.546 (barely above random), while cosine distance is 0.881.
+
+2. **Cosine distance is more stable across prompts**: Std = 0.064 vs 0.082, range = 0.169 vs 0.222. Both signals show prompt sensitivity, but cosine is significantly less affected.
+
+3. **Cross-prompt transfer is asymmetric**: p1 centroid transfers well to p2 (0.864) and p4 (0.874), but p2/p3 centroids don't transfer to p1 (0.400/0.361). Same-prompt calibration is strongly preferred.
+
+4. **Blackout is most robustly detected by cosine**: Range = 0.092 vs 0.854 for mass. Action mass varies from detecting blackout well to failing completely depending on prompt.
+
+5. **Practical implication**: Always calibrate the centroid with the same prompt that will be used at inference time. Cross-prompt transfer is unreliable.
