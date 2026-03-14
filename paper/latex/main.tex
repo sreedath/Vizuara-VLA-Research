@@ -1702,4 +1702,20 @@ We simulate realistic deployment where OOD inputs are rare events within mostly-
 
 The precision analysis reveals an important deployment consideration: at low contamination rates, even a small FPR can produce more false positives than true positives (the \emph{base rate fallacy}). Using the data-driven Youden threshold instead of the calibration-based $\mu+3\sigma$ eliminates this issue entirely due to the non-overlapping score distributions.
 
+\subsection{Cross-Seed Robustness}
+\label{app:cross_seed}
+
+\textbf{Finding 110: AUROC = 1.000 $\pm$ 0.000 across 5 different random seeds, with Cohen's $d$ = 5.58 $\pm$ 0.14 (CV = 2.5\%). Results are not seed-dependent.}
+
+We repeat the full detection pipeline with five different random seeds to verify reproducibility (Figure~\ref{fig:cross_seed}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig73_cross_seed.pdf}
+\caption{\textbf{Cross-seed robustness.} (a) Perfect AUROC across all seeds. (b) Cohen's $d$ stable at $5.58 \pm 0.14$ (CV=2.5\%). (c) ID and OOD score distributions are nearly identical across seeds.}
+\label{fig:cross_seed}
+\end{figure}
+
+The zero-variance AUROC and low-variance effect size confirm that our findings are intrinsic properties of the VLA's representation structure, not artifacts of particular random seeds. The cosine distance gap between ID and OOD distributions is a robust, reproducible phenomenon.
+
 \end{document}
