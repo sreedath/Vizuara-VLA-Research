@@ -1,0 +1,27 @@
+# CalibDrive MC Dropout Configuration
+
+description: "MC Dropout uncertainty estimation"
+
+model:
+  name: "openvla/openvla-7b"
+  dtype: "float16"
+  device: "cuda"
+  dropout_rate: 0.1
+
+uncertainty:
+  method: "mc_dropout"
+  num_samples: 20
+
+dataset:
+  name: "navsim"
+  split: "val"
+  num_samples: 1000
+  prediction_horizon: 10
+
+evaluation:
+  accuracy_threshold: 2.0
+  collision_radius: 2.0
+  num_bins: 15
+
+seed: 42
+noise_scale: 0.8  # expect better calibration with UQ

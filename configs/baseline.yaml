@@ -1,0 +1,27 @@
+# CalibDrive Baseline Configuration
+# Establishes baseline VLA performance without calibration
+
+description: "Baseline VLA without uncertainty calibration"
+
+model:
+  name: "openvla/openvla-7b"
+  dtype: "float16"
+  device: "cuda"
+
+uncertainty:
+  method: "none"  # no UQ method (baseline)
+  num_samples: 1
+
+dataset:
+  name: "navsim"
+  split: "val"
+  num_samples: 1000
+  prediction_horizon: 10
+
+evaluation:
+  accuracy_threshold: 2.0  # meters
+  collision_radius: 2.0
+  num_bins: 15  # for ECE
+
+seed: 42
+noise_scale: 1.0

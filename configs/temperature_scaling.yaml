@@ -1,0 +1,28 @@
+# CalibDrive Temperature Scaling Configuration
+
+description: "Post-hoc temperature scaling calibration"
+
+model:
+  name: "openvla/openvla-7b"
+  dtype: "float16"
+  device: "cuda"
+
+uncertainty:
+  method: "temperature_scaling"
+  num_samples: 1
+  calibration_split: "val"
+  calibration_fraction: 0.3  # use 30% of val for learning T
+
+dataset:
+  name: "navsim"
+  split: "val"
+  num_samples: 1000
+  prediction_horizon: 10
+
+evaluation:
+  accuracy_threshold: 2.0
+  collision_radius: 2.0
+  num_bins: 15
+
+seed: 42
+noise_scale: 0.9

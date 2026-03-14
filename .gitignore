@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data
+data/raw/
+data/processed/
+*.pt
+*.pth
+*.ckpt
+*.bin
+
+# Logs
+*.log
+wandb/
+runs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.key
+
+# Experiments (keep results.tsv tracked)
+experiments/detail_*.json
+run.log
+
+# Large files
+*.tar.gz
+*.zip
+*.h5
+*.hdf5

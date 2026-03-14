@@ -1,0 +1,27 @@
+# CalibDrive Deep Ensemble Configuration
+
+description: "Deep ensemble with 5 independently trained VLAs"
+
+model:
+  name: "openvla/openvla-7b"
+  dtype: "float16"
+  device: "cuda"
+  num_ensemble_members: 5
+
+uncertainty:
+  method: "deep_ensemble"
+  num_models: 5
+
+dataset:
+  name: "navsim"
+  split: "val"
+  num_samples: 1000
+  prediction_horizon: 10
+
+evaluation:
+  accuracy_threshold: 2.0
+  collision_radius: 2.0
+  num_bins: 15
+
+seed: 42
+noise_scale: 0.7  # ensembles typically give best calibration
