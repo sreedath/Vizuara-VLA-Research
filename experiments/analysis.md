@@ -3890,3 +3890,43 @@ Summary: AUROC = 1.000 ± 0.000, Cohen's d = 5.58 ± 0.14
 3. **Consistent score distributions**: ID mean varies only ±0.003, OOD mean varies only ±0.005 across seeds. The centroid-based detection is insensitive to input-level noise variations.
 
 4. **Statistical reliability**: This confirms all previous experiments' findings are reproducible and not seed-dependent.
+
+---
+
+## Finding 82: OOD Hardness Spectrum
+
+**Experiment 88** — Maps the detection boundary using continuous interpolation and color shift perturbations.
+
+### Setup
+- Highway→Indoor interpolation: 11 alpha levels (0.0-1.0)
+- Color shift (sky hue rotation): 11 shift levels (0.0-1.0)
+- 6 samples per level, 30 calibration
+- ~162 model inferences
+
+### Results — Interpolation (Highway→Indoor)
+
+| Alpha | Cosine Dist | AUROC |
+|-------|------------|-------|
+| 0.0 (ID) | 0.086 | 0.417 (not separable from other ID) |
+| **0.1** | **0.199** | **1.000** |
+| 0.5 | 0.248 | 1.000 |
+| 1.0 (Indoor) | 0.345 | 1.000 |
+
+### Results — Color Shift
+
+| Shift | Cosine Dist | AUROC |
+|-------|------------|-------|
+| 0.0 (ID) | 0.086 | 0.427 |
+| 0.1 | 0.095 | 0.802 |
+| **0.2** | **0.127** | **1.000** |
+| 1.0 (max) | 0.286 | 1.000 |
+
+### Key Insights
+
+1. **Extremely sharp interpolation boundary**: Just 10% interpolation toward indoor scenes immediately achieves perfect 1.000 AUROC. The detector has a razor-sharp ID/OOD boundary with no ambiguous middle ground.
+
+2. **Color shift has a more gradual transition**: 10% color shift reaches 0.802, crossing to perfect at 20%. Color changes affect embedding geometry more gradually than structural changes.
+
+3. **Phase diagram**: The detection boundary corresponds to a cosine distance of ~0.10 (μ+3σ threshold). Anything above this distance is reliably detected as OOD.
+
+4. **Structural changes dominate**: Interpolation (structural mixing) causes a 2.3× jump in embedding distance at just 10% perturbation, while color shift of the same magnitude causes only a 1.1× increase. The VLA's visual encoder is more sensitive to spatial layout than color palette.

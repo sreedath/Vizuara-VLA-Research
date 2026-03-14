@@ -1718,4 +1718,20 @@ We repeat the full detection pipeline with five different random seeds to verify
 
 The zero-variance AUROC and low-variance effect size confirm that our findings are intrinsic properties of the VLA's representation structure, not artifacts of particular random seeds. The cosine distance gap between ID and OOD distributions is a robust, reproducible phenomenon.
 
+\subsection{OOD Hardness Spectrum}
+\label{app:ood_hardness}
+
+\textbf{Finding 111: Just 10\% interpolation toward OOD achieves perfect AUROC (1.000). The detector has a razor-sharp boundary with no ambiguous middle ground.}
+
+We map the detection boundary using continuous highway$\to$indoor interpolation and sky-color shifts (Figure~\ref{fig:ood_hardness}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig74_ood_hardness.pdf}
+\caption{\textbf{OOD hardness spectrum.} (a) Detection boundary: interpolation jumps to perfect AUROC at $\alpha=0.1$; color shift transitions more gradually. (b) Embedding trajectories: structural changes cause larger jumps than color changes. (c) Phase diagram showing ID/OOD zones around the $\mu+3\sigma$ threshold.}
+\label{fig:ood_hardness}
+\end{figure}
+
+The sharp interpolation boundary reveals that VLA hidden states encode structural scene understanding: even a small admixture of non-driving spatial layout immediately shifts the representation out of the ID manifold. Color changes, while also detected, produce more gradual embedding drift, consistent with the adversarial robustness finding (Experiment~81) that spatial coherence is the primary discriminant.
+
 \end{document}
