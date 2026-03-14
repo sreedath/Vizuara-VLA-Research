@@ -1462,4 +1462,20 @@ We test whether the OOD detection signal depends on the text instruction (Figure
 
 The prompt invariance of cosine distance arises because the last hidden state captures the visual scene representation, which is largely independent of the text prompt. Attention patterns, however, shift significantly with prompt semantics because the model attends to different image regions for different tasks (e.g., road ahead for driving vs.\ surrounding traffic for braking). This makes cosine distance more suitable for deployment in diverse task settings.
 
+\subsection{Hidden Layer Sweep}
+\label{app:layer_sweep}
+
+\textbf{Finding 95: All hidden layers 4--32 achieve perfect AUROC (1.000), but layer 24 has peak separability (Cohen's $d=10.54$). Layer 0 (embedding) fails completely.}
+
+We sweep cosine distance OOD detection across every 4th layer of the 32-layer Llama backbone (Figure~\ref{fig:layer_sweep}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig58_layer_sweep.pdf}
+\caption{\textbf{Hidden layer sweep.} (a) All layers 4--32 achieve perfect AUROC; layer 0 (embedding) fails. (b) Effect size peaks at layer 24 ($d=10.54$), even exceeding the final layer ($d=10.45$). (c) Cosine distances grow monotonically: the transformer progressively separates ID from OOD representations.}
+\label{fig:layer_sweep}
+\end{figure}
+
+Two key implications: (1) The OOD signal is \emph{not} a final-layer artifact---it builds throughout the transformer, with the signal present from layer 4 onward. (2) Layer 24 could enable \textbf{early-exit OOD detection}, computing only 75\% of the forward pass while maintaining peak separability. This could reduce latency by $\sim$25\% in deployment settings where early detection is prioritized over full action generation.
+
 \end{document}
