@@ -1327,4 +1327,20 @@ The mean max attention per head is 0.392 for OOD versus 0.311 for ID --- the mod
 
 \textbf{Limitation:} This result should be validated on real driving images and diverse VLA architectures before deployment. The synthetic images used here may not capture the full complexity of attention patterns in real-world driving scenarios.
 
+\subsection{Attention Detection Robustness}
+\label{app:attn_robust}
+
+\textbf{Finding 88: Attention-based detection is vulnerable to blur (0.389 AUROC at $r=3$) while cosine distance maintains perfect detection (1.000) across all perturbations, revealing complementary strengths.}
+
+We test whether the calibration-free attention OOD detection is robust to image perturbations (Figure~\ref{fig:attn_robust}). While attention achieves perfect AUROC on clean data, Gaussian blur degrades it catastrophically ($r=3$: 0.389, $r=5$: 0.528). In contrast, cosine distance maintains 1.000 AUROC across all 11 perturbation conditions.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig51_attn_robust.pdf}
+\caption{\textbf{Attention detection robustness.} (a) Attention-based detection (green/blue) degrades under blur while cosine distance (orange) maintains perfect detection. (b) Best-of-both achieves 1.000 across all conditions, motivating the complementary design.}
+\label{fig:attn_robust}
+\end{figure}
+
+This reveals that \textbf{attention and cosine distance are complementary detectors}: attention excels on clean inputs without calibration, while cosine distance provides robust backup under image degradation. A production system should use both signals: attention max as the primary (calibration-free) detector with cosine distance as a fallback when blur or overexposure is detected. The ``best-of-both'' achieves 1.000 AUROC across all perturbation conditions tested.
+
 \end{document}

@@ -2969,3 +2969,41 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Cosine distance needs matched seeds (0.589 here vs 0.933 earlier)**: The lower cosine AUROC here is because calibration and test samples use different seed offsets. Attention-based detection is immune to this because it requires no calibration.
 
 5. **This is a potential paradigm shift**: If attention-based detection works this well without calibration, it eliminates the entire calibration pipeline — no centroid estimation, no per-scene calibration, no cross-domain transfer concerns. The deployment cost drops to zero.
+
+---
+
+## Finding 59: Attention Detection Vulnerable to Blur, Cosine is Complementary (Real OpenVLA-7B, Experiment 65)
+
+### Setup
+- **Model**: OpenVLA-7B (BF16, forward pass with output_attentions=True)
+- **Perturbations**: 11 conditions (none, blur ×3, brightness ×3, JPEG ×2, Gaussian noise ×2)
+- **Per condition**: 6 ID + 12 OOD (4 noise + 4 indoor + 4 blackout) = 18 samples
+- **Total inferences**: ~198
+
+### Robustness Results
+
+| Perturbation | Attn Max | Attn Entropy | Cosine |
+|-------------|----------|-------------|--------|
+| None | 1.000 | 1.000 | 1.000 |
+| Blur r=1 | 0.972 | 1.000 | 1.000 |
+| Blur r=3 | **0.389** | **0.472** | **1.000** |
+| Blur r=5 | **0.528** | **0.389** | **1.000** |
+| Bright 0.5× | 1.000 | 1.000 | 1.000 |
+| Bright 1.5× | 0.972 | 1.000 | 1.000 |
+| Bright 2.0× | 0.722 | 0.931 | 1.000 |
+| JPEG q=10 | 1.000 | 1.000 | 1.000 |
+| JPEG q=50 | 1.000 | 1.000 | 1.000 |
+| Noise σ=25 | 1.000 | 1.000 | 1.000 |
+| Noise σ=50 | 1.000 | 1.000 | 1.000 |
+
+### Key Insights
+
+1. **Attention is vulnerable to blur (0.389 at r=3, 0.528 at r=5)**: Blurring destroys the attention patterns that distinguish ID from OOD. This is the same vulnerability identified for cosine distance in Experiment 53, but even more severe for attention.
+
+2. **Cosine distance is perfectly robust across ALL perturbations**: Cosine maintains 1.000 AUROC for every perturbation, even those that destroy attention signals. The hidden state centroid is insensitive to image-level perturbations.
+
+3. **The two methods are complementary**: Attention excels on clean/lightly-perturbed data (perfect without calibration), while cosine distance excels under perturbation (perfect with calibration). A production system should use both.
+
+4. **JPEG compression and Gaussian noise are safe for both**: Both methods maintain 1.000 under JPEG (q=10-50) and noise (σ=25-50), confirming robustness for common real-world degradations.
+
+5. **Extreme brightness moderately affects attention (0.722 at 2.0×)**: Overexposure changes attention patterns enough to reduce detection, but entropy (0.931) is more robust than max attention (0.722).

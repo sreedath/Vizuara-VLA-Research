@@ -1,0 +1,66 @@
+{
+  "experiment": "attn_robust",
+  "experiment_number": 65,
+  "timestamp": "20260314_184400",
+  "n_id": 6,
+  "n_ood_per_type": 4,
+  "n_ood_types": 3,
+  "total_inferences": 198,
+  "results": {
+    "none": {
+      "attn_max": 1.0,
+      "attn_entropy": 1.0,
+      "cosine": 1.0
+    },
+    "blur_1": {
+      "attn_max": 0.9722222222222222,
+      "attn_entropy": 1.0,
+      "cosine": 1.0
+    },
+    "blur_3": {
+      "attn_max": 0.3888888888888889,
+      "attn_entropy": 0.4722222222222222,
+      "cosine": 1.0
+    },
+    "blur_5": {
+      "attn_max": 0.5277777777777778,
+      "attn_entropy": 0.3888888888888889,
+      "cosine": 1.0
+    },
+    "bright_0.5": {
+      "attn_max": 1.0,
+      "attn_entropy": 1.0,
+      "cosine": 1.0
+    },
+    "bright_1.5": {
+      "attn_max": 0.9722222222222223,
+      "attn_entropy": 1.0,
+      "cosine": 1.0
+    },
+    "bright_2.0": {
+      "attn_max": 0.7222222222222222,
+      "attn_entropy": 0.9305555555555556,
+      "cosine": 1.0
+    },
+    "jpeg_10": {
+      "attn_max": 1.0,
+      "attn_entropy": 1.0,
+      "cosine": 1.0
+    },
+    "jpeg_50": {
+      "attn_max": 1.0,
+      "attn_entropy": 1.0,
+      "cosine": 1.0
+    },
+    "noise_25": {
+      "attn_max": 1.0,
+      "attn_entropy": 1.0,
+      "cosine": 1.0
+    },
+    "noise_50": {
+      "attn_max": 1.0,
+      "attn_entropy": 1.0,
+      "cosine": 1.0
+    }
+  }
+}
