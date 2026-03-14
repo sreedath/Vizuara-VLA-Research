@@ -296,6 +296,53 @@ This should give us the best of all worlds:
 
 ---
 
+## Finding 8: Combined Optimal UQ (Real OpenVLA-7B, Experiment 11)
+
+### Setup
+- **Model**: OpenVLA-7B with optimal dropout (p=0.20)
+- **GPU**: NVIDIA A40 (48GB)
+- **Samples**: 100 across 8 scenarios
+- **Signals tested**: MC Dropout (N=20), per-dim temperature, prompt ensemble (4 prompts), combined RMS
+- **Total inferences**: 2,400
+
+### AUROC Comparison (Easy vs OOD)
+
+| Signal | AUROC (Easy vs OOD) | AUROC (Easy vs Hard) |
+|--------|---------------------|----------------------|
+| **Raw Entropy** | **0.873** | 0.627 |
+| Neg Confidence | 0.823 | **0.637** |
+| Cal Entropy | 0.793 | 0.487 |
+| MC Conf Std | 0.576 | 0.559 |
+| Prompt Disagree | 0.560 | 0.541 |
+| Combined (RMS) | 0.502 | 0.530 |
+
+### Selective Prediction (OOD Rejection at 50% Coverage)
+
+| Signal | OOD Rejection | Hard Rejection |
+|--------|---------------|----------------|
+| **Raw Entropy** | **86.7%** | 35.0% |
+| Neg Confidence | 83.3% | 42.5% |
+| Cal Entropy | 83.3% | 35.0% |
+| Prompt Disagree | 56.7% | 47.5% |
+| Combined (RMS) | 53.3% | 50.0% |
+| MC Conf Std | 50.0% | 55.0% |
+
+### Key Insights
+
+1. **Raw entropy dominates for OOD detection (AUROC=0.873)**: With optimal dropout, raw entropy is the single best signal, improving from 0.786 (Exp 8 with p=0.10) to 0.873 (p=0.20).
+
+2. **Combining signals HURTS performance**: Combined RMS (0.502) is near random—weaker signals dilute the strong entropy signal. This is a critical negative result.
+
+3. **Per-dimension calibration slightly degrades OOD detection**: Cal entropy (0.793) < raw entropy (0.873), because per-dim temperature flattens the discriminative signal across scenarios.
+
+4. **MC variance is a weak signal even at optimal dropout**: MC conf std (0.576) barely above random despite p=0.20.
+
+5. **For hard scenario detection, neg confidence (0.637) slightly beats entropy (0.627)**: A two-signal approach (entropy for OOD, confidence for hard) may be optimal.
+
+6. **87% OOD rejection at 50% coverage**: Raw entropy with optimal dropout rejects 87% of OOD samples while maintaining 50% coverage—a substantial safety improvement.
+
+---
+
 ## Status (Updated March 14 2026)
 
 **Completed:**
@@ -312,6 +359,7 @@ This should give us the best of all worlds:
 - [x] Entropy-based selective prediction (120 samples, 5 signals)
 - [x] Per-dimension calibration + cross-prompt consistency (80 + 240 inferences)
 - [x] Dropout rate sensitivity sweep (7 rates × 60 samples × 10 MC passes = 4,200 inferences)
+- [x] Combined optimal UQ (100 samples, 8 scenarios, 2,400 inferences)
 
 **In Progress:**
 - [ ] Additional experiment iterations
