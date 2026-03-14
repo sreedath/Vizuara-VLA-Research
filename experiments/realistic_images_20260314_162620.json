@@ -1,0 +1,664 @@
+{
+  "experiment": "realistic_images",
+  "experiment_number": 40,
+  "timestamp": "20260314_162620",
+  "threshold": 0.6509879529476166,
+  "results": [
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 0,
+      "cos_dist": 0.6487889587879181,
+      "action_mass": 0.9991927572659084,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 1,
+      "cos_dist": 0.5891313552856445,
+      "action_mass": 0.990458607673645,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 2,
+      "cos_dist": 0.5695106387138367,
+      "action_mass": 0.9952790566853115,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 3,
+      "cos_dist": 0.6280586421489716,
+      "action_mass": 0.9884609580039978,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 4,
+      "cos_dist": 0.5691810846328735,
+      "action_mass": 0.8332636106227126,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 5,
+      "cos_dist": 0.5568241477012634,
+      "action_mass": 0.8161770491112422,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 6,
+      "cos_dist": 0.5690014958381653,
+      "action_mass": 0.8441520751054797,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 7,
+      "cos_dist": 0.6088207364082336,
+      "action_mass": 0.9993116429873875,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 8,
+      "cos_dist": 0.632159948348999,
+      "action_mass": 0.9981777838298252,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 9,
+      "cos_dist": 0.5799032747745514,
+      "action_mass": 0.9988236597606114,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 10,
+      "cos_dist": 0.5472808182239532,
+      "action_mass": 0.9955199701445443,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 11,
+      "cos_dist": 0.526718258857727,
+      "action_mass": 0.8360185059053558,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 12,
+      "cos_dist": 0.4894145727157593,
+      "action_mass": 0.9954307930810111,
+      "flagged": false
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 13,
+      "cos_dist": 0.7363211810588837,
+      "action_mass": 0.9907853518213544,
+      "flagged": true
+    },
+    {
+      "scenario": "highway_realistic",
+      "difficulty": "easy",
+      "idx": 14,
+      "cos_dist": 0.5704616904258728,
+      "action_mass": 0.8364601856363671,
+      "flagged": false
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 0,
+      "cos_dist": 0.541670560836792,
+      "action_mass": 0.8570153577519315,
+      "flagged": false
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 1,
+      "cos_dist": 0.5106509923934937,
+      "action_mass": 0.8519159901443345,
+      "flagged": false
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 2,
+      "cos_dist": 0.6235072314739227,
+      "action_mass": 0.9707916464124408,
+      "flagged": false
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 3,
+      "cos_dist": 0.6128117144107819,
+      "action_mass": 0.7763727158308029,
+      "flagged": false
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 4,
+      "cos_dist": 0.5899770855903625,
+      "action_mass": 0.8346638116719467,
+      "flagged": false
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 5,
+      "cos_dist": 0.780541867017746,
+      "action_mass": 0.9634899752480643,
+      "flagged": true
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 6,
+      "cos_dist": 0.6019788980484009,
+      "action_mass": 0.8658985591360501,
+      "flagged": false
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 7,
+      "cos_dist": 0.6115320920944214,
+      "action_mass": 0.9931794234684536,
+      "flagged": false
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 8,
+      "cos_dist": 0.6253403723239899,
+      "action_mass": 0.9794464111328125,
+      "flagged": false
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 9,
+      "cos_dist": 0.5577799379825592,
+      "action_mass": 0.8555543070604017,
+      "flagged": false
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 10,
+      "cos_dist": 0.8138891160488129,
+      "action_mass": 0.9315873384475708,
+      "flagged": true
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 11,
+      "cos_dist": 0.7246525287628174,
+      "action_mass": 0.8624799544257777,
+      "flagged": true
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 12,
+      "cos_dist": 0.7516108602285385,
+      "action_mass": 0.9963633332933698,
+      "flagged": true
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 13,
+      "cos_dist": 0.7430171370506287,
+      "action_mass": 0.9848452380725315,
+      "flagged": true
+    },
+    {
+      "scenario": "urban_realistic",
+      "difficulty": "easy",
+      "idx": 14,
+      "cos_dist": 0.7501437366008759,
+      "action_mass": 0.983939026083265,
+      "flagged": true
+    },
+    {
+      "scenario": "night_driving",
+      "difficulty": "hard",
+      "idx": 0,
+      "cos_dist": 0.6719920635223389,
+      "action_mass": 0.9166144004889897,
+      "flagged": true
+    },
+    {
+      "scenario": "night_driving",
+      "difficulty": "hard",
+      "idx": 1,
+      "cos_dist": 0.59531569480896,
+      "action_mass": 0.8568517506108628,
+      "flagged": false
+    },
+    {
+      "scenario": "night_driving",
+      "difficulty": "hard",
+      "idx": 2,
+      "cos_dist": 0.6019597351551056,
+      "action_mass": 0.8557671335209827,
+      "flagged": false
+    },
+    {
+      "scenario": "night_driving",
+      "difficulty": "hard",
+      "idx": 3,
+      "cos_dist": 0.5494063794612885,
+      "action_mass": 0.8480676880904606,
+      "flagged": false
+    },
+    {
+      "scenario": "night_driving",
+      "difficulty": "hard",
+      "idx": 4,
+      "cos_dist": 0.6999184489250183,
+      "action_mass": 0.9949065702302116,
+      "flagged": true
+    },
+    {
+      "scenario": "night_driving",
+      "difficulty": "hard",
+      "idx": 5,
+      "cos_dist": 0.7450506389141083,
+      "action_mass": 0.9760311416217259,
+      "flagged": true
+    },
+    {
+      "scenario": "night_driving",
+      "difficulty": "hard",
+      "idx": 6,
+      "cos_dist": 0.6093060374259949,
+      "action_mass": 0.9866122603416443,
+      "flagged": false
+    },
+    {
+      "scenario": "night_driving",
+      "difficulty": "hard",
+      "idx": 7,
+      "cos_dist": 0.7268776893615723,
+      "action_mass": 0.998071415083749,
+      "flagged": true
+    },
+    {
+      "scenario": "night_driving",
+      "difficulty": "hard",
+      "idx": 8,
+      "cos_dist": 0.6337378919124603,
+      "action_mass": 0.8511936765945782,
+      "flagged": false
+    },
+    {
+      "scenario": "night_driving",
+      "difficulty": "hard",
+      "idx": 9,
+      "cos_dist": 0.6474485397338867,
+      "action_mass": 0.8550365179045392,
+      "flagged": false
+    },
+    {
+      "scenario": "foggy_road",
+      "difficulty": "hard",
+      "idx": 0,
+      "cos_dist": 0.5030589401721954,
+      "action_mass": 0.8434078863688877,
+      "flagged": false
+    },
+    {
+      "scenario": "foggy_road",
+      "difficulty": "hard",
+      "idx": 1,
+      "cos_dist": 0.5155022740364075,
+      "action_mass": 0.8489017214493028,
+      "flagged": false
+    },
+    {
+      "scenario": "foggy_road",
+      "difficulty": "hard",
+      "idx": 2,
+      "cos_dist": 0.4771057367324829,
+      "action_mass": 0.8653427037809577,
+      "flagged": false
+    },
+    {
+      "scenario": "foggy_road",
+      "difficulty": "hard",
+      "idx": 3,
+      "cos_dist": 0.5386015474796295,
+      "action_mass": 0.8411823237048728,
+      "flagged": false
+    },
+    {
+      "scenario": "foggy_road",
+      "difficulty": "hard",
+      "idx": 4,
+      "cos_dist": 0.7943055033683777,
+      "action_mass": 0.9994489550590515,
+      "flagged": true
+    },
+    {
+      "scenario": "foggy_road",
+      "difficulty": "hard",
+      "idx": 5,
+      "cos_dist": 0.5485833287239075,
+      "action_mass": 0.9364756601197379,
+      "flagged": false
+    },
+    {
+      "scenario": "foggy_road",
+      "difficulty": "hard",
+      "idx": 6,
+      "cos_dist": 0.4987097978591919,
+      "action_mass": 0.8562387451529503,
+      "flagged": false
+    },
+    {
+      "scenario": "foggy_road",
+      "difficulty": "hard",
+      "idx": 7,
+      "cos_dist": 0.47749602794647217,
+      "action_mass": 0.8641472379011768,
+      "flagged": false
+    },
+    {
+      "scenario": "foggy_road",
+      "difficulty": "hard",
+      "idx": 8,
+      "cos_dist": 0.5145057439804077,
+      "action_mass": 0.8976797802107674,
+      "flagged": false
+    },
+    {
+      "scenario": "foggy_road",
+      "difficulty": "hard",
+      "idx": 9,
+      "cos_dist": 0.5169802606105804,
+      "action_mass": 0.8721726749624524,
+      "flagged": false
+    },
+    {
+      "scenario": "snow_road",
+      "difficulty": "ood",
+      "idx": 0,
+      "cos_dist": 0.7565301060676575,
+      "action_mass": 0.9277092729296003,
+      "flagged": true
+    },
+    {
+      "scenario": "snow_road",
+      "difficulty": "ood",
+      "idx": 1,
+      "cos_dist": 0.669508695602417,
+      "action_mass": 0.9785223007202148,
+      "flagged": true
+    },
+    {
+      "scenario": "snow_road",
+      "difficulty": "ood",
+      "idx": 2,
+      "cos_dist": 0.5864332914352417,
+      "action_mass": 0.8935071655682155,
+      "flagged": false
+    },
+    {
+      "scenario": "snow_road",
+      "difficulty": "ood",
+      "idx": 3,
+      "cos_dist": 0.6669068336486816,
+      "action_mass": 0.9992813978876386,
+      "flagged": true
+    },
+    {
+      "scenario": "snow_road",
+      "difficulty": "ood",
+      "idx": 4,
+      "cos_dist": 0.6345052719116211,
+      "action_mass": 0.9984372769083295,
+      "flagged": false
+    },
+    {
+      "scenario": "snow_road",
+      "difficulty": "ood",
+      "idx": 5,
+      "cos_dist": 0.8160958588123322,
+      "action_mass": 0.9928058300699506,
+      "flagged": true
+    },
+    {
+      "scenario": "snow_road",
+      "difficulty": "ood",
+      "idx": 6,
+      "cos_dist": 0.689489096403122,
+      "action_mass": 0.9957809107644218,
+      "flagged": true
+    },
+    {
+      "scenario": "snow_road",
+      "difficulty": "ood",
+      "idx": 7,
+      "cos_dist": 0.6620279848575592,
+      "action_mass": 0.9907417893409729,
+      "flagged": true
+    },
+    {
+      "scenario": "flooded_road",
+      "difficulty": "ood",
+      "idx": 0,
+      "cos_dist": 0.7802446335554123,
+      "action_mass": 0.9970706701278687,
+      "flagged": true
+    },
+    {
+      "scenario": "flooded_road",
+      "difficulty": "ood",
+      "idx": 1,
+      "cos_dist": 0.7279784381389618,
+      "action_mass": 0.7903515462364469,
+      "flagged": true
+    },
+    {
+      "scenario": "flooded_road",
+      "difficulty": "ood",
+      "idx": 2,
+      "cos_dist": 0.6879909634590149,
+      "action_mass": 0.9422415154320853,
+      "flagged": true
+    },
+    {
+      "scenario": "flooded_road",
+      "difficulty": "ood",
+      "idx": 3,
+      "cos_dist": 0.6661162376403809,
+      "action_mass": 0.851076810487679,
+      "flagged": true
+    },
+    {
+      "scenario": "flooded_road",
+      "difficulty": "ood",
+      "idx": 4,
+      "cos_dist": 0.63735431432724,
+      "action_mass": 0.8559092106131304,
+      "flagged": false
+    },
+    {
+      "scenario": "flooded_road",
+      "difficulty": "ood",
+      "idx": 5,
+      "cos_dist": 0.655616819858551,
+      "action_mass": 0.8341759425654475,
+      "flagged": true
+    },
+    {
+      "scenario": "flooded_road",
+      "difficulty": "ood",
+      "idx": 6,
+      "cos_dist": 0.7933799624443054,
+      "action_mass": 0.9981438091823033,
+      "flagged": true
+    },
+    {
+      "scenario": "flooded_road",
+      "difficulty": "ood",
+      "idx": 7,
+      "cos_dist": 0.6491158604621887,
+      "action_mass": 0.7807612896763853,
+      "flagged": false
+    },
+    {
+      "scenario": "offroad",
+      "difficulty": "ood",
+      "idx": 0,
+      "cos_dist": 0.5246237516403198,
+      "action_mass": 0.8569475587532257,
+      "flagged": false
+    },
+    {
+      "scenario": "offroad",
+      "difficulty": "ood",
+      "idx": 1,
+      "cos_dist": 0.571528971195221,
+      "action_mass": 0.8665954747370311,
+      "flagged": false
+    },
+    {
+      "scenario": "offroad",
+      "difficulty": "ood",
+      "idx": 2,
+      "cos_dist": 0.5520493984222412,
+      "action_mass": 0.9282687647002084,
+      "flagged": false
+    },
+    {
+      "scenario": "offroad",
+      "difficulty": "ood",
+      "idx": 3,
+      "cos_dist": 0.6832746267318726,
+      "action_mass": 0.9981138621057782,
+      "flagged": true
+    },
+    {
+      "scenario": "offroad",
+      "difficulty": "ood",
+      "idx": 4,
+      "cos_dist": 0.5478392839431763,
+      "action_mass": 0.8940790167876652,
+      "flagged": false
+    },
+    {
+      "scenario": "offroad",
+      "difficulty": "ood",
+      "idx": 5,
+      "cos_dist": 0.6703956127166748,
+      "action_mass": 0.8587678769337279,
+      "flagged": true
+    },
+    {
+      "scenario": "offroad",
+      "difficulty": "ood",
+      "idx": 6,
+      "cos_dist": 0.540210634469986,
+      "action_mass": 0.9929605041231427,
+      "flagged": false
+    },
+    {
+      "scenario": "offroad",
+      "difficulty": "ood",
+      "idx": 7,
+      "cos_dist": 0.48291653394699097,
+      "action_mass": 0.9840571710041591,
+      "flagged": false
+    },
+    {
+      "scenario": "tunnel",
+      "difficulty": "ood",
+      "idx": 0,
+      "cos_dist": 0.6728881001472473,
+      "action_mass": 0.7403369545936584,
+      "flagged": true
+    },
+    {
+      "scenario": "tunnel",
+      "difficulty": "ood",
+      "idx": 1,
+      "cos_dist": 0.6731492280960083,
+      "action_mass": 0.729166478184717,
+      "flagged": true
+    },
+    {
+      "scenario": "tunnel",
+      "difficulty": "ood",
+      "idx": 2,
+      "cos_dist": 0.6716381013393402,
+      "action_mass": 0.8396210721761496,
+      "flagged": true
+    },
+    {
+      "scenario": "tunnel",
+      "difficulty": "ood",
+      "idx": 3,
+      "cos_dist": 0.7617463171482086,
+      "action_mass": 0.9761035697800773,
+      "flagged": true
+    },
+    {
+      "scenario": "tunnel",
+      "difficulty": "ood",
+      "idx": 4,
+      "cos_dist": 0.7436954081058502,
+      "action_mass": 0.7148584454553202,
+      "flagged": true
+    },
+    {
+      "scenario": "tunnel",
+      "difficulty": "ood",
+      "idx": 5,
+      "cos_dist": 0.6353700160980225,
+      "action_mass": 0.8478014898234889,
+      "flagged": false
+    },
+    {
+      "scenario": "tunnel",
+      "difficulty": "ood",
+      "idx": 6,
+      "cos_dist": 0.6465697884559631,
+      "action_mass": 0.8417468819197994,
+      "flagged": false
+    },
+    {
+      "scenario": "tunnel",
+      "difficulty": "ood",
+      "idx": 7,
+      "cos_dist": 0.6699848473072052,
+      "action_mass": 0.7422677830659917,
+      "flagged": true
+    }
+  ]
+}
