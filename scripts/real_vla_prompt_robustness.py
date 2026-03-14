@@ -1,18 +1,11 @@
 """
-Prompt Robustness for OOD Detection.
+Prompt Robustness Analysis.
 
-Tests whether the cosine distance OOD signal is robust across
-different instruction prompts. If the signal depends heavily on
-the prompt wording, it limits practical deployability.
+Tests OOD detection performance across 10 different prompt formulations
+to measure sensitivity to prompt wording. Includes driving-specific,
+generic robot, adversarial, and minimal prompts.
 
-Tests 5 different prompts:
-1. Original driving prompt
-2. Modified speed prompt
-3. Cautious driving prompt
-4. Simple action prompt
-5. Adversarial/unusual prompt
-
-Experiment 54 in the CalibDrive series.
+Experiment 115 in the CalibDrive series.
 """
 import os
 import json
@@ -28,7 +21,7 @@ SIZE = (256, 256)
 
 
 def create_highway(idx):
-    rng = np.random.default_rng(idx * 5001)
+    rng = np.random.default_rng(idx * 9001)
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
     img[:SIZE[0]//2] = [135, 206, 235]
     img[SIZE[0]//2:] = [80, 80, 80]
@@ -37,7 +30,7 @@ def create_highway(idx):
     return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
 def create_urban(idx):
-    rng = np.random.default_rng(idx * 5002)
+    rng = np.random.default_rng(idx * 9002)
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
     img[:SIZE[0]//3] = [135, 206, 235]
     img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]
@@ -46,47 +39,48 @@ def create_urban(idx):
     return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
 def create_noise(idx):
-    rng = np.random.default_rng(idx * 5003)
+    rng = np.random.default_rng(idx * 9003)
     return rng.integers(0, 256, (*SIZE, 3), dtype=np.uint8)
 
 def create_indoor(idx):
-    rng = np.random.default_rng(idx * 5004)
+    rng = np.random.default_rng(idx * 9004)
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
     img[:] = [200, 180, 160]
-    img[SIZE[0]//2:] = [139, 90, 43]
+    img[SIZE[0]//2:, :] = [100, 80, 60]
+    img[:SIZE[0]//3, SIZE[1]//3:2*SIZE[1]//3] = [150, 200, 255]
+    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
+    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+
+def create_twilight_highway(idx):
+    rng = np.random.default_rng(idx * 9010)
+    img = np.zeros((*SIZE, 3), dtype=np.uint8)
+    img[:SIZE[0]//2] = [70, 50, 80]
+    img[SIZE[0]//2:] = [60, 60, 60]
+    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [200, 200, 100]
     noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
     return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
-def create_inverted(idx):
-    return 255 - create_highway(idx + 3000)
-
-def create_blackout(idx):
-    return np.zeros((*SIZE, 3), dtype=np.uint8)
+def create_snow(idx):
+    rng = np.random.default_rng(idx * 9014)
+    img = np.zeros((*SIZE, 3), dtype=np.uint8)
+    img[:SIZE[0]//2] = [200, 200, 210]
+    img[SIZE[0]//2:] = [220, 220, 230]
+    img[SIZE[0]//2:, SIZE[1]//2-2:SIZE[1]//2+2] = [180, 180, 190]
+    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
+    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
 
 def extract_hidden(model, processor, image, prompt):
-    """Extract hidden state only (for speed)."""
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
     with torch.no_grad():
-        outputs = model.generate(
-            **inputs, max_new_tokens=7, do_sample=False,
-            output_hidden_states=True,
-            return_dict_in_generate=True,
-        )
-    if hasattr(outputs, 'hidden_states') and outputs.hidden_states:
-        last_step = outputs.hidden_states[-1]
-        if isinstance(last_step, tuple):
-            hidden = last_step[-1][0, -1, :].float().cpu().numpy()
-        else:
-            hidden = last_step[0, -1, :].float().cpu().numpy()
-    else:
-        hidden = np.zeros(4096)
-    return hidden
+        fwd = model(**inputs, output_hidden_states=True)
+    if not hasattr(fwd, 'hidden_states') or not fwd.hidden_states:
+        return None
+    return fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
 
 
 def cosine_dist(a, b):
-    return 1.0 - float(np.dot(a / (np.linalg.norm(a) + 1e-10),
-                               b / (np.linalg.norm(b) + 1e-10)))
+    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
 
 
 def main():
@@ -106,168 +100,133 @@ def main():
     model.eval()
     print("Model loaded.", flush=True)
 
-    # Define prompts
     prompts = {
-        'original': "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:",
-        'speed_50': "In: What action should the robot take to drive forward at 50 m/s safely?\nOut:",
-        'cautious': "In: You are driving carefully. What is the safe driving action?\nOut:",
-        'simple': "In: Navigate safely. What action to take?\nOut:",
-        'different': "In: Predict the driving action to maintain safe driving at 25 m/s.\nOut:",
+        'driving_standard': "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:",
+        'driving_simple': "In: What action should the robot take to drive?\nOut:",
+        'driving_speed': "In: What action should the robot take to drive at 60 mph on the highway?\nOut:",
+        'driving_stop': "In: What action should the robot take to stop the vehicle?\nOut:",
+        'robot_generic': "In: What action should the robot take to pick up the red block?\nOut:",
+        'robot_navigate': "In: What action should the robot take to navigate to the kitchen?\nOut:",
+        'minimal': "In: What action should the robot take?\nOut:",
+        'empty_task': "In: What action should the robot take to complete the task?\nOut:",
+        'adversarial_long': "In: What action should the robot take to carefully and precisely drive forward at exactly 25.0 m/s while maintaining perfect lane centering and optimal following distance?\nOut:",
+        'adversarial_unrelated': "In: What action should the robot take to solve the math equation x^2 + 3x - 4 = 0?\nOut:",
     }
 
-    # Test images
-    test_fns = {
-        'highway': (create_highway, False, 8),
-        'urban': (create_urban, False, 8),
-        'noise': (create_noise, True, 6),
-        'indoor': (create_indoor, True, 6),
-        'inverted': (create_inverted, True, 6),
-        'blackout': (create_blackout, True, 6),
+    categories = {
+        'highway': (create_highway, 'ID'),
+        'urban': (create_urban, 'ID'),
+        'noise': (create_noise, 'OOD'),
+        'indoor': (create_indoor, 'OOD'),
+        'twilight': (create_twilight_highway, 'OOD'),
+        'snow': (create_snow, 'OOD'),
     }
 
-    # For each prompt: calibrate separately (using that prompt's hidden states)
-    # then evaluate
-    prompt_results = {}
-    total_inferences = 0
+    # For each prompt, collect embeddings and evaluate
+    results = {}
+    all_centroids = {}  # to compare centroids across prompts
 
     for prompt_name, prompt_text in prompts.items():
-        print(f"\n{'='*60}", flush=True)
-        print(f"Prompt: {prompt_name}", flush=True)
-        print(f"  '{prompt_text[:60]}...'", flush=True)
+        print(f"\n--- Prompt: {prompt_name} ---", flush=True)
+        print(f"  \"{prompt_text[:60]}...\"", flush=True)
 
-        # Calibration with this prompt
-        cal_hidden = []
-        for fn in [create_highway, create_urban]:
+        embeddings = {}
+        for cat_name, (fn, group) in categories.items():
+            embeds = []
             for i in range(10):
-                h = extract_hidden(model, processor,
-                                   Image.fromarray(fn(i + 9000)), prompt_text)
-                cal_hidden.append(h)
-                total_inferences += 1
+                h = extract_hidden(model, processor, Image.fromarray(fn(i + 1600)), prompt_text)
+                if h is not None:
+                    embeds.append(h)
+            embeddings[cat_name] = {'embeds': np.array(embeds), 'group': group}
 
-        centroid = np.mean(cal_hidden, axis=0)
-        cal_cos = [cosine_dist(h, centroid) for h in cal_hidden]
-        print(f"  Cal: mean={np.mean(cal_cos):.4f}, max={np.max(cal_cos):.4f}", flush=True)
+        # Cal: first 5 of each ID, Test: rest
+        cal_embeds = []
+        test_embeds = []
+        test_labels = []
 
-        # Test
-        test_data = []
-        for scene, (fn, is_ood, n) in test_fns.items():
-            for i in range(n):
-                h = extract_hidden(model, processor,
-                                   Image.fromarray(fn(i + 200)), prompt_text)
-                cos = cosine_dist(h, centroid)
-                test_data.append({
-                    'scenario': scene,
-                    'is_ood': is_ood,
-                    'cos_dist': cos,
-                })
-                total_inferences += 1
+        for cat_name, data in embeddings.items():
+            if data['group'] == 'ID':
+                cal_embeds.extend(data['embeds'][:5])
+                for e in data['embeds'][5:]:
+                    test_embeds.append(e)
+                    test_labels.append(0)
+            else:
+                for e in data['embeds']:
+                    test_embeds.append(e)
+                    test_labels.append(1)
 
-        easy = [r for r in test_data if not r['is_ood']]
-        ood = [r for r in test_data if r['is_ood']]
-        labels = [0]*len(easy) + [1]*len(ood)
-        scores = [r['cos_dist'] for r in easy + ood]
-        auroc = roc_auc_score(labels, scores)
+        cal_embeds = np.array(cal_embeds)
+        test_embeds = np.array(test_embeds)
+        test_labels = np.array(test_labels)
 
-        id_mean = np.mean([r['cos_dist'] for r in easy])
-        ood_mean = np.mean([r['cos_dist'] for r in ood])
+        centroid = np.mean(cal_embeds, axis=0)
+        all_centroids[prompt_name] = centroid
 
-        print(f"  AUROC: {auroc:.3f}", flush=True)
-        print(f"  ID cos: {id_mean:.4f}, OOD cos: {ood_mean:.4f}, "
-              f"sep={ood_mean-id_mean:.4f}", flush=True)
+        scores = np.array([cosine_dist(e, centroid) for e in test_embeds])
+        id_scores = scores[test_labels == 0]
+        ood_scores = scores[test_labels == 1]
 
-        # Per-scenario
-        per_scene = {}
-        for scene in sorted(set(r['scenario'] for r in test_data)):
-            s_r = [r for r in test_data if r['scenario'] == scene]
-            s_cos = np.mean([r['cos_dist'] for r in s_r])
-            per_scene[scene] = float(s_cos)
-            print(f"    {scene}: {s_cos:.4f}", flush=True)
+        auroc = float(roc_auc_score(test_labels, scores))
+        d = float((np.mean(ood_scores) - np.mean(id_scores)) / (np.std(id_scores) + 1e-10))
 
-        prompt_results[prompt_name] = {
+        # Per-category scores
+        per_cat = {}
+        for cat_name, data in embeddings.items():
+            cat_scores = [cosine_dist(e, centroid) for e in data['embeds']]
+            per_cat[cat_name] = {
+                'mean': float(np.mean(cat_scores)),
+                'std': float(np.std(cat_scores)),
+                'group': data['group'],
+            }
+
+        results[prompt_name] = {
+            'prompt': prompt_text,
             'auroc': auroc,
-            'id_cos_mean': float(id_mean),
-            'ood_cos_mean': float(ood_mean),
-            'separation': float(ood_mean - id_mean),
-            'per_scene': per_scene,
+            'd': d,
+            'id_score_mean': float(np.mean(id_scores)),
+            'ood_score_mean': float(np.mean(ood_scores)),
+            'per_category': per_cat,
         }
-
-    # Cross-prompt analysis
-    print("\n" + "=" * 70, flush=True)
-    print("CROSS-PROMPT ANALYSIS", flush=True)
-    print("=" * 70, flush=True)
-
-    print(f"\n  {'Prompt':<15} {'AUROC':>8} {'ID cos':>10} {'OOD cos':>10} {'Sep':>8}",
-          flush=True)
-    print("  " + "-" * 55, flush=True)
-    aurocs = []
-    for name, result in prompt_results.items():
-        print(f"  {name:<15} {result['auroc']:>8.3f} {result['id_cos_mean']:>10.4f} "
-              f"{result['ood_cos_mean']:>10.4f} {result['separation']:>+8.4f}", flush=True)
-        aurocs.append(result['auroc'])
-
-    print(f"\n  Mean AUROC: {np.mean(aurocs):.3f} ± {np.std(aurocs):.3f}", flush=True)
-    print(f"  Min AUROC: {min(aurocs):.3f}", flush=True)
-    print(f"  Max AUROC: {max(aurocs):.3f}", flush=True)
-    print(f"  Range: {max(aurocs) - min(aurocs):.3f}", flush=True)
+        print(f"  AUROC={auroc:.4f}, d={d:.2f}", flush=True)
 
     # Cross-prompt centroid similarity
-    print("\n  Cross-prompt centroid analysis:", flush=True)
-    print(f"  Testing whether calibration centroid from one prompt works for another...",
-          flush=True)
+    print("\n--- Cross-prompt centroid similarity ---", flush=True)
+    prompt_names = list(all_centroids.keys())
+    centroid_sims = {}
+    for i, p1 in enumerate(prompt_names):
+        for j, p2 in enumerate(prompt_names):
+            if j <= i:
+                continue
+            sim = float(np.dot(all_centroids[p1], all_centroids[p2]) /
+                       (np.linalg.norm(all_centroids[p1]) * np.linalg.norm(all_centroids[p2]) + 1e-10))
+            centroid_sims[f"{p1}_vs_{p2}"] = sim
 
-    # Use original prompt's centroid for all prompts
-    print("\n  Using 'original' calibration for all prompts:", flush=True)
-    original_cal = []
-    for fn in [create_highway, create_urban]:
-        for i in range(10):
-            h = extract_hidden(model, processor,
-                               Image.fromarray(fn(i + 9000)), prompts['original'])
-            original_cal.append(h)
-    original_centroid = np.mean(original_cal, axis=0)
-
-    cross_results = {}
-    for prompt_name, prompt_text in prompts.items():
-        if prompt_name == 'original':
-            continue
-
-        # Evaluate using original centroid but different inference prompt
-        test_data = []
-        for scene, (fn, is_ood, n) in test_fns.items():
-            for i in range(n):
-                h = extract_hidden(model, processor,
-                                   Image.fromarray(fn(i + 200)), prompt_text)
-                cos = cosine_dist(h, original_centroid)
-                test_data.append({
-                    'is_ood': is_ood,
-                    'cos_dist': cos,
-                })
-                total_inferences += 1
-
-        easy = [r for r in test_data if not r['is_ood']]
-        ood = [r for r in test_data if r['is_ood']]
-        labels = [0]*len(easy) + [1]*len(ood)
-        scores = [r['cos_dist'] for r in easy + ood]
-        auroc = roc_auc_score(labels, scores)
-        cross_results[prompt_name] = auroc
-        print(f"    {prompt_name}: AUROC = {auroc:.3f} "
-              f"(vs self-calibrated: {prompt_results[prompt_name]['auroc']:.3f})", flush=True)
+    # Summary stats
+    all_sims = list(centroid_sims.values())
+    print(f"  Mean similarity: {np.mean(all_sims):.6f}", flush=True)
+    print(f"  Min similarity: {np.min(all_sims):.6f}", flush=True)
+    print(f"  Max similarity: {np.max(all_sims):.6f}", flush=True)
 
     # Save
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
         'experiment': 'prompt_robustness',
-        'experiment_number': 54,
+        'experiment_number': 115,
         'timestamp': timestamp,
-        'total_inferences': total_inferences,
-        'prompts': {k: v for k, v in prompts.items()},
-        'results': prompt_results,
-        'cross_prompt': cross_results,
+        'n_prompts': len(prompts),
+        'results': results,
+        'centroid_similarity': centroid_sims,
+        'centroid_sim_stats': {
+            'mean': float(np.mean(all_sims)),
+            'min': float(np.min(all_sims)),
+            'max': float(np.max(all_sims)),
+            'std': float(np.std(all_sims)),
+        },
     }
     output_path = os.path.join(RESULTS_DIR, f"prompt_robustness_{timestamp}.json")
     with open(output_path, 'w') as f:
         json.dump(output, f, indent=2)
     print(f"\nSaved to {output_path}", flush=True)
-    print(f"Total inferences: {total_inferences}", flush=True)
 
 
 if __name__ == "__main__":

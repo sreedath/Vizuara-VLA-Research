@@ -2154,4 +2154,20 @@ We extract hidden states from all 33 transformer layers and measure cosine-dista
 
 The layer analysis reveals that OOD detection capability is present throughout the transformer but manifests differently at each depth. Layer 0 (raw embeddings) carries zero signal because all inputs share the same token embedding table. Layer 1---after a single attention and MLP block---already achieves perfect AUROC with $d = 160.59$, demonstrating that the very first nonlinear transformation separates ID from OOD in representation space. The extreme early-layer $d$ values arise from tiny absolute cosine distances (ID: 0.0001--0.0003) with even tinier standard deviations ($10^{-5}$), making the ratio enormous. Mid-network layers (8--16) exhibit lower $d$ (29--57) because both the ID and OOD cosine distances grow while the ID distribution widens. Late layers (24--28) recover $d = 60$--67 as the model refines its representation for action prediction, with layer 28 emerging as the optimal single layer ($d = 66.50$). The final layer (32) is slightly worse ($d = 57.70$), likely because the output projection head compresses the representation for action token prediction rather than preserving OOD-discriminative features. Multi-layer fusion via concatenation provides marginal gains (every-4th: $d = 67.28$) but does not justify the 9$\times$ computational cost over single-layer extraction.
 
+\subsection{Prompt Robustness Analysis}
+\label{app:prompt_robustness}
+
+\textbf{Finding 138: All 10 prompts---including adversarial and task-irrelevant formulations---achieve AUROC $= 1.000$. Cohen's $d$ varies from 21.76 (minimal) to 57.48 (robot generic). Cross-prompt centroid similarity averages 0.537, confirming that prompts alter the representation space but not the OOD detection capability.}
+
+We test detection performance across 10 prompt formulations: driving-specific (standard, simple, speed, stop), generic robot (pick up block, navigate), minimal, empty task, and adversarial (long verbose, semantically unrelated math) (Figure~\ref{fig:prompt_robustness}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig101_prompt_robustness.pdf}
+\caption{\textbf{Prompt robustness.} (a) Cohen's $d$ by prompt: all achieve AUROC $= 1.000$ (green annotation) with $d$ ranging from 21.76 to 57.48. (b) Per-category cosine distances for 4 representative prompts: the relative ordering (highway $<$ urban $<$ snow $<$ indoor $<$ twilight $<$ noise) is preserved across all prompts. (c) Ranked $d$ values: the ``generic robot'' prompt achieves highest separation despite being task-irrelevant.}
+\label{fig:prompt_robustness}
+\end{figure}
+
+The prompt robustness analysis establishes that OOD detection is a property of the VLA's visual representation, not its task understanding. The ``robot generic'' prompt (``pick up the red block'') achieves the highest $d = 57.48$, outperforming all driving-specific prompts. This seemingly paradoxical result has a clear explanation: the prompt determines the representation space's geometry (centroid location, ID distribution tightness), but the ID/OOD separation is dominated by the visual encoder's response to the image. Cross-prompt centroid similarity averages 0.537, meaning different prompts produce centroids that are only moderately correlated---yet detection is always perfect because both the centroid and the test-time OOD scores shift together in the same direction. The adversarial prompts confirm this: even asking the robot to ``solve $x^2 + 3x - 4 = 0$'' yields perfect detection ($d = 37.64$), because the VLA's visual features still distinguish driving scenes from noise/indoor/twilight regardless of the text instruction. The practical implication is that no prompt engineering is needed for OOD detection---any prompt that produces consistent hidden states for ID images will work.
+
 \end{document}

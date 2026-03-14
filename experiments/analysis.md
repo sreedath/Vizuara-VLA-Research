@@ -5144,3 +5144,47 @@ Oracle weights: [1.0, 0.0, 0.0, 0.0] — pure cosine.
 5. **Layer 28 is the best late-layer choice (d=66.50)**: The last layer (32) has d=57.70, but layer 28 achieves d=66.50 — 15% better. The final projection head slightly reduces separation.
 
 6. **Multi-layer fusion: every-4th achieves d=67.28**: Concatenating layers at stride 4 (9 layers, 37K dims) marginally improves over single-layer detection. However, all-layers (135K dims) drops to d=60.92, suggesting early layers dilute late-layer signals when concatenated.
+
+---
+
+## Finding 109: Prompt Robustness Analysis
+
+**Experiment 115** — Tests OOD detection across 10 different prompt formulations including driving-specific, generic robot, adversarial, and minimal prompts.
+
+### Setup
+- 10 samples per category, 60 inferences per prompt, 600 total
+- 10 prompts: driving standard/simple/speed/stop, robot generic/navigate, minimal, empty task, adversarial long, adversarial unrelated
+
+### Results
+
+| Prompt | AUROC | Cohen's d |
+|--------|-------|-----------|
+| Robot generic (pick up block) | 1.000 | 57.48 |
+| Driving standard (25 m/s) | 1.000 | 50.42 |
+| Driving speed (60 mph) | 1.000 | 40.32 |
+| Adversarial long | 1.000 | 37.76 |
+| Adversarial unrelated (math) | 1.000 | 37.64 |
+| Empty task | 1.000 | 30.90 |
+| Robot navigate | 1.000 | 28.93 |
+| Driving simple | 1.000 | 28.11 |
+| Driving stop | 1.000 | 24.63 |
+| Minimal | 1.000 | 21.76 |
+
+### Cross-Prompt Centroid Similarity
+- Mean: 0.537
+- Min: 0.425
+- Max: 0.707
+
+### Key Insights
+
+1. **All 10 prompts achieve perfect AUROC=1.000**: OOD detection is completely robust to prompt wording. Whether the prompt asks about driving, picking up blocks, navigating, or solving math equations, detection is always perfect.
+
+2. **Cohen's d varies 2.6× (21.76–57.48)**: While AUROC is always 1.000, separation varies. "Robot generic" gives highest d=57.48, "minimal" gives lowest d=21.76. More specific prompts produce tighter ID distributions.
+
+3. **Centroids vary significantly across prompts (mean sim=0.537)**: Different prompts produce different representation centroids (cosine similarity 0.425–0.707). Despite this, detection works because both the centroid and test embeddings shift together.
+
+4. **Adversarial prompts are no challenge**: Both the long adversarial prompt (d=37.76) and the semantically unrelated math prompt (d=37.64) achieve perfect detection. The prompt content doesn't matter for OOD detection.
+
+5. **Task-irrelevant prompts work as well as task-relevant ones**: "Pick up the red block" (d=57.48) outperforms all driving-specific prompts. The OOD signal is in the image representation, not the task specification.
+
+6. **Practical implication — no prompt engineering needed**: Any prompt suffices for OOD detection. The calibration and test prompts must match, but the specific wording is irrelevant.

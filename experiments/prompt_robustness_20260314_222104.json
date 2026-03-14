@@ -1,0 +1,451 @@
+{
+  "experiment": "prompt_robustness",
+  "experiment_number": 115,
+  "timestamp": "20260314_222104",
+  "n_prompts": 10,
+  "results": {
+    "driving_standard": {
+      "prompt": "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:",
+      "auroc": 1.0,
+      "d": 50.42164944896326,
+      "id_score_mean": 0.08780948519706726,
+      "ood_score_mean": 0.37568552792072296,
+      "per_category": {
+        "highway": {
+          "mean": 0.08474595546722412,
+          "std": 0.001955132101148335,
+          "group": "ID"
+        },
+        "urban": {
+          "mean": 0.08817512989044189,
+          "std": 0.005827675217628692,
+          "group": "ID"
+        },
+        "noise": {
+          "mean": 0.444273579120636,
+          "std": 0.011793351407259055,
+          "group": "OOD"
+        },
+        "indoor": {
+          "mean": 0.35252290964126587,
+          "std": 0.015269573776776436,
+          "group": "OOD"
+        },
+        "twilight": {
+          "mean": 0.43938618898391724,
+          "std": 0.013681062407591418,
+          "group": "OOD"
+        },
+        "snow": {
+          "mean": 0.26655943393707277,
+          "std": 0.006138917406171486,
+          "group": "OOD"
+        }
+      }
+    },
+    "driving_simple": {
+      "prompt": "In: What action should the robot take to drive?\nOut:",
+      "auroc": 1.0,
+      "d": 28.11041634870486,
+      "id_score_mean": 0.1215506374835968,
+      "ood_score_mean": 0.48463202118873594,
+      "per_category": {
+        "highway": {
+          "mean": 0.11648489832878113,
+          "std": 0.013236487016913871,
+          "group": "ID"
+        },
+        "urban": {
+          "mean": 0.11782432198524476,
+          "std": 0.0074750509900651935,
+          "group": "ID"
+        },
+        "noise": {
+          "mean": 0.5652414202690125,
+          "std": 0.009448789336642479,
+          "group": "OOD"
+        },
+        "indoor": {
+          "mean": 0.41515207290649414,
+          "std": 0.009431842107690649,
+          "group": "OOD"
+        },
+        "twilight": {
+          "mean": 0.5192015707492829,
+          "std": 0.012596461618249948,
+          "group": "OOD"
+        },
+        "snow": {
+          "mean": 0.4389330208301544,
+          "std": 0.00683049120950576,
+          "group": "OOD"
+        }
+      }
+    },
+    "driving_speed": {
+      "prompt": "In: What action should the robot take to drive at 60 mph on the highway?\nOut:",
+      "auroc": 1.0,
+      "d": 40.32455226552937,
+      "id_score_mean": 0.09109683632850647,
+      "ood_score_mean": 0.3957974374294281,
+      "per_category": {
+        "highway": {
+          "mean": 0.086126708984375,
+          "std": 0.004855870038816609,
+          "group": "ID"
+        },
+        "urban": {
+          "mean": 0.09449371695518494,
+          "std": 0.004800247477519039,
+          "group": "ID"
+        },
+        "noise": {
+          "mean": 0.503408282995224,
+          "std": 0.011598463016850963,
+          "group": "OOD"
+        },
+        "indoor": {
+          "mean": 0.3498899698257446,
+          "std": 0.014297337777848761,
+          "group": "OOD"
+        },
+        "twilight": {
+          "mean": 0.444226336479187,
+          "std": 0.011708078552001898,
+          "group": "OOD"
+        },
+        "snow": {
+          "mean": 0.28566516041755674,
+          "std": 0.005537531667632646,
+          "group": "OOD"
+        }
+      }
+    },
+    "driving_stop": {
+      "prompt": "In: What action should the robot take to stop the vehicle?\nOut:",
+      "auroc": 1.0,
+      "d": 24.633018159119807,
+      "id_score_mean": 0.10422846674919128,
+      "ood_score_mean": 0.40324554294347764,
+      "per_category": {
+        "highway": {
+          "mean": 0.09960529804229737,
+          "std": 0.013384398066874324,
+          "group": "ID"
+        },
+        "urban": {
+          "mean": 0.1006030261516571,
+          "std": 0.006561265328323739,
+          "group": "ID"
+        },
+        "noise": {
+          "mean": 0.47973196506500243,
+          "std": 0.012833085526778937,
+          "group": "OOD"
+        },
+        "indoor": {
+          "mean": 0.34766149520874023,
+          "std": 0.005732224438661632,
+          "group": "OOD"
+        },
+        "twilight": {
+          "mean": 0.4504993259906769,
+          "std": 0.008999087703592602,
+          "group": "OOD"
+        },
+        "snow": {
+          "mean": 0.33508938550949097,
+          "std": 0.006773736400975626,
+          "group": "OOD"
+        }
+      }
+    },
+    "robot_generic": {
+      "prompt": "In: What action should the robot take to pick up the red block?\nOut:",
+      "auroc": 1.0,
+      "d": 57.47696314576693,
+      "id_score_mean": 0.09698594808578491,
+      "ood_score_mean": 0.4207987919449806,
+      "per_category": {
+        "highway": {
+          "mean": 0.09208555221557617,
+          "std": 0.006068584440002359,
+          "group": "ID"
+        },
+        "urban": {
+          "mean": 0.09809356927871704,
+          "std": 0.00516824889893361,
+          "group": "ID"
+        },
+        "noise": {
+          "mean": 0.548862874507904,
+          "std": 0.013479145479059516,
+          "group": "OOD"
+        },
+        "indoor": {
+          "mean": 0.36276562213897706,
+          "std": 0.011776548659405797,
+          "group": "OOD"
+        },
+        "twilight": {
+          "mean": 0.41297264099121095,
+          "std": 0.006896129223051499,
+          "group": "OOD"
+        },
+        "snow": {
+          "mean": 0.35859403014183044,
+          "std": 0.007832109109605393,
+          "group": "OOD"
+        }
+      }
+    },
+    "robot_navigate": {
+      "prompt": "In: What action should the robot take to navigate to the kitchen?\nOut:",
+      "auroc": 1.0,
+      "d": 28.925110869989368,
+      "id_score_mean": 0.14145339131355286,
+      "ood_score_mean": 0.5031584098935127,
+      "per_category": {
+        "highway": {
+          "mean": 0.13067508935928346,
+          "std": 0.011981578176032187,
+          "group": "ID"
+        },
+        "urban": {
+          "mean": 0.14273582100868226,
+          "std": 0.007681359893942011,
+          "group": "ID"
+        },
+        "noise": {
+          "mean": 0.5840759217739105,
+          "std": 0.014641205594722238,
+          "group": "OOD"
+        },
+        "indoor": {
+          "mean": 0.45230493545532224,
+          "std": 0.009558934822184112,
+          "group": "OOD"
+        },
+        "twilight": {
+          "mean": 0.5530650556087494,
+          "std": 0.011959593635047812,
+          "group": "OOD"
+        },
+        "snow": {
+          "mean": 0.42318772673606875,
+          "std": 0.012720963810386903,
+          "group": "OOD"
+        }
+      }
+    },
+    "minimal": {
+      "prompt": "In: What action should the robot take?\nOut:",
+      "auroc": 1.0,
+      "d": 21.7580467045366,
+      "id_score_mean": 0.16530508995056153,
+      "ood_score_mean": 0.5560884147882461,
+      "per_category": {
+        "highway": {
+          "mean": 0.15766628980636596,
+          "std": 0.019584722225134937,
+          "group": "ID"
+        },
+        "urban": {
+          "mean": 0.15752413272857665,
+          "std": 0.011770403521482882,
+          "group": "ID"
+        },
+        "noise": {
+          "mean": 0.6690156996250153,
+          "std": 0.012726035178338806,
+          "group": "OOD"
+        },
+        "indoor": {
+          "mean": 0.47170382738113403,
+          "std": 0.013061051068159713,
+          "group": "OOD"
+        },
+        "twilight": {
+          "mean": 0.5756806790828705,
+          "std": 0.011710078409966978,
+          "group": "OOD"
+        },
+        "snow": {
+          "mean": 0.5079534530639649,
+          "std": 0.007806106401630523,
+          "group": "OOD"
+        }
+      }
+    },
+    "empty_task": {
+      "prompt": "In: What action should the robot take to complete the task?\nOut:",
+      "auroc": 1.0,
+      "d": 30.904314878852368,
+      "id_score_mean": 0.1116560697555542,
+      "ood_score_mean": 0.45430745631456376,
+      "per_category": {
+        "highway": {
+          "mean": 0.10674288868904114,
+          "std": 0.009540761834775943,
+          "group": "ID"
+        },
+        "urban": {
+          "mean": 0.11273457407951355,
+          "std": 0.00764680018802803,
+          "group": "ID"
+        },
+        "noise": {
+          "mean": 0.5531249582767487,
+          "std": 0.009094344893716263,
+          "group": "OOD"
+        },
+        "indoor": {
+          "mean": 0.3859010815620422,
+          "std": 0.00877731328226932,
+          "group": "OOD"
+        },
+        "twilight": {
+          "mean": 0.48909329175949096,
+          "std": 0.008964566091421688,
+          "group": "OOD"
+        },
+        "snow": {
+          "mean": 0.38911049365997313,
+          "std": 0.006394260249317535,
+          "group": "OOD"
+        }
+      }
+    },
+    "adversarial_long": {
+      "prompt": "In: What action should the robot take to carefully and precisely drive forward at exactly 25.0 m/s while maintaining perfect lane centering and optimal following distance?\nOut:",
+      "auroc": 1.0,
+      "d": 37.76189562188907,
+      "id_score_mean": 0.09433196783065796,
+      "ood_score_mean": 0.3847822442650795,
+      "per_category": {
+        "highway": {
+          "mean": 0.08938962817192078,
+          "std": 0.008039861869957482,
+          "group": "ID"
+        },
+        "urban": {
+          "mean": 0.09417522549629212,
+          "std": 0.005364279034817224,
+          "group": "ID"
+        },
+        "noise": {
+          "mean": 0.5018924593925476,
+          "std": 0.008721051577985719,
+          "group": "OOD"
+        },
+        "indoor": {
+          "mean": 0.34454801082611086,
+          "std": 0.013291417577155858,
+          "group": "OOD"
+        },
+        "twilight": {
+          "mean": 0.4278131127357483,
+          "std": 0.008472201437097251,
+          "group": "OOD"
+        },
+        "snow": {
+          "mean": 0.26487539410591127,
+          "std": 0.00846920681204613,
+          "group": "OOD"
+        }
+      }
+    },
+    "adversarial_unrelated": {
+      "prompt": "In: What action should the robot take to solve the math equation x^2 + 3x - 4 = 0?\nOut:",
+      "auroc": 1.0,
+      "d": 37.63779384388942,
+      "id_score_mean": 0.08744442462921143,
+      "ood_score_mean": 0.34587630480527876,
+      "per_category": {
+        "highway": {
+          "mean": 0.08344262838363647,
+          "std": 0.00693115564363726,
+          "group": "ID"
+        },
+        "urban": {
+          "mean": 0.08867351412773132,
+          "std": 0.00465855359979895,
+          "group": "ID"
+        },
+        "noise": {
+          "mean": 0.4469947636127472,
+          "std": 0.012503184327969923,
+          "group": "OOD"
+        },
+        "indoor": {
+          "mean": 0.29689109325408936,
+          "std": 0.010007013604913951,
+          "group": "OOD"
+        },
+        "twilight": {
+          "mean": 0.36613282561302185,
+          "std": 0.008372506033974962,
+          "group": "OOD"
+        },
+        "snow": {
+          "mean": 0.2734865367412567,
+          "std": 0.0047534901531140275,
+          "group": "OOD"
+        }
+      }
+    }
+  },
+  "centroid_similarity": {
+    "driving_standard_vs_driving_simple": 0.5781099796295166,
+    "driving_standard_vs_driving_speed": 0.706713855266571,
+    "driving_standard_vs_driving_stop": 0.529879093170166,
+    "driving_standard_vs_robot_generic": 0.4801768660545349,
+    "driving_standard_vs_robot_navigate": 0.4646186828613281,
+    "driving_standard_vs_minimal": 0.4699397683143616,
+    "driving_standard_vs_empty_task": 0.4945029318332672,
+    "driving_standard_vs_adversarial_long": 0.6265584230422974,
+    "driving_standard_vs_adversarial_unrelated": 0.5360391139984131,
+    "driving_simple_vs_driving_speed": 0.6506711840629578,
+    "driving_simple_vs_driving_stop": 0.6479253172874451,
+    "driving_simple_vs_robot_generic": 0.5758282542228699,
+    "driving_simple_vs_robot_navigate": 0.5873003602027893,
+    "driving_simple_vs_minimal": 0.668166995048523,
+    "driving_simple_vs_empty_task": 0.6463562846183777,
+    "driving_simple_vs_adversarial_long": 0.5680262446403503,
+    "driving_simple_vs_adversarial_unrelated": 0.46366098523139954,
+    "driving_speed_vs_driving_stop": 0.5673242211341858,
+    "driving_speed_vs_robot_generic": 0.5162805914878845,
+    "driving_speed_vs_robot_navigate": 0.5128979682922363,
+    "driving_speed_vs_minimal": 0.5045644640922546,
+    "driving_speed_vs_empty_task": 0.5504687428474426,
+    "driving_speed_vs_adversarial_long": 0.6118965744972229,
+    "driving_speed_vs_adversarial_unrelated": 0.556029736995697,
+    "driving_stop_vs_robot_generic": 0.5253915786743164,
+    "driving_stop_vs_robot_navigate": 0.5306227207183838,
+    "driving_stop_vs_minimal": 0.559743344783783,
+    "driving_stop_vs_empty_task": 0.6356991529464722,
+    "driving_stop_vs_adversarial_long": 0.4571417570114136,
+    "driving_stop_vs_adversarial_unrelated": 0.4544702470302582,
+    "robot_generic_vs_robot_navigate": 0.5255040526390076,
+    "robot_generic_vs_minimal": 0.5314319729804993,
+    "robot_generic_vs_empty_task": 0.5343654155731201,
+    "robot_generic_vs_adversarial_long": 0.46332117915153503,
+    "robot_generic_vs_adversarial_unrelated": 0.4314974248409271,
+    "robot_navigate_vs_minimal": 0.5326462984085083,
+    "robot_navigate_vs_empty_task": 0.5550428628921509,
+    "robot_navigate_vs_adversarial_long": 0.47363096475601196,
+    "robot_navigate_vs_adversarial_unrelated": 0.4252120852470398,
+    "minimal_vs_empty_task": 0.5745898485183716,
+    "minimal_vs_adversarial_long": 0.5158101916313171,
+    "minimal_vs_adversarial_unrelated": 0.4491541385650635,
+    "empty_task_vs_adversarial_long": 0.49992048740386963,
+    "empty_task_vs_adversarial_unrelated": 0.46970850229263306,
+    "adversarial_long_vs_adversarial_unrelated": 0.5138699412345886
+  },
+  "centroid_sim_stats": {
+    "mean": 0.5371713512473636,
+    "min": 0.4252120852470398,
+    "max": 0.706713855266571,
+    "std": 0.06674389179373026
+  }
+}

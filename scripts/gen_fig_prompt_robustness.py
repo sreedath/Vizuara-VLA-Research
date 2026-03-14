@@ -1,4 +1,4 @@
-"""Generate Figure 40: Prompt Robustness Analysis."""
+"""Generate Figure 101: Prompt Robustness Analysis."""
 import json
 import numpy as np
 import matplotlib
@@ -7,79 +7,74 @@ import matplotlib.pyplot as plt
 
 OUT_DIR = "/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/paper/figures"
 
-fig, axes = plt.subplots(1, 3, figsize=(15, 4.5))
+with open("/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/experiments/prompt_robustness_20260314_222104.json") as f:
+    data = json.load(f)
 
-# Data from experiment
-prompts = ['original', 'speed_50', 'cautious', 'simple', 'different']
-prompt_labels = ['Original\n(25 m/s)', 'Speed\n(50 m/s)', 'Cautious\ndriving', 'Simple\nnavigate', 'Different\nprediction']
-aurocs = [0.917, 0.883, 0.802, 0.870, 0.888]
-id_cos = [0.5164, 0.6054, 0.5387, 0.4424, 0.4930]
-ood_cos = [0.7585, 0.7736, 0.7146, 0.6378, 0.6745]
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
 
-# Panel (a): Per-prompt AUROC
+results = data['results']
+names = list(results.keys())
+short_names = ['Standard\nDriving', 'Simple\nDriving', 'Speed\nDriving', 'Stop\nDriving',
+               'Generic\nRobot', 'Navigate\nRobot', 'Minimal', 'Empty\nTask',
+               'Adversarial\nLong', 'Adversarial\nUnrelated']
+
+aurocs = [results[n]['auroc'] for n in names]
+ds = [results[n]['d'] for n in names]
+
+# Panel (a): Cohen's d by prompt
 ax = axes[0]
-colors = ['#2196F3' if a >= 0.85 else '#FF9800' if a >= 0.8 else '#F44336' for a in aurocs]
-bars = ax.bar(range(len(prompts)), aurocs, color=colors, edgecolor='black',
-              linewidth=0.5, alpha=0.85)
-ax.set_xticks(range(len(prompts)))
-ax.set_xticklabels(prompt_labels, fontsize=8)
-ax.set_ylabel('AUROC', fontsize=11)
-ax.set_title('(a) Self-Calibrated AUROC', fontsize=12, fontweight='bold')
-ax.set_ylim(0.6, 1.0)
+colors = plt.cm.Set3(np.linspace(0, 1, len(names)))
+bars = ax.bar(range(len(names)), ds, color=colors, alpha=0.8, edgecolor='black', linewidth=0.5)
+ax.set_xticks(range(len(names)))
+ax.set_xticklabels(short_names, fontsize=6, rotation=45, ha='right')
+ax.set_ylabel("Cohen's d", fontsize=11)
+ax.set_title("(a) Detection Separation by Prompt", fontsize=12, fontweight='bold')
 ax.grid(True, alpha=0.3, axis='y')
+# All AUROC=1.000, note it
+ax.text(0.5, 0.95, 'All AUROC = 1.000', transform=ax.transAxes,
+        ha='center', fontsize=10, fontweight='bold', color='green',
+        bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
-# Add mean line
-mean_auroc = np.mean(aurocs)
-ax.axhline(y=mean_auroc, color='red', linestyle='--', alpha=0.5,
-           label=f'Mean: {mean_auroc:.3f}±{np.std(aurocs):.3f}')
-ax.legend(fontsize=9)
-
-for bar, val in zip(bars, aurocs):
-    ax.text(bar.get_x() + bar.get_width()/2, val + 0.005, f'{val:.3f}',
-            ha='center', va='bottom', fontsize=10, fontweight='bold')
-
-# Panel (b): ID vs OOD cosine distance per prompt
+# Panel (b): Per-category scores for selected prompts
 ax = axes[1]
-x = np.arange(len(prompts))
-width = 0.35
-bars1 = ax.bar(x - width/2, id_cos, width, label='ID', color='#2196F3',
-               edgecolor='black', linewidth=0.5, alpha=0.85)
-bars2 = ax.bar(x + width/2, ood_cos, width, label='OOD', color='#F44336',
-               edgecolor='black', linewidth=0.5, alpha=0.85)
+cats_order = ['highway', 'urban', 'snow', 'indoor', 'twilight', 'noise']
+prompt_subset = ['driving_standard', 'minimal', 'robot_generic', 'adversarial_unrelated']
+prompt_labels = ['Standard', 'Minimal', 'Robot Generic', 'Adversarial']
+x = np.arange(len(cats_order))
+width = 0.2
+for i, (pname, plabel) in enumerate(zip(prompt_subset, prompt_labels)):
+    scores = [results[pname]['per_category'][c]['mean'] for c in cats_order]
+    ax.bar(x + i*width - 1.5*width, scores, width, label=plabel, alpha=0.8, edgecolor='black', linewidth=0.3)
 ax.set_xticks(x)
-ax.set_xticklabels(prompt_labels, fontsize=8)
-ax.set_ylabel('Mean Cosine Distance', fontsize=11)
-ax.set_title('(b) ID vs OOD Separation', fontsize=12, fontweight='bold')
-ax.legend(fontsize=9)
+ax.set_xticklabels(cats_order, fontsize=9)
+ax.set_ylabel('Cosine Distance', fontsize=11)
+ax.set_title('(b) Per-Category by Prompt', fontsize=12, fontweight='bold')
+ax.legend(fontsize=7, ncol=2)
 ax.grid(True, alpha=0.3, axis='y')
 
-# Panel (c): Cross-prompt calibration
+# Panel (c): d range and centroid similarity
 ax = axes[2]
-self_cal = [0.883, 0.802, 0.870, 0.888]
-cross_cal = [0.867, 0.789, 0.841, 0.781]
-cross_prompts = ['speed_50', 'cautious', 'simple', 'different']
-cross_labels = ['Speed\n(50 m/s)', 'Cautious', 'Simple', 'Different']
+# Sort by d
+sorted_idx = np.argsort(ds)[::-1]
+sorted_names = [short_names[i] for i in sorted_idx]
+sorted_ds = [ds[i] for i in sorted_idx]
 
-x = np.arange(len(cross_prompts))
-width = 0.35
-bars1 = ax.bar(x - width/2, self_cal, width, label='Self-calibrated',
-               color='#4CAF50', edgecolor='black', linewidth=0.5, alpha=0.85)
-bars2 = ax.bar(x + width/2, cross_cal, width, label='Cross-calibrated\n(original centroid)',
-               color='#FF9800', edgecolor='black', linewidth=0.5, alpha=0.85)
-ax.set_xticks(x)
-ax.set_xticklabels(cross_labels, fontsize=8)
-ax.set_ylabel('AUROC', fontsize=11)
-ax.set_title('(c) Cross-Prompt Calibration Transfer', fontsize=12, fontweight='bold')
-ax.set_ylim(0.6, 1.0)
-ax.legend(fontsize=8)
-ax.grid(True, alpha=0.3, axis='y')
+bars = ax.barh(range(len(sorted_ds)), sorted_ds,
+               color=plt.cm.RdYlGn(np.linspace(0.3, 0.9, len(sorted_ds))),
+               alpha=0.8, edgecolor='black', linewidth=0.5)
+ax.set_yticks(range(len(sorted_ds)))
+ax.set_yticklabels(sorted_names, fontsize=7)
+ax.set_xlabel("Cohen's d", fontsize=11)
+ax.set_title("(c) d Ranking Across Prompts", fontsize=12, fontweight='bold')
+ax.grid(True, alpha=0.3, axis='x')
 
-for i, (s, c) in enumerate(zip(self_cal, cross_cal)):
-    drop = s - c
-    ax.text(i + width/2, c + 0.005, f'-{drop:.2f}', ha='center', va='bottom',
-            fontsize=8, color='red', fontweight='bold')
+# Add centroid sim annotation
+stats = data['centroid_sim_stats']
+ax.text(0.98, 0.05, f'Centroid sim: {stats["mean"]:.3f}\n(range: {stats["min"]:.3f}–{stats["max"]:.3f})',
+        transform=ax.transAxes, ha='right', fontsize=8,
+        bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
 
 plt.tight_layout()
-plt.savefig(f'{OUT_DIR}/fig40_prompt_robustness.png', dpi=200, bbox_inches='tight')
-plt.savefig(f'{OUT_DIR}/fig40_prompt_robustness.pdf', dpi=200, bbox_inches='tight')
-print("Saved fig40_prompt_robustness.png/pdf")
+plt.savefig(f'{OUT_DIR}/fig101_prompt_robustness.png', dpi=200, bbox_inches='tight')
+plt.savefig(f'{OUT_DIR}/fig101_prompt_robustness.pdf', dpi=200, bbox_inches='tight')
+print("Saved fig101_prompt_robustness.png/pdf")
