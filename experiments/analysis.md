@@ -507,8 +507,9 @@ This should give us the best of all worlds:
 - [x] Action distribution analysis (140 samples, 8 scenarios)
 - [x] Attention pattern analysis (80 samples, 5 layers, 6 scenarios)
 - [x] Input perturbation sensitivity (40 samples, 6 noise + 5 brightness levels = 400 inferences)
+- [x] Trajectory-level calibration (40 samples × 10 steps × 5 MC = 2,000 inferences)
 
-**Total real OpenVLA-7B inferences to date**: ~11,000+
+**Total real OpenVLA-7B inferences to date**: ~13,000+
 
 **In Progress:**
 - [ ] Additional experiment iterations
