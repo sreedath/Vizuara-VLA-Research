@@ -1898,4 +1898,20 @@ We perform a grid search over cosine distance, attention max, and norm deviation
 
 The optimization reveals that the cosine distance signal is so strong that ensembling provides only marginal improvement. The 10\% norm weight captures the magnitude signal that cosine (which operates on normalized directions) ignores, adding a small but consistent boost. The attention feature, despite its moderate individual AUROC (0.895), hurts the ensemble because its noise overwhelms its signal when combined with the already-near-perfect cosine component. This confirms the practical recommendation: use pure cosine distance for simplicity, or add 10\% norm weighting for maximum separation margin.
 
+\subsection{Sequential Inference Detection}
+\label{app:sequential_detection}
+
+\textbf{Finding 122: The detector catches OOD at 5\% interpolation (gradual) and with zero latency (abrupt). Per-frame monitoring correctly handles intermittent OOD without temporal state.}
+
+We simulate three driving sequence scenarios to test real-time detection behavior (Figure~\ref{fig:sequential_detection}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig85_sequential_detection.pdf}
+\caption{\textbf{Sequential detection.} (a) Gradual transition: detection triggers at frame 1 ($\alpha=0.05$, just 5\% OOD content). (b) Abrupt transition: score jumps 21$\times$ (0.020$\to$0.426) at the exact frame boundary, zero detection latency. (c) Intermittent noise: correctly flags all 7/7 noise frames and 12/13 highway frames (one borderline false positive at 0.0325 vs threshold 0.0323).}
+\label{fig:sequential_detection}
+\end{figure}
+
+The sequential analysis demonstrates deployment readiness. Three key properties emerge: (1) extreme early detection---5\% scene contamination is enough to trigger an alert; (2) zero-latency response---no warm-up, buffering, or temporal smoothing is needed; (3) stateless operation---each frame is evaluated independently, making the system robust to rapid ID$\leftrightarrow$OOD transitions. The single false positive (score 0.0325 vs threshold 0.0323) could be eliminated with a 2-frame sliding window, but even without smoothing, the per-frame accuracy is 95\% (19/20).
+
 \end{document}

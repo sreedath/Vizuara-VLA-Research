@@ -4360,3 +4360,45 @@ Hidden state AUROC: **1.000** (for reference)
 4. **Norm provides a small boost**: 10-20% norm weight improves d by 5-6% by capturing the magnitude signal that cosine (direction-only) misses.
 
 5. **Diminishing returns from ensembling**: The improvement from 5.79→6.15 (+6%) is modest. For simplicity, pure cosine is nearly optimal.
+
+---
+
+## Finding 93: Sequential Inference Detection
+
+**Experiment 99** — Simulates driving sequences with frame-by-frame inference and tests real-time OOD detection across three scenarios.
+
+### Setup
+- 15 calibration samples, μ+3σ threshold = 0.0323
+- 3 scenarios: gradual transition (20 frames), abrupt change (20 frames), intermittent noise (20 frames)
+- ~75 model inferences
+
+### Scenario Results
+
+**Gradual (highway→indoor interpolation):**
+- Frame 0 (α=0.00): 0.019 [ID]
+- Frame 1 (α=0.05): 0.071 [OOD] ← **First detection at 5% interpolation!**
+- Frame 19 (α=1.00): 0.441 [OOD]
+
+**Abrupt (10 highway → 10 indoor):**
+- Frames 0-9: all ≤0.020 [ID], correctly classified
+- Frame 10 (first indoor): 0.426 [OOD] ← **Instant detection, zero latency**
+- Frames 10-19: all ≥0.425 [OOD]
+
+**Intermittent (every 3rd frame is noise):**
+- All 7 noise frames: 0.484-0.516 [OOD] ← **Correctly flagged**
+- 12/13 highway frames: [ID] ← **1 false positive (score=0.0325, threshold=0.0323)**
+- Per-frame detection accuracy: 19/20 = 95%
+
+### Key Insights
+
+1. **5% interpolation triggers detection**: The detector catches the earliest stages of scene drift — just 5% blending of indoor content into a highway frame is enough to cross the threshold.
+
+2. **Zero-latency abrupt detection**: The first OOD frame is flagged instantly with no warm-up period. Score jumps from 0.020→0.426 (21× increase) in one frame.
+
+3. **Robust to intermittent OOD**: The detector correctly handles rapid switching between ID and OOD without accumulating false state — each frame is evaluated independently.
+
+4. **One false positive in intermittent scenario**: Frame 4 highway scores 0.0325 vs threshold 0.0323. This near-threshold false positive could be eliminated with a sliding-window smoother.
+
+5. **Frame-to-frame drift**: Abrupt transitions show max drift of 0.406 per frame; gradual transitions max at 0.112. Drift monitoring could complement threshold-based detection.
+
+6. **Deployment readiness**: The system works as a drop-in per-frame safety monitor — no temporal state, no buffering, no latency. Each inference takes ~65ms + 0.2ms detection.

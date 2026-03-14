@@ -1,0 +1,417 @@
+{
+  "experiment": "sequential_detection",
+  "experiment_number": 99,
+  "timestamp": "20260314_211245",
+  "threshold": 0.032327911107491114,
+  "n_cal": 15,
+  "gradual_transition": [
+    {
+      "frame": 0,
+      "alpha": 0.0,
+      "score": 0.018953144550323486,
+      "detected": false
+    },
+    {
+      "frame": 1,
+      "alpha": 0.05263157894736842,
+      "score": 0.07137739658355713,
+      "detected": true
+    },
+    {
+      "frame": 2,
+      "alpha": 0.10526315789473684,
+      "score": 0.18366533517837524,
+      "detected": true
+    },
+    {
+      "frame": 3,
+      "alpha": 0.15789473684210525,
+      "score": 0.2074592113494873,
+      "detected": true
+    },
+    {
+      "frame": 4,
+      "alpha": 0.21052631578947367,
+      "score": 0.22595906257629395,
+      "detected": true
+    },
+    {
+      "frame": 5,
+      "alpha": 0.2631578947368421,
+      "score": 0.230699360370636,
+      "detected": true
+    },
+    {
+      "frame": 6,
+      "alpha": 0.3157894736842105,
+      "score": 0.2234712839126587,
+      "detected": true
+    },
+    {
+      "frame": 7,
+      "alpha": 0.3684210526315789,
+      "score": 0.23145657777786255,
+      "detected": true
+    },
+    {
+      "frame": 8,
+      "alpha": 0.42105263157894735,
+      "score": 0.25335001945495605,
+      "detected": true
+    },
+    {
+      "frame": 9,
+      "alpha": 0.47368421052631576,
+      "score": 0.2551434636116028,
+      "detected": true
+    },
+    {
+      "frame": 10,
+      "alpha": 0.5263157894736842,
+      "score": 0.2760293483734131,
+      "detected": true
+    },
+    {
+      "frame": 11,
+      "alpha": 0.5789473684210527,
+      "score": 0.26085227727890015,
+      "detected": true
+    },
+    {
+      "frame": 12,
+      "alpha": 0.631578947368421,
+      "score": 0.2626492381095886,
+      "detected": true
+    },
+    {
+      "frame": 13,
+      "alpha": 0.6842105263157894,
+      "score": 0.2740245461463928,
+      "detected": true
+    },
+    {
+      "frame": 14,
+      "alpha": 0.7368421052631579,
+      "score": 0.268571138381958,
+      "detected": true
+    },
+    {
+      "frame": 15,
+      "alpha": 0.7894736842105263,
+      "score": 0.2775948643684387,
+      "detected": true
+    },
+    {
+      "frame": 16,
+      "alpha": 0.8421052631578947,
+      "score": 0.2802760601043701,
+      "detected": true
+    },
+    {
+      "frame": 17,
+      "alpha": 0.894736842105263,
+      "score": 0.30266207456588745,
+      "detected": true
+    },
+    {
+      "frame": 18,
+      "alpha": 0.9473684210526315,
+      "score": 0.34156113862991333,
+      "detected": true
+    },
+    {
+      "frame": 19,
+      "alpha": 1.0,
+      "score": 0.44045841693878174,
+      "detected": true
+    }
+  ],
+  "abrupt_transition": [
+    {
+      "frame": 0,
+      "scene": "highway",
+      "score": 0.01559072732925415,
+      "detected": false
+    },
+    {
+      "frame": 1,
+      "scene": "highway",
+      "score": 0.018868863582611084,
+      "detected": false
+    },
+    {
+      "frame": 2,
+      "scene": "highway",
+      "score": 0.018860936164855957,
+      "detected": false
+    },
+    {
+      "frame": 3,
+      "scene": "highway",
+      "score": 0.01663196086883545,
+      "detected": false
+    },
+    {
+      "frame": 4,
+      "scene": "highway",
+      "score": 0.02588886022567749,
+      "detected": false
+    },
+    {
+      "frame": 5,
+      "scene": "highway",
+      "score": 0.015237271785736084,
+      "detected": false
+    },
+    {
+      "frame": 6,
+      "scene": "highway",
+      "score": 0.02674943208694458,
+      "detected": false
+    },
+    {
+      "frame": 7,
+      "scene": "highway",
+      "score": 0.015168428421020508,
+      "detected": false
+    },
+    {
+      "frame": 8,
+      "scene": "highway",
+      "score": 0.019655287265777588,
+      "detected": false
+    },
+    {
+      "frame": 9,
+      "scene": "highway",
+      "score": 0.019760072231292725,
+      "detected": false
+    },
+    {
+      "frame": 10,
+      "scene": "indoor",
+      "score": 0.4258246421813965,
+      "detected": true
+    },
+    {
+      "frame": 11,
+      "scene": "indoor",
+      "score": 0.43880295753479004,
+      "detected": true
+    },
+    {
+      "frame": 12,
+      "scene": "indoor",
+      "score": 0.4392780661582947,
+      "detected": true
+    },
+    {
+      "frame": 13,
+      "scene": "indoor",
+      "score": 0.43578416109085083,
+      "detected": true
+    },
+    {
+      "frame": 14,
+      "scene": "indoor",
+      "score": 0.4279216527938843,
+      "detected": true
+    },
+    {
+      "frame": 15,
+      "scene": "indoor",
+      "score": 0.43269920349121094,
+      "detected": true
+    },
+    {
+      "frame": 16,
+      "scene": "indoor",
+      "score": 0.441972017288208,
+      "detected": true
+    },
+    {
+      "frame": 17,
+      "scene": "indoor",
+      "score": 0.4248890280723572,
+      "detected": true
+    },
+    {
+      "frame": 18,
+      "scene": "indoor",
+      "score": 0.433729887008667,
+      "detected": true
+    },
+    {
+      "frame": 19,
+      "scene": "indoor",
+      "score": 0.4553191661834717,
+      "detected": true
+    }
+  ],
+  "intermittent_noise": [
+    {
+      "frame": 0,
+      "scene": "noise",
+      "score": 0.516165554523468,
+      "detected": true
+    },
+    {
+      "frame": 1,
+      "scene": "highway",
+      "score": 0.015360713005065918,
+      "detected": false
+    },
+    {
+      "frame": 2,
+      "scene": "highway",
+      "score": 0.019025325775146484,
+      "detected": false
+    },
+    {
+      "frame": 3,
+      "scene": "noise",
+      "score": 0.4975470304489136,
+      "detected": true
+    },
+    {
+      "frame": 4,
+      "scene": "highway",
+      "score": 0.03248339891433716,
+      "detected": true
+    },
+    {
+      "frame": 5,
+      "scene": "highway",
+      "score": 0.014582276344299316,
+      "detected": false
+    },
+    {
+      "frame": 6,
+      "scene": "noise",
+      "score": 0.4971752166748047,
+      "detected": true
+    },
+    {
+      "frame": 7,
+      "scene": "highway",
+      "score": 0.01830226182937622,
+      "detected": false
+    },
+    {
+      "frame": 8,
+      "scene": "highway",
+      "score": 0.018593907356262207,
+      "detected": false
+    },
+    {
+      "frame": 9,
+      "scene": "noise",
+      "score": 0.4841077923774719,
+      "detected": true
+    },
+    {
+      "frame": 10,
+      "scene": "highway",
+      "score": 0.009713411331176758,
+      "detected": false
+    },
+    {
+      "frame": 11,
+      "scene": "highway",
+      "score": 0.019613027572631836,
+      "detected": false
+    },
+    {
+      "frame": 12,
+      "scene": "noise",
+      "score": 0.5104123055934906,
+      "detected": true
+    },
+    {
+      "frame": 13,
+      "scene": "highway",
+      "score": 0.020218849182128906,
+      "detected": false
+    },
+    {
+      "frame": 14,
+      "scene": "highway",
+      "score": 0.0140228271484375,
+      "detected": false
+    },
+    {
+      "frame": 15,
+      "scene": "noise",
+      "score": 0.5070683360099792,
+      "detected": true
+    },
+    {
+      "frame": 16,
+      "scene": "highway",
+      "score": 0.017605185508728027,
+      "detected": false
+    },
+    {
+      "frame": 17,
+      "scene": "highway",
+      "score": 0.019868910312652588,
+      "detected": false
+    },
+    {
+      "frame": 18,
+      "scene": "noise",
+      "score": 0.4965958595275879,
+      "detected": true
+    },
+    {
+      "frame": 19,
+      "scene": "highway",
+      "score": 0.01636505126953125,
+      "detected": false
+    }
+  ],
+  "first_detect_gradual": 1,
+  "first_detect_abrupt": 10,
+  "drift_gradual": [
+    0.05242425203323364,
+    0.11228793859481812,
+    0.02379387617111206,
+    0.01849985122680664,
+    0.004740297794342041,
+    0.007228076457977295,
+    0.007985293865203857,
+    0.021893441677093506,
+    0.0017934441566467285,
+    0.020885884761810303,
+    0.01517707109451294,
+    0.0017969608306884766,
+    0.0113753080368042,
+    0.0054534077644348145,
+    0.009023725986480713,
+    0.0026811957359313965,
+    0.022386014461517334,
+    0.03889906406402588,
+    0.09889727830886841
+  ],
+  "drift_abrupt": [
+    0.0032781362533569336,
+    7.927417755126953e-06,
+    0.002228975296020508,
+    0.009256899356842041,
+    0.010651588439941406,
+    0.011512160301208496,
+    0.011581003665924072,
+    0.00448685884475708,
+    0.00010478496551513672,
+    0.40606456995010376,
+    0.012978315353393555,
+    0.00047510862350463867,
+    0.0034939050674438477,
+    0.007862508296966553,
+    0.00477755069732666,
+    0.00927281379699707,
+    0.01708298921585083,
+    0.008840858936309814,
+    0.021589279174804688
+  ]
+}
