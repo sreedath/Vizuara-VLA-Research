@@ -1,0 +1,37 @@
+{
+  "experiment": "leave_one_out",
+  "experiment_number": 79,
+  "timestamp": "20260314_200441",
+  "n_id": 16,
+  "n_ood_categories": 6,
+  "results": {
+    "noise": {
+      "auroc": 1.0,
+      "n_ood": 8
+    },
+    "indoor": {
+      "auroc": 1.0,
+      "n_ood": 8
+    },
+    "twilight": {
+      "auroc": 1.0,
+      "n_ood": 8
+    },
+    "snow": {
+      "auroc": 1.0,
+      "n_ood": 8
+    },
+    "blackout": {
+      "auroc": 1.0,
+      "n_ood": 6
+    },
+    "inverted": {
+      "auroc": 1.0,
+      "n_ood": 8
+    },
+    "all_combined": {
+      "auroc": 1.0,
+      "n_ood": 46
+    }
+  }
+}
