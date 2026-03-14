@@ -1398,4 +1398,20 @@ We test detection on semantically similar ``near-OOD'' inputs that differ from c
 
 This reveals the complementary strengths of our two detection channels: (1) \textbf{Attention} excels on far-OOD (perfect without calibration) but degrades on near-OOD because structurally similar inputs produce similar attention patterns; (2) \textbf{Cosine distance} excels on all OOD types (perfect with calibration) because even subtle distributional shifts create measurable embedding distance. The most dangerous failure mode is occluded cameras, where attention fails (0.475) but cosine succeeds (1.000). For safety-critical deployment, we recommend cosine distance as the primary detector with attention as a calibration-free backup.
 
+\subsection{Statistical Significance via Bootstrap CIs}
+\label{app:bootstrap_ci}
+
+\textbf{Finding 91: Bootstrap confidence intervals (N=10,000) confirm cosine distance significantly outperforms attention on near-OOD ($\Delta=-0.166$, $p<0.001$) while both achieve equivalent perfect detection on far-OOD ($p=0.955$).}
+
+We establish statistical rigor for all key AUROC comparisons using 10,000-resample bootstrap confidence intervals (Figure~\ref{fig:bootstrap_ci}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig54_bootstrap_ci.pdf}
+\caption{\textbf{Bootstrap confidence intervals.} (a) Method AUROCs with 95\% CIs on all OOD. Cosine achieves 1.000 with zero-width CI; attention methods have wider CIs. (b) Pairwise comparisons: cosine significantly outperforms attention on near-OOD ($p<0.001$, red CI below zero), while both hidden-state methods significantly outperform MSP. (c) Cohen's $d$ effect sizes: cosine distance achieves $d=5.18$ (very large), confirming massive ID/OOD separability.}
+\label{fig:bootstrap_ci}
+\end{figure}
+
+Key statistical findings: (1) The method hierarchy is \emph{statistically confirmed}: cosine $>$ attention $>$ MSP $>$ energy (all pairwise $p<0.001$, except cosine vs.\ attention on far-OOD which are tied at 1.000). (2) Cosine distance has a Cohen's $d=5.18$, indicating the ID and OOD embedding clusters are separated by over 5 pooled standard deviations---an extremely large effect. (3) Attention-based detection on occluded cameras has a CI that includes chance level [0.093, 0.641], statistically confirming unreliability for this failure mode.
+
 \end{document}

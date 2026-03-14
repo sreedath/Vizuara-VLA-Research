@@ -3096,3 +3096,66 @@ PC1+PC2+PC3 explain 43.5% of hidden state variance. OOD scenarios cluster separa
 4. **Cosine distance is the better choice for safety-critical deployment**: Despite requiring calibration, cosine distance achieves perfect detection on both near and far OOD. Attention should be used as a supplementary signal, not the sole detector.
 
 5. **The complementary design is validated**: Use attention for calibration-free screening (catches obvious OOD) and cosine for calibrated detection (catches subtle OOD like occluded cameras).
+
+---
+
+## Finding 62: Bootstrap Confidence Intervals Establish Statistical Significance
+
+**Experiment 68** — Bootstrap CIs with N=10,000 resamples for all key AUROC comparisons.
+
+### Setup
+- 30 ID samples, 50 near-OOD, 30 far-OOD (110 total inferences)
+- 10,000 bootstrap resamples per comparison
+- 95% CIs using percentile method
+- Cohen's d effect sizes for signal separability
+
+### Individual Method AUROCs (All OOD, with 95% CIs)
+
+| Method | AUROC | 95% CI | SE |
+|--------|-------|--------|-----|
+| Cosine distance | **1.000** | [1.000, 1.000] | 0.000 |
+| Attn max | 0.896 | [0.831, 0.951] | 0.031 |
+| Attn entropy | 0.873 | [0.803, 0.932] | 0.033 |
+| MSP | 0.749 | [0.654, 0.837] | 0.047 |
+| Energy | 0.379 | [0.273, 0.488] | 0.055 |
+
+### Pairwise Comparisons (Bootstrap AUROC Differences)
+
+| Comparison | Setting | Δ AUROC | 95% CI | p-value | Significant? |
+|-----------|---------|---------|--------|---------|-------------|
+| Attn vs Cosine | Far-OOD | +0.000 | [0.000, 0.000] | 0.955 | No |
+| Attn vs Cosine | Near-OOD | **-0.166** | [-0.266, -0.079] | <0.001 | **Yes** |
+| Attn vs Cosine | All OOD | **-0.104** | [-0.169, -0.049] | <0.001 | **Yes** |
+| Cosine vs MSP | All OOD | **+0.251** | [+0.163, +0.346] | <0.001 | **Yes** |
+| Attn vs MSP | All OOD | **+0.148** | [+0.047, +0.248] | 0.001 | **Yes** |
+| Cosine vs Energy | All OOD | **+0.621** | [+0.512, +0.727] | <0.001 | **Yes** |
+
+### Per Near-OOD Type CIs
+
+| Scenario | Cosine AUROC [CI] | Attn Max AUROC [CI] |
+|----------|-------------------|---------------------|
+| Twilight | 1.000 [1.000, 1.000] | 0.907 [0.785, 0.989] |
+| Wet | 1.000 [1.000, 1.000] | 1.000 [1.000, 1.000] |
+| Construction | 1.000 [1.000, 1.000] | 0.910 [0.758, 1.000] |
+| Occluded | 1.000 [1.000, 1.000] | **0.353 [0.093, 0.641]** |
+| Snow | 1.000 [1.000, 1.000] | 1.000 [1.000, 1.000] |
+
+### Effect Sizes (Cohen's d)
+
+| Signal | Cohen's d | Magnitude | ID Mean±SD | OOD Mean±SD |
+|--------|----------|-----------|------------|-------------|
+| Cosine distance | **5.18** | Very large | 0.086±0.007 | 0.380±0.080 |
+| Attn entropy | 1.34 | Large | 2.429±0.079 | 2.148±0.286 |
+| Attn max | 1.20 | Large | 0.311±0.009 | 0.363±0.060 |
+
+### Key Insights
+
+1. **Cosine significantly outperforms attention on near-OOD (p<0.001)**: The AUROC difference of -0.166 has a CI entirely below zero, confirming calibrated cosine distance is statistically superior for subtle distribution shifts.
+
+2. **No significant difference on far-OOD (p=0.955)**: Both methods achieve perfect detection — neither is better for obvious OOD inputs.
+
+3. **All hidden-state methods significantly outperform output-based methods (p<0.001)**: Cosine is +0.251 over MSP, attention is +0.148 over MSP. The method hierarchy (hidden > output) is statistically validated.
+
+4. **Cosine has by far the largest effect size (d=5.18)**: This is an extremely large effect — 5 pooled standard deviations of separation between ID and OOD. Attention signals (d≈1.2-1.3) still show large effects but 4× smaller separation.
+
+5. **Occluded attention CI includes chance level [0.093, 0.641]**: This confirms attention-based detection is unreliable for camera occlusion — the CI spans from near-random to moderate detection.

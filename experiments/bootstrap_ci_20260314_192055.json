@@ -1,0 +1,331 @@
+{
+  "experiment": "bootstrap_ci",
+  "experiment_number": 68,
+  "timestamp": "20260314_192055",
+  "n_bootstrap": 10000,
+  "n_id": 30,
+  "n_near_ood": 50,
+  "n_far_ood": 30,
+  "individual_aurocs": {
+    "far_ood": {
+      "cosine": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.2887833992611188e-17,
+        "n_valid_boots": 10000
+      },
+      "attn_max": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.434909185329438e-17,
+        "n_valid_boots": 10000
+      },
+      "attn_entropy": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.3577540566139034e-17,
+        "n_valid_boots": 10000
+      },
+      "msp": {
+        "auroc": 0.8888888888888888,
+        "ci_low": 0.7964404894327031,
+        "ci_high": 0.9622222222222222,
+        "se": 0.04223382893652292,
+        "n_valid_boots": 10000
+      },
+      "energy": {
+        "auroc": 0.4622222222222222,
+        "ci_low": 0.30402426520847575,
+        "ci_high": 0.6204487630099043,
+        "se": 0.0808978652130132,
+        "n_valid_boots": 10000
+      }
+    },
+    "near_ood": {
+      "cosine": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.4043442600993573e-17,
+        "n_valid_boots": 10000
+      },
+      "attn_max": {
+        "auroc": 0.834,
+        "ci_low": 0.7342032967032968,
+        "ci_high": 0.9212266927083334,
+        "se": 0.047451778583131654,
+        "n_valid_boots": 10000
+      },
+      "attn_entropy": {
+        "auroc": 0.7959999999999999,
+        "ci_low": 0.691217301065163,
+        "ci_high": 0.888888888888889,
+        "se": 0.04998805855647081,
+        "n_valid_boots": 10000
+      },
+      "msp": {
+        "auroc": 0.6646666666666666,
+        "ci_low": 0.5424575456746572,
+        "ci_high": 0.7800003142677562,
+        "se": 0.060945996907838855,
+        "n_valid_boots": 10000
+      },
+      "energy": {
+        "auroc": 0.32933333333333337,
+        "ci_low": 0.21244484941281783,
+        "ci_high": 0.45599999999999996,
+        "se": 0.06209469681162572,
+        "n_valid_boots": 10000
+      }
+    },
+    "all_ood": {
+      "cosine": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.467593992571445e-17,
+        "n_valid_boots": 10000
+      },
+      "attn_max": {
+        "auroc": 0.8962500000000001,
+        "ci_low": 0.8312364838419632,
+        "ci_high": 0.9512499999999999,
+        "se": 0.03097627097541116,
+        "n_valid_boots": 10000
+      },
+      "attn_entropy": {
+        "auroc": 0.8725,
+        "ci_low": 0.8031131755550796,
+        "ci_high": 0.9321742393556804,
+        "se": 0.03288389114110024,
+        "n_valid_boots": 10000
+      },
+      "msp": {
+        "auroc": 0.7487499999999999,
+        "ci_low": 0.6536604856834454,
+        "ci_high": 0.8366670013386881,
+        "se": 0.04717752471082802,
+        "n_valid_boots": 10000
+      },
+      "energy": {
+        "auroc": 0.3791666666666667,
+        "ci_low": 0.27293923626422084,
+        "ci_high": 0.488,
+        "se": 0.05475892148543784,
+        "n_valid_boots": 10000
+      }
+    }
+  },
+  "pairwise_comparisons": {
+    "far_ood": {
+      "attn_max_vs_cosine": {
+        "diff": 0.0,
+        "ci_low": -1.1102230246251565e-16,
+        "ci_high": 1.1102230246251565e-16,
+        "p_value": 0.9552,
+        "significant_at_05": false,
+        "n_valid_boots": 10000
+      },
+      "cosine_vs_msp": {
+        "diff": 0.11111111111111116,
+        "ci_low": 0.0377777777777778,
+        "ci_high": 0.20355951056729693,
+        "p_value": 0.0001,
+        "significant_at_05": true,
+        "n_valid_boots": 10000
+      },
+      "attn_max_vs_msp": {
+        "diff": 0.11111111111111116,
+        "ci_low": 0.0377777777777778,
+        "ci_high": 0.20355951056729693,
+        "p_value": 0.0001,
+        "significant_at_05": true,
+        "n_valid_boots": 10000
+      },
+      "cosine_vs_energy": {
+        "diff": 0.5377777777777778,
+        "ci_low": 0.3795512369900957,
+        "ci_high": 0.6959757347915242,
+        "p_value": 0.0,
+        "significant_at_05": true,
+        "n_valid_boots": 10000
+      }
+    },
+    "near_ood": {
+      "attn_max_vs_cosine": {
+        "diff": -0.16600000000000004,
+        "ci_low": -0.26579670329670324,
+        "ci_high": -0.07877330729166666,
+        "p_value": 0.0,
+        "significant_at_05": true,
+        "n_valid_boots": 10000
+      },
+      "cosine_vs_msp": {
+        "diff": 0.33533333333333337,
+        "ci_low": 0.21999968573224374,
+        "ci_high": 0.45754245432534274,
+        "p_value": 0.0,
+        "significant_at_05": true,
+        "n_valid_boots": 10000
+      },
+      "attn_max_vs_msp": {
+        "diff": 0.16933333333333334,
+        "ci_low": 0.02811540419629741,
+        "ci_high": 0.3114191197722334,
+        "p_value": 0.0107,
+        "significant_at_05": true,
+        "n_valid_boots": 10000
+      },
+      "cosine_vs_energy": {
+        "diff": 0.6706666666666666,
+        "ci_low": 0.544,
+        "ci_high": 0.7875551505871822,
+        "p_value": 0.0,
+        "significant_at_05": true,
+        "n_valid_boots": 10000
+      }
+    },
+    "all_ood": {
+      "attn_max_vs_cosine": {
+        "diff": -0.1037499999999999,
+        "ci_low": -0.16876351615803672,
+        "ci_high": -0.04875000000000007,
+        "p_value": 0.0,
+        "significant_at_05": true,
+        "n_valid_boots": 10000
+      },
+      "cosine_vs_msp": {
+        "diff": 0.2512500000000001,
+        "ci_low": 0.16333299866131182,
+        "ci_high": 0.3463395143165546,
+        "p_value": 0.0,
+        "significant_at_05": true,
+        "n_valid_boots": 10000
+      },
+      "attn_max_vs_msp": {
+        "diff": 0.1475000000000002,
+        "ci_low": 0.0472518262388952,
+        "ci_high": 0.2483275777253049,
+        "p_value": 0.0012,
+        "significant_at_05": true,
+        "n_valid_boots": 10000
+      },
+      "cosine_vs_energy": {
+        "diff": 0.6208333333333333,
+        "ci_low": 0.512,
+        "ci_high": 0.7270607637357791,
+        "p_value": 0.0,
+        "significant_at_05": true,
+        "n_valid_boots": 10000
+      }
+    }
+  },
+  "per_near_ood": {
+    "twilight": {
+      "cosine": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.85221459309984e-17,
+        "n_valid_boots": 10000
+      },
+      "attn_max": {
+        "auroc": 0.9066666666666666,
+        "ci_low": 0.78515625,
+        "ci_high": 0.989247311827957,
+        "se": 0.052567385498607996,
+        "n_valid_boots": 10000
+      }
+    },
+    "wet": {
+      "cosine": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.802076229740705e-17,
+        "n_valid_boots": 10000
+      },
+      "attn_max": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.7217452008024306e-17,
+        "n_valid_boots": 10000
+      }
+    },
+    "construction": {
+      "cosine": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.8130518934954386e-17,
+        "n_valid_boots": 10000
+      },
+      "attn_max": {
+        "auroc": 0.91,
+        "ci_low": 0.757806581439394,
+        "ci_high": 1.0,
+        "se": 0.06700475618549846,
+        "n_valid_boots": 10000
+      }
+    },
+    "occluded": {
+      "cosine": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.7555010819726126e-17,
+        "n_valid_boots": 10000
+      },
+      "attn_max": {
+        "auroc": 0.35333333333333333,
+        "ci_low": 0.09318996415770608,
+        "ci_high": 0.640625,
+        "se": 0.13734959330293786,
+        "n_valid_boots": 10000
+      }
+    },
+    "snow": {
+      "cosine": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.739800093299453e-17,
+        "n_valid_boots": 10000
+      },
+      "attn_max": {
+        "auroc": 1.0,
+        "ci_low": 0.9999999999999999,
+        "ci_high": 1.0,
+        "se": 2.79326464745136e-17,
+        "n_valid_boots": 10000
+      }
+    }
+  },
+  "effect_sizes": {
+    "cosine": {
+      "cohens_d": 5.180243146965133,
+      "id_mean": 0.08597946961720784,
+      "id_std": 0.006564951824049832,
+      "ood_mean": 0.3796627141535282,
+      "ood_std": 0.07990670570726999
+    },
+    "attn_max": {
+      "cohens_d": 1.1984661606723517,
+      "id_mean": 0.3113774617513021,
+      "id_std": 0.009118410013914712,
+      "ood_mean": 0.36286563873291017,
+      "ood_std": 0.06006891620537466
+    },
+    "attn_entropy": {
+      "cohens_d": 1.3388412647586472,
+      "id_mean": 2.429118275642395,
+      "id_std": 0.07946483876117215,
+      "ood_mean": 2.148413909971714,
+      "ood_std": 0.2856602718021078
+    }
+  }
+}
