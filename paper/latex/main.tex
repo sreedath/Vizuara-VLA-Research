@@ -2138,4 +2138,20 @@ We measure detection performance at every calibration set size from 1 to 50 usin
 
 The calibration curve establishes that the cosine distance detector is extraordinarily sample-efficient. A single driving scene image, processed through the VLA to obtain one hidden-state vector, produces a centroid that achieves AUROC $= 0.983$---sufficient for many safety-critical applications. The mechanism is clear: even one ID sample captures the general ``direction'' of driving-scene representations in the 4,096-dimensional space, and OOD inputs deviate substantially from this direction regardless of which specific driving scene was used for calibration. The bootstrap analysis at $n = 5$ shows mean AUROC $= 1.000$ with std $= 0.002$, meaning the worst-case 5-sample calibration still achieves AUROC $= 0.989$. At $n = 10$, all 20 bootstrap resamples achieve perfect AUROC, confirming that 10 samples eliminate all sampling variance. Cohen's $d$ shows a different pattern: it increases from 21.5 to 26 as additional samples tighten the ID score distribution (reducing the denominator), but this gain plateaus by $n = 10$. The practical recommendation is 5--10 calibration samples: 5 for resource-constrained deployment (99.5\% of asymptotic performance), 10 for guaranteed zero-variance detection.
 
+\subsection{Layer-wise Hidden State Analysis}
+\label{app:layer_analysis}
+
+\textbf{Finding 137: OOD signal emerges at layer 1 ($d = 160.59$) and peaks at layer 3 ($d = 190.85$). Layer 0 carries zero signal. The $d$-curve is U-shaped: high early (1--4), dips mid-network (8--16), and recovers late (24--28). Layer 28 is optimal among late layers ($d = 66.50$, 15\% better than last layer).}
+
+We extract hidden states from all 33 transformer layers and measure cosine-distance OOD detection at each (Figure~\ref{fig:layer_analysis}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig100_layer_analysis.pdf}
+\caption{\textbf{Layer-wise analysis.} (a) AUROC (blue) and Cohen's $d$ (red) by layer: AUROC $= 1.000$ from layer 1 onward; $d$ peaks at layer 3 ($d = 190.85$), dips mid-network, and recovers to 66.50 at layer 28. (b) Hidden state norm grows through the network, peaking at layer 28 (norm $= 112$) before dropping at layer 32. (c) Multi-layer fusion: concatenating every 4th layer ($d = 67.28$) marginally improves over single last layer ($d = 57.70$).}
+\label{fig:layer_analysis}
+\end{figure}
+
+The layer analysis reveals that OOD detection capability is present throughout the transformer but manifests differently at each depth. Layer 0 (raw embeddings) carries zero signal because all inputs share the same token embedding table. Layer 1---after a single attention and MLP block---already achieves perfect AUROC with $d = 160.59$, demonstrating that the very first nonlinear transformation separates ID from OOD in representation space. The extreme early-layer $d$ values arise from tiny absolute cosine distances (ID: 0.0001--0.0003) with even tinier standard deviations ($10^{-5}$), making the ratio enormous. Mid-network layers (8--16) exhibit lower $d$ (29--57) because both the ID and OOD cosine distances grow while the ID distribution widens. Late layers (24--28) recover $d = 60$--67 as the model refines its representation for action prediction, with layer 28 emerging as the optimal single layer ($d = 66.50$). The final layer (32) is slightly worse ($d = 57.70$), likely because the output projection head compresses the representation for action token prediction rather than preserving OOD-discriminative features. Multi-layer fusion via concatenation provides marginal gains (every-4th: $d = 67.28$) but does not justify the 9$\times$ computational cost over single-layer extraction.
+
 \end{document}

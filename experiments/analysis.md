@@ -5092,3 +5092,55 @@ Oracle weights: [1.0, 0.0, 0.0, 0.0] — pure cosine.
 5. **Centroid converges rapidly**: Cosine similarity to the full centroid reaches 0.960 by n=5 and plateaus at 0.961 by n=20. The centroid is already excellent with just 5 samples.
 
 6. **Practical recommendation: n=5-10 is the sweet spot**: 5 samples achieve 0.960 centroid similarity and bootstrap mean AUROC=1.000. 10 samples eliminate all bootstrap variance. Beyond 10, returns are negligible.
+
+---
+
+## Finding 108: Layer-wise Hidden State Analysis
+
+**Experiment 114** — Extracts hidden states from all 33 transformer layers (0–32) and measures OOD detection at each layer, plus multi-layer fusion.
+
+### Setup
+- 10 samples per category, 60 total inferences
+- All 33 hidden states extracted per inference
+- Per-layer cosine distance evaluation
+- Multi-layer fusion: concatenation of selected layers
+
+### Per-Layer Results (Selected)
+
+| Layer | AUROC | Cohen's d | Mean Norm | Dim |
+|-------|-------|-----------|-----------|-----|
+| 0 | 0.500 | 0.00 | 0.89 | 4096 |
+| 1 | 1.000 | 160.59 | 4.27 | 4096 |
+| 3 | 1.000 | 190.85 | 7.96 | 4096 |
+| 4 | 1.000 | 125.11 | 9.76 | 4096 |
+| 8 | 1.000 | 56.45 | 19.02 | 4096 |
+| 12 | 1.000 | 29.12 | 32.02 | 4096 |
+| 16 | 1.000 | 30.91 | 45.26 | 4096 |
+| 20 | 1.000 | 41.42 | 64.40 | 4096 |
+| 24 | 1.000 | 60.43 | 85.40 | 4096 |
+| 28 | 1.000 | 66.50 | 112.10 | 4096 |
+| 32 | 1.000 | 57.70 | 82.50 | 4096 |
+
+### Multi-Layer Fusion
+
+| Method | Layers | Dim | AUROC | Cohen's d |
+|--------|--------|-----|-------|-----------|
+| Last only | 1 | 4096 | 1.000 | 57.70 |
+| Last two | 2 | 8192 | 1.000 | 56.41 |
+| Last four | 4 | 16384 | 1.000 | 64.55 |
+| Every 4th | 9 | 36864 | 1.000 | 67.28 |
+| All layers | 33 | 135168 | 1.000 | 60.92 |
+
+### Key Insights
+
+1. **Layer 0 carries zero OOD signal (AUROC=0.500)**: The embedding layer output is identical for all inputs — all cosine distances are 0.000. This is the raw token embedding before any transformer processing.
+
+2. **OOD signal emerges immediately at layer 1 (d=160.59)**: The first transformer layer already separates ID from OOD with enormous d. Early layers have small norms and tiny cosine distances, so the relative separation is extreme.
+
+3. **Layer 3 achieves the highest d (190.85)**: The peak is in the very early layers, where cosine distances are tiny (0.0003 for ID) but the ID distribution is extremely tight (std=1.3e-5).
+
+4. **d has a U-shape: high early, dips mid-network, rises again late**: Early layers (1-4) have d>125, mid-layers (8-16) drop to 29-57, and late layers (24-28) recover to 60-67. This suggests different representation regimes.
+
+5. **Layer 28 is the best late-layer choice (d=66.50)**: The last layer (32) has d=57.70, but layer 28 achieves d=66.50 — 15% better. The final projection head slightly reduces separation.
+
+6. **Multi-layer fusion: every-4th achieves d=67.28**: Concatenating layers at stride 4 (9 layers, 37K dims) marginally improves over single-layer detection. However, all-layers (135K dims) drops to d=60.92, suggesting early layers dilute late-layer signals when concatenated.
