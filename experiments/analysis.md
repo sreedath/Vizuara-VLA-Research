@@ -6340,3 +6340,34 @@ How well does the Layer 3 detector perform across the broadest set of OOD catego
 5. **Rain is much easier than fog (d=157 vs d=16)**: Rain darkens the scene and adds high-frequency streaks, which are very detectable at L3. Fog only reduces contrast uniformly.
 
 6. **Construction is surprisingly detectable (d=19.6)**: Despite sharing the road structure with ID scenes, the orange barriers provide distinctive pixel-level features that L3 captures.
+
+---
+
+## Finding 137: L3 vs L32 Sample Efficiency (Experiment 143)
+
+### Research Question
+How does L3 sample efficiency compare to L32 (Exp 133)? Does L3's higher d-prime translate to better few-shot performance?
+
+### Setup
+- **Model**: OpenVLA-7B (bfloat16, NVIDIA A40), Layer 3
+- **ID**: 40 embeddings, **OOD**: 100 (including fog_50%)
+- **Cal sizes**: 1-30, same protocol as Exp 133
+
+### Results
+
+| Cal Size | L3 AUROC | L3 D-prime | L32 AUROC (Exp 133) | L32 D-prime |
+|----------|---------|-----------|--------------------|-----------|
+| 1 | 0.880±0.098 | 222.8±206 | 0.993±0.011 | 31.8±21.3 |
+| 5 | 0.910±0.100 | 156.1±70 | 0.999±0.002 | 31.1±9.8 |
+| 10 | 0.900±0.100 | 139.6±33 | 1.000±0.000 | 30.2±5.1 |
+| 30 | 0.942±0.000 | 148.7±0 | 1.000±0.000 | 32.0±0.0 |
+
+### Key Insights
+
+1. **L3 has 5× higher d-prime but lower AUROC**: L3's d=149 vs L32's d=32, but L3 AUROC peaks at 0.94 due to fog overlap, while L32 reaches 1.000 at n≥8.
+
+2. **The tradeoff is clear**: L3 provides much stronger separation overall (better for most categories) but has a fog blind spot that prevents AUROC=1.000. L32 perfectly separates all categories except fog at the last layer level.
+
+3. **L3's fog weakness is consistent**: The AUROC plateau around 0.88-0.94 doesn't improve with more calibration samples — the fog issue is inherent to the layer, not a centroid estimation problem.
+
+4. **Practical recommendation**: For systems where fog detection is critical, use L32 (AUROC=1.000 at n≥8 without fog in test). For maximum overall separation across all categories including fog, L3 is preferred (AUROC=0.998 overall from Exp 142, with fog_50% detected perfectly).
