@@ -1,0 +1,415 @@
+{
+  "experiment": "cross_prompt_orgate",
+  "experiment_number": 148,
+  "timestamp": "20260315_011956",
+  "n_cal": 8,
+  "n_test_id": 8,
+  "n_ood_per_cat": 4,
+  "ood_categories": [
+    "fog_30",
+    "fog_60",
+    "night",
+    "blur",
+    "noise",
+    "occlusion"
+  ],
+  "prompts": [
+    "drive_forward",
+    "navigate",
+    "follow_lane",
+    "stop",
+    "turn_left"
+  ],
+  "sigma": 3.0,
+  "layers": [
+    3,
+    32
+  ],
+  "results": {
+    "drive_forward": {
+      "drive_forward": {
+        "type": "SAME",
+        "fpr": 0.0,
+        "recall": 0.875,
+        "precision": 1.0,
+        "f1": 0.9333333333333333,
+        "per_category_recall": {
+          "fog_30": 0.25,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "navigate": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "follow_lane": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "stop": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "turn_left": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      }
+    },
+    "navigate": {
+      "drive_forward": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "navigate": {
+        "type": "SAME",
+        "fpr": 0.0,
+        "recall": 0.9166666666666666,
+        "precision": 1.0,
+        "f1": 0.9565217391304348,
+        "per_category_recall": {
+          "fog_30": 0.5,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "follow_lane": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "stop": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "turn_left": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      }
+    },
+    "follow_lane": {
+      "drive_forward": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "navigate": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "follow_lane": {
+        "type": "SAME",
+        "fpr": 0.0,
+        "recall": 0.875,
+        "precision": 1.0,
+        "f1": 0.9333333333333333,
+        "per_category_recall": {
+          "fog_30": 0.25,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "stop": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "turn_left": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      }
+    },
+    "stop": {
+      "drive_forward": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "navigate": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "follow_lane": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "stop": {
+        "type": "SAME",
+        "fpr": 0.0,
+        "recall": 0.875,
+        "precision": 1.0,
+        "f1": 0.9333333333333333,
+        "per_category_recall": {
+          "fog_30": 0.25,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "turn_left": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      }
+    },
+    "turn_left": {
+      "drive_forward": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "navigate": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "follow_lane": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "stop": {
+        "type": "CROSS",
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.75,
+        "f1": 0.8571428571428571,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      },
+      "turn_left": {
+        "type": "SAME",
+        "fpr": 0.0,
+        "recall": 0.9166666666666666,
+        "precision": 1.0,
+        "f1": 0.9565217391304348,
+        "per_category_recall": {
+          "fog_30": 0.5,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0
+        }
+      }
+    }
+  }
+}

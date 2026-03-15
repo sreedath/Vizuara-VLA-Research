@@ -6475,3 +6475,64 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 5. **AND gate = L3-only**: The AND gate's performance equals L3-only (both recall=0.797, FPR=0.000), confirming L3 is the more conservative detector.
 
 6. **Threshold robustness zone**: σ ∈ [2.0, 3.5] provides F1 > 0.93 for the OR gate, a wide operating window that doesn't require precise tuning.
+
+---
+
+## Finding 141: PCA Dimensionality Analysis (Experiment 147)
+
+**Question**: What is the intrinsic dimensionality of the ID embedding manifold at L3 vs L32? How does this explain L3's superior OOD detection?
+
+**Setup**: 20 ID images, 5 OOD per category (7 categories). PCA decomposition of centered ID embeddings at L3 and L32.
+
+**Key Results**:
+
+| Layer | Dims for 90% var | Dims for 95% var | Dims for 99% var | Top-2 SV ratio |
+|-------|-----------------|-----------------|-----------------|----------------|
+| L3 | **2** | **2** | 6 | 0.976 |
+| L32 | 5 | 10 | 17 | 0.843 |
+
+**Critical Insights**:
+
+1. **L3 ID manifold is essentially 2-dimensional**: Just 2 PCA components capture 97.6% of variance in L3 ID embeddings. The first singular value (0.797) dominates, with a sharp spectral drop after component 2 (0.581 → 0.085).
+
+2. **L32 has 5× higher intrinsic dimensionality**: L32 needs 10 components for 95% variance (vs 2 for L3). The singular values decay more gradually: 112.8 → 92.4 → 25.1 → 22.4 → 19.4.
+
+3. **This explains L3's superior discrimination**: With ID data concentrated on a 2D manifold in 4096-D space, any OOD perturbation is almost certain to push embeddings off this manifold. At L32, ID data spans ~10 dimensions, giving OOD perturbations more room to remain within the ID support.
+
+4. **OOD reconstruction error is the key signal**: At L3 with k=2, ID reconstruction error is 0.0012 while OOD ranges from 0.033 (fog_30) to 0.465 (night) — a 27-388× ratio. At L32, the ratio is lower (3-28×) because the ID manifold is already more spread out.
+
+5. **Night is the most dimensionally anomalous**: At L3 k=2, night has the highest reconstruction error (0.465) and most negative d-prime (-3.14), meaning night embeddings are maximally off the ID subspace.
+
+6. **PCA-based OOD detection is viable**: The reconstruction error ratio (OOD/ID) at k=2 components could serve as an alternative OOD detector, especially at L3 where the ratio is extreme.
+
+---
+
+## Finding 142: Cross-Prompt OR-Gate Validation (Experiment 148)
+
+**Question**: Does the OR-gate detector (calibrated with one prompt) generalize when a DIFFERENT prompt is used at inference time?
+
+**Setup**: 5 prompts × 5 prompts cross-validation matrix. 8 calibration images, 8 test ID, 4 OOD per category (6 categories). 3σ threshold.
+
+**Key Results — Transfer Matrix (F1)**:
+
+| Cal \ Inf | drive | navigate | follow | stop | turn |
+|-----------|-------|----------|--------|------|------|
+| drive | **0.933** | 0.857 | 0.857 | 0.857 | 0.857 |
+| navigate | 0.857 | **0.957** | 0.857 | 0.857 | 0.857 |
+| follow | 0.857 | 0.857 | **0.933** | 0.857 | 0.857 |
+| stop | 0.857 | 0.857 | 0.857 | **0.933** | 0.857 |
+| turn | 0.857 | 0.857 | 0.857 | 0.857 | **0.957** |
+
+**Critical Insights**:
+
+1. **Cross-prompt transfer fails catastrophically**: When the inference prompt differs from the calibration prompt, FPR=1.000 — ALL ID images are flagged as OOD. The prompt change itself creates a larger embedding shift than any image corruption.
+
+2. **Same-prompt detection works well**: Diagonal F1 ranges from 0.933 to 0.957, consistent with earlier experiments. Same-prompt FPR=0.000 for all prompts.
+
+3. **The detector is prompt-specific, not prompt-agnostic**: This is a critical deployment constraint. The exact prompt used during calibration MUST match the prompt used during inference. Even semantically similar prompts (e.g., "drive forward" vs "navigate") are treated as OOD.
+
+4. **All cross-prompt entries are identical (F1=0.857)**: This is because FPR=1.0 (all ID flagged) while recall=1.0 (all OOD also flagged). The detector degenerates to "flag everything" mode.
+
+5. **Practical implication**: For production deployment, the calibration set must use the EXACT inference prompt. If multiple prompts are used, each needs its own calibration centroid. This motivates a prompt-aware multi-centroid detector.
+
+6. **Root cause**: From Experiment 135 (prompt geometry), inter-prompt centroid similarity is only 0.5-0.7, while ID embedding radius is ~0.1. The prompt shift is 3-5× larger than the ID cluster radius, making cross-prompt ID images appear as OOD.

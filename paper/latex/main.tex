@@ -2726,4 +2726,36 @@ The OR-gate architecture represents our recommended production deployment: two c
 \label{fig:threshold}
 \end{figure}
 
+\subsection{PCA Dimensionality of ID Manifold}
+\label{app:pca}
+
+\textbf{Finding 204}: The L3 ID embedding manifold is essentially \textbf{2-dimensional}: just 2 PCA components capture 97.6\% of variance in 4096-D space. L32 requires 10 components for equivalent coverage (95.4\%). This 5$\times$ dimensionality gap explains L3's superior OOD discrimination.
+
+\textbf{Finding 205}: The low intrinsic dimensionality of L3 creates a ``thin manifold'' effect: any perturbation is almost certain to push embeddings off the 2D ID subspace. OOD reconstruction error at $k{=}2$ ranges from 27$\times$ (fog\_30) to 388$\times$ (night) that of ID, providing an alternative detection signal.
+
+\textbf{Finding 206}: L32's singular value spectrum decays gradually (112.8$\to$92.4$\to$25.1$\to$...) while L3's drops sharply after component 2 (0.797$\to$0.581$\to$0.085). This spectral gap at L3 creates a natural threshold between the ID subspace and its orthogonal complement.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig133_pca_dimensionality.png}
+\caption{\textbf{PCA dimensionality.} (A) Singular value spectrum: L3 has a sharp spectral gap after 2 components; L32 decays gradually. (B) Cumulative variance: L3 reaches 97.6\% at $k{=}2$; L32 needs $k{=}10$ for 95\%. (C) OOD/ID reconstruction error ratio shows L3 at $k{=}2$ provides extreme anomaly signal.}
+\label{fig:pca}
+\end{figure}
+
+\subsection{Cross-Prompt OR-Gate Validation}
+\label{app:cross_prompt}
+
+\textbf{Finding 207}: Cross-prompt transfer \textbf{fails catastrophically}. When the inference prompt differs from the calibration prompt, FPR$=$1.000 — every ID image is flagged as OOD. The prompt embedding shift is 3--5$\times$ larger than the ID cluster radius, causing the detector to degenerate to ``flag everything'' mode.
+
+\textbf{Finding 208}: Same-prompt detection remains robust: diagonal F1 ranges from 0.933 (drive, follow, stop) to 0.957 (navigate, turn\_left), with FPR$=$0.000 for all prompts. The OR-gate is prompt-specific but reliable within a fixed prompt.
+
+\textbf{Finding 209}: This is a critical deployment constraint: the calibration set must use the \textbf{exact} inference prompt. For multi-prompt systems, each prompt requires its own calibration centroid, motivating a prompt-aware multi-centroid architecture.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig134_cross_prompt_orgate.png}
+\caption{\textbf{Cross-prompt OR-gate validation.} (A) F1 transfer matrix: diagonal (same-prompt) achieves F1$\geq$0.933; off-diagonal (cross-prompt) collapses to 0.857. (B) FPR matrix: cross-prompt FPR$=$1.000 universally. (C) Same vs cross-prompt F1: 0.933--0.957 vs 0.857 — the gap reflects catastrophic prompt mismatch.}
+\label{fig:cross_prompt}
+\end{figure}
+
 \end{document}
