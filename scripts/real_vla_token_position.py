@@ -1,181 +1,165 @@
-#!/usr/bin/env python3
-"""Experiment 185: Token position analysis — which token positions carry
-the strongest OOD signal?
-
-Instead of only using the last token, compare OOD detection using embeddings
-from different token positions (first, middle, image tokens, last).
 """
-
-import json, os, sys, datetime
-import numpy as np
-import torch
-from pathlib import Path
+Experiment 212: Token Position Analysis for OOD Detection
+Where in the token sequence does the OOD signal appear?
+Tests hidden state at different token positions (first, middle, last, mean).
+"""
+import torch, json, numpy as np, os
+from datetime import datetime
 from PIL import Image, ImageFilter
 
-SCRIPT_DIR = Path(__file__).parent
-REPO_DIR = SCRIPT_DIR.parent
-EXPERIMENTS_DIR = REPO_DIR / "experiments"
-EXPERIMENTS_DIR.mkdir(exist_ok=True)
-RESULTS_DIR = str(EXPERIMENTS_DIR)
+def make_driving_image(w=256, h=256):
+    img = Image.new('RGB', (w, h))
+    pixels = img.load()
+    for y in range(h):
+        for x in range(w):
+            if y < h // 2:
+                b = int(180 + 75 * (1 - y / (h / 2)))
+                pixels[x, y] = (100, 150, b)
+            else:
+                g = int(80 + 40 * ((y - h/2) / (h/2)))
+                pixels[x, y] = (g, g + 10, g - 10)
+    return img
 
-SIZE = (256, 256)
-rng = np.random.RandomState(42)
+def apply_corruption(img, name, rng):
+    arr = np.array(img, dtype=np.float32)
+    if name == 'fog':
+        fog = np.full_like(arr, 200)
+        arr = arr * 0.4 + fog * 0.6
+    elif name == 'night':
+        arr = arr * 0.15
+    elif name == 'blur':
+        return img.filter(ImageFilter.GaussianBlur(radius=5))
+    elif name == 'noise':
+        arr = arr + rng.normal(0, 40, arr.shape)
+    return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
 
-def create_highway(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]; img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
-
-def create_urban(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]; img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]; img[SIZE[0]//2:] = [60, 60, 60]
-    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
-
-def create_rural(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [100, 180, 255]; img[SIZE[0]//3:SIZE[0]*2//3] = [34, 139, 34]; img[SIZE[0]*2//3:] = [90, 90, 90]
-    return np.clip(img.astype(np.int16) + rng.randint(-8, 9, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
-
-def apply_fog(a, alpha):
-    return np.clip(a*(1-alpha)+np.full_like(a,[200,200,210])*alpha, 0, 255).astype(np.uint8)
-def apply_night(a): return np.clip(a*0.15, 0, 255).astype(np.uint8)
-def apply_blur(a, r=8): return np.array(Image.fromarray(a).filter(ImageFilter.GaussianBlur(radius=r)))
-def apply_noise(a, s=50): return np.clip(a.astype(np.float32)+np.random.normal(0,s,a.shape), 0, 255).astype(np.uint8)
-
-def extract_multi_position(model, processor, image, prompt, layers):
-    """Extract hidden states at multiple token positions."""
-    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-    with torch.no_grad():
-        fwd = model(**inputs, output_hidden_states=True)
-
-    seq_len = fwd.hidden_states[0].shape[1]
-    positions = {
-        "first": 0,
-        "quarter": seq_len // 4,
-        "middle": seq_len // 2,
-        "three_quarter": 3 * seq_len // 4,
-        "last": -1,
-        "second_last": -2,
-    }
-
-    result = {}
-    for pos_name, pos_idx in positions.items():
-        result[pos_name] = {l: fwd.hidden_states[l][0, pos_idx, :].float().cpu().numpy() for l in layers}
-
-    result["_seq_len"] = seq_len
-    return result
-
-def cosine_distance(a, b):
-    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
+def cosine_dist(a, b):
+    return 1.0 - float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
 
 def compute_auroc(id_scores, ood_scores):
     id_scores = np.asarray(id_scores)
     ood_scores = np.asarray(ood_scores)
     n_id, n_ood = len(id_scores), len(ood_scores)
-    if n_id == 0 or n_ood == 0: return 0.5
+    if n_id == 0 or n_ood == 0:
+        return 0.5
     count = sum(float(np.sum(o > id_scores) + 0.5 * np.sum(o == id_scores)) for o in ood_scores)
     return count / (n_id * n_ood)
 
 def main():
     print("=" * 60)
-    print("Experiment 185: Token Position OOD Signal Analysis")
-    print("=" * 60, flush=True)
+    print("Experiment 212: Token Position Analysis")
+    print("=" * 60)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading OpenVLA-7B...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
         device_map="auto", trust_remote_code=True)
     processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
-    layers = [3, 16, 32]
+    layers = [1, 3]
+    prompt = "In: What action should the robot take to drive forward?\nOut:"
+    n_cal, n_test = 10, 8
+    rng = np.random.default_rng(42)
+    base_imgs = [make_driving_image() for _ in range(20)]
+    corruption_types = ['fog', 'night', 'blur', 'noise']
 
-    creators = [create_highway, create_urban, create_rural]
-    n_cal = 6
-    n_test = 4
+    # First, understand the token structure
+    print("\n--- Analyzing token structure ---")
+    inputs = processor(prompt, base_imgs[0]).to(model.device, dtype=torch.bfloat16)
+    seq_len = inputs['input_ids'].shape[1]
+    print(f"  Sequence length: {seq_len}")
 
-    cal_arrs = [creators[i%3](i) for i in range(n_cal)]
-    test_arrs = [creators[(i+n_cal)%3](i+n_cal) for i in range(n_test)]
-
-    ood_transforms = {
-        "fog_60": lambda a: apply_fog(a, 0.6),
-        "night": apply_night,
-        "blur": apply_blur,
-        "noise": apply_noise,
+    positions = {
+        'first': 0,
+        'quarter': seq_len // 4,
+        'middle': seq_len // 2,
+        'three_quarter': 3 * seq_len // 4,
+        'last': -1,
     }
+    print(f"  Positions: {positions}")
 
-    # Extract calibration embeddings at all positions
-    print("\n--- Extracting embeddings ---", flush=True)
-    positions = ["first", "quarter", "middle", "three_quarter", "second_last", "last"]
-    cal_embs = {pos: {l: [] for l in layers} for pos in positions}
-    seq_len = None
-
-    for arr in cal_arrs:
-        h = extract_multi_position(model, processor, Image.fromarray(arr), prompt, layers)
-        if seq_len is None:
-            seq_len = h["_seq_len"]
-            print(f"  Sequence length: {seq_len}", flush=True)
-        for pos in positions:
-            for l in layers:
-                cal_embs[pos][l].append(h[pos][l])
-
-    # Centroids per position
-    centroids = {pos: {l: np.array(cal_embs[pos][l]).mean(axis=0) for l in layers} for pos in positions}
-
-    # ID test
-    id_embs = {pos: {l: [] for l in layers} for pos in positions}
-    for arr in test_arrs:
-        h = extract_multi_position(model, processor, Image.fromarray(arr), prompt, layers)
-        for pos in positions:
-            for l in layers:
-                id_embs[pos][l].append(h[pos][l])
-
-    # OOD test
-    ood_embs = {pos: {l: [] for l in layers} for pos in positions}
-    for cat, tfn in ood_transforms.items():
-        for arr in test_arrs:
-            h = extract_multi_position(model, processor, Image.fromarray(tfn(arr)), prompt, layers)
-            for pos in positions:
-                for l in layers:
-                    ood_embs[pos][l].append(h[pos][l])
-
-    # Compute AUROC per position and layer
-    print("\n--- AUROC by position and layer ---", flush=True)
-    results = {"seq_len": seq_len}
-    for pos in positions:
-        pos_results = {}
+    def extract_multi_pos(model, processor, image, prompt, layers, positions):
+        inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+        with torch.no_grad():
+            fwd = model(**inputs, output_hidden_states=True)
+        result = {}
         for l in layers:
-            id_dists = [cosine_distance(e, centroids[pos][l]) for e in id_embs[pos][l]]
-            ood_dists = [cosine_distance(e, centroids[pos][l]) for e in ood_embs[pos][l]]
-            auroc = compute_auroc(id_dists, ood_dists)
-            sep = float(np.mean(ood_dists) / (np.mean(id_dists) + 1e-10))
+            hs = fwd.hidden_states[l][0]
+            result[l] = {}
+            for name, idx in positions.items():
+                result[l][name] = hs[idx].float().cpu().numpy()
+            result[l]['mean_all'] = hs.float().mean(dim=0).cpu().numpy()
+        return result
 
-            pos_results[f"L{l}"] = {
-                "auroc": auroc,
-                "id_mean": float(np.mean(id_dists)),
-                "ood_mean": float(np.mean(ood_dists)),
-                "separation_ratio": sep,
+    print("\n--- Calibrating per-position centroids ---")
+    centroids = {}
+    for l in layers:
+        centroids[l] = {}
+        embeds = {pos: [] for pos in list(positions.keys()) + ['mean_all']}
+        for i in range(n_cal):
+            h = extract_multi_pos(model, processor, base_imgs[i], prompt, [l], positions)
+            for pos in embeds:
+                embeds[pos].append(h[l][pos])
+            if (i+1) % 5 == 0:
+                print(f"  L{l} cal {i+1}/{n_cal}")
+        for pos in embeds:
+            centroids[l][pos] = np.mean(embeds[pos], axis=0)
+
+    print("\n--- Testing detection by token position ---")
+    results = {}
+    for l in layers:
+        pos_results = {}
+        for pos_name in list(positions.keys()) + ['mean_all']:
+            id_scores = []
+            for i in range(n_cal, n_cal + n_test):
+                h = extract_multi_pos(model, processor, base_imgs[i], prompt, [l], positions)
+                id_scores.append(cosine_dist(h[l][pos_name], centroids[l][pos_name]))
+
+            per_corr = {}
+            ood_all = []
+            for ctype in corruption_types:
+                ood_scores = []
+                for i in range(n_test):
+                    img = apply_corruption(base_imgs[i], ctype, rng)
+                    h = extract_multi_pos(model, processor, img, prompt, [l], positions)
+                    d = cosine_dist(h[l][pos_name], centroids[l][pos_name])
+                    ood_scores.append(d)
+                    ood_all.append(d)
+                per_corr[ctype] = round(compute_auroc(id_scores, ood_scores), 4)
+
+            overall = round(compute_auroc(id_scores, ood_all), 4)
+            id_mean = float(np.mean(id_scores))
+            ood_mean = float(np.mean(ood_all))
+            separation = round(ood_mean / (id_mean + 1e-10), 4) if id_mean > 1e-8 else 0
+            pos_results[pos_name] = {
+                "auroc": overall,
+                "per_corruption": per_corr,
+                "id_mean": round(id_mean, 8),
+                "ood_mean": round(ood_mean, 6),
+                "separation": separation,
             }
-            print(f"  {pos:15s} L{l:2d}: AUROC={auroc:.4f} sep={sep:.2f}", flush=True)
-        results[pos] = pos_results
+            print(f"  L{l} {pos_name:16s}: AUROC={overall:.4f}, sep={separation:.2f}")
 
-    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        results[f"L{l}"] = pos_results
+
     output = {
-        "experiment": "token_position",
-        "experiment_number": 185,
-        "timestamp": ts,
-        "n_cal": n_cal, "n_test": n_test,
-        "positions": positions,
-        "layers": layers,
+        "experiment": "token_position_analysis",
+        "experiment_number": 212,
+        "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
+        "seq_length": seq_len,
+        "positions": {k: int(v) if v != -1 else seq_len - 1 for k, v in positions.items()},
+        "n_cal": n_cal,
+        "n_test": n_test,
+        "layers": [1, 3],
         "results": results,
     }
-    path = os.path.join(RESULTS_DIR, f"token_position_{ts}.json")
-    with open(path, "w") as f:
+
+    out_path = f"/workspace/Vizuara-VLA-Research/experiments/token_position_{output['timestamp']}.json"
+    with open(out_path, 'w') as f:
         json.dump(output, f, indent=2)
-    print(f"\nSaved: {path}")
+    print(f"\nSaved: {out_path}")
 
 if __name__ == "__main__":
     main()

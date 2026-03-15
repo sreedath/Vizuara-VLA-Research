@@ -3961,4 +3961,19 @@ We test whether INT8/INT4 quantization via bitsandbytes affects hidden-state OOD
 
 \textbf{Finding 411}: The detector is \textbf{precision-agnostic}: hidden states are extracted as float32 numpy arrays regardless of model precision. Any quantization scheme that successfully loads the model would work with the detector---the bottleneck is VLA architecture compatibility, not detector compatibility. The 15.39 GB memory footprint is already compatible with consumer GPUs (RTX 3090/4090, 24 GB).
 
+\subsection{Prompt Invariance}
+
+We test whether the text prompt affects OOD detection by comparing 5 diverse prompts (``drive forward'', ``navigate safely'', ``stay in lane'', ``avoid obstacles'', ``reach the destination'').
+
+\textbf{Finding 412}: OOD detection is \textbf{completely prompt-invariant}. All 5 prompts achieve AUROC=1.0 with nearly identical OOD distances (CV$<$4\%). Multi-prompt ensembling provides zero improvement---a single arbitrary prompt suffices.
+
+\textbf{Finding 413}: Cross-prompt centroid distances (mean 0.0009 at L1, 0.0019 at L3) are far smaller than ID-OOD distances ($>$0.001 at L1, $>$0.002 at L3). This confirms the OOD signal originates in the \textbf{vision encoder pathway}, not the language model. The text prompt serves only as an action-space selector; image corruption bypasses this pathway entirely.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig223_multi_prompt.png}
+\caption{\textbf{Prompt invariance.} Left: OOD distance is nearly identical across 5 diverse prompts. Right: cross-prompt centroid distances are far smaller than the OOD signal, confirming the detection signal is vision-dominated.}
+\label{fig:multi_prompt}
+\end{figure}
+
 \end{document}

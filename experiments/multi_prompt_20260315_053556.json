@@ -1,0 +1,154 @@
+{
+  "experiment": "multi_prompt_ensemble",
+  "experiment_number": 211,
+  "timestamp": "20260315_053556",
+  "n_cal": 10,
+  "n_test": 8,
+  "prompts": [
+    "drive_forward",
+    "navigate_safely",
+    "stay_lane",
+    "avoid_obstacles",
+    "reach_dest"
+  ],
+  "layers": [
+    1,
+    3
+  ],
+  "results": {
+    "L1": {
+      "drive_forward": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": -0.0,
+        "ood_mean": 0.001333
+      },
+      "navigate_safely": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.001326
+      },
+      "stay_lane": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": -0.0,
+        "ood_mean": 0.001324
+      },
+      "avoid_obstacles": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": -0.0,
+        "ood_mean": 0.001312
+      },
+      "reach_dest": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.001427
+      },
+      "ensemble_avg": {
+        "overall_auroc": 1.0,
+        "id_mean": -0.0,
+        "ood_mean": 0.001344
+      },
+      "cross_prompt_centroid_dist": {
+        "mean": 0.000854,
+        "max": 0.001301,
+        "min": 0.000351
+      }
+    },
+    "L3": {
+      "drive_forward": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.002365
+      },
+      "navigate_safely": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": -0.0,
+        "ood_mean": 0.002515
+      },
+      "stay_lane": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.002498
+      },
+      "avoid_obstacles": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.002518
+      },
+      "reach_dest": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.002386
+      },
+      "ensemble_avg": {
+        "overall_auroc": 1.0,
+        "id_mean": 0.0,
+        "ood_mean": 0.002456
+      },
+      "cross_prompt_centroid_dist": {
+        "mean": 0.001881,
+        "max": 0.002591,
+        "min": 0.001531
+      }
+    }
+  }
+}
