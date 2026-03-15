@@ -16339,3 +16339,31 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 
 **Finding 809**: All Cohen's d values exceed 62 (noise) to 501 (night), representing effect sizes 78–626× larger than the "large effect" threshold (d=0.8). Hellinger distance = 1.0 confirms ZERO distributional overlap. The detection signal is not marginally significant — it is overwhelmingly decisive.
 
+---
+
+## Experiment 393: Batch Processing Efficiency and Scalability
+
+**Objective**: Profile the complete detection pipeline for deployment: latency breakdown, calibration scaling, memory footprint, and timing within the inference pipeline.
+
+**Method**: Measured embedding extraction time (20 trials), cosine distance time (10K trials), AUROC at calibration sizes N=1-50, centroid convergence, memory requirements, and timing of detection relative to action generation.
+
+**Key Results**:
+- Embedding extraction: 134.6 ± 43.6 ms
+- Cosine distance: 9.9 μs — detection overhead is 0.0074%
+- AUROC = 1.0 for ALL calibration sizes N=1 through N=50
+- Centroid converges below 10⁻⁶ at N=1 (model determinism)
+- Memory footprint: 16 KB (one 4096-D float32 vector)
+- Detection fraction of model: 1.09 × 10⁻⁶ (one millionth)
+- E2E latency: 145.9 ms with 100% detection rate
+- Detection available at 30.6% of inference (forward pass only, before generation)
+
+**Finding 810**: Detection overhead is 0.0074% — cosine distance (9.9μs) vs embedding extraction (134.6ms). The detection computation is 13,600× cheaper than the embedding it operates on. Detection is essentially free.
+
+**Finding 811**: AUROC = 1.0 for ALL calibration sizes from N=1 to N=50. The detector achieves maximum performance with a SINGLE calibration frame. Additional calibration samples provide zero improvement because the model is deterministic — identical inputs produce identical embeddings.
+
+**Finding 812**: The entire detection system requires 16 KB of memory (one centroid vector). This is 1.09 × 10⁻⁶ of the model size (14 GB). The detection system is six orders of magnitude smaller than the model it monitors.
+
+**Finding 813**: Detection is available at 30.6% of inference time. Hidden states are produced by the forward pass (83.6ms), while action generation takes an additional 189.6ms. The detector can flag corruption BEFORE the model finishes generating actions, enabling preemptive abort.
+
+**Finding 814**: The detection system has ZERO training cost, ZERO additional parameters, and ZERO architecture modification. It is a pure inference-time augmentation that requires storing one 16KB centroid vector. This makes it the lightest possible safety mechanism for VLA models.
+
