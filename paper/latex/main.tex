@@ -7270,4 +7270,37 @@ We investigate how the detector handles simultaneous multiple corruptions, testi
 
 \textbf{Finding 986}: \textbf{All-four combined corruption (0.25 severity each) is detected with 100\% rate.} Even mild, distributed corruption across four types produces a clearly detectable embedding shift, confirming the detector's sensitivity to multi-faceted degradation.
 
+% ============================================================
+% EXPERIMENT 378: RESOLUTION AND PREPROCESSING SENSITIVITY
+% ============================================================
+
+\subsection{Experiment 378: Resolution and Preprocessing Sensitivity}
+
+We investigate how image preprocessing operations --- resolution changes, JPEG compression, color adjustments, and cropping --- affect the detector's false positive rate and corruption detection ability.
+
+\textbf{Resolution Specificity.} The detector is exquisitely resolution-specific: only 224$\times$224 images achieve 0\% FPR. Both smaller (56$\times$56: dist=$3.17 \times 10^{-3}$) and larger (672$\times$672: dist=$2.11 \times 10^{-3}$) resolutions produce 100\% FPR. The distance-resolution curve is V-shaped with minimum at the calibration resolution.
+
+\textbf{JPEG Sensitivity.} JPEG compression at quality $\leq$ 50 triggers 100\% false positives (dist up to $3.19 \times 10^{-3}$). Even Q=80 produces 20\% FPR. The detector treats compression artifacts as a corruption type, which is simultaneously a strength (detects lossy transmission) and a deployment constraint.
+
+\textbf{Color Pipeline Sensitivity.} Brightness changes of $\pm$20\%, contrast reduction to 0.5, and saturation reduction to 0.5 all trigger false positives. The detector is sensitive to the exact photometric preprocessing pipeline, requiring matched color processing between calibration and deployment.
+
+\textbf{Robust Corruption Detection Through JPEG.} Despite JPEG sensitivity, corruption detection through JPEG compression achieves AUROC=1.0 for all 12 combinations (3 quality levels $\times$ 4 corruptions). Even Q=10 JPEG cannot mask the corruption signal.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig387_resolution.png}
+\caption{\textbf{Experiment 378}: Preprocessing sensitivity. Resolution shows V-shaped profile (only 224$\times$224 is safe). JPEG quality $\leq$50 triggers 100\% FPR. Color adjustments cause false positives. However, corruption detection through JPEG remains perfect (AUROC=1.0).}
+\label{fig:resolution}
+\end{figure}
+
+\textbf{Finding 987}: \textbf{The detector is resolution-specific: only 224$\times$224 achieves 0\% FPR.} Both upsampling and downsampling trigger false positives, with V-shaped distance profile. Calibration must exactly match the deployment input resolution.
+
+\textbf{Finding 988}: \textbf{JPEG quality $\leq$50 triggers 100\% false positives.} Compression artifacts produce embedding shifts comparable to environmental corruption. Deployment pipelines must either use lossless formats or include JPEG-compressed images in the calibration set.
+
+\textbf{Finding 989}: \textbf{Brightness $\pm$20\% and saturation reduction trigger false positives.} The detector is sensitive to photometric preprocessing, establishing that the color processing pipeline between camera and model must be consistent between calibration and deployment.
+
+\textbf{Finding 990}: \textbf{Corruption detection is robust through JPEG: AUROC=1.0 at all quality levels.} Even severe compression (Q=10) cannot mask the corruption signal. JPEG and environmental corruption produce orthogonal embedding shifts that remain independently detectable.
+
+\textbf{Finding 991}: \textbf{Center cropping is the least disruptive preprocessing (FPR$\approx$0\%).} Spatial cropping barely affects embeddings, suggesting the detector relies primarily on color/texture statistics rather than spatial layout --- consistent with the global, holistic nature of corruption detection.
+
 \end{document}

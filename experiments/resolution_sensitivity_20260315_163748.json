@@ -1,0 +1,212 @@
+{
+  "resolution": {
+    "56": {
+      "mean_dist": 0.003174173878505826,
+      "max_dist": 0.0034461021423339844,
+      "all_below_threshold": false,
+      "false_positive_rate": 1.0
+    },
+    "112": {
+      "mean_dist": 0.0013924955856055021,
+      "max_dist": 0.0019074082374572754,
+      "all_below_threshold": false,
+      "false_positive_rate": 1.0
+    },
+    "224": {
+      "mean_dist": 4.069805072504096e-05,
+      "max_dist": 7.802248001098633e-05,
+      "all_below_threshold": true,
+      "false_positive_rate": 0.0
+    },
+    "448": {
+      "mean_dist": 0.0007492423173971474,
+      "max_dist": 0.0009002089500427246,
+      "all_below_threshold": false,
+      "false_positive_rate": 1.0
+    },
+    "672": {
+      "mean_dist": 0.002114915754646063,
+      "max_dist": 0.002249300479888916,
+      "all_below_threshold": false,
+      "false_positive_rate": 1.0
+    }
+  },
+  "jpeg": {
+    "5": {
+      "mean_dist": 0.003190934658050537,
+      "max_dist": 0.0034745335578918457,
+      "false_positive_rate": 1.0
+    },
+    "10": {
+      "mean_dist": 0.0015766978031024337,
+      "max_dist": 0.0020813345909118652,
+      "false_positive_rate": 1.0
+    },
+    "20": {
+      "mean_dist": 0.0006626963731832802,
+      "max_dist": 0.000982820987701416,
+      "false_positive_rate": 1.0
+    },
+    "50": {
+      "mean_dist": 0.000182354444405064,
+      "max_dist": 0.00026106834411621094,
+      "false_positive_rate": 1.0
+    },
+    "80": {
+      "mean_dist": 6.413459777832031e-05,
+      "max_dist": 0.00012767314910888672,
+      "false_positive_rate": 0.2
+    },
+    "95": {
+      "mean_dist": 6.002187728881836e-05,
+      "max_dist": 0.0001125335693359375,
+      "false_positive_rate": 0.2
+    }
+  },
+  "color_adjustments": {
+    "brightness_0.5": {
+      "mean_dist": 0.002141928765922785,
+      "max_dist": 0.0023366808891296387,
+      "false_positive_rate": 1.0
+    },
+    "brightness_0.8": {
+      "mean_dist": 0.00040978193283081055,
+      "max_dist": 0.0004566311836242676,
+      "false_positive_rate": 1.0
+    },
+    "brightness_1.2": {
+      "mean_dist": 0.00026388169499114156,
+      "max_dist": 0.0002675652503967285,
+      "false_positive_rate": 1.0
+    },
+    "brightness_1.5": {
+      "mean_dist": 0.0010962843662127852,
+      "max_dist": 0.0011240243911743164,
+      "false_positive_rate": 1.0
+    },
+    "contrast_0.5": {
+      "mean_dist": 0.0006807089084759355,
+      "max_dist": 0.0007974505424499512,
+      "false_positive_rate": 1.0
+    },
+    "contrast_0.8": {
+      "mean_dist": 0.00013157128705643117,
+      "max_dist": 0.0003566145896911621,
+      "false_positive_rate": 0.6
+    },
+    "contrast_1.2": {
+      "mean_dist": 5.5801869166316465e-05,
+      "max_dist": 6.920099258422852e-05,
+      "false_positive_rate": 0.0
+    },
+    "contrast_1.5": {
+      "mean_dist": 0.00017368793487548828,
+      "max_dist": 0.0002308487892150879,
+      "false_positive_rate": 1.0
+    },
+    "saturation_0.0": {
+      "mean_dist": 0.0010478019248694181,
+      "max_dist": 0.0011796355247497559,
+      "false_positive_rate": 1.0
+    },
+    "saturation_0.5": {
+      "mean_dist": 0.00012419224367477,
+      "max_dist": 0.0002637505531311035,
+      "false_positive_rate": 0.6
+    },
+    "saturation_1.5": {
+      "mean_dist": 4.8279762268066406e-05,
+      "max_dist": 6.0617923736572266e-05,
+      "false_positive_rate": 0.0
+    }
+  },
+  "crop": {
+    "0.7": {
+      "mean_dist": 4.125833584112115e-05,
+      "max_dist": 4.655122756958008e-05,
+      "false_positive_rate": 0.0
+    },
+    "0.8": {
+      "mean_dist": 6.589889380848035e-05,
+      "max_dist": 0.00013440847396850586,
+      "false_positive_rate": 0.2
+    },
+    "0.9": {
+      "mean_dist": 5.707740638172254e-05,
+      "max_dist": 6.848573684692383e-05,
+      "false_positive_rate": 0.0
+    },
+    "0.95": {
+      "mean_dist": 4.841089321416803e-05,
+      "max_dist": 8.380413055419922e-05,
+      "false_positive_rate": 0.2
+    },
+    "1.0": {
+      "mean_dist": 4.069805072504096e-05,
+      "max_dist": 7.802248001098633e-05,
+      "false_positive_rate": 0.0
+    }
+  },
+  "preprocess_detection": {
+    "Q10_fog": {
+      "mean_dist": 0.0023007988929748535,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    },
+    "Q10_night": {
+      "mean_dist": 0.005056965164840221,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    },
+    "Q10_noise": {
+      "mean_dist": 0.0018293142784386873,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    },
+    "Q10_blur": {
+      "mean_dist": 0.0036017061211168766,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    },
+    "Q50_fog": {
+      "mean_dist": 0.0012898563873022795,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    },
+    "Q50_night": {
+      "mean_dist": 0.0023498893715441227,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    },
+    "Q50_noise": {
+      "mean_dist": 0.00021946430206298828,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    },
+    "Q50_blur": {
+      "mean_dist": 0.0055189491249620914,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    },
+    "Q95_fog": {
+      "mean_dist": 0.0010374069679528475,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    },
+    "Q95_night": {
+      "mean_dist": 0.0018465041648596525,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    },
+    "Q95_noise": {
+      "mean_dist": 0.00011472702317405492,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    },
+    "Q95_blur": {
+      "mean_dist": 0.004757392220199108,
+      "detection_rate": 1.0,
+      "auroc": 1.0
+    }
+  }
+}

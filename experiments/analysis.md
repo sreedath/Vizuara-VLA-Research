@@ -15639,3 +15639,39 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 734**: The all-four combined corruption (fog+night+noise+blur at severity 0.25 each) is detected with 100% rate. Even mild, distributed corruption across multiple types produces a detectable embedding shift.
 
+---
+
+## Experiment 378: Resolution and Preprocessing Sensitivity
+
+**Objective**: How sensitive is the detector to image preprocessing changes? Tests resolution, JPEG compression, color adjustments, crops, and corruption detection through preprocessing.
+
+**Setup**: 10 scenes, 224x224 baseline, various preprocessing transforms applied.
+
+### Results
+
+**Resolution**: Only 224x224 has FPR=0%. Both smaller (56, 112) and larger (448, 672) resolutions trigger 100% FPR.
+
+**JPEG Compression**: Q≤50 triggers 100% FPR. Q80-95 trigger 20% FPR. JPEG artifacts are treated as OOD.
+
+**Color Adjustments**:
+- Brightness ±20%: FPR=100%
+- Contrast 0.5: FPR=100%, Contrast 0.8: FPR=60%, Contrast 1.2: FPR=0%
+- Saturation 0.0 (grayscale): FPR=100%
+- Saturation 0.5: FPR=60%
+
+**Crops**: All crop fractions (0.7-1.0) have low FPR, within normal variation.
+
+**JPEG + Corruption**: ALL 12 combinations (3 JPEG levels × 4 corruptions) detected with 100% rate, AUROC=1.0.
+
+### Findings
+
+**Finding 735**: The detector is resolution-SPECIFIC: only 224x224 images produce FPR=0%. Both smaller (56x56) and larger (672x672) images are detected as OOD, with V-shaped distance profile. Calibration MUST match deployment resolution.
+
+**Finding 736**: JPEG compression at quality ≤50 triggers 100% false positives. The detector treats compression artifacts as a corruption type, which is simultaneously a strength (detects lossy transmission) and a limitation (requires lossless preprocessing or JPEG-aware calibration).
+
+**Finding 737**: Brightness changes of ±20% and saturation reduction to 0.5 trigger false positives. The detector is sensitive to photometric preprocessing, requiring exact color pipeline matching between calibration and deployment.
+
+**Finding 738**: Corruption detection is ROBUST through JPEG compression: all 12 combinations of JPEG quality (Q10-95) + corruption achieve AUROC=1.0. Even severe JPEG artifacts (Q10) cannot mask the corruption signal.
+
+**Finding 739**: Center cropping from larger images has minimal effect on detector scores (FPR=0-0.2 for 0.7-1.0 crop fractions). Spatial cropping is the LEAST disruptive preprocessing operation, suggesting the detector relies more on color/texture than spatial layout.
+
