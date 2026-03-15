@@ -6394,4 +6394,27 @@ We perform a final comprehensive validation confirming all key claims: AUROC=1.0
 
 \textbf{Finding 811}: \textbf{Bit-identical embeddings across 3 passes confirm zero ID variance --- the foundational property enabling AUROC=1.0.} With $\sigma_{\text{ID}} = 0.0$ (max difference = 0.0 across passes), any corruption producing $d > 0$ is guaranteed to be detected. AUROC=1.0 is a mathematical consequence of zero variance, not an empirical coincidence.
 
+%% ============================================================
+\subsection{Experiment 340: Threshold Optimization}
+\label{sec:exp340}
+
+We investigate the practical boundary between benign perturbations (JPEG compression, resize artifacts) and true corruption, finding that these domains overlap at low severity and characterizing optimal deployment thresholds.
+
+\textbf{Setup.} We generate 8 scenes, compute embeddings for clean images, benign perturbations (JPEG Q=80--95, resize 160--200), and 6 corruption types at 6 severity levels (0.05--1.0). We analyze distance distributions, compute ROC curves, test 4 threshold strategies, and assess per-scene stability.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig349_threshold.png}
+\caption{\textbf{Figure~349: Threshold optimization.} (A)~Distance distributions show benign (JPEG/resize) overlapping with low-severity corruption. (B)~Max benign exceeds min low-corrupt --- no clean gap. (C)~Per-type severity curves: blur separable at 10\%, noise never separable. (D)~Strategy comparison: $d>0$ achieves best F1=0.91. (E)~Per-scene optimal thresholds (CV=23\%). (F)~Practical deployment guidance.}
+\label{fig:threshold}
+\end{figure}
+
+\textbf{Finding 812}: \textbf{Benign perturbations overlap low-severity corruption --- no clean separation exists.} Max benign distance ($6.74 \times 10^{-4}$ from resize to 160) exceeds min low-corruption distance ($1.79 \times 10^{-6}$ from rain at 5\%). The $d>0$ threshold achieves the best F1=0.91 (100\% recall, 83.5\% precision); any higher threshold trades recall for precision with lower F1.
+
+\textbf{Finding 813}: \textbf{Noise corruption is entirely within the benign range --- fundamentally undetectable alongside JPEG/resize artifacts.} Even at 100\% noise severity (max $d = 6.23 \times 10^{-4}$), the shift is smaller than max benign ($6.74 \times 10^{-4}$). In JPEG-camera deployments, noise corruption is indistinguishable from compression artifacts.
+
+\textbf{Finding 814}: \textbf{Blur produces the strongest signal ($3.55 \times 10^{-3}$ at 30\% severity), separable from benign at $\geq$10\%.} Blur's large embedding shift makes it the most reliably detectable corruption. Night requires $\geq$30\% severity, fog requires $\geq$50\%, and rain/frost require $\geq$80\% for clean separation from benign artifacts.
+
+\textbf{Finding 815}: \textbf{Deployment solution: calibrate through the camera pipeline to eliminate benign FPs.} If calibration images pass through the same JPEG/resize pipeline as test images, artifacts appear in both and cancel. This transforms the problem from ``separate benign from corrupt'' to ``separate identical from corrupt,'' recovering AUROC=1.0.
+
 \end{document}
