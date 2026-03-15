@@ -6463,4 +6463,27 @@ We investigate whether a gradient-free adversary can evade the cosine distance d
 
 \textbf{Finding 823}: \textbf{Even a single flipped pixel (0.002\% of image) produces $d = 1.9 \times 10^{-6}$ --- imperceptible corruption cannot evade detection.} The zero noise floor means any perturbation, no matter how small, is detected. Steganographic attacks are fundamentally impossible against this detector.
 
+%% ============================================================
+\subsection{Experiment 343: Camera Pipeline Effects}
+\label{sec:exp343}
+
+We characterize the embedding shifts produced by realistic camera pipeline artifacts --- motion blur, sensor noise (ISO), auto-exposure, and white balance --- and compare them to corruption signals.
+
+\textbf{Setup.} We test 5 scenes with: motion blur (kernel 3--15), sensor noise (ISO 100--3200), exposure changes ($\pm 0.3$ to $\pm 2$ EV stops), white balance shifts ($\pm 1$ to $\pm 3$), and combined pipeline effects with and without corruption.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig352_camera.png}
+\caption{\textbf{Figure~352: Camera pipeline effects.} (A)~Motion blur: $k=3$ already at $d = 0.64 \times 10^{-3}$. (B)~Sensor noise: ISO 3200 at $0.55 \times 10^{-3}$. (C)~Exposure: $\pm 2$EV produces $d = 4.5 \times 10^{-3}$, equivalent to severe corruption. (D)~White balance: small effect (max $0.18 \times 10^{-3}$). (E)~Pipeline artifacts $48\times$ larger than mild corruption. (F)~Deployment implications.}
+\label{fig:camera}
+\end{figure}
+
+\textbf{Finding 824}: \textbf{Exposure changes are the largest pipeline artifact ($\pm 2$EV $= 4.5 \times 10^{-3}$), equivalent to severe corruption.} Auto-exposure adjustments between frames produce shifts $48\times$ larger than mild corruption ($5.5 \times 10^{-5}$ at 30\% severity noise). This is the most critical deployment consideration.
+
+\textbf{Finding 825}: \textbf{Motion blur $k=3$ produces $d = 0.64 \times 10^{-3}$ --- even minimal camera shake enters the corruption range.} Vehicle vibration causing 3-pixel blur creates a signal comparable to moderate fog. Motion stabilization or motion-aware calibration is essential for deployment.
+
+\textbf{Finding 826}: \textbf{White balance ($\pm 3$) and low ISO ($\leq 400$) are safe --- negligible embedding shifts.} White balance produces max $d = 0.18 \times 10^{-3}$ and ISO 100--400 produces $d < 0.025 \times 10^{-3}$. These camera effects do not interfere with corruption detection.
+
+\textbf{Finding 827}: \textbf{Deployment must calibrate through the camera pipeline --- combined effects produce $d \approx 0.9 \times 10^{-3}$ baseline.} Pipeline-only distance (blur$+$exposure$+$WB) reaches $0.9 \times 10^{-3}$; adding fog at 30\% brings it to $1.9 \times 10^{-3}$. Without pipeline-matched calibration, the system cannot distinguish camera artifacts from corruption.
+
 \end{document}

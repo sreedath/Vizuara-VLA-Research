@@ -13987,3 +13987,59 @@ Can an adversary evade the cosine distance detector without gradient access? Tes
 **Finding 570**: **Night corruption resists defense-aware attack (87% of signal remains after 100 optimization steps).** Night's global brightness suppression cannot be locally compensated — the hill climber cannot find per-pixel corrections that undo the uniform effect. Fog and blur are more attackable (reduced to 5-11%) because their effects are spatially non-uniform.
 
 **Finding 571**: **Even a single flipped pixel (0.002% of image) is detected with d=1.9×10^{-6}.** The detector's extreme sensitivity derives from the zero noise floor. Any perturbation, no matter how small, produces a nonzero shift. This confirms that steganographic attacks (hiding corruption in imperceptible changes) cannot evade detection.
+
+---
+
+## Experiment 343: Camera Pipeline Effects (Real OpenVLA-7B)
+
+**Timestamp**: 2026-03-15 13:50 UTC
+**Status**: Complete ✓
+**GPU**: RunPod A40 (real OpenVLA-7B, 7B parameters)
+
+### Purpose
+Test detection robustness against realistic camera pipeline artifacts: motion blur, sensor noise (ISO), auto-exposure changes, white balance shifts, and combined effects.
+
+### Results
+
+#### Motion Blur
+- k=3 (minimal blur): d=0.642×10^{-3} — already in corruption range!
+- k=15 (heavy blur): d=4.52×10^{-3} — equivalent to severe corruption
+- Strong, monotonic increase with kernel size
+
+#### Sensor Noise (ISO)
+- ISO 100: d=5.1×10^{-6} — negligible
+- ISO 3200: d=5.46×10^{-4} — moderate signal
+- ISO 100-400 within benign range; ISO 1600+ comparable to mild corruption
+
+#### Exposure Changes (CRITICAL)
+- **±0.3 EV: d=0.30-0.35×10^{-3}** — already significant
+- **±1 EV: d=2.1-2.3×10^{-3}** — equivalent to moderate corruption
+- **±2 EV: d=4.5-4.7×10^{-3}** — equivalent to SEVERE corruption
+- Exposure changes produce the LARGEST pipeline artifacts
+- Nearly symmetric for under/over exposure
+
+#### White Balance
+- ±1 shift: d=0.023-0.035×10^{-3} — negligible
+- ±3 shift: d=0.114-0.178×10^{-3} — small, within benign range
+- White balance is the LEAST impactful pipeline effect
+
+#### Pipeline vs Corruption
+- Max pipeline (motion blur k=7): d=2.62×10^{-3}
+- Min corruption (noise@0.3): d=5.5×10^{-5}
+- **Pipeline artifact 48× larger than mild corruption!**
+- Pipeline effects NOT separable from corruption without pipeline-aware calibration
+
+#### Combined Pipeline
+- Pipeline only (k=3 + EV+0.3 + WB+1): d≈0.9×10^{-3}
+- Pipeline + fog@0.3: d≈1.9×10^{-3}
+- Corruption signal is approximately additive to pipeline baseline
+
+### Key Findings
+
+**Finding 572**: **Exposure changes produce the largest pipeline artifact (±2EV = 4.5×10^{-3}), equivalent to severe corruption.** Auto-exposure adjustments between frames — common in automotive cameras — produce embedding shifts 48× larger than mild corruption. This is the most critical deployment consideration for the detector.
+
+**Finding 573**: **Motion blur k=3 already produces d=0.64×10^{-3} — even minimal camera shake enters the corruption range.** Vehicle vibration, camera jitter, or object motion causing just 3-pixel blur creates a signal comparable to moderate fog or night corruption. Motion stabilization or motion-aware calibration is essential.
+
+**Finding 574**: **White balance shifts are negligible (max d=0.18×10^{-3} at ±3), and sensor noise below ISO 400 is within the noise floor.** These camera effects are safe for the detector. Color temperature changes and moderate ISO settings do not interfere with corruption detection.
+
+**Finding 575**: **Deployment MUST calibrate through the camera pipeline — raw vs processed images are not interchangeable.** Combined pipeline effects (blur + exposure + WB) produce d≈0.9×10^{-3} baseline. Corruption adds ~1×10^{-3} on top. Without pipeline-matched calibration, the detector cannot distinguish camera artifacts from corruption.
