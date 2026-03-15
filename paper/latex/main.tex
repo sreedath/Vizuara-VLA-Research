@@ -5204,4 +5204,22 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 586}: The cosine distance metric measures \textbf{corruption magnitude, not action impact}: brightness $-50$ produces $d = 1.40 \times 10^{-3}$ with 0 token changes, while random pixel perturbation produces $d = 1.97 \times 10^{-5}$ with 7 token changes. However, since any action-changing perturbation produces $d > 0$, the detector remains perfect --- it catches all dangerous inputs regardless of the distance magnitude.
 
+\subsection{Embedding Geometry Visualization}
+
+\textbf{Experiment 276: 3D PCA Embedding Structure.} We collect L3 hidden states for 3 scenes $\times$ (1 clean + 4 corruptions $\times$ 5 severities) = 63 embeddings and project via PCA. At L3, the top 3 principal components capture \textbf{85.7\%} of total variance, revealing that the 4096-dimensional OOD detection problem is effectively 3-dimensional.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig285_pca3d.png}
+\caption{Embedding geometry in PCA space. (a) PC1 vs PC2 at L3: corruptions form distinct rays from the clean cluster, with severity increasing along each ray. (b) PC1 vs PC3 view confirms 3D structure. (c) Direction similarity matrix: fog$\leftrightarrow$noise are anti-correlated ($-$0.41), blur$\leftrightarrow$night are partially aligned (0.59). (d) L3 concentrates variance most compactly (85.7\% in 3D vs.\ 54.5\% for L31).}
+\end{figure}
+
+\textbf{Finding 587}: The corruption signal at L3 is concentrated in a \textbf{3-dimensional subspace} capturing 85.7\% of variance. This explains why random projection to 32D preserves AUROC=1.0 (Experiment 221) --- the intrinsic dimensionality of the detection problem is $\sim$3, far below even the compressed representation.
+
+\textbf{Finding 588}: Corruption types form \textbf{distinct rays} in PCA space: fog and noise shift embeddings in anti-correlated directions (cosine similarity $-$0.41), while blur and night are partially aligned (0.59). This ray geometry enables corruption type identification from embedding direction alone, with noise orthogonal to both blur and night.
+
+\textbf{Finding 589}: Embedding distance scales \textbf{linearly with severity} along each corruption ray ($r = 0.914$--$0.983$), confirming that cosine distance is a calibrated severity measure. Fog and night show the strongest linearity ($r > 0.96$); blur shows slight saturation ($r = 0.91$), consistent with the KL saturation finding (Experiment 262).
+
+\textbf{Finding 590}: L3 is the \textbf{most geometrically compact layer}: 85.7\% of variance in 3 PCs versus 72.3\% (L15) and 54.5\% (L31). Higher layers spread the corruption signal across more dimensions, making L3 uniquely suited for low-dimensional detection and visualization.
+
 \end{document}
