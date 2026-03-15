@@ -1,0 +1,60 @@
+{
+  "timing": {
+    "forward_with_hidden": {
+      "mean_ms": 121.19677737355232,
+      "std_ms": 30.62118616760184,
+      "min_ms": 94.78652570396662
+    },
+    "forward_no_hidden": {
+      "mean_ms": 121.89313773997128,
+      "std_ms": 30.42382446404667,
+      "min_ms": 95.63545044511557
+    },
+    "generation_7_tokens": {
+      "mean_ms": 304.94631584733725,
+      "std_ms": 15.51004611231064,
+      "min_ms": 295.24788819253445
+    },
+    "hidden_state_overhead_ms": -0.6963603664189577,
+    "hidden_state_overhead_pct": -0.5712875879070989,
+    "detection_vs_generation_pct": 39.74364374161715
+  },
+  "detection_compute": {
+    "cosine_dist_us": 6.721219699829817,
+    "centroid_size_bytes": 32768
+  },
+  "memory": {
+    "allocated_gb": 14.241369247436523,
+    "reserved_gb": 14.62109375,
+    "peak_gb": 14.576680660247803
+  },
+  "resolution": {
+    "224": {
+      "auroc_fog": 1.0,
+      "centroid_similarity": 1.0,
+      "mean_clean_dist": 5.809217572343428e-05
+    },
+    "112": {
+      "auroc_fog": 1.0,
+      "centroid_similarity": 0.9987291482865479,
+      "mean_clean_dist": 6.130178211800618e-05
+    },
+    "56": {
+      "auroc_fog": 1.0,
+      "centroid_similarity": 0.9975817177100142,
+      "mean_clean_dist": 6.219566253127252e-05
+    },
+    "28": {
+      "auroc_fog": 1.0,
+      "centroid_similarity": 0.9958057567872222,
+      "mean_clean_dist": 5.729736652595463e-05
+    }
+  },
+  "throughput": {
+    "detection_fps": 8.251044472228855,
+    "generation_fps": 3.2792657200050312,
+    "detection_overhead_vs_generation_ms": 121.19677737355232,
+    "total_pipeline_ms": 121.19677737355232,
+    "pipeline_fps": 8.251044472228855
+  }
+}

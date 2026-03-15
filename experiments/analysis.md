@@ -17418,3 +17418,137 @@ Ensemble does NOT improve over early layers alone — layer 3 already achieves 1
 
 ### Practical Implication
 Use layers 1-8 for OOD detection. Early layers have minimal clean variability while maximally separating clean from corrupted. Deep layers accumulate scene-specific variation that hurts noise detection.
+
+---
+
+## Experiment 433: Embedding Trajectory Analysis
+
+**Script**: `scripts/real_vla_embedding_trajectory.py`
+**Figure**: `figures/fig442_trajectory.png`
+
+### Sequence Structure
+- Total sequence length: 274 tokens
+- Positions 0-259: visual tokens (image patches)
+- Positions 260-273: text tokens (prompt text)
+- Position 271: special token with extreme norm (22,625 vs ~27 for other positions)
+
+### Corruption Distance Per Position
+Visual tokens (pos 1-259) show HIGH corruption distances:
+- Fog: 0.13-0.30 cosine distance
+- Night: 0.26-0.60 cosine distance
+- Noise: 0.09-0.19 cosine distance
+- Blur: 0.22-0.73 cosine distance
+
+Text tokens (pos 260-273) show 10-100× LOWER distances:
+- All corruptions: 0.0002-0.05 cosine distance
+- Position 271: nearly zero (~1.6e-6 for all corruptions)
+
+### Phase Transition at Visual→Text Boundary
+Dramatic distance drop at position 260: distances decrease 10-100× in a single step. This boundary marks where corruption information from visual tokens gets compressed into the text token space.
+
+### Position-Specific AUROC
+- **Night and Blur**: AUROC=1.0 at ALL positions (pos 1 onward)
+- **Fog**: AUROC varies 0.68-1.0 across visual positions, consistently 1.0 at text positions
+- **Noise**: Highly variable at visual positions (0.56-1.0), perfect at text positions (260+)
+
+### Key Insight: Why Last-Token Detection Works
+- Visual tokens have high corruption signal BUT also high clean variability (~0.09 mean)
+- Text tokens have lower signal BUT 1000× lower clean variability (~0.00008 mean)
+- The signal-to-noise ratio is BETTER at text token positions
+- Last token (pos 273) aggregates corruption information from all visual tokens while maintaining tight clean clustering
+- This explains why our cosine distance detector works so well at the last token
+
+### Clean Variability Ratio
+Visual token mean clean distance: ~0.09
+Text token mean clean distance: ~0.00008
+Ratio: ~1100× — text tokens are dramatically more stable
+
+---
+
+## Experiment 434: Detection Latency & Computational Cost
+
+**Script**: `scripts/real_vla_detection_latency.py`
+**Figure**: `figures/fig443_latency.png`
+
+### Inference Timing (20 runs, GPU)
+| Operation | Mean | Std | Min |
+|-----------|------|-----|-----|
+| Forward + hidden states | 121.2 ms | 30.6 ms | 94.8 ms |
+| Forward (no hidden) | 121.9 ms | 30.4 ms | 95.6 ms |
+| Generation (7 tokens) | 304.9 ms | 15.5 ms | 295.2 ms |
+
+### CRITICAL FINDING: Zero Detection Overhead
+Hidden state extraction adds **-0.7 ms** overhead (within measurement noise). The `output_hidden_states=True` flag is essentially free because the model computes hidden states internally anyway — we're just asking it to return them.
+
+### Detection Pipeline Cost
+- Forward pass: 121.2 ms (99.99% of total)
+- Cosine distance: 6.7 µs (0.006% of total)
+- Threshold check: ~0 ms
+- **Total detection: 121.2 ms = 8.3 FPS**
+- Detection = 40% of full generation cost (305 ms = 3.3 FPS)
+
+### Memory
+- GPU allocated: 14.24 GB
+- GPU reserved: 14.62 GB
+- Peak: 14.58 GB
+- Fits on a single 16GB GPU
+
+### Resolution Robustness
+| Resolution | AUROC (fog) | Centroid Similarity |
+|-----------|-------------|-------------------|
+| 224×224 | 1.000 | 1.000000 |
+| 112×112 | 1.000 | 0.998729 |
+| 56×56 | 1.000 | 0.997582 |
+| 28×28 | 1.000 | 0.995806 |
+
+Detection works perfectly even at 8× downscaled resolution (28×28)! Centroid similarity remains >0.995.
+
+### Practical Implications
+1. OOD detection is essentially free — no additional compute beyond what's already done for action generation
+2. Can run at 8.3 FPS for detection-only or 3.3 FPS with full action generation
+3. 32 KB centroid storage (4096 × 8 bytes)
+4. Works at extremely low resolution — suitable for resource-constrained edge deployment
+
+---
+
+## Experiment 435: Adversarial-Style Perturbation Detection
+
+**Script**: `scripts/real_vla_adversarial_detection.py`
+**Figure**: `figures/fig444_adversarial.png`
+
+### Epsilon Sweep Results
+| Attack Type | ε=0.01 | ε=0.05 | ε=0.1 | ε=0.3 | ε=0.5 |
+|------------|--------|--------|-------|-------|-------|
+| Uniform noise | 0.55 | 0.53 | 0.56 | 0.77 | **1.00** |
+| Gaussian noise | 0.52 | 0.63 | 0.63 | **1.00** | **1.00** |
+| Patch | 0.53 | 0.50 | 0.58 | 0.52 | 0.88 |
+| Horiz. stripes | 0.55 | 0.55 | 0.55 | 0.58 | 0.84 |
+| Gradient | 0.61 | **1.00** | **1.00** | **1.00** | **1.00** |
+| High-freq | 0.53 | 0.55 | 0.63 | **1.00** | **1.00** |
+| Low-freq | 0.55 | **1.00** | **1.00** | **1.00** | **1.00** |
+| Salt & pepper | 0.56 | 0.77 | 0.84 | **1.00** | **1.00** |
+
+### CRITICAL LIMITATION: Blind to Small Adversarial Perturbations
+- At ε=0.1 (imperceptible), only gradient (1.0) and low-freq (1.0) detected
+- Uniform noise, gaussian noise, patches, stripes all UNDETECTED (AUROC ≈ 0.5-0.6)
+- Patches almost undetectable even at ε=0.5 (AUROC=0.88)
+
+### Channel-Specific Attacks
+- All channels nearly undetectable at ε≤0.1 (AUROC 0.53-0.59)
+- Green channel most detectable at ε=0.3 (AUROC=0.83)
+- Red channel least detectable at ε=0.3 (AUROC=0.69)
+
+### Detection Boundary
+Fine-grained analysis (gaussian noise): AUROC never exceeds 0.625 from ε=0.0001 to ε=0.1. The detector is effectively blind to gaussian perturbations below ε=0.3.
+
+### L2 Norm Analysis
+- Patch attack at L2=94.6 gives AUROC=0.52 (undetected!)
+- Gaussian at L2=96.1 gives AUROC=1.0 (detected)
+- Same L2 norm, opposite outcomes — attack structure matters more than magnitude
+
+### Key Findings
+1. **Cosine detector catches accidental corruptions but NOT adversarial attacks**
+2. Global perturbations (gradient, low-freq) detected at ε≥0.05
+3. Local perturbations (patches, stripes) nearly undetectable
+4. Attack structure matters more than L2 magnitude
+5. Detector needs complementary adversarial defenses for security-critical deployment

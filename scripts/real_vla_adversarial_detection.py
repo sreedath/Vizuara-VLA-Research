@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Experiment 403: Adversarial Perturbation Detection
+"""Experiment 435: Adversarial-Style Perturbation Detection
 
-Can the detector identify adversarial perturbations (small, targeted pixel changes)?
-Tests detection on gradient-free adversarial-like perturbations.
+Tests detection against subtle, targeted perturbations that mimic
+adversarial attacks. These are designed to change model behavior
+while being visually imperceptible.
 
 Tests:
-1. L-infinity bounded uniform noise at various epsilon
-2. Targeted single-pixel attacks (one pixel changed drastically)
-3. Patch-based perturbations (small patches of random noise)
-4. Spatial frequency attacks (high-freq only vs low-freq only)
-5. Imperceptible perturbations vs perceptible corruptions
+1. Uniform random noise at varying epsilon levels
+2. Structured perturbations (patches, stripes, gradients)
+3. Channel-specific attacks (R, G, B individually)
+4. Frequency-domain perturbations (high-freq, low-freq)
+5. Detection boundary: minimum perturbation detected
 """
 
 import json, time, os, sys
@@ -17,6 +18,51 @@ import numpy as np
 import torch
 from PIL import Image, ImageFilter
 from transformers import AutoModelForVision2Seq, AutoProcessor
+
+def apply_adversarial(image, atype, epsilon=0.1):
+    """Apply adversarial-style perturbations."""
+    arr = np.array(image).astype(np.float32) / 255.0
+    rng = np.random.RandomState(42)
+
+    if atype == 'uniform_noise':
+        arr = arr + rng.uniform(-epsilon, epsilon, arr.shape)
+    elif atype == 'gaussian_noise':
+        arr = arr + rng.randn(*arr.shape) * epsilon
+    elif atype == 'patch':
+        # Random patch in center
+        h, w = arr.shape[:2]
+        ps = max(1, int(h * epsilon * 2))  # patch size proportional to epsilon
+        y0, x0 = h//2 - ps//2, w//2 - ps//2
+        arr[y0:y0+ps, x0:x0+ps] = rng.rand(ps, ps, 3)
+    elif atype == 'horizontal_stripes':
+        for y in range(0, arr.shape[0], max(1, int(2 / epsilon))):
+            arr[y] = arr[y] + rng.randn(arr.shape[1], 3) * epsilon
+    elif atype == 'gradient':
+        grad = np.linspace(-epsilon, epsilon, arr.shape[1])[None, :, None]
+        arr = arr + grad
+    elif atype == 'red_channel':
+        arr[:, :, 0] = arr[:, :, 0] + rng.randn(*arr.shape[:2]) * epsilon
+    elif atype == 'green_channel':
+        arr[:, :, 1] = arr[:, :, 1] + rng.randn(*arr.shape[:2]) * epsilon
+    elif atype == 'blue_channel':
+        arr[:, :, 2] = arr[:, :, 2] + rng.randn(*arr.shape[:2]) * epsilon
+    elif atype == 'high_freq':
+        # Checkerboard pattern
+        x, y = np.meshgrid(np.arange(arr.shape[1]), np.arange(arr.shape[0]))
+        checker = ((x + y) % 2).astype(np.float32)[:, :, None] * 2 - 1
+        arr = arr + checker * epsilon
+    elif atype == 'low_freq':
+        # Smooth sinusoidal perturbation
+        x = np.linspace(0, 2 * np.pi, arr.shape[1])
+        y = np.linspace(0, 2 * np.pi, arr.shape[0])
+        xx, yy = np.meshgrid(x, y)
+        wave = np.sin(xx) * np.sin(yy)
+        arr = arr + wave[:, :, None] * epsilon
+    elif atype == 'salt_pepper':
+        mask = rng.random(arr.shape[:2]) < epsilon
+        arr[mask] = rng.choice([0.0, 1.0], size=(mask.sum(), 3))
+
+    return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
 def extract_hidden(model, processor, image, prompt, layer=3):
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
@@ -32,8 +78,8 @@ def cosine_dist(a, b):
     return 1.0 - np.dot(a, b) / (na * nb)
 
 def compute_auroc(id_scores, ood_scores):
-    id_s = np.asarray(id_scores)
-    ood_s = np.asarray(ood_scores)
+    id_s = np.asarray(id_scores, dtype=np.float64)
+    ood_s = np.asarray(ood_scores, dtype=np.float64)
     n_id, n_ood = len(id_s), len(ood_s)
     if n_id == 0 or n_ood == 0:
         return 0.5
@@ -49,198 +95,109 @@ def main():
     model.eval()
 
     prompt = "In: What action should the robot take to pick up the object?\nOut:"
+    seeds = [42, 123, 456, 789, 999, 1234, 5678, 9999]
+    scenes = [Image.fromarray(np.random.RandomState(s).randint(0, 255, (224, 224, 3), dtype=np.uint8)) for s in seeds]
 
-    scenes = []
-    for seed in [42, 123, 456, 789, 999]:
-        scenes.append(Image.fromarray(
-            np.random.RandomState(seed).randint(0, 255, (224, 224, 3), dtype=np.uint8)))
-
-    # Clean centroid
-    print("Clean baseline...")
-    clean_embs = []
-    for scene in scenes:
-        emb = extract_hidden(model, processor, scene, prompt)
-        clean_embs.append(emb)
+    # Extract clean embeddings
+    print("Extracting clean embeddings...")
+    clean_embs = [extract_hidden(model, processor, s, prompt) for s in scenes]
     centroid = np.mean(clean_embs, axis=0)
     clean_dists = [cosine_dist(e, centroid) for e in clean_embs]
-    threshold = max(clean_dists) * 1.5
-    print(f"  Threshold: {threshold:.6f}")
 
-    results = {"clean_dists": [float(d) for d in clean_dists], "threshold": float(threshold)}
+    results = {"n_scenes": len(scenes)}
 
-    # === Test 1: L-inf uniform noise at various epsilon ===
-    print("\n=== L-inf Uniform Noise ===")
-    linf_results = {}
-    for eps in [1, 2, 4, 8, 16, 32, 64, 128]:
-        eps_dists = []
-        for si, scene in enumerate(scenes):
-            arr = np.array(scene).astype(np.float32)
-            rng = np.random.RandomState(42 + si)
-            noise = rng.uniform(-eps, eps, arr.shape)
-            perturbed = np.clip(arr + noise, 0, 255).astype(np.uint8)
-            img = Image.fromarray(perturbed)
-            emb = extract_hidden(model, processor, img, prompt)
-            d = cosine_dist(emb, centroid)
-            eps_dists.append(d)
+    # === Test 1: Epsilon sweep for different perturbation types ===
+    print("\n=== Epsilon Sweep ===")
+    attack_types = ['uniform_noise', 'gaussian_noise', 'patch', 'horizontal_stripes',
+                    'gradient', 'high_freq', 'low_freq', 'salt_pepper']
+    epsilons = [0.001, 0.005, 0.01, 0.05, 0.1, 0.3, 0.5]
 
-        auroc = compute_auroc(clean_dists, eps_dists)
-        detected = sum(1 for d in eps_dists if d > threshold)
-        linf_results[str(eps)] = {
-            "mean_dist": float(np.mean(eps_dists)),
-            "auroc": float(auroc),
-            "detected": f"{detected}/5",
-            "l2_norm_approx": float(eps * np.sqrt(224*224*3) / 255.0)
-        }
-        print(f"  eps={eps}/255: mean={np.mean(eps_dists):.6f}, auroc={auroc:.3f}, det={detected}/5")
+    epsilon_results = {}
+    for atype in attack_types:
+        per_eps = {}
+        for eps in epsilons:
+            ood_dists = []
+            for s in scenes:
+                emb = extract_hidden(model, processor, apply_adversarial(s, atype, eps), prompt)
+                ood_dists.append(float(cosine_dist(emb, centroid)))
+            auroc = float(compute_auroc(clean_dists, ood_dists))
+            per_eps[str(eps)] = {
+                "auroc": auroc,
+                "mean_dist": float(np.mean(ood_dists)),
+            }
+        epsilon_results[atype] = per_eps
+        # Print detection boundary
+        first_detect = None
+        for eps in epsilons:
+            if per_eps[str(eps)]["auroc"] >= 0.9:
+                first_detect = eps
+                break
+        print(f"  {atype}: detectable at ε≥{first_detect}, ε=0.1 AUROC={per_eps['0.1']['auroc']:.4f}")
+    results["epsilon_sweep"] = epsilon_results
 
-    results["linf_noise"] = linf_results
+    # === Test 2: Channel-specific attacks ===
+    print("\n=== Channel-Specific Attacks ===")
+    channel_results = {}
+    for channel in ['red_channel', 'green_channel', 'blue_channel']:
+        per_eps = {}
+        for eps in [0.01, 0.05, 0.1, 0.3]:
+            ood_dists = []
+            for s in scenes:
+                emb = extract_hidden(model, processor, apply_adversarial(s, channel, eps), prompt)
+                ood_dists.append(float(cosine_dist(emb, centroid)))
+            auroc = float(compute_auroc(clean_dists, ood_dists))
+            per_eps[str(eps)] = {"auroc": auroc, "mean_dist": float(np.mean(ood_dists))}
+        channel_results[channel] = per_eps
+        print(f"  {channel}: ε=0.1 AUROC={per_eps['0.1']['auroc']:.4f}, ε=0.3 AUROC={per_eps['0.3']['auroc']:.4f}")
+    results["channel_attacks"] = channel_results
 
-    # === Test 2: Single pixel attack ===
-    print("\n=== Single Pixel Attack ===")
-    pixel_results = {}
-    for n_pixels in [1, 5, 10, 50, 100, 500]:
-        px_dists = []
-        for si, scene in enumerate(scenes):
-            arr = np.array(scene).copy()
-            rng = np.random.RandomState(42 + si)
-            h, w = arr.shape[:2]
-            for _ in range(n_pixels):
-                y, x = rng.randint(0, h), rng.randint(0, w)
-                arr[y, x] = rng.choice([0, 255], 3)
-            img = Image.fromarray(arr)
-            emb = extract_hidden(model, processor, img, prompt)
-            d = cosine_dist(emb, centroid)
-            px_dists.append(d)
+    # === Test 3: Detection boundary (fine-grained) ===
+    print("\n=== Detection Boundary (Fine-Grained) ===")
+    boundary_results = {}
+    fine_epsilons = [0.0001, 0.0005, 0.001, 0.002, 0.005, 0.008, 0.01, 0.02, 0.03, 0.05, 0.08, 0.1]
+    for atype in ['gaussian_noise', 'uniform_noise']:
+        per_eps = {}
+        for eps in fine_epsilons:
+            ood_dists = []
+            for s in scenes:
+                emb = extract_hidden(model, processor, apply_adversarial(s, atype, eps), prompt)
+                ood_dists.append(float(cosine_dist(emb, centroid)))
+            auroc = float(compute_auroc(clean_dists, ood_dists))
+            per_eps[str(eps)] = {"auroc": auroc}
+        boundary_results[atype] = per_eps
+        # Find exact boundary
+        for eps in fine_epsilons:
+            if per_eps[str(eps)]["auroc"] >= 0.9:
+                print(f"  {atype}: detection boundary at ε={eps}")
+                break
+    results["detection_boundary"] = boundary_results
 
-        auroc = compute_auroc(clean_dists, px_dists)
-        detected = sum(1 for d in px_dists if d > threshold)
-        pixel_results[str(n_pixels)] = {
-            "mean_dist": float(np.mean(px_dists)),
-            "auroc": float(auroc),
-            "detected": f"{detected}/5",
-            "pct_pixels": float(n_pixels / (224*224) * 100)
-        }
-        print(f"  {n_pixels} pixels ({n_pixels/(224*224)*100:.3f}%): "
-              f"mean={np.mean(px_dists):.6f}, auroc={auroc:.3f}, det={detected}/5")
+    # === Test 4: Perturbation L2 norm vs detection ===
+    print("\n=== Perturbation L2 Norm vs Detection ===")
+    norm_results = {}
+    for atype in ['gaussian_noise', 'patch', 'high_freq']:
+        per_eps = {}
+        for eps in [0.01, 0.05, 0.1, 0.3]:
+            # Compute actual L2 perturbation norm
+            l2_norms = []
+            ood_dists = []
+            for s in scenes:
+                arr_clean = np.array(s).astype(np.float32) / 255.0
+                arr_perturbed = np.array(apply_adversarial(s, atype, eps)).astype(np.float32) / 255.0
+                l2 = float(np.linalg.norm(arr_perturbed - arr_clean))
+                l2_norms.append(l2)
+                emb = extract_hidden(model, processor, apply_adversarial(s, atype, eps), prompt)
+                ood_dists.append(float(cosine_dist(emb, centroid)))
+            auroc = float(compute_auroc(clean_dists, ood_dists))
+            per_eps[str(eps)] = {
+                "auroc": auroc,
+                "mean_l2_norm": float(np.mean(l2_norms)),
+                "mean_cosine_dist": float(np.mean(ood_dists)),
+            }
+        norm_results[atype] = per_eps
+        print(f"  {atype}: ε=0.1 → L2={per_eps['0.1']['mean_l2_norm']:.4f}, AUROC={per_eps['0.1']['auroc']:.4f}")
+    results["l2_vs_detection"] = norm_results
 
-    results["pixel_attack"] = pixel_results
-
-    # === Test 3: Patch perturbation ===
-    print("\n=== Patch Perturbation ===")
-    patch_results = {}
-    for patch_size in [4, 8, 16, 32, 64, 112]:
-        patch_dists = []
-        for si, scene in enumerate(scenes):
-            arr = np.array(scene).copy()
-            rng = np.random.RandomState(42 + si)
-            h, w = arr.shape[:2]
-            # Place random noise patch in center
-            y = (h - patch_size) // 2
-            x = (w - patch_size) // 2
-            arr[y:y+patch_size, x:x+patch_size] = rng.randint(0, 256, (patch_size, patch_size, 3), dtype=np.uint8)
-            img = Image.fromarray(arr)
-            emb = extract_hidden(model, processor, img, prompt)
-            d = cosine_dist(emb, centroid)
-            patch_dists.append(d)
-
-        auroc = compute_auroc(clean_dists, patch_dists)
-        detected = sum(1 for d in patch_dists if d > threshold)
-        pct = (patch_size / 224) ** 2 * 100
-        patch_results[str(patch_size)] = {
-            "mean_dist": float(np.mean(patch_dists)),
-            "auroc": float(auroc),
-            "detected": f"{detected}/5",
-            "pct_area": float(pct)
-        }
-        print(f"  {patch_size}x{patch_size} ({pct:.1f}%): "
-              f"mean={np.mean(patch_dists):.6f}, auroc={auroc:.3f}, det={detected}/5")
-
-    results["patch_perturbation"] = patch_results
-
-    # === Test 4: Frequency-domain attacks ===
-    print("\n=== Frequency Domain Attacks ===")
-    freq_results = {}
-    for freq_type in ['high', 'low']:
-        freq_dists = []
-        for si, scene in enumerate(scenes):
-            arr = np.array(scene).astype(np.float32) / 255.0
-            rng = np.random.RandomState(42 + si)
-
-            if freq_type == 'high':
-                # High-frequency noise (checkerboard pattern)
-                checker = np.zeros_like(arr)
-                for c in range(3):
-                    for y in range(224):
-                        for x in range(224):
-                            if (y + x) % 2 == 0:
-                                checker[y, x, c] = 0.2
-                            else:
-                                checker[y, x, c] = -0.2
-                arr = np.clip(arr + checker, 0, 1)
-            else:
-                # Low-frequency perturbation (smooth gradient)
-                grad = np.zeros_like(arr)
-                for c in range(3):
-                    shift = rng.uniform(-0.3, 0.3)
-                    for y in range(224):
-                        grad[y, :, c] = shift * (y / 224)
-                arr = np.clip(arr + grad, 0, 1)
-
-            img = Image.fromarray((arr * 255).astype(np.uint8))
-            emb = extract_hidden(model, processor, img, prompt)
-            d = cosine_dist(emb, centroid)
-            freq_dists.append(d)
-
-        auroc = compute_auroc(clean_dists, freq_dists)
-        detected = sum(1 for d in freq_dists if d > threshold)
-        freq_results[freq_type] = {
-            "mean_dist": float(np.mean(freq_dists)),
-            "auroc": float(auroc),
-            "detected": f"{detected}/5"
-        }
-        print(f"  {freq_type}-freq: mean={np.mean(freq_dists):.6f}, auroc={auroc:.3f}, det={detected}/5")
-
-    results["frequency_attacks"] = freq_results
-
-    # === Test 5: Comparison with perceptible corruptions ===
-    print("\n=== Imperceptible vs Perceptible ===")
-    from PIL import ImageFilter as IF
-
-    def apply_corruption(image, ctype, severity=1.0):
-        arr = np.array(image).astype(np.float32) / 255.0
-        if ctype == 'fog':
-            arr = arr * (1 - 0.6 * severity) + 0.6 * severity
-        elif ctype == 'night':
-            arr = arr * max(0.01, 1.0 - 0.95 * severity)
-        elif ctype == 'blur':
-            return image.filter(IF.GaussianBlur(radius=10 * severity))
-        return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
-
-    comparison = {}
-    for c in ['fog', 'night', 'blur']:
-        c_dists = []
-        for scene in scenes:
-            corrupted = apply_corruption(scene, c, 1.0)
-            emb = extract_hidden(model, processor, corrupted, prompt)
-            d = cosine_dist(emb, centroid)
-            c_dists.append(d)
-        comparison[c] = float(np.mean(c_dists))
-
-    # Find the epsilon threshold for detection
-    detection_boundary = None
-    for eps in [1, 2, 4, 8, 16, 32, 64, 128]:
-        if linf_results[str(eps)]["auroc"] >= 0.95:
-            detection_boundary = eps
-            break
-
-    results["comparison"] = comparison
-    results["detection_boundary_eps"] = detection_boundary
-
-    print(f"  Detection boundary: eps={detection_boundary}/255")
-    print(f"  Fog dist: {comparison['fog']:.6f}")
-    print(f"  Night dist: {comparison['night']:.6f}")
-
-    # Save
     out_path = "/workspace/Vizuara-VLA-Research/experiments/adversarial_detection_" + \
                time.strftime("%Y%m%d_%H%M%S") + ".json"
     with open(out_path, 'w') as f:
