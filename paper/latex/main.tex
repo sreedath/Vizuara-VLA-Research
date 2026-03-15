@@ -5857,4 +5857,46 @@ We systematically probe detector limitations across non-corruption visual transf
 
 \textbf{Finding 713}: \textbf{29\% cautious alert rate provides early warning.} Seven of 24 low-severity tests trigger detection without changing actions (e.g., night at 1--10\% severity, noise at 1--2\%). These are not false positives in the safety sense --- they are \emph{advance warnings} that conditions are degrading, firing 2.5--15$\times$ before dangerous action changes emerge (cf.\ Experiment~307). For safety-critical systems, conservative detection is preferable to missed hazards.
 
+\subsection{Experiment 315: Architecture Probe --- Why Does Zero-Variance Emerge?}
+
+We probe OpenVLA's 33 hidden layers to understand the architectural origin of the zero-variance property and perfect detection.
+
+\textbf{Setup.} We extract all 33 hidden states (L0--L32) for clean and corrupted inputs (fog, night, blur, noise at 50\% severity), measuring: (1)~cosine distance per layer; (2)~token-position variance across 3 clean passes; (3)~per-token corruption effect; (4)~activation sign flips and norm changes through the network.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig324_archprobe.png}
+\caption{\textbf{Figure~324: Architecture probe.} (A)~Layer-by-layer distance profile: L0=0 (vision encoder unchanged), signal appears at L1, amplified through network, L32 spike. (B)~Amplification from L1 to L32: noise 4363$\times$, fog 572$\times$. (C)~Per-token effect: BOS=0, 273/274 tokens carry signal. (D)~Sign flips increase through layers, reaching 41\% for blur at L32.}
+\label{fig:archprobe}
+\end{figure}
+
+\textbf{Finding 714}: \textbf{L0 (vision encoder output) is $d=0$ for all corruptions --- signal originates in the language model.} The SigLIP vision encoder produces identical output for clean and corrupted images at bfloat16 precision. Corruption signal first appears at L1 (the first LLM transformer layer), meaning detection capability arises from the language model's processing of visual tokens, not from the vision encoder itself.
+
+\textbf{Finding 715}: \textbf{Absolute determinism: all 274 tokens at all 33 layers are bit-identical across passes.} Three clean forward passes produce exactly the same hidden states at every layer, every token position, every dimension. This bit-for-bit reproducibility is a property of the frozen model, bfloat16 precision, and deterministic CUDA operations --- no stochastic elements remain after disabling dropout and sampling.
+
+\textbf{Finding 716}: \textbf{The network amplifies corruption 220--4363$\times$ from L1 to L32.} Distances grow from $10^{-5}$--$10^{-3}$ at L1 to $0.14$--$0.66$ at L32. Noise is amplified most (4363$\times$), blur least (220$\times$). This amplification cascade makes detection progressively easier at deeper layers, though the signal is already perfectly separable at L1.
+
+\textbf{Finding 717}: \textbf{Blur causes 41\% sign flips and $-55\%$ norm change at L32.} Activation statistics reveal blur fundamentally restructures the deep representation: 41\% of dimensions flip sign and the L2 norm drops by half. Fog is subtler (18.5\% flips, $+10\%$ norm). This explains why blur causes the most action changes --- it reshapes the representation most aggressively.
+
+\subsection{Experiment 316: Deployment Protocol Specification}
+
+We validate the complete deployment protocol across 8 diverse scenes, comparing calibration and threshold strategies.
+
+\textbf{Setup.} Eight synthetic scenes (seeds 0--777) are used as calibration and test environments. We evaluate three threshold strategies: (1)~$\tau = 0$ with single centroid; (2)~$\tau = $ midpoint between clean max and OOD min; (3)~per-scene calibration with $\tau = 0$. We test 4 corruptions at 5 severity levels per scene (160 OOD + 8 clean = 168 tests per strategy).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig325_deploy.png}
+\caption{\textbf{Figure~325: Deployment protocol.} (A)~Only per-scene calibration achieves 100\% sensitivity and specificity. (B)~Recovery is perfectly symmetric: fog ramp up = ramp down, instant return to $d=0$. (C)~All embedding dimensions from 4D (16B) to 4096D (16KB) achieve perfect detection. (D)~All 8 scenes achieve perfect separation with per-scene calibration.}
+\label{fig:deploy}
+\end{figure}
+
+\textbf{Finding 718}: \textbf{Per-scene calibration is the only protocol achieving 100\% sensitivity and specificity.} Global $\tau = 0$ produces 7 false positives (specificity = 12.5\%) because different scenes have different embeddings. Midpoint threshold sacrifices 13 detections (sensitivity = 91.9\%). Only per-scene calibration with $\tau = 0$ achieves perfect TP=160, TN=8, FP=0, FN=0. This is the recommended deployment protocol.
+
+\textbf{Finding 719}: \textbf{Recovery is perfectly symmetric and instantaneous.} Fog ramping from severity 0$\to$1.0$\to$0 produces bit-identical distances at matching severities during ascent and descent. Distance returns to exactly $d = 0$ on the first clean frame. The detector has zero memory, zero hysteresis --- it tracks the instantaneous visual state with perfect fidelity.
+
+\textbf{Finding 720}: \textbf{4D centroid (16 bytes) achieves the same detection as 4096D (16 KB).} Every dimension count from 4 to 4096 produces clean $d = 0$ and positive OOD distances. Minimum OOD distance is \emph{largest} at 16D ($2.81 \times 10^{-3}$), suggesting low-dimensional projections can amplify the signal. Total deployment storage: 16 bytes for the centroid.
+
+\textbf{Finding 721}: \textbf{Recommended deployment protocol}: (1)~Per-scene single-image calibration ($<$100ms, one forward pass); (2)~Store 4D centroid (16 bytes); (3)~Threshold $\tau = 0$ (any $d > 0$ triggers alert); (4)~Instantaneous recovery when conditions clear. Total overhead: one calibration pass + 16 bytes storage + sub-millisecond detection per frame.
+
 \end{document}
