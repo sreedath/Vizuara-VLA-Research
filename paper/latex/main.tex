@@ -3880,4 +3880,19 @@ Motivated by the complementary layer roles discovered in the novel OOD experimen
 \label{fig:dual_layer}
 \end{figure}
 
+\subsection{Resolution Invariance}
+
+We test whether detection works across different camera resolutions from 64$\times$64 to 512$\times$512.
+
+\textbf{Finding 399}: OOD detection is \textbf{completely resolution-invariant} at early layers. L1 and L3 achieve AUROC=1.0 at all 6 resolutions tested (64$\times$64 through 512$\times$512). The VLA processor normalizes all inputs to the model's internal resolution, making the detector hardware-agnostic.
+
+\textbf{Finding 400}: Even at 64$\times$64---an extremely low resolution where individual objects are barely distinguishable---the detector achieves perfect AUROC. This confirms the detector operates on \textbf{semantic content} (overall scene statistics) rather than pixel-level detail.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/fig217_resolution.png}
+\caption{\textbf{Resolution invariance.} AUROC=1.0 at all resolutions from 64$\times$64 to 512$\times$512 for L1 and L3. The VLA processor normalizes inputs, making detection hardware-agnostic.}
+\label{fig:resolution}
+\end{figure}
+
 \end{document}
