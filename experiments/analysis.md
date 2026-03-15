@@ -15419,3 +15419,54 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 709**: Even pixel-by-pixel restoration of 100% of pixel locations (with random replacement sampling) fails to evade detection. The detector is sensitive to the GLOBAL image structure, not individual pixels, confirming that corruption detection operates on holistic embedding properties rather than local features.
 
+---
+
+## Experiment 373: Temporal Sequence Detection Analysis
+
+**Objective**: How does the cosine-distance detector behave over temporal sequences? Tests sudden onset, gradual onset, intermittent corruption, recovery dynamics, and sequence-level detection methods.
+
+**Setup**: 5 scenes, 4 corruption types, sequences of 10-30 frames, multiple detection algorithms compared.
+
+### Results
+
+**Sudden Onset (clean→corrupt at frame 5)**:
+- ALL corruptions: detection latency = 0 frames (instantaneous)
+- Jump ratios: fog 16-42x, night 37-89x, noise 1.9-9x, blur 87-208x
+- Perfect determinism: identical embeddings within each phase
+
+**Gradual Onset (severity ramp 0→1 over 20 steps)**:
+| Corruption | Detection Severity | Monotonic? |
+|-----------|-------------------|-----------|
+| Fog | 0.105 | No |
+| Night | 0.053 | Yes |
+| Noise | 0.316 | No |
+| Blur | 0.053 | Yes (approximately) |
+
+**Intermittent Corruption (alternating clean/corrupt)**:
+- Instant detection rate: 100% for all corruptions
+- Memoryless: each frame scored independently, no carryover
+
+**Recovery Dynamics (corrupt→clean at frame 5)**:
+- ALL corruptions: recovery latency = 0 frames
+- Confirms memoryless embedding property
+
+**Sequence-Level Detectors (30-frame sequence: 10 clean, 10 corrupt, 10 clean)**:
+| Method | Sensitivity | Specificity | Notes |
+|--------|------------|-------------|-------|
+| Instant | 10/10 | 20/20 | PERFECT |
+| RunAvg-5 | 10/10 | 16/20 | 4 FP from lag |
+| CUSUM | 9-10/10 | 10/20 | Accumulator creates FP |
+| EMA(0.3) | 10/10 | 10-14/20 | Smoothing hurts |
+
+### Findings
+
+**Finding 710**: Detection latency is ZERO frames for all corruption types — the cosine-distance detector responds instantaneously to both corruption onset and recovery, with no temporal smoothing needed. This is a direct consequence of the memoryless embedding property.
+
+**Finding 711**: The gradual onset detection threshold is lowest for night/blur (severity ~0.05, or 5%) and highest for noise (severity ~0.32, or 32%). Night darkening is detectable at extremely low severity because it uniformly shifts all pixel values.
+
+**Finding 712**: The instant (single-frame) detector OUTPERFORMS all temporal smoothing methods. Running average, CUSUM, and EMA all introduce false positives during transitions without improving true positive rates. Temporal smoothing is COUNTERPRODUCTIVE for this detector.
+
+**Finding 713**: The detector exhibits perfect memoryless behavior: recovery from corruption is instantaneous (0-frame latency), and intermittent corruption produces a perfect square-wave response with no hysteresis or state carryover.
+
+**Finding 714**: Night corruption distance increases monotonically with severity (R²≈1.0), while fog and noise show non-monotonic behavior at very low severities. This non-monotonicity at severity <0.1 reflects the discrete nature of pixel value quantization.
+

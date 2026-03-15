@@ -7111,4 +7111,35 @@ We systematically test the robustness of our cosine-distance corruption detector
 
 \textbf{Finding 961}: \textbf{Pixel-by-pixel restoration of 100\% of locations still fails to evade detection.} The detector is sensitive to global image structure, not individual pixels, confirming that corruption detection operates on holistic embedding properties.
 
+% ============================================================
+% EXPERIMENT 373: TEMPORAL SEQUENCE DETECTION
+% ============================================================
+
+\subsection{Experiment 373: Temporal Sequence Detection Analysis}
+
+We analyze the detector's behavior over temporal sequences to determine whether temporal smoothing can improve detection. We test five scenarios: sudden onset, gradual severity ramp, intermittent corruption, recovery dynamics, and comparison of four sequence-level detectors.
+
+\textbf{Zero-Frame Detection Latency.} The cosine-distance detector responds instantaneously to corruption onset: detection latency is exactly 0 frames for all four corruption types across all test scenes. The signal transitions from clean to corrupted as a perfect step function, confirming the memoryless embedding property discovered in earlier experiments.
+
+\textbf{Gradual Onset Sensitivity.} Night and blur become detectable at just 5\% severity, while noise requires 32\% severity for reliable detection. Night corruption increases distance monotonically with severity ($R^2 \approx 1.0$), while fog and noise show non-monotonic behavior at very low severities due to pixel quantization effects.
+
+\textbf{Temporal Smoothing is Counterproductive.} Comparing four detection strategies on 30-frame sequences (10 clean, 10 corrupt, 10 clean), the single-frame instant detector achieves \emph{perfect} performance (sensitivity=1.0, specificity=1.0), while running-average, CUSUM, and EMA detectors all introduce false positives during transitions. Because the underlying signal is memoryless, temporal smoothing can only degrade performance.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig382_temporal.png}
+\caption{\textbf{Experiment 373}: Temporal sequence detection. The detector responds with zero-frame latency to corruption onset and recovery (left panels). Gradual onset reveals night/blur detectable at 5\% severity vs 32\% for noise (center). The instant (single-frame) detector outperforms all temporal smoothing methods (right panels).}
+\label{fig:temporal}
+\end{figure}
+
+\textbf{Finding 962}: \textbf{Detection latency is exactly 0 frames for all corruption types.} The cosine-distance detector responds instantaneously to both corruption onset and recovery, producing a perfect step-function response. No temporal memory or state exists in the embedding.
+
+\textbf{Finding 963}: \textbf{Night/blur are detectable at 5\% severity, while noise requires 32\%.} The gradual onset experiment reveals noise as uniquely difficult: its embedding shift grows slowly with severity and requires 6$\times$ more corruption than night to cross the detection threshold.
+
+\textbf{Finding 964}: \textbf{The single-frame instant detector OUTPERFORMS all temporal smoothing methods.} Running average (4/20 FP), CUSUM (10/20 FP), and EMA (6--10/20 FP) all introduce false positives during transitions. Temporal smoothing is counterproductive because the underlying signal is memoryless.
+
+\textbf{Finding 965}: \textbf{Recovery from corruption is instantaneous (0-frame latency).} The detector exhibits no hysteresis --- intermittent corruption produces a perfect square-wave response, confirming that each frame is scored completely independently.
+
+\textbf{Finding 966}: \textbf{Night distance increases monotonically with severity, but fog/noise do not.} Non-monotonicity at low severity ($<$0.1) reflects pixel quantization effects and the deterministic nature of the embedding function: small intensity changes can cause non-linear embedding shifts.
+
 \end{document}
