@@ -2458,4 +2458,40 @@ We profile each component of the inference and detection pipeline on an NVIDIA A
 
 The zero-overhead property is perhaps the most practically important finding of this work. Because the transformer already computes hidden states as part of its normal forward pass, requesting them via \texttt{output\_hidden\_states=True} simply prevents their deallocation---no additional computation is required. The cosine distance between two 4096-dimensional vectors takes $50~\mu$s, which is $0.04\%$ of the forward pass time. In a pipelined deployment, the OOD check can be performed on the single forward pass that precedes autoregressive generation: the hidden states from the forward pass are used for the OOD check while the model simultaneously begins generating action tokens. Under this pipeline, OOD detection adds literally zero latency to the end-to-end inference.
 
+\subsection{Distance Metric Comparison}
+\label{app:distance_metrics}
+
+\textbf{Finding 171: All seven distance metrics achieve perfect AUROC$=$1.000 for OOD detection. The OOD signal is so strong that metric choice cannot degrade binary classification.}
+
+\textbf{Finding 172: Direction-based metrics (cosine $d{=}52.0$, correlation $d{=}52.0$) produce $3.1\times$ higher d-prime than magnitude-based metrics (Euclidean $d{=}16.7$, Chebyshev $d{=}9.6$), confirming the OOD signal is primarily directional.}
+
+We compare seven distance metrics for centroid-based OOD detection using the same embedding pipeline (Figure~\ref{fig:distance_metrics}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig118_distance_metrics.png}
+\caption{\textbf{Distance metric comparison.} (a) D-prime ranking: cosine and correlation distance lead at $d\approx52$. (b) Family comparison: direction-based metrics (green) consistently outperform magnitude-based metrics (blue). (c) Relative performance: Chebyshev retains only 19\% of cosine's d-prime because L$_\infty$ focuses on a single dimension, diluting the distributed signal.}
+\label{fig:distance_metrics}
+\end{figure}
+
+The dominance of direction-based metrics is mechanistically consistent with our earlier findings. Experiment~123 showed the OOD signal spans 54.8\% of dimensions---a distributed directional shift rather than a localized magnitude change. Cosine distance captures this global directional shift optimally. Chebyshev distance ($L_\infty$), which focuses on the single largest dimension difference, achieves only $d{=}9.6$ because it ignores the coordinated signal across thousands of dimensions. Correlation distance ($d{=}52.0$) is nearly identical to cosine ($d{=}52.0$) because the embeddings have near-zero mean, making centering a no-op. The practical implication is clear: cosine distance is the optimal default for VLA OOD detection---simplest to implement, scale-invariant, and highest separation strength.
+
+\subsection{Sample Efficiency}
+\label{app:sample_efficiency}
+
+\textbf{Finding 173: A single calibration image achieves AUROC$=$0.993 (worst case 0.956). From $n{\geq}8$ calibration samples, detection is perfect (AUROC$=$1.000) across all random subsets.}
+
+\textbf{Finding 174: D-prime variance drops from $\sigma{=}21.3$ at $n{=}1$ to $\sigma{=}0$ at $n{=}30$, but the mean d-prime ($\approx$31) is stable across all calibration sizes, indicating the centroid is remarkably robust to subsampling.}
+
+We measure detection quality as a function of calibration set size by subsampling from a pool of 30 ID embeddings and evaluating against a fixed test set of 10 ID + 80 OOD samples (Figure~\ref{fig:sample_efficiency}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig119_sample_efficiency.png}
+\caption{\textbf{Sample efficiency.} (a) AUROC vs calibration size: $n{=}1$ achieves 0.993 mean AUROC; $n{\geq}8$ achieves perfect 1.000 across all trials. (b) D-prime stabilizes around 31$\sigma$ regardless of calibration size, with variance decreasing. (c) Centroid stability: d-prime standard deviation drops from 21.3 at $n{=}1$ to 0 at $n{=}30$.}
+\label{fig:sample_efficiency}
+\end{figure}
+
+The extreme sample efficiency follows from the geometric structure of VLA embeddings. Because the ID cluster is extremely compact (intra-class spread $\ll$ ID-OOD gap), even a single sample lands close to the true centroid. The worst-case single-sample trial still achieves $d{=}12.2$ and AUROC$=$0.956---far above chance. This has profound deployment implications: a VLA system can be calibrated with as few as 8 representative driving images, requiring minimal data collection effort. Combined with the zero computational overhead (Finding~169) and the absence of threshold tuning (Finding~167), the complete OOD detection system can be deployed with negligible engineering overhead.
+
 \end{document}

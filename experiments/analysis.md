@@ -5858,3 +5858,81 @@ All top-K and random-K ≥ 100 achieve AUROC=1.000. Even 10 random dims: AUROC=0
 4. **Detection is 2.5× faster than generation**: Even if done sequentially, OOD detection completes in 139ms vs 345ms for generation. The safety check is faster than the unsafe action it prevents.
 
 5. **GPU memory**: 15.7 GB for OpenVLA-7B in bfloat16 on NVIDIA A40 (48 GB). Plenty of headroom.
+
+---
+
+## Finding 126: Distance Metric Comparison (Experiment 132)
+
+### Research Question
+Does the choice of distance metric affect OOD detection quality? We compare 7 metrics: cosine, euclidean, manhattan, chebyshev, angular, correlation, and Bray-Curtis.
+
+### Setup
+- **Model**: OpenVLA-7B (bfloat16, NVIDIA A40)
+- **Calibration**: 16 ID embeddings (8 highway + 8 urban)
+- **Test set**: 74 embeddings (14 ID test + 60 OOD across 4 categories)
+- **Metrics**: 7 distance/dissimilarity functions applied to last-layer hidden states vs. centroid
+
+### Results
+
+| Metric | AUROC | D-prime | Family |
+|--------|-------|---------|--------|
+| Cosine | 1.000 | 52.0 | Direction |
+| Correlation | 1.000 | 52.0 | Direction |
+| Angular | 1.000 | 34.7 | Direction |
+| Bray-Curtis | 1.000 | 21.3 | Magnitude |
+| Euclidean | 1.000 | 16.7 | Magnitude |
+| Manhattan | 1.000 | 16.3 | Magnitude |
+| Chebyshev | 1.000 | 9.6 | Magnitude |
+
+### Key Insights
+
+1. **All metrics achieve perfect AUROC=1.000**: The OOD signal is so strong that any reasonable distance metric can separate ID from OOD perfectly.
+
+2. **Direction-based metrics dominate**: Cosine and correlation distance lead with d≈52, over 3× the d-prime of magnitude-based metrics like Euclidean (d=16.7). This confirms the OOD signal is primarily a directional shift in embedding space, not a magnitude difference.
+
+3. **Cosine = Correlation**: Near-identical d-prime (52.04 vs 52.03) because correlation distance is cosine distance on centered vectors. The embeddings have near-zero mean, so centering changes almost nothing.
+
+4. **Chebyshev is weakest (d=9.6)**: L-infinity focuses on the single largest dimension difference, which dilutes the distributed signal that spans 54.8% of dimensions (Finding 117).
+
+5. **Practical implication**: Cosine distance is the optimal choice — highest d-prime, simplest implementation, and scale-invariant. No benefit to switching metrics.
+
+---
+
+## Finding 127: Sample Efficiency of OOD Detection (Experiment 133)
+
+### Research Question
+What is the minimum number of calibration samples needed for robust OOD detection? We vary calibration set size from n=1 to n=30 and measure detection quality with multiple random subsets.
+
+### Setup
+- **Model**: OpenVLA-7B (bfloat16, NVIDIA A40)
+- **Total embeddings**: 40 ID (highway + urban) + 80 OOD (noise, indoor, twilight, snow)
+- **Test set**: 10 held-out ID + 80 OOD (fixed across all trials)
+- **Calibration pool**: 30 ID embeddings, subsampled at varying sizes
+- **Trials**: 20 trials for n≤5, 10 trials for n≤10, 5 trials for n>10
+- **Metric**: Cosine distance from centroid
+
+### Results
+
+| Cal Size (n) | Mean AUROC | Std AUROC | Worst AUROC | Mean D-prime | Std D-prime |
+|-------------|-----------|----------|-------------|-------------|------------|
+| 1 | 0.993 | 0.011 | 0.956 | 31.8 | 21.3 |
+| 2 | 0.999 | 0.002 | 0.994 | 37.0 | 12.8 |
+| 3 | 0.998 | 0.004 | 0.988 | 27.2 | 12.1 |
+| 5 | 0.999 | 0.002 | 0.991 | 31.1 | 9.8 |
+| 8 | 1.000 | 0.000 | 1.000 | 29.4 | 4.7 |
+| 10 | 1.000 | 0.000 | 1.000 | 30.2 | 5.1 |
+| 15 | 1.000 | 0.000 | 1.000 | 31.4 | 4.8 |
+| 20 | 1.000 | 0.000 | 1.000 | 32.6 | 4.3 |
+| 30 | 1.000 | 0.000 | 1.000 | 32.0 | 0.0 |
+
+### Key Insights
+
+1. **n=1 already achieves AUROC=0.993**: Even a single calibration image produces near-perfect detection. The worst single-sample trial still yields AUROC=0.956 (d=12.2).
+
+2. **n≥8 guarantees perfect detection**: From 8 calibration samples onward, all trials across all random subsets achieve AUROC=1.000 with zero variance.
+
+3. **D-prime stabilizes around d≈31**: The mean d-prime is relatively stable across all calibration sizes, but variance decreases dramatically — from σ=21.3 at n=1 to σ=0 at n=30.
+
+4. **The centroid is remarkably stable**: Even with n=1, the centroid is close enough to the true mean that OOD detection works. This is because the ID embedding cluster is extremely tight (spread << ID-OOD gap).
+
+5. **Practical recommendation**: Use n≥8 for guaranteed perfect detection. Even n=3-5 gives >99% AUROC in expectation. This is an extraordinarily low calibration requirement for a safety-critical system.

@@ -1,0 +1,37 @@
+{
+  "experiment": "distance_metrics",
+  "experiment_number": 132,
+  "timestamp": "20260315_001023",
+  "n_cal": 16,
+  "n_test": 74,
+  "results": {
+    "cosine": {
+      "auroc": 1.0,
+      "d": 52.041718004701856
+    },
+    "euclidean": {
+      "auroc": 1.0,
+      "d": 16.663650402221638
+    },
+    "manhattan": {
+      "auroc": 1.0,
+      "d": 16.29888468949398
+    },
+    "chebyshev": {
+      "auroc": 1.0,
+      "d": 9.645888111366558
+    },
+    "angular": {
+      "auroc": 1.0,
+      "d": 34.73931470864631
+    },
+    "correlation": {
+      "auroc": 1.0,
+      "d": 52.02627131042516
+    },
+    "bray_curtis": {
+      "auroc": 1.0,
+      "d": 21.33659459848205
+    }
+  }
+}
