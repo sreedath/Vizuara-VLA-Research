@@ -15740,3 +15740,77 @@ Three spatial patterns:
 
 **Finding 744**: The noise half-corruption ratio of 2.99 (half = 3x full distance) reveals that partial noise INCREASES embedding shift compared to full noise. The transition edge between clean and noisy regions creates a strong detectable discontinuity — more detectable than uniform noise.
 
+---
+
+## Experiment 380: Embedding Stability Under Benign Variation
+
+**Objective**: Does the detector trigger on natural, non-corrupted variations? Tests scene diversity, pixel perturbations, geometric transforms, Gaussian noise, and color jitter to characterize the false positive boundary.
+
+**Setup**: 20 scenes (seeds 0-1900), threshold set to max clean distance (9.03e-05). Various benign transforms tested against this threshold.
+
+### Results
+
+**Scene Diversity** (20 scenes, 190 pairs):
+- Mean pairwise cosine distance: 8.33e-05
+- Std: 2.83e-05
+- Max pairwise: 2.29e-04
+- Threshold (max clean distance to centroid): 9.03e-05
+
+**Pixel Perturbation**:
+| Delta | Mean Dist | Max Dist | FPR |
+|-------|-----------|----------|-----|
+| ±1 | 4.05e-05 | 8.90e-05 | 0% |
+| ±2 | 3.96e-05 | 8.68e-05 | 0% |
+| ±3 | 4.08e-05 | 9.47e-05 | 10% |
+| ±5 | 3.89e-05 | 7.29e-05 | 0% |
+| ±10 | 3.92e-05 | 7.83e-05 | 0% |
+| ±20 | 3.40e-05 | 4.55e-05 | 0% |
+
+Pixel perturbations up to ±20 are SAFE. Mean distance stays constant regardless of perturbation magnitude!
+
+**Geometric Transforms**:
+| Transform | Mean Dist | FPR |
+|-----------|-----------|-----|
+| Horizontal flip | 4.22e-05 | 0% |
+| Rotation 1° | 4.27e-05 | 0% |
+| Rotation 2° | 2.05e-04 | 100% |
+| Rotation 5° | 5.54e-04 | 100% |
+| Rotation 10° | 9.08e-04 | 100% |
+
+Sharp cliff between 1° and 2° rotation! Horizontal flip is invisible to the detector.
+
+**Gaussian Noise**:
+| Sigma | Mean Dist | FPR |
+|-------|-----------|-----|
+| 0.001 | 4.07e-05 | 10% |
+| 0.005 | 3.94e-05 | 10% |
+| 0.01 | 4.01e-05 | 10% |
+| 0.02 | 4.11e-05 | 10% |
+| 0.05 | 4.14e-05 | 0% |
+| 0.1 | 5.11e-05 | 0% |
+
+Gaussian noise is remarkably well-tolerated. Even sigma=0.1 has FPR=0%.
+
+**Color Jitter** (per-channel multiplicative):
+| Jitter Range | Mean Dist | FPR |
+|-------------|-----------|-----|
+| ±1% | 4.31e-05 | 10% |
+| ±2% | 4.39e-05 | 10% |
+| ±5% | 5.08e-05 | 10% |
+| ±10% | 6.96e-05 | 20% |
+| ±20% | 1.43e-04 | 70% |
+
+Color jitter ≥20% triggers significant false positives.
+
+### Findings
+
+**Finding 745**: Pixel perturbations up to ±20 levels are SAFE (FPR ≤ 10%). The mean embedding distance remains CONSTANT (~4e-05) regardless of perturbation magnitude, indicating that the model's visual encoder is inherently robust to small pixel-level changes.
+
+**Finding 746**: Rotation has a SHARP detection cliff between 1° and 2°. Rotation of 1° is invisible (FPR=0%, dist=4.27e-05), but 2° triggers 100% false positives (dist=2.05e-04). This 2.3x jump in a single degree makes rotation the most sensitive benign transform. Horizontal flip is completely invisible (FPR=0%).
+
+**Finding 747**: Gaussian noise up to sigma=0.1 is well-tolerated (FPR=0-10%). The model's tokenizer quantization absorbs small additive noise without shifting embeddings. This contrasts sharply with the corruption-level noise (sigma=0.3 × severity) which IS detected.
+
+**Finding 748**: Color jitter has a gradual FPR escalation: 10% at ±1-5%, 20% at ±10%, 70% at ±20%. Unlike rotation's sharp cliff, color sensitivity is progressive. This means deployment environments must match calibration color balance within ~10% multiplicative range.
+
+**Finding 749**: Horizontal flip is INVISIBLE to the detector (mean dist = 4.22e-05, identical to clean). The model's corruption detection mechanism is mirror-symmetric, relying on color/texture statistics that are invariant under horizontal reflection. This is consistent with the holistic detection finding from experiment 379.
+

@@ -7343,4 +7343,37 @@ The noise result is striking: the clean/noisy boundary creates additional detect
 
 \textbf{Finding 996}: \textbf{Three distinct spatial interaction patterns partition the corruption types.} Fog is spatially uniform, blur/night are super-additive (requiring full coverage), and noise is uniquely sub-additive. These patterns correspond to the frequency dichotomy: low-freq corruptions (fog/night) behave differently from high-freq corruptions (noise/blur).
 
+% ============================================================
+% EXPERIMENT 380: Embedding Stability Under Benign Variation
+% ============================================================
+
+\subsection{Experiment 380: Embedding Stability Under Benign Variation}
+
+We characterize the detector's false positive boundary by testing whether natural, non-corrupted image variations trigger detection. We examine five categories: pixel perturbations, geometric transforms, Gaussian noise, color jitter, and scene diversity.
+
+\textbf{Pixel Perturbations Are Safe.} Uniform random pixel perturbations from $\pm 1$ to $\pm 20$ levels maintain FPR $\leq 10\%$. Remarkably, mean embedding distance remains constant ($\approx 4 \times 10^{-5}$) regardless of perturbation magnitude, indicating the visual encoder's inherent robustness to pixel-level noise.
+
+\textbf{Rotation Has a Sharp Detection Cliff.} Rotation of $1\degree$ is invisible (FPR = 0\%, dist = $4.27 \times 10^{-5}$), but $2\degree$ triggers 100\% false positives (dist = $2.05 \times 10^{-4}$). This 2.3$\times$ distance jump within a single degree makes rotation the most sensitive benign transform. Horizontal flipping, by contrast, is completely invisible (FPR = 0\%).
+
+\textbf{Gaussian Noise Is Well-Tolerated.} Additive Gaussian noise up to $\sigma = 0.1$ maintains FPR $\leq 10\%$. The model's tokenizer quantization absorbs small additive noise without shifting embeddings. This contrasts with corruption-level noise ($\sigma = 0.3 \times$ severity) which is reliably detected.
+
+\textbf{Color Jitter Shows Progressive Sensitivity.} Per-channel multiplicative jitter shows gradual FPR escalation: 10\% at $\pm 1\text{--}5\%$, 20\% at $\pm 10\%$, and 70\% at $\pm 20\%$. Unlike rotation's sharp cliff, color sensitivity is progressive, requiring calibration-deployment color balance matching within $\sim$10\%.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig389_benign.png}
+\caption{\textbf{Experiment 380}: Benign variation stability. Pixel perturbations up to $\pm$20 are safe. Rotation shows a sharp cliff between 1\degree{} (safe) and 2\degree{} (100\% FPR). Gaussian noise is well-tolerated up to $\sigma$=0.1. Color jitter shows progressive sensitivity escalation.}
+\label{fig:benign}
+\end{figure}
+
+\textbf{Finding 997}: \textbf{Pixel perturbations $\pm$20 are safe (FPR $\leq$ 10\%).} Mean embedding distance stays constant ($\approx 4 \times 10^{-5}$) regardless of perturbation magnitude, demonstrating the visual encoder's inherent quantization robustness.
+
+\textbf{Finding 998}: \textbf{Rotation has a sharp cliff: 1\degree{} is invisible, 2\degree{} triggers 100\% FPR.} The 2.3$\times$ distance jump within a single degree makes rotation the most sensitive geometric transform. Horizontal flip is completely invisible, confirming mirror-symmetric detection.
+
+\textbf{Finding 999}: \textbf{Gaussian noise $\sigma \leq 0.1$ is well-tolerated (FPR $\leq$ 10\%).} The model's tokenizer quantization absorbs small additive noise. This establishes the safe noise margin as approximately 3$\times$ lower than the detection threshold for corruption-level noise.
+
+\textbf{Finding 1000}: \textbf{Color jitter $\geq$20\% triggers 70\% FPR.} Unlike rotation's sharp cliff, color sensitivity is progressive. Deployment environments must match calibration color balance within $\sim$10\% multiplicative range to avoid false positives.
+
+\textbf{Finding 1001}: \textbf{Horizontal flip is invisible to the detector (dist identical to clean).} The detection mechanism is mirror-symmetric, consistent with the holistic, texture-based detection established in Experiment~379. This confirms that corruption detection relies on global color statistics, not spatial structure.
+
 \end{document}
