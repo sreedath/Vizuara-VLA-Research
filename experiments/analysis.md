@@ -8460,3 +8460,33 @@ snow       0     0     0     0      0     0     6
 4. **OOD signal distributed across dimensions**: The PCA failure suggests that OOD detection relies on distributed representation differences, not a few dominant directions. This motivates random projection (Experiment 221) as an alternative dimensionality reduction.
 
 **Finding**: OOD detection via cosine distance is **layer-universal** — all 5 tested layers (L1-L31) achieve AUROC=1.0. However, PCA dimensionality reduction to 10 components completely destroys the signal (AUROC=0.5), indicating the OOD-discriminative information is spread across many embedding dimensions and cannot be captured by the top principal components of clean data alone.
+---
+
+### Finding 216: Random Projection Robustness (Experiment 221)
+
+**Experiment**: Test whether OOD detection survives aggressive dimensionality reduction via Johnson-Lindenstrauss random projection. Project 4096D embeddings to {32, 64, 128, 256, 512, 1024, 2048}D using Gaussian random matrices, averaged over 5 trials.
+
+**Results (all projection dimensions, 5 trials each)**:
+| Projection Dim | L1 AUROC (mean±std) | L3 AUROC (mean±std) |
+|---------------|---------------------|---------------------|
+| 32 (128× compression) | 1.000±0.000 | 1.000±0.000 |
+| 64 | 1.000±0.000 | 1.000±0.000 |
+| 128 | 1.000±0.000 | 1.000±0.000 |
+| 256 | 1.000±0.000 | 1.000±0.000 |
+| 512 | 1.000±0.000 | 1.000±0.000 |
+| 1024 | 1.000±0.000 | 1.000±0.000 |
+| 2048 | 1.000±0.000 | 1.000±0.000 |
+| 4096 (full, baseline) | 1.000 | 1.000 |
+
+**OOD Mean Distances (preserved under projection)**:
+- L1 full: 0.001333, L1 k=32: 0.001248 (6.4% deviation)
+- L3 full: 0.002381, L3 k=32: 0.002307 (3.1% deviation)
+
+**Key Findings**:
+1. **128× compression with zero signal loss**: Random projection from 4096D to just 32D preserves perfect AUROC=1.0 with zero variance across 5 random matrices. This is a 128× dimensionality reduction.
+2. **Contrast with PCA failure**: PCA to 10 dims yields AUROC=0.5 (Experiment 220), while random projection to 32 dims yields AUROC=1.0. This confirms that the OOD signal is NOT concentrated in the top principal components but IS preserved by random projections (consistent with Johnson-Lindenstrauss theory).
+3. **OOD distances are stable across projections**: Mean OOD cosine distance varies less than 7% between full and 32D projected embeddings, confirming that random projection preserves the distance structure.
+4. **Practical implications**: Detectors can operate on 32D vectors instead of 4096D, reducing storage by 128× and computation by O(128²) for Mahalanobis-style methods.
+5. **Zero variance across random seeds**: Every trial, every dimension, every layer achieves exactly AUROC=1.0 — the signal is extraordinarily robust to random linear maps.
+
+**Finding**: Random projection preserves OOD detection with **zero signal loss down to 32 dimensions** (128× compression from 4096D). AUROC=1.0 with std=0.0 across 5 random matrices at all tested dimensions. This contrasts sharply with PCA's failure at 10 dimensions, confirming that the OOD-discriminative structure is distributed (not concentrated in top principal components) and is so strong that any random linear map preserves it. This has major practical implications: OOD detection can operate on tiny 32D vectors with identical accuracy.

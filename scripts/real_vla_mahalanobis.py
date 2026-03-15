@@ -1,215 +1,162 @@
-#!/usr/bin/env python3
-"""Experiment 195: Mahalanobis distance OOD detection — compare cosine distance
-with Mahalanobis distance (classic OOD baseline from Lee et al. 2018).
-
-Tests whether modeling the full covariance structure improves over simple cosine.
 """
-
-import json, os, sys, datetime
-import numpy as np
-import torch
-from pathlib import Path
+Experiment 222: Distance Metric Comparison
+Compare cosine distance, Euclidean distance, and Mahalanobis distance for OOD detection.
+Uses pseudo-inverse covariance since n_cal < embed_dim.
+"""
+import torch, json, numpy as np, os
+from datetime import datetime
 from PIL import Image, ImageFilter
 
-SCRIPT_DIR = Path(__file__).parent
-REPO_DIR = SCRIPT_DIR.parent
-EXPERIMENTS_DIR = REPO_DIR / "experiments"
-EXPERIMENTS_DIR.mkdir(exist_ok=True)
-RESULTS_DIR = str(EXPERIMENTS_DIR)
+def make_driving_image(w=256, h=256):
+    img = Image.new('RGB', (w, h))
+    pixels = img.load()
+    for y in range(h):
+        for x in range(w):
+            if y < h // 2:
+                b = int(180 + 75 * (1 - y / (h / 2)))
+                pixels[x, y] = (100, 150, b)
+            else:
+                g = int(80 + 40 * ((y - h/2) / (h/2)))
+                pixels[x, y] = (g, g + 10, g - 10)
+    return img
 
-SIZE = (256, 256)
-rng = np.random.RandomState(42)
+def apply_corruption(img, name, rng):
+    arr = np.array(img, dtype=np.float32)
+    if name == 'fog':
+        fog = np.full_like(arr, 200)
+        arr = arr * 0.4 + fog * 0.6
+    elif name == 'night':
+        arr = arr * 0.15
+    elif name == 'blur':
+        return img.filter(ImageFilter.GaussianBlur(radius=5))
+    elif name == 'noise':
+        arr = arr + rng.normal(0, 40, arr.shape)
+    return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
 
-def create_highway(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]; img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
+def extract_hidden(model, processor, image, prompt, layers):
+    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    with torch.no_grad():
+        fwd = model(**inputs, output_hidden_states=True)
+    return {l: fwd.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
 
-def create_urban(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]; img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]; img[SIZE[0]//2:] = [60, 60, 60]
-    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
+def cosine_dist(a, b):
+    return 1.0 - float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
 
-def create_rural(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [100, 180, 255]; img[SIZE[0]//3:SIZE[0]*2//3] = [34, 139, 34]; img[SIZE[0]*2//3:] = [90, 90, 90]
-    return np.clip(img.astype(np.int16) + rng.randint(-8, 9, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
+def euclidean_dist(a, b):
+    return float(np.linalg.norm(a - b))
 
-def apply_fog(a, alpha):
-    return np.clip(a*(1-alpha)+np.full_like(a,[200,200,210])*alpha, 0, 255).astype(np.uint8)
-def apply_night(a): return np.clip(a*0.15, 0, 255).astype(np.uint8)
-def apply_blur(a, r=8): return np.array(Image.fromarray(a).filter(ImageFilter.GaussianBlur(radius=r)))
-def apply_noise(a, s=50): return np.clip(a.astype(np.float32)+np.random.normal(0,s,a.shape), 0, 255).astype(np.uint8)
-
-def cosine_distance(a, b):
-    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
+def mahalanobis_dist(x, mean, cov_inv):
+    diff = x - mean
+    return float(np.sqrt(np.abs(diff @ cov_inv @ diff)))
 
 def compute_auroc(id_scores, ood_scores):
     id_scores = np.asarray(id_scores)
     ood_scores = np.asarray(ood_scores)
     n_id, n_ood = len(id_scores), len(ood_scores)
-    if n_id == 0 or n_ood == 0: return 0.5
+    if n_id == 0 or n_ood == 0:
+        return 0.5
     count = sum(float(np.sum(o > id_scores) + 0.5 * np.sum(o == id_scores)) for o in ood_scores)
     return count / (n_id * n_ood)
 
-def mahalanobis_distance(x, mean, cov_inv):
-    """Compute Mahalanobis distance."""
-    diff = x - mean
-    return float(np.sqrt(np.abs(diff @ cov_inv @ diff)))
-
-def l2_distance(a, b):
-    return float(np.linalg.norm(a - b))
-
 def main():
     print("=" * 60)
-    print("Experiment 195: Mahalanobis Distance OOD Detection")
-    print("=" * 60, flush=True)
+    print("Experiment 222: Distance Metric Comparison")
+    print("=" * 60)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading OpenVLA-7B...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
         device_map="auto", trust_remote_code=True)
     processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
-    layers = [1, 3, 16, 32]
+    layers = [1, 3]
+    prompt = "In: What action should the robot take to drive forward?\nOut:"
+    n_cal, n_test = 10, 8
+    rng = np.random.default_rng(42)
+    base_imgs = [make_driving_image() for _ in range(20)]
+    corruption_types = ['fog', 'night', 'blur', 'noise']
 
-    creators = [create_highway, create_urban, create_rural]
-    n_cal = 15  # more calibration for covariance estimation
-    n_test = 8
-
-    def extract_all(image):
-        inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-        with torch.no_grad():
-            fwd = model(**inputs, output_hidden_states=True)
-        return {l: fwd.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
-
-    # Calibration
-    print("\n--- Calibration ---", flush=True)
-    cal_arrs = [creators[i%3](i) for i in range(n_cal)]
-    cal_embs = {l: [] for l in layers}
-    for i, arr in enumerate(cal_arrs):
-        h = extract_all(Image.fromarray(arr))
+    # Extract all embeddings
+    print("\n--- Extracting embeddings ---")
+    cal_embeds = {l: [] for l in layers}
+    for i in range(n_cal):
+        h = extract_hidden(model, processor, base_imgs[i], prompt, layers)
         for l in layers:
-            cal_embs[l].append(h[l])
-        print(f"  cal {i+1}/{n_cal}", flush=True)
+            cal_embeds[l].append(h[l])
+        if (i+1) % 5 == 0:
+            print(f"  Cal: {i+1}/{n_cal}")
 
-    # Compute centroids and covariance
-    centroids = {}
-    cov_invs = {}
-    for l in layers:
-        embs = np.array(cal_embs[l])
-        centroids[l] = embs.mean(axis=0)
-
-        # Regularized covariance inverse via PCA
-        centered = embs - centroids[l]
-        # Use SVD for numerically stable pseudo-inverse
-        U, S, Vt = np.linalg.svd(centered, full_matrices=False)
-        # Keep top-k components where k = min(n_cal-1, 100)
-        k = min(len(S), 100)
-        S_inv = np.zeros_like(S)
-        S_inv[:k] = 1.0 / (S[:k]**2 / (n_cal - 1) + 1e-6)
-        cov_invs[l] = Vt.T @ np.diag(S_inv) @ Vt
-        print(f"  L{l}: centroid computed, cov_inv via SVD (k={k}, max_S={S[0]:.4f})", flush=True)
-
-    # Test ID
-    print("\n--- Test ID ---", flush=True)
-    test_arrs = [creators[(i+n_cal)%3](i+n_cal) for i in range(n_test)]
-    id_embs = {l: [] for l in layers}
-    for arr in test_arrs:
-        h = extract_all(Image.fromarray(arr))
+    test_embeds = {l: [] for l in layers}
+    for i in range(n_cal, n_cal + n_test):
+        h = extract_hidden(model, processor, base_imgs[i], prompt, layers)
         for l in layers:
-            id_embs[l].append(h[l])
+            test_embeds[l].append(h[l])
 
-    # Test OOD
-    print("--- Test OOD ---", flush=True)
-    ood_transforms = {
-        "fog_60": lambda a: apply_fog(a, 0.6),
-        "night": apply_night,
-        "blur": apply_blur,
-        "noise": apply_noise,
-    }
-    ood_embs_all = {l: [] for l in layers}
-    ood_embs_per = {cat: {l: [] for l in layers} for cat in ood_transforms}
-    for cat, tfn in ood_transforms.items():
-        for arr in test_arrs:
-            h = extract_all(Image.fromarray(tfn(arr)))
+    ood_embeds = {ctype: {l: [] for l in layers} for ctype in corruption_types}
+    for ctype in corruption_types:
+        for i in range(n_test):
+            img = apply_corruption(base_imgs[i], ctype, rng)
+            h = extract_hidden(model, processor, img, prompt, layers)
             for l in layers:
-                ood_embs_all[l].append(h[l])
-                ood_embs_per[cat][l].append(h[l])
+                ood_embeds[ctype][l].append(h[l])
+        print(f"  {ctype}: done")
 
-    # Compare methods
-    print("\n--- Results ---", flush=True)
     results = {}
     for l in layers:
+        print(f"\n--- L{l} ---")
+        centroid = np.mean(cal_embeds[l], axis=0)
+
+        # Compute covariance pseudo-inverse for Mahalanobis
+        cal_matrix = np.array(cal_embeds[l])
+        centered = cal_matrix - centroid
+        U, S, Vt = np.linalg.svd(centered, full_matrices=False)
+        k = min(len(S), n_cal - 1)
+        S_inv = np.zeros_like(S)
+        S_inv[:k] = 1.0 / (S[:k]**2 / (n_cal - 1) + 1e-8)
+        cov_inv = Vt.T @ np.diag(S_inv) @ Vt
+
         layer_results = {}
+        for metric_name, dist_fn in [("cosine", lambda x, c=centroid: cosine_dist(x, c)),
+                                      ("euclidean", lambda x, c=centroid: euclidean_dist(x, c)),
+                                      ("mahalanobis", lambda x, c=centroid, ci=cov_inv: mahalanobis_dist(x, c, ci))]:
+            id_scores = [dist_fn(e) for e in test_embeds[l]]
+            per_corr = {}
+            ood_all = []
+            for ctype in corruption_types:
+                ood_scores = [dist_fn(e) for e in ood_embeds[ctype][l]]
+                ood_all.extend(ood_scores)
+                per_corr[ctype] = round(compute_auroc(id_scores, ood_scores), 4)
 
-        # Cosine distance
-        id_cos = [cosine_distance(e, centroids[l]) for e in id_embs[l]]
-        ood_cos = [cosine_distance(e, centroids[l]) for e in ood_embs_all[l]]
-        layer_results["cosine"] = {
-            "auroc": compute_auroc(id_cos, ood_cos),
-            "id_mean": float(np.mean(id_cos)),
-            "ood_mean": float(np.mean(ood_cos)),
-            "separation": float(np.mean(ood_cos) / (np.mean(id_cos) + 1e-10)),
-        }
-
-        # L2 distance
-        id_l2 = [l2_distance(e, centroids[l]) for e in id_embs[l]]
-        ood_l2 = [l2_distance(e, centroids[l]) for e in ood_embs_all[l]]
-        layer_results["l2"] = {
-            "auroc": compute_auroc(id_l2, ood_l2),
-            "id_mean": float(np.mean(id_l2)),
-            "ood_mean": float(np.mean(ood_l2)),
-            "separation": float(np.mean(ood_l2) / (np.mean(id_l2) + 1e-10)),
-        }
-
-        # Mahalanobis distance
-        id_maha = [mahalanobis_distance(e, centroids[l], cov_invs[l]) for e in id_embs[l]]
-        ood_maha = [mahalanobis_distance(e, centroids[l], cov_invs[l]) for e in ood_embs_all[l]]
-        layer_results["mahalanobis"] = {
-            "auroc": compute_auroc(id_maha, ood_maha),
-            "id_mean": float(np.mean(id_maha)),
-            "ood_mean": float(np.mean(ood_maha)),
-            "separation": float(np.mean(ood_maha) / (np.mean(id_maha) + 1e-10)),
-        }
-
-        # Per-category breakdown
-        per_cat = {}
-        for cat in ood_transforms:
-            cat_cos = [cosine_distance(e, centroids[l]) for e in ood_embs_per[cat][l]]
-            cat_l2 = [l2_distance(e, centroids[l]) for e in ood_embs_per[cat][l]]
-            cat_maha = [mahalanobis_distance(e, centroids[l], cov_invs[l]) for e in ood_embs_per[cat][l]]
-            per_cat[cat] = {
-                "cosine_auroc": compute_auroc(id_cos, cat_cos),
-                "l2_auroc": compute_auroc(id_l2, cat_l2),
-                "mahalanobis_auroc": compute_auroc(id_maha, cat_maha),
+            overall = round(compute_auroc(id_scores, ood_all), 4)
+            layer_results[metric_name] = {
+                "auroc": overall,
+                "per_corruption": per_corr,
+                "id_mean": round(float(np.mean(id_scores)), 6),
+                "ood_mean": round(float(np.mean(ood_all)), 6),
+                "id_std": round(float(np.std(id_scores)), 6),
+                "ood_std": round(float(np.std(ood_all)), 6),
             }
-        layer_results["per_category"] = per_cat
-
-        print(f"  L{l}:", flush=True)
-        print(f"    cosine     AUROC={layer_results['cosine']['auroc']:.4f} sep={layer_results['cosine']['separation']:.2f}", flush=True)
-        print(f"    L2         AUROC={layer_results['l2']['auroc']:.4f} sep={layer_results['l2']['separation']:.2f}", flush=True)
-        print(f"    mahalanobis AUROC={layer_results['mahalanobis']['auroc']:.4f} sep={layer_results['mahalanobis']['separation']:.2f}", flush=True)
+            print(f"  {metric_name}: AUROC={overall} | ID_mean={np.mean(id_scores):.6f} | OOD_mean={np.mean(ood_all):.6f}")
 
         results[f"L{l}"] = layer_results
 
-    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
-        "experiment": "mahalanobis_comparison",
-        "experiment_number": 195,
-        "timestamp": ts,
-        "n_cal": n_cal, "n_test": n_test,
+        "experiment": "distance_metric_comparison",
+        "experiment_number": 222,
+        "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
+        "n_cal": n_cal,
+        "n_test": n_test,
         "layers": layers,
+        "metrics": ["cosine", "euclidean", "mahalanobis"],
         "results": results,
     }
-    path = os.path.join(RESULTS_DIR, f"mahalanobis_comparison_{ts}.json")
-    with open(path, "w") as f:
+
+    out_path = f"/workspace/Vizuara-VLA-Research/experiments/distance_metrics_{output['timestamp']}.json"
+    with open(out_path, 'w') as f:
         json.dump(output, f, indent=2)
-    print(f"\nSaved: {path}")
+    print(f"\nSaved: {out_path}")
 
 if __name__ == "__main__":
     main()
