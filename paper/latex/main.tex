@@ -5042,4 +5042,20 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 555}: Perturbation scaling is \textbf{sub-linear}: 50,000 random pixel changes produce only 65$\times$ the distance of a single pixel change. The vision encoder's patch tokenization and attention pooling compress pixel-level noise, explaining why the model is robust to irrelevant variations while remaining sensitive to structured corruption.
 
+\subsection{Attention Pattern Analysis}
+
+\textbf{Experiment 266: Attention Under Corruption.} We extract attention weights from 6 layers (L0, L3, L7, L15, L23, L31) for clean and corrupted inputs, analyzing attention entropy, concentration, and the fraction directed to image tokens.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig275_attention.png}
+\caption{(a) Attention entropy change: night causes $-$31.6\% reduction at L31, blur $-$21\%. (b) Image attention fraction: L3 attends $<$1\% to image tokens; night reduces L31 image attention by 35\%. (c) Attention concentration increases under night and blur at deep layers.}
+\end{figure}
+
+\textbf{Finding 556}: Night causes \textbf{31.6\% attention entropy reduction at L31} --- the final layer becomes dramatically more focused, concentrating on fewer tokens. Blur similarly reduces L31 entropy by 21\%. This attention sharpening reflects the model ``locking onto'' specific (wrong) predictions rather than hedging.
+
+\textbf{Finding 557}: At L3 (the optimal detection layer), only \textbf{0.9\% of attention goes to image tokens}. The OOD signal at L3 propagates through the residual stream rather than through direct attention to image positions, explaining why detection works even with minimal direct image attention at early layers.
+
+\textbf{Finding 558}: Night \textbf{reduces} image attention at L31 by 35\% (18.2\%$\rightarrow$11.8\%), while blur \textbf{increases} it at L15 by 18\% (16.4\%$\rightarrow$19.3\%). These opposite strategies --- withdrawal from corrupted visual input vs. compensatory over-attention --- produce similarly wrong actions via different computational paths.
+
 \end{document}

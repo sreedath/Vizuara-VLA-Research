@@ -9865,3 +9865,48 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 283**: JPEG compression at quality 10 produces distance d=2.1×10⁻³, which is **78.5% of fog corruption**. For deployment, OOD detection must operate on uncompressed or lightly-compressed images (JPEG q≥50 is safe, d=2.2×10⁻⁴).
 
 **Finding 284**: Perturbation scaling is **sub-linear**: 50,000 random pixel changes produce only 65× the distance of 1 pixel change (not 50,000×). The model's vision encoder compresses pixel-level noise through patch tokenization and attention pooling.
+
+---
+
+## Experiment 266: Attention Pattern Analysis Under Corruption
+
+**Research Question**: How do attention patterns change under corruption? Do corrupted images receive different attention distributions?
+
+**Method**: Extract attention weights from 6 layers (L0, L3, L7, L15, L23, L31) for clean and 4 corruptions. Analyze last-token attention entropy, max attention weight, and fraction of attention directed to image tokens.
+
+**Results**:
+
+**Attention Entropy Changes (% from clean)**:
+
+| Layer | Fog | Night | Noise | Blur |
+|-------|-----|-------|-------|------|
+| L0 | -2.0% | -1.5% | +1.0% | +1.4% |
+| L3 | +4.7% | -4.3% | -1.9% | -1.4% |
+| L7 | -3.0% | -4.6% | +1.2% | +0.9% |
+| L15 | +3.9% | +1.6% | +2.3% | +3.3% |
+| L23 | +4.8% | -7.2% | -4.3% | +3.1% |
+| L31 | **-8.2%** | **-31.6%** | -1.8% | **-21.0%** |
+
+**Image Attention Fraction**:
+
+| Condition | L0 | L3 | L15 | L31 |
+|-----------|------|------|------|------|
+| Clean | 0.325 | 0.009 | 0.164 | 0.182 |
+| Fog | 0.299 | 0.008 | 0.137 | 0.131 |
+| Night | 0.304 | 0.007 | 0.164 | 0.118 |
+| Noise | 0.337 | 0.009 | 0.160 | 0.177 |
+| Blur | 0.339 | 0.011 | 0.193 | 0.187 |
+
+**Key Findings**:
+1. **Night causes 31.6% entropy reduction at L31**: The model's final layer becomes dramatically more focused under night conditions — concentrating attention on fewer tokens rather than distributing it broadly.
+2. **Blur causes 21.0% entropy reduction at L31**: Similar concentration effect, though weaker than night.
+3. **Noise has minimal attention impact**: <5% entropy change at all layers, consistent with noise being hardest to detect.
+4. **L3 gives only 0.9% attention to image tokens**: At the layer optimal for OOD detection, the model barely attends to image tokens from the last-token position. The OOD signal propagates through the residual stream, not through direct image attention.
+5. **Night reduces image attention at L31 by 35%**: From 18.2% to 11.8%. The darkened image receives less attention as the model "gives up" on extracting visual information.
+6. **Blur INCREASES image attention at L15**: From 16.4% to 19.3%. The model compensates for blur by attending more to the image mid-network.
+
+**Finding 285**: Night causes **31.6% attention entropy reduction at L31** — the final layer becomes dramatically more focused, concentrating on fewer tokens. This attention sharpening is consistent with the model "locking onto" specific (wrong) predictions under night conditions.
+
+**Finding 286**: At L3 (the optimal detection layer), only **0.9% of attention goes to image tokens**. The OOD signal at L3 propagates through the residual stream, not through direct attention to image positions — explaining why OOD detection works even with minimal direct image attention.
+
+**Finding 287**: Night **reduces** image attention at L31 by 35% (18.2%→11.8%), while blur **increases** it at L15 by 18% (16.4%→19.3%). These opposite attention strategies — withdrawal vs compensation — produce similarly wrong actions but via different computational paths.
