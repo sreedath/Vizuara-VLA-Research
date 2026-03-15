@@ -1,0 +1,76 @@
+{
+  "experiment": "ensemble_scoring",
+  "experiment_number": 158,
+  "timestamp": "20260315_021142",
+  "n_cal": 10,
+  "n_test_id": 8,
+  "n_ood_per_cat": 5,
+  "layers": [
+    3,
+    32
+  ],
+  "individual_aurocs": {
+    "cos_L3": 0.9791666666666666,
+    "recon_L3": 1.0,
+    "maha_L3": 1.0,
+    "cos_L32": 0.9916666666666667,
+    "recon_L32": 0.9958333333333333,
+    "maha_L32": 0.8291666666666667
+  },
+  "ensemble_aurocs": {
+    "cos_L3+L32": 0.9916666666666667,
+    "maha_L3+L32": 0.8291666666666667,
+    "recon_L3+L32": 1.0,
+    "cos+maha_L3": 1.0,
+    "cos+maha_L32": 0.8291666666666667,
+    "cos+recon_L3": 1.0,
+    "all_L3": 1.0,
+    "all_L32": 0.8291666666666667,
+    "all_6": 0.8291666666666667,
+    "cos_L3+maha_L3+cos_L32": 1.0
+  },
+  "per_category_aurocs": {
+    "cos_L3+L32": {
+      "fog_30": 0.95,
+      "fog_60": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0,
+      "occlusion": 1.0
+    },
+    "all_6": {
+      "fog_30": 0.65,
+      "fog_60": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 0.95,
+      "occlusion": 0.375
+    },
+    "cos_L3+maha_L3+cos_L32": {
+      "fog_30": 1.0,
+      "fog_60": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0,
+      "occlusion": 1.0
+    }
+  },
+  "cal_stats": {
+    "3": {
+      "cos_mean": 0.00037128329277038576,
+      "cos_std": 3.9067445537311394e-05,
+      "recon_mean": 0.028881926089525223,
+      "recon_std": 0.004917828366160393,
+      "maha_mean": 2.9868621587753297,
+      "maha_std": 0.004209892387822958
+    },
+    "32": {
+      "cos_mean": 0.10012496709823608,
+      "cos_std": 0.006529273702055793,
+      "recon_mean": 11.93342113494873,
+      "recon_std": 2.3721728324890137,
+      "maha_mean": 2.999999833106995,
+      "maha_std": 1.5266237824995158e-07
+    }
+  }
+}

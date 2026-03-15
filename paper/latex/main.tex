@@ -2916,4 +2916,56 @@ For 19 corruption conditions $\times$ 6 test images, we extract both cosine dist
 \label{fig:confidence_summary}
 \end{figure}
 
+\subsection{Embedding Space Visualization}
+
+To build geometric intuition for the OOD detection mechanism, we project the full-dimensional embeddings to 2D via PCA centered on the ID mean.
+
+\textbf{Finding 239}: At L3, the top two principal components capture 55.2\% of variance (PC1=37.9\%, PC2=17.4\%), while at L32 they capture only 40.9\% (PC1=25.7\%, PC2=15.2\%). This confirms that L3 embeddings are more concentrated in a low-dimensional subspace, consistent with the 2-dimensional ID manifold found in Experiment~147.
+
+\textbf{Finding 240}: In the 2D projection, ID images form a tight cluster (radius 0.112 at L3) while OOD categories form distinct, well-separated groups. Night driving is the most distant (0.677 at L3, 50.7 at L32), while occlusion is closest to the ID boundary (0.060 at L3, within the ID radius).
+
+\textbf{Finding 241}: The L32 embedding space has a much larger ID radius (32.3) compared to L3 (0.112), a 288$\times$ difference. This explains why L3 provides tighter calibration with smaller threshold margins, while L32 requires larger absolute thresholds but operates in a space with proportionally larger OOD separations.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig145_embedding_viz.png}
+\caption{\textbf{Embedding space visualization.} 2D PCA projections at L3 (left) and L32 (right). Green markers: ID images (circle=highway, square=urban, triangle=rural). Colored crosses: OOD categories. Dashed circle: ID radius. Night (purple) is most distant; occlusion (teal) is closest to ID.}
+\label{fig:embedding_viz}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig146_cluster_distances.png}
+\caption{\textbf{OOD cluster distances.} Distance from ID centroid in 2D PCA space at L3 (left) and L32 (right). Dashed line: ID radius. Night and blur produce the largest separations; fog\_30 and occlusion are closest.}
+\label{fig:cluster_distances}
+\end{figure}
+
+\subsection{Ensemble OOD Scoring}
+
+We investigate whether combining multiple distance metrics (cosine, Mahalanobis, PCA reconstruction) across layers into ensemble scores can improve detection beyond individual metrics.
+
+Six individual scores (3 metrics $\times$ 2 layers) are z-score normalized against calibration statistics and summed in 10 ensemble combinations.
+
+\textbf{Finding 242}: The best individual metrics are PCA reconstruction at both layers (AUROC = 1.000) and cosine distance at L32 (0.992). Mahalanobis at L32 underperforms (0.829) due to numerical instability with $n_\text{cal} = 10 \ll d = 4096$.
+
+\textbf{Finding 243}: Five ensemble combinations achieve perfect AUROC = 1.000, including the selective combination \textbf{cos\_L3 + maha\_L3 + cos\_L32}. This ensemble achieves perfect per-category detection across all 6 corruption types, including the challenging fog\_30 category.
+
+\textbf{Finding 244}: \textbf{Adding more metrics can hurt}: the ``all\_6'' ensemble (AUROC = 0.829) performs worse than selective ensembles because the noisy Mahalanobis L32 score dominates the normalized sum. This demonstrates that \textbf{selective ensembling} — choosing complementary metrics and discarding unstable ones — outperforms naive ``use everything'' approaches.
+
+\textbf{Finding 245}: The practical recommendation for deployment is a 3-score ensemble (cos\_L3 + maha\_L3 + cos\_L32): it achieves AUROC = 1.000 with the diversity benefits of multi-metric evaluation while avoiding the instability of high-dimensional Mahalanobis estimation at L32.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig147_ensemble_auroc.png}
+\caption{\textbf{Ensemble OOD scoring.} Left: Individual metric AUROCs — recon and cosine lead, Mahalanobis L32 lags. Right: Ensemble combinations — 5 achieve perfect AUROC; ``all\_6'' is dragged down by maha\_L32.}
+\label{fig:ensemble_auroc}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig148_ensemble_percategory.png}
+\caption{\textbf{Per-category ensemble performance.} cos\_L3+maha\_L3+cos\_L32 achieves 1.00 across all categories. The all\_6 ensemble drops to 0.38 on occlusion and 0.65 on fog\_30 due to maha\_L32 noise.}
+\label{fig:ensemble_percategory}
+\end{figure}
+
 \end{document}

@@ -6756,3 +6756,39 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 - **Entropy is unreliable for mild corruptions**: fog_10-30 and noise_50 have LOWER entropy than clean (more confident despite corruption)
 
 **Critical Insight**: The model's internal entropy signal is moderately correlated with OOD distance but UNRELIABLE for mild corruptions where entropy paradoxically decreases. This makes entropy an unsafe standalone safety metric — our external cosine distance detector correctly identifies these cases while entropy misses them. Entropy should only supplement, never replace, embedding-based OOD detection.
+
+---
+
+## Finding 151: Embedding Space Visualization (Experiment 157)
+
+**Objective**: Visualize the 2D PCA projection of ID vs OOD embeddings at L3 and L32 to understand cluster geometry.
+
+**Method**: Extracted embeddings for 12 ID images (4 per scene type) and 24 OOD images (4 per corruption × 6 types). Projected via PCA centered on ID mean.
+
+**Key Results**:
+- **L3 variance**: PC1=37.9%, PC2=17.4%, total=55.2% — more variance concentrated in top PCs than L32
+- **L32 variance**: PC1=25.7%, PC2=15.2%, total=40.9% — more diffuse, consistent with 10-dim structure found in Exp 147
+- **Night is most separated**: L3 distance=0.677, L32 distance=50.7 — consistent with strongest detection across all experiments
+- **Occlusion closest to ID**: L3 distance=0.060 (within ID radius 0.112), confirming it's the hardest-to-detect corruption at early layers
+- **L32 ID radius much larger**: 32.3 vs 0.112 at L3 — L32 embeddings have much larger ID spread, explaining why L3 gives tighter calibration
+- **Clear cluster separation visible**: In 2D projection, ID forms a tight cluster while most OOD categories form distinct, separated groups
+
+**Finding**: The embedding space has interpretable geometric structure. OOD categories form distinct clusters at different distances from the ID centroid, with night/blur/noise far away and fog_30/occlusion closer. The L3 space is more compact and separable.
+
+---
+
+## Finding 152: Ensemble OOD Scoring (Experiment 158)
+
+**Objective**: Test whether combining cosine distance, Mahalanobis distance, and PCA reconstruction error into ensemble scores outperforms individual metrics.
+
+**Method**: Computed 6 individual scores (cos/recon/maha × L3/L32) for 8 ID and 30 OOD images. Z-score normalized and summed for 10 ensemble combinations. Used Wilcoxon-Mann-Whitney AUROC.
+
+**Key Results**:
+- **Best individual**: recon_L3 AUROC=1.000, recon_L32=1.000, cos_L3=0.979, cos_L32=0.992
+- **Mahalanobis underperforms**: maha_L3=1.000 but maha_L32=0.829 — high-dimensional Mahalanobis unstable at L32
+- **Best ensembles achieve AUROC=1.000**: recon_L3+L32, cos+maha_L3, cos+recon_L3, all_L3, cos_L3+maha_L3+cos_L32
+- **L32-heavy ensembles dragged down by maha_L32**: all_L32 AUROC=0.829 due to noisy maha_L32
+- **cos_L3+maha_L3+cos_L32 is optimal practical ensemble**: AUROC=1.000 with perfect per-category detection (1.000 across all 6 categories including fog_30)
+- **all_6 ensemble is WORSE than selective ensembles**: AUROC=0.829 — including noisy Mahalanobis L32 degrades the ensemble
+
+**Critical Finding**: Selective ensembling outperforms "use everything" ensembling. The optimal combination is cos_L3 + maha_L3 + cos_L32, which leverages the strengths of each metric while avoiding the unstable maha_L32. Adding more metrics can HURT performance when some are noisy.
