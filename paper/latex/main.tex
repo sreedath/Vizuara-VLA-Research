@@ -7057,4 +7057,25 @@ We test OOD detection across 20 diverse prompts --- ranging from short (``Robot 
 
 \textbf{Finding 951}: \textbf{Deployment requirement: calibration prompt must match deployment prompt.} This is trivially satisfiable since the prompt is a design choice, but failure to enforce it can degrade detection by up to 35\%.
 
+\subsection{Experiment 371: Multi-Layer Ensemble Detection}
+
+We evaluate whether combining detectors from multiple hidden layers (1--32) improves upon single-layer detection, testing max, mean, and voting ensemble strategies.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig380_ensemble.png}
+\caption{Multi-layer ensemble detection. Top-left: per-layer AUROC shows L0 is random chance while L1+ achieves near-perfect. Top-middle: ensemble methods compared to single-best layer. Top-right: layer voting --- noise detected by only 10.7/33 layers. Bottom: noise per-layer analysis shows L8 as optimal.}
+\label{fig:ensemble}
+\end{figure}
+
+\textbf{Finding 952}: \textbf{Layer 0 (token embedding) has AUROC=0.50 for all corruptions.} Corruption information is completely absent from input embeddings and emerges entirely through transformer processing --- the corruption signal is \emph{created} by the model, not \emph{inherited} from input tokenization.
+
+\textbf{Finding 953}: \textbf{A single optimal layer outperforms all ensemble methods.} Ensembles actually \emph{degrade} noise detection from 0.991 (single L7) to 0.858 (mean ensemble) by averaging in noisy layers. The optimal strategy is single-layer detection, not multi-layer fusion.
+
+\textbf{Finding 954}: \textbf{Only 10.7/33 layers detect noise, vs 30--32/33 for other corruptions.} Noise produces a subtle shift that most transformer layers fail to amplify into a detectable signal, confirming noise's unique difficulty at the architectural level.
+
+\textbf{Finding 955}: \textbf{The best noise detection layer is L8 (early-middle), not the default L3.} Noise information is captured best in earlier layers before subsequent transformer processing smooths it out. Layer selection should be corruption-aware for optimal detection.
+
+\textbf{Finding 956}: \textbf{Cross-layer correlations are moderate (0.28--0.47).} Different layers encode partially independent corruption information, but this independence provides no benefit when individual layers already achieve AUROC=1.0 for most corruptions.
+
 \end{document}

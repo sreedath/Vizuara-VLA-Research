@@ -15323,3 +15323,42 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 699**: For deployed systems, the calibration prompt MUST match the deployment prompt. This is a trivial requirement (since the prompt is a design choice, not a runtime variable) but failure to enforce it degrades detection by up to 35%.
 
+
+## Experiment 371: Multi-Layer Ensemble Detection
+
+**Script**: `scripts/real_vla_multilayer_ensemble.py`
+**Result**: `experiments/multilayer_ensemble_20260315_160400.json`
+**Figure**: `figures/fig380_ensemble.png`
+
+### Key Results
+
+**Per-Layer AUROC**:
+- L0 (embedding): AUROC=0.50 for all (random chance — no corruption info)
+- L1-L32: Most achieve AUROC=1.0 for fog/night/blur
+- Noise: L8 best (AUROC=1.0), some layers <1.0
+
+**Ensemble Methods (6-layer subset)**:
+| Method | Fog | Night | Noise | Blur |
+|--------|-----|-------|-------|------|
+| Max | 0.987 | 1.000 | 0.822 | 1.000 |
+| Mean | 0.996 | 1.000 | 0.858 | 1.000 |
+| Sum | 0.996 | 1.000 | 0.858 | 1.000 |
+| Single Best | 1.000 | 1.000 | 0.991 | 1.000 |
+
+**Layer Voting (out of 33)**:
+- Fog: 30.2/33, Night: 32.0/33, Noise: 10.7/33, Blur: 32.0/33
+
+**Layer Correlation**: 0.28-0.47 (moderate, layers provide partially independent info)
+
+### Findings
+
+**Finding 700**: Layer 0 (token embedding) has AUROC=0.50 (random chance) for ALL corruptions. Corruption information is ABSENT from the input token embeddings and emerges entirely through the transformer layers.
+
+**Finding 701**: A single optimal layer (L1 for fog/night/blur, L8 for noise) outperforms all ensemble methods. Ensembles actually DEGRADE noise detection from 0.991 to 0.858 by averaging in noisy layers.
+
+**Finding 702**: Layer voting reveals noise is the hardest corruption: only 10.7/33 layers detect noise vs 30-32/33 for other types. Noise produces a subtle embedding shift that most layers miss.
+
+**Finding 703**: Cross-layer distance correlations are moderate (0.28-0.47), confirming that different layers encode partially independent corruption information — but this independence doesn't help when individual layers already achieve AUROC=1.0.
+
+**Finding 704**: The best noise detection layer is L8 (AUROC=1.000, gap=0.000003), an early-middle layer. Earlier layers capture noise before it gets smoothed out by subsequent transformer processing.
+
