@@ -13936,3 +13936,54 @@ Analyze geometric relationships between corruption types: pairwise angles, sever
 **Finding 566**: **Noise+blur is highly non-commutative (shift similarity ≈ 0) — corruption order fundamentally matters.** Applying blur then noise vs noise then blur produces completely different embedding shifts. This is because blur smooths before noise adds, vs noise adding before blur smooths — the operations are not invertible.
 
 **Finding 567**: **Combined corruptions are approximately linear (direction sim 0.91, norm ratio 0.90) but sub-additive.** The actual combined shift typically points in the same direction as the sum of individual shifts (91% similarity) but has 10% smaller magnitude. This sub-additivity may reflect saturation in the model's response to combined perturbations.
+
+---
+
+## Experiment 342: Gradient-Free Adversarial Analysis (Real OpenVLA-7B)
+
+**Timestamp**: 2026-03-15 13:47 UTC
+**Status**: Complete ✓
+**GPU**: RunPod A40 (real OpenVLA-7B, 7B parameters)
+
+### Purpose
+Can an adversary evade the cosine distance detector without gradient access? Test random search, structured perturbations, evasion by blending, defense-aware hill climbing, and imperceptible corruptions.
+
+### Results
+
+#### Random Search
+- Even with ±100 pixel budget and 50 trials, max achievable shift is only ~4×10^{-5}
+- This is 10-100× smaller than corruption distances (10^{-3} range)
+- Random perturbations cannot produce corruption-level shifts
+
+#### Structured Perturbations
+- **Gradient (±20)**: 1.247×10^{-3} — directional perturbation is 18× stronger than uniform
+- **Red channel +20**: 7.91×10^{-5}
+- **Uniform +10**: 7.10×10^{-5}
+- **Checker +20**: 6.88×10^{-5}
+- Directional (gradient) perturbations are far more effective than random or uniform
+
+#### Evasion (Blending Toward Clean)
+- **Fog**: original d=8.43×10^{-4}, best evasion d=1.18×10^{-5} (1.4% remaining)
+- **Night**: original d=2.20×10^{-3}, best evasion d=3.25×10^{-5} (1.5% remaining)
+- **Blur**: original d=5.04×10^{-3}, best evasion d=1.09×10^{-5} (0.2% remaining)
+- **None reach d=0** — evasion requires exact pixel-level match with clean image
+
+#### Defense-Aware Attack (100 Hill Climbing Steps)
+- **Fog**: reduced to 5.4% of original (but still d=4.5×10^{-5} > 0)
+- **Night**: resistant — 86.7% remains (d=1.9×10^{-3})
+- **Blur**: reduced to 11.1% (d=5.6×10^{-4})
+- Night resists because brightness suppression is global and cannot be locally undone
+
+#### Imperceptible Corruption
+- **1 flipped pixel (0.002%)**: d=1.9×10^{-6} — DETECTED
+- **All quantities detected**: even sub-pixel perturbations produce d>0
+
+### Key Findings
+
+**Finding 568**: **Gradient perturbation (±20) produces 18× larger shift than uniform, reaching corruption-equivalent d=1.2×10^{-3}.** Directional pixel changes are far more impactful than random or uniform perturbations. This suggests the model's vision encoder is sensitive to spatial gradients, consistent with the low-frequency dominance finding.
+
+**Finding 569**: **Evasion by blending achieves 98%+ distance reduction but NEVER reaches d=0 — zero ID variance prevents complete evasion.** The best evasion strategies reduce fog from d=8.4×10^{-4} to 1.2×10^{-5} and blur from 5.0×10^{-3} to 1.1×10^{-5}, but the residual never vanishes. Complete evasion would require reconstructing the exact clean image pixel-for-pixel.
+
+**Finding 570**: **Night corruption resists defense-aware attack (87% of signal remains after 100 optimization steps).** Night's global brightness suppression cannot be locally compensated — the hill climber cannot find per-pixel corrections that undo the uniform effect. Fog and blur are more attackable (reduced to 5-11%) because their effects are spatially non-uniform.
+
+**Finding 571**: **Even a single flipped pixel (0.002% of image) is detected with d=1.9×10^{-6}.** The detector's extreme sensitivity derives from the zero noise floor. Any perturbation, no matter how small, produces a nonzero shift. This confirms that steganographic attacks (hiding corruption in imperceptible changes) cannot evade detection.

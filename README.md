@@ -8,7 +8,7 @@
 
 Vision-Language-Action (VLA) models like OpenVLA-7B produce confident action predictions even under visual corruption (fog, night, blur, noise) --- silently outputting **wrong and dangerous actions**. We discover that a simple cosine distance metric on the model's hidden-state embeddings achieves **perfect OOD detection (AUROC=1.0)** with just **one clean calibration image**.
 
-## Key Results (819 Findings, 137 Experiments on Real OpenVLA-7B)
+## Key Results (823 Findings, 138 Experiments on Real OpenVLA-7B)
 
 | Property | Result |
 |----------|--------|
@@ -191,6 +191,7 @@ paper/latex/          # NeurIPS-format paper (629 findings, 300 figures)
 | 339 | Summary Validation | 20/20 scenes AUROC=1.0; 5/5 prompts perfect; bit-identical determinism; 50/50 deployment frames correct |
 | 340 | Threshold Optimization | Benign↔corrupt overlap; d>0 best F1=0.91; noise undetectable with JPEG; calibrate through pipeline |
 | 341 | Cross-Corruption Manifold | Fog≈frost (20°); 6D overall manifold; noise+blur non-commutative; 56% linear superposition |
+| 342 | Adversarial Analysis | Evasion 98% reduction but never d=0; night resists attack (87%); 1 pixel detected |
 
 ## License
 

@@ -1,0 +1,117 @@
+{
+  "random_search": {
+    "1": {
+      "best_distance": 4.112720489501953e-06,
+      "n_trials": 50
+    },
+    "5": {
+      "best_distance": 3.814697265625e-06,
+      "n_trials": 50
+    },
+    "10": {
+      "best_distance": 4.410743713378906e-05,
+      "n_trials": 50
+    },
+    "20": {
+      "best_distance": 2.6106834411621094e-05,
+      "n_trials": 50
+    },
+    "50": {
+      "best_distance": 2.6464462280273438e-05,
+      "n_trials": 50
+    },
+    "100": {
+      "best_distance": 4.297494888305664e-05,
+      "n_trials": 50
+    }
+  },
+  "structured": {
+    "channel_red_+20": 7.909536361694336e-05,
+    "channel_green_+20": 3.910064697265625e-05,
+    "channel_blue_+20": 4.607439041137695e-05,
+    "uniform_+10": 7.104873657226562e-05,
+    "checker_+20": 6.884336471557617e-05,
+    "gradient_\u00b120": 0.001247107982635498
+  },
+  "evasion": {
+    "fog": {
+      "original_dist": 0.0008426308631896973,
+      "reverse_dist": 0.0008768439292907715,
+      "best_evasion_dist": 1.1801719665527344e-05,
+      "evasion_ratio": 0.01400580070912838,
+      "evasion_successful": false
+    },
+    "night": {
+      "original_dist": 0.0021948814392089844,
+      "reverse_dist": 0.0010148286819458008,
+      "best_evasion_dist": 3.248453140258789e-05,
+      "evasion_ratio": 0.014800130389630795,
+      "evasion_successful": false
+    },
+    "blur": {
+      "original_dist": 0.005036652088165283,
+      "reverse_dist": 0.0006368160247802734,
+      "best_evasion_dist": 1.0907649993896484e-05,
+      "evasion_ratio": 0.002165654907003045,
+      "evasion_successful": false
+    }
+  },
+  "defense_aware": {
+    "fog": {
+      "original_dist": 0.0008426308631896973,
+      "best_attacked_dist": 4.51207160949707e-05,
+      "reduction_ratio": 0.05354742705821991,
+      "n_evaluations": 100,
+      "remaining_visual_diff": 0.08982038497924805,
+      "evasion_successful": false
+    },
+    "night": {
+      "original_dist": 0.0021948814392089844,
+      "best_attacked_dist": 0.0019024014472961426,
+      "reduction_ratio": 0.8667445182800293,
+      "n_evaluations": 100,
+      "remaining_visual_diff": 0.2572615444660187,
+      "evasion_successful": false
+    },
+    "blur": {
+      "original_dist": 0.005036652088165283,
+      "best_attacked_dist": 0.0005581378936767578,
+      "reduction_ratio": 0.11081525683403015,
+      "n_evaluations": 100,
+      "remaining_visual_diff": 0.17073625326156616,
+      "evasion_successful": false
+    }
+  },
+  "imperceptible": {
+    "1": {
+      "distance": 1.9073486328125e-06,
+      "detected": true,
+      "pct_pixels": 0.001992984693877551
+    },
+    "5": {
+      "distance": 1.9073486328125e-06,
+      "detected": true,
+      "pct_pixels": 0.009964923469387755
+    },
+    "10": {
+      "distance": 2.9206275939941406e-06,
+      "detected": true,
+      "pct_pixels": 0.01992984693877551
+    },
+    "50": {
+      "distance": 3.993511199951172e-06,
+      "detected": true,
+      "pct_pixels": 0.09964923469387756
+    },
+    "100": {
+      "distance": 2.5093555450439453e-05,
+      "detected": true,
+      "pct_pixels": 0.1992984693877551
+    },
+    "500": {
+      "distance": 1.049041748046875e-05,
+      "detected": true,
+      "pct_pixels": 0.9964923469387755
+    }
+  }
+}
