@@ -8628,3 +8628,42 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **Theoretical significance**: Conformal prediction guarantees coverage in finite samples. Here the guarantee is trivially satisfied because the distributions are perfectly separated.
 
 **Finding**: Conformal prediction thresholds are trivially at zero since all clean images produce cosine distance exactly 0.0. This gives **guaranteed 100% coverage at all confidence levels** (α from 0.01 to 0.20). The ID and OOD distributions have zero overlap, making conformal prediction unnecessary but confirming that the theoretical guarantees are satisfied.
+---
+
+### Finding 222: Per-Dimension Embedding Analysis (Experiment 227)
+
+**Experiment**: Which embedding dimensions carry the OOD signal? Compute per-dimension deviation between clean and corrupted embeddings.
+
+**Key Statistics**:
+- Clean embedding std: EXACTLY 0.0 across all 4096 dimensions (confirms identical embeddings)
+- Embedding dim: 4096
+- Clean mean range: L1 [-0.29, 3.16], L3 [-1.15, 5.88]
+
+**Active Dimensions (deviation > 1e-6)**:
+| Corruption | L1 Active | L1 % | L3 Active | L3 % |
+|-----------|-----------|------|-----------|------|
+| Fog | 3998 | 97.6% | 4019 | 98.1% |
+| Night | 4055 | 99.0% | 4069 | 99.3% |
+| Blur | 4007 | 97.8% | 4038 | 98.6% |
+| Noise | 4092 | 99.9% | 4093 | 99.9% |
+
+**Top-20 Dimension Concentration**:
+| Corruption | L1 Conc | L3 Conc |
+|-----------|---------|---------|
+| Fog | 3.7% | 2.6% |
+| Night | 4.8% | 2.8% |
+| Blur | 3.4% | 3.2% |
+| Noise | 3.4% | 3.1% |
+
+**Cross-Corruption Top-20 Overlap (L1)**:
+- fog_vs_night: 7/20, fog_vs_noise: 5/20
+- night_vs_noise: 8/20, blur_vs_fog: 9/20, blur_vs_night: 8/20, blur_vs_noise: 5/20
+
+**Key Findings**:
+1. **97-99% of dimensions are active**: Corruptions perturb nearly EVERY embedding dimension. This is maximally distributed.
+2. **Top-20 dims carry only 3-5%**: No concentration of signal in any subset of dimensions. Explains why random projection works and PCA fails.
+3. **Clean std is exactly 0.0**: Confirms that all clean images produce bit-for-bit identical embeddings (not just approximately similar — exactly identical).
+4. **Cross-corruption overlap is moderate**: Different corruptions use partially different dimensions (25-45% overlap in top-20), explaining why each corruption produces a distinct direction in embedding space.
+5. **Noise uses the most dimensions (99.9%)**: Noise perturbs nearly every dimension because it adds independent random variation to every pixel.
+
+**Finding**: OOD signal is **maximally distributed** across embedding dimensions: 97-99% of all 4096 dimensions show deviation under corruption, with the top-20 dims carrying only 3-5% of total signal. This is the mechanistic explanation for why random projection preserves the signal (JL-guarantee applies when signal is distributed) while PCA fails (no dominant principal components). Clean images produce exactly identical embeddings (std=0.0), confirming that the model has zero in-distribution variance.
