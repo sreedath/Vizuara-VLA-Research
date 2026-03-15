@@ -1,0 +1,68 @@
+{
+  "experiment": "novel_scene",
+  "experiment_number": 243,
+  "timestamp": "20260315_073054",
+  "layer": 3,
+  "scene_types": [
+    "driving",
+    "indoor",
+    "warehouse",
+    "outdoor_park",
+    "kitchen"
+  ],
+  "scene_distances_to_driving": {
+    "driving": 0.0,
+    "indoor": 0.001463,
+    "warehouse": 0.002087,
+    "outdoor_park": 0.002031,
+    "kitchen": 0.00189
+  },
+  "corruption_distances": {
+    "fog": 0.000698,
+    "night": 0.003403,
+    "noise": 0.002883
+  },
+  "auroc_novel_vs_corruption": 0.6667,
+  "per_scene_results": {
+    "driving": {
+      "corruption_dists": {
+        "fog": 0.000698,
+        "night": 0.003403,
+        "noise": 0.002883
+      },
+      "auroc": 1.0
+    },
+    "indoor": {
+      "corruption_dists": {
+        "fog": 0.000397,
+        "night": 0.004691,
+        "noise": 0.002129
+      },
+      "auroc": 1.0
+    },
+    "warehouse": {
+      "corruption_dists": {
+        "fog": 0.000473,
+        "night": 0.00475,
+        "noise": 0.001789
+      },
+      "auroc": 1.0
+    },
+    "outdoor_park": {
+      "corruption_dists": {
+        "fog": 0.002278,
+        "night": 0.003725,
+        "noise": 0.002042
+      },
+      "auroc": 1.0
+    },
+    "kitchen": {
+      "corruption_dists": {
+        "fog": 0.000163,
+        "night": 0.005656,
+        "noise": 0.001398
+      },
+      "auroc": 1.0
+    }
+  }
+}

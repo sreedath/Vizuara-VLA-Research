@@ -1,0 +1,81 @@
+{
+  "experiment": "geometry",
+  "experiment_number": 244,
+  "timestamp": "20260315_073205",
+  "layer": 3,
+  "pairwise_angles": {
+    "fog_vs_night": {
+      "cosine_similarity": -0.120213,
+      "angle_degrees": 96.9
+    },
+    "fog_vs_noise": {
+      "cosine_similarity": 0.061728,
+      "angle_degrees": 86.46
+    },
+    "fog_vs_blur": {
+      "cosine_similarity": 0.056317,
+      "angle_degrees": 86.77
+    },
+    "fog_vs_snow": {
+      "cosine_similarity": 0.278774,
+      "angle_degrees": 73.81
+    },
+    "fog_vs_rain": {
+      "cosine_similarity": -0.082323,
+      "angle_degrees": 94.72
+    },
+    "night_vs_noise": {
+      "cosine_similarity": -0.128531,
+      "angle_degrees": 97.38
+    },
+    "night_vs_blur": {
+      "cosine_similarity": 0.056767,
+      "angle_degrees": 86.75
+    },
+    "night_vs_snow": {
+      "cosine_similarity": -0.212118,
+      "angle_degrees": 102.25
+    },
+    "night_vs_rain": {
+      "cosine_similarity": 0.043098,
+      "angle_degrees": 87.53
+    },
+    "noise_vs_blur": {
+      "cosine_similarity": 0.266229,
+      "angle_degrees": 74.56
+    },
+    "noise_vs_snow": {
+      "cosine_similarity": 0.864182,
+      "angle_degrees": 30.21
+    },
+    "noise_vs_rain": {
+      "cosine_similarity": 0.65228,
+      "angle_degrees": 49.29
+    },
+    "blur_vs_snow": {
+      "cosine_similarity": 0.136106,
+      "angle_degrees": 82.18
+    },
+    "blur_vs_rain": {
+      "cosine_similarity": 0.149149,
+      "angle_degrees": 81.42
+    },
+    "snow_vs_rain": {
+      "cosine_similarity": 0.684303,
+      "angle_degrees": 46.82
+    }
+  },
+  "effective_dimensions": {
+    "fog": 2433.6,
+    "night": 2383.9,
+    "noise": 2291.8,
+    "blur": 2154.6,
+    "snow": 2410.2,
+    "rain": 2493.5
+  },
+  "summary": {
+    "mean_angle": 78.47,
+    "min_angle": 30.21,
+    "max_angle": 102.25
+  }
+}

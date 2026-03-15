@@ -9075,3 +9075,68 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **Fog and night are resolution-invariant**: Fog distance stays ~0.0007 across all resolutions. Night stays ~0.0034.
 
 **Finding 237**: Detection achieves **AUROC=1.0 across all resolutions** (64×64 to 1024×1024) with cross-resolution transfer. A single centroid from 256×256 works at any resolution. Resolution-specific calibration is unnecessary.
+
+---
+
+## Experiment 243: Novel Scene Detection
+
+**Research Question**: Can the detector distinguish visual corruptions from legitimate scene changes? Tests 5 different scene types (driving, indoor, warehouse, outdoor_park, kitchen).
+
+**Method**: Compute distances of novel clean scenes and corrupted driving images to the driving centroid. Test whether per-scene calibration preserves AUROC=1.0.
+
+**Results**:
+
+**Distances to driving centroid**:
+| Source | Distance |
+|--------|---------|
+| Driving (clean) | 0.000000 |
+| Fog corruption | 0.000698 |
+| Indoor scene | 0.001463 |
+| Kitchen scene | 0.001890 |
+| Outdoor park | 0.002031 |
+| Warehouse | 0.002087 |
+| Noise corruption | 0.002883 |
+| Night corruption | 0.003403 |
+
+**AUROC novel scenes vs corruptions: 0.67** — cannot reliably separate!
+
+**Per-scene calibration AUROC: 1.0 for ALL 5 scene types** — perfect detection with scene-specific centroid.
+
+**Key Findings**:
+1. **Novel scenes and corruptions overlap in distance**: Indoor (0.001463) falls between fog (0.000698) and noise (0.002883). A fixed threshold would either miss fog or false-alarm on novel scenes.
+2. **Per-scene calibration solves the problem**: With a centroid from each scene's own clean image, AUROC=1.0 for all 5 scene types.
+3. **Night is the most robust corruption**: Night distances are large (0.003-0.006) across all scenes, always exceeding any novel-scene distance.
+4. **Scene context matters**: The detector is fundamentally a same-scene corruption detector. Novel scene detection requires a separate mechanism.
+
+**Finding 238**: Novel clean scenes produce distances (0.0015-0.0021) that **overlap with corruption distances** (0.0007-0.0034), yielding AUROC=0.67 for novel-vs-corruption discrimination. However, **per-scene calibration restores AUROC=1.0** for all 5 scene types. The detector is a scene-specific corruption monitor, not a general novelty detector.
+
+---
+
+## Experiment 244: Embedding Space Geometry
+
+**Research Question**: What are the angular relationships between corruption shift directions? Are corruption shift vectors orthogonal, parallel, or somewhere in between?
+
+**Method**: Compute shift vectors (corrupted - clean) for 6 corruption types. Measure pairwise angles and effective dimensionality (participation ratio).
+
+**Results**:
+
+**Pairwise angles**:
+| Pair | Angle | Cosine Sim |
+|------|-------|-----------|
+| fog vs night | 96.9° | -0.120 |
+| fog vs noise | 86.5° | 0.062 |
+| noise vs snow | 30.2° | 0.864 |
+| snow vs rain | 46.8° | 0.684 |
+| night vs snow | 102.2° | -0.212 |
+
+**Mean angle: 78.5°** (near-orthogonal), **Min: 30.2°** (noise-snow), **Max: 102.2°** (night-snow)
+
+**Effective dimensionality**: 2154-2494 out of 4096 (53-61%)
+
+**Key Findings**:
+1. **Corruption shifts are near-orthogonal**: Mean pairwise angle = 78.5°, close to the 90° expected for random directions in high-dimensional space.
+2. **Noise-snow are most aligned** (30.2°): Both add random elements to the image, creating similar embedding shifts.
+3. **Night-snow are most orthogonal** (102.2°): Darkening vs brightening create opposite shifts.
+4. **High effective dimensionality**: Shift vectors use 53-61% of the 4096 dimensions, confirming the distributed nature of the OOD signal.
+
+**Finding 239**: Corruption shift vectors are **near-orthogonal** (mean angle = 78.5°), explaining why the detector achieves 100% corruption type identification — each type shifts the embedding in a distinct direction. The only exception is noise-snow (30.2°), which share additive random perturbation characteristics.
