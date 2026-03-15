@@ -8348,3 +8348,35 @@ snow       0     0     0     0      0     0     6
 5. **L3 has the most concentrated attention**: Entropy=0.303 (clean), max_attn=0.957. The model pays attention to almost entirely one token at this layer, making it highly sensitive to which token gets the attention.
 
 **Finding**: Corruption induces **subtle but systematic attention pattern changes**, particularly at L3-L15 where night reduces entropy by 16-18% (attention becomes more concentrated). However, these changes are much weaker signals than hidden-state cosine distances. Attention entropy could complement hidden-state detection but is not a reliable standalone detector. The finding that night SHARPENS attention (rather than diffusing it) is consistent with the model concentrating on fewer surviving visual features in dark scenes.
+---
+
+### Finding 212: Compositional Corruption (Experiment 217)
+
+**Experiment**: Test OOD detection on combinations of multiple simultaneous corruptions. All 4 single, 6 pairwise, 4 triple, and 1 quadruple combination (fog+night+blur+noise applied sequentially).
+
+**Results**: **All 15 combinations achieve AUROC=1.0 at both L1 and L3.**
+
+| Combination | L1 | L3 |
+|------------|------|------|
+| fog | 1.000 | 1.000 |
+| night | 1.000 | 1.000 |
+| blur | 1.000 | 1.000 |
+| noise | 1.000 | 1.000 |
+| fog+night | 1.000 | 1.000 |
+| fog+blur | 1.000 | 1.000 |
+| fog+noise | 1.000 | 1.000 |
+| night+blur | 1.000 | 1.000 |
+| night+noise | 1.000 | 1.000 |
+| blur+noise | 1.000 | 1.000 |
+| fog+night+blur | 1.000 | 1.000 |
+| fog+night+noise | 1.000 | 1.000 |
+| fog+blur+noise | 1.000 | 1.000 |
+| night+blur+noise | 1.000 | 1.000 |
+| ALL FOUR | 1.000 | 1.000 |
+
+**Key Findings**:
+1. **Compositional corruptions are perfectly detected**: Multiple simultaneous corruptions are at least as detectable as single corruptions — they move the embedding further from the clean centroid, not cancel out.
+2. **No cancellation effect**: One might expect fog (brightness increase) and night (darkness) to partially cancel, but fog+night is still perfectly detectable. The embedding space captures the corruption effect holistically.
+3. **Compositionality is monotonic**: More corruptions → larger OOD distance → easier detection. The detection problem gets easier, not harder, with compound corruptions.
+
+**Finding**: **Compositional corruption detection is perfect** — all 15 combinations of 1-4 simultaneous corruptions achieve AUROC=1.0. Multiple corruptions increase embedding deviation monotonically, with no cancellation effects. This is important for real-world scenarios where multiple degradation factors often co-occur (e.g., rain+fog, night+blur from windshield condensation).

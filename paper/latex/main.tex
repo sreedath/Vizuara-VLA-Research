@@ -4057,4 +4057,19 @@ We extract attention weights from 6 layers and compare attention entropy between
 \label{fig:attention}
 \end{figure}
 
+\subsection{Compositional Corruption}
+
+We test all combinations of 1--4 simultaneous corruptions (fog, night, blur, noise) applied sequentially.
+
+\textbf{Finding 427}: \textbf{All 15 compositional combinations achieve AUROC=1.0}---single (4), pairwise (6), triple (4), and the quadruple combination. Multiple corruptions move the embedding further from the clean centroid with no cancellation effects, making compound corruptions \emph{easier} to detect.
+
+\textbf{Finding 428}: Even fog+night (opposing brightness effects) is perfectly detected. The embedding space captures corruption effects holistically---brightness cancellation in pixel space does not produce cancellation in embedding space.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/fig229_compositional.png}
+\caption{\textbf{Compositional corruption detection.} All 15 combinations achieve AUROC=1.0. Multiple corruptions increase embedding deviation monotonically.}
+\label{fig:compositional}
+\end{figure}
+
 \end{document}
