@@ -3130,4 +3130,38 @@ We measure the computational overhead of OOD detection on an A40 GPU.
 \label{fig:latency}
 \end{figure}
 
+\subsection{Distance Metric Comparison}
+
+We compare 7 distance metrics for centroid-based OOD detection.
+
+\textbf{Finding 275}: \textbf{Cosine and correlation distance} are tied at L3 (AUROC = 0.961, $d' = 13.7$) and near-identical at L32 (0.972 vs 0.972). This equivalence holds because both measure angular deviation when embeddings are approximately centered.
+
+\textbf{Finding 276}: \textbf{Chebyshev ($L_\infty$) distance achieves the highest AUROC at L32} (0.978), slightly exceeding cosine (0.972). The single most-shifted dimension is highly informative at the final layer, consistent with the distributed OOD signal observed in the feature ablation experiment.
+
+\textbf{Finding 277}: The $p$-norm choice (L1 vs L2 vs $L_3$) has minimal impact: Manhattan and Euclidean distances achieve similar AUROCs (0.92--0.96). The angular normalization provided by cosine distance is more important than the choice of norm.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig159_distance_zoo.png}
+\caption{\textbf{Distance metric zoo.} AUROC and $d'$ for 7 distance metrics at L3 (left) and L32 (right). Cosine and correlation tie for best at L3; Chebyshev is slightly best at L32.}
+\label{fig:distance_zoo}
+\end{figure}
+
+\subsection{Robustness to Calibration Noise}
+
+Real deployments may have imperfect calibration images. We test detection robustness when calibration data includes mild corruptions.
+
+\textbf{Finding 278}: The detector is \textbf{robust to mild calibration noise}: Gaussian noise ($\sigma \leq 10$), fog ($\alpha \leq 0.15$), and light mixed corruptions all maintain AUROC $\geq 0.97$ at both layers.
+
+\textbf{Finding 279}: \textbf{Blur is the most damaging calibration corruption}: blur at radius 2 drops AUROC to 0.82 (L3) and 0.73 (L32), while blur at radius 1 is fully tolerated (1.0/1.0). This is because blur shifts the calibration centroid toward the OOD manifold.
+
+\textbf{Finding 280}: L3 is more robust to calibration noise than L32 across all noise types, maintaining AUROC $\geq 0.82$ even under blur\_2 while L32 drops to 0.73. This further supports L3 as the primary detection layer.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig160_cal_noise.png}
+\caption{\textbf{Calibration noise robustness.} AUROC under 11 calibration noise conditions at L3 (left) and L32 (right). Mild noise and fog are tolerated; blur\_2 is the first level that degrades detection.}
+\label{fig:cal_noise}
+\end{figure}
+
 \end{document}

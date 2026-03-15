@@ -6940,3 +6940,34 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 - **Detection is 62% cheaper than generation**: If the model already generates actions (372ms), detection adds only 21ms (5.6% overhead)
 
 **Finding**: The OOD detection pipeline adds negligible computational overhead (2.5% for hidden states, <1ms for distance computation). The dominant cost is the forward pass itself, which is already required for action prediction. This makes the system practical for real-time deployment at >7 Hz on A40 GPU.
+
+---
+
+## Finding 161: Distance Metric Zoo (Experiment 167)
+
+**Objective**: Comprehensive comparison of 7 distance metrics for OOD detection.
+
+**Key Results**:
+- **Cosine and correlation distance tie at L3**: Both AUROC=0.961, d'=13.7. They are mathematically equivalent when embeddings are centered.
+- **Chebyshev (L∞) is best at L32**: AUROC=0.978, beating cosine's 0.972 — the single most-different dimension is highly informative at the final layer
+- **Manhattan (L1) matches Euclidean**: AUROC=0.956/0.917 vs 0.950/0.917 — p-norm choice between 1 and 2 matters little
+- **Chebyshev worst at L3**: AUROC=0.836 — the max-difference dimension is noisy at early layers
+- **Minkowski p=3 offers no advantage**: AUROC=0.933/0.939, between L1/L2 and L∞
+
+**Finding**: Cosine distance is the most robust overall metric (top at L3, near-top at L32). Chebyshev distance is a viable alternative at L32 where the single most-shifted dimension is informative.
+
+---
+
+## Finding 162: Calibration Noise Robustness (Experiment 168)
+
+**Objective**: Test how imperfect (slightly corrupted) calibration images affect detection quality.
+
+**Key Results**:
+- **Robust to mild noise**: noise_5, noise_10 maintain AUROC≥0.97 at both layers
+- **Robust to mild fog**: fog_5, fog_10 maintain AUROC=1.0 (L3) and ≥0.99 (L32)
+- **Blur_2 degrades detection**: L3 drops to 0.82, L32 to 0.73 — blur shifts calibration centroid toward OOD
+- **Mixed mild noise is fine**: fog_5+noise_5 maintains AUROC=1.0 (L3), 1.0 (L32)
+- **Noise_20 still works at L3**: AUROC=0.98, but L32 drops to 0.93 — L3 is more robust to calibration noise
+- **Blur is the most dangerous calibration corruption**: Even blur_1 is fine (1.0/1.0), but blur_2 breaks detection
+
+**Finding**: The detector tolerates mild calibration imperfections (noise σ≤10, fog α≤0.15, blur r≤1). Blur r=2 is the first corruption level that meaningfully degrades detection. This is reassuring for real deployments where calibration images may have minor quality issues.
