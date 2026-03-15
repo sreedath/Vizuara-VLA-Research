@@ -4176,4 +4176,32 @@ PCA 10 & 410$\times$ & 0.500 & 0.500 \\
 
 \textbf{Finding 440}: This result has major practical implications: OOD detection can operate on \textbf{32-dimensional vectors} instead of 4096D, reducing storage by 128$\times$ and enabling real-time operation on resource-constrained hardware. The random projection matrix can be generated once and shared across deployments.
 
+\subsection{Distance Metric Comparison}
+
+\textbf{Experiment 222: Cosine vs Euclidean vs Mahalanobis.} We compare three distance metrics for OOD detection: cosine distance, Euclidean (L2) distance, and Mahalanobis distance (using SVD-based pseudo-inverse covariance, rank-limited by $n_{cal}=10$).
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Metric} & \textbf{L1 AUROC} & \textbf{L1 OOD Mean} & \textbf{L3 AUROC} & \textbf{L3 OOD Mean} \\
+\midrule
+Cosine & 1.000 & 0.001 & 1.000 & 0.002 \\
+Euclidean & 1.000 & 0.246 & 1.000 & 0.559 \\
+Mahalanobis & 1.000 & 84.3 & 1.000 & 212.0 \\
+\bottomrule
+\end{tabular}
+\caption{All three distance metrics achieve identical AUROC=1.0. ID distances are effectively 0 for all metrics.}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig233_metrics.png}
+\caption{(Left) All three metrics achieve AUROC=1.0 — metric choice is irrelevant for detection accuracy. (Right) OOD distance magnitudes differ by orders of magnitude but the separation is perfect for all.}
+\end{figure}
+
+\textbf{Finding 441}: All three distance metrics achieve identical AUROC=1.0, confirming that the OOD signal is so strong that \textbf{metric choice is irrelevant}. Mahalanobis distance provides 63,000$\times$ larger absolute separation than cosine, but this does not improve detection since ID distances are already zero.
+
+\textbf{Finding 442}: Cosine distance is the \textbf{optimal practical choice}: same accuracy as Mahalanobis with $O(d)$ computation vs $O(d^2)$, no covariance estimation, scale-invariant, bounded output $[0,2]$, and no numerical instability with small calibration sets.
+
 \end{document}

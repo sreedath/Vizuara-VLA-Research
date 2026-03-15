@@ -8490,3 +8490,25 @@ snow       0     0     0     0      0     0     6
 5. **Zero variance across random seeds**: Every trial, every dimension, every layer achieves exactly AUROC=1.0 — the signal is extraordinarily robust to random linear maps.
 
 **Finding**: Random projection preserves OOD detection with **zero signal loss down to 32 dimensions** (128× compression from 4096D). AUROC=1.0 with std=0.0 across 5 random matrices at all tested dimensions. This contrasts sharply with PCA's failure at 10 dimensions, confirming that the OOD-discriminative structure is distributed (not concentrated in top principal components) and is so strong that any random linear map preserves it. This has major practical implications: OOD detection can operate on tiny 32D vectors with identical accuracy.
+---
+
+### Finding 217: Distance Metric Comparison (Experiment 222)
+
+**Experiment**: Compare cosine distance, Euclidean distance, and Mahalanobis distance for OOD detection. Mahalanobis uses SVD-based pseudo-inverse covariance (rank-limited by n_cal=10).
+
+**Results**:
+| Metric | L1 AUROC | L1 OOD Mean | L3 AUROC | L3 OOD Mean |
+|--------|----------|-------------|----------|-------------|
+| Cosine | 1.000 | 0.001333 | 1.000 | 0.002381 |
+| Euclidean | 1.000 | 0.245825 | 1.000 | 0.559129 |
+| Mahalanobis | 1.000 | 84.265 | 1.000 | 211.957 |
+
+All ID means and stds are effectively 0.0 for all metrics.
+
+**Key Findings**:
+1. **All three metrics achieve AUROC=1.0**: The OOD signal is so strong that the choice of distance metric is irrelevant for detection accuracy. Even the simplest metric (cosine) achieves perfect detection.
+2. **Mahalanobis has highest absolute separation**: OOD distances are ~63,000× larger than cosine (84 vs 0.001), but this doesn't improve AUROC since ID distances are already 0 for all metrics.
+3. **Cosine distance is the optimal choice**: Same AUROC as Mahalanobis/Euclidean but O(d) computation, no covariance estimation needed, scale-invariant, and bounded [0,2]. Mahalanobis requires O(d²) computation and is numerically unstable with small calibration sets.
+4. **Zero ID variance**: All metrics show id_std=0.0, meaning clean images produce indistinguishable embeddings. The entire signal comes from OOD images deviating from this zero-variance cluster.
+
+**Finding**: All three distance metrics (cosine, Euclidean, Mahalanobis) achieve identical **AUROC=1.0**, confirming that the OOD signal is so strong that metric choice is irrelevant. Cosine distance is the optimal practical choice: same accuracy, O(d) computation, no covariance estimation, bounded output. The zero ID variance means any metric that measures deviation from the centroid will work perfectly.

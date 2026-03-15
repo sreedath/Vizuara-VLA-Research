@@ -1,0 +1,100 @@
+{
+  "experiment": "distance_metric_comparison",
+  "experiment_number": 222,
+  "timestamp": "20260315_062151",
+  "n_cal": 10,
+  "n_test": 8,
+  "layers": [
+    1,
+    3
+  ],
+  "metrics": [
+    "cosine",
+    "euclidean",
+    "mahalanobis"
+  ],
+  "results": {
+    "L1": {
+      "cosine": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": -0.0,
+        "ood_mean": 0.001333,
+        "id_std": 0.0,
+        "ood_std": 0.000836
+      },
+      "euclidean": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.245825,
+        "id_std": 0.0,
+        "ood_std": 0.096147
+      },
+      "mahalanobis": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 84.265013,
+        "id_std": 0.0,
+        "ood_std": 23.415471
+      }
+    },
+    "L3": {
+      "cosine": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.002381,
+        "id_std": 0.0,
+        "ood_std": 0.001543
+      },
+      "euclidean": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.559129,
+        "id_std": 0.0,
+        "ood_std": 0.206717
+      },
+      "mahalanobis": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 211.957053,
+        "id_std": 0.0,
+        "ood_std": 36.73611
+      }
+    }
+  }
+}
