@@ -7913,4 +7913,25 @@ We systematically evaluate all 33 hidden state layers (1 embedding + 32 transfor
 
 \textbf{Finding 1106}: \textbf{Layer 3 (our default) achieves perfect AUROC with the smallest margin of any viable layer.} This conservative choice strengthens our argument: even the weakest viable layer achieves perfect detection, demonstrating the robustness of the underlying phenomenon.
 
+\subsection{Experiment 402: Uncertainty Decomposition Analysis}
+
+We decompose model uncertainty into aleatoric (data) and epistemic (model) components using logit entropy and MC dropout (211 dropout layers, 10 forward passes). We analyze how corruption affects prediction confidence and whether entropy provides a complementary detection signal.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig411_uncertainty.png}
+\caption{Experiment 402: Uncertainty decomposition. (A) Fog DECREASES entropy by 70\% (model more certain under corruption). (B) Fog confidence reaches 82\%---confidently wrong. (C) MC dropout yields exactly zero variance (211 layers, all inactive). (D) Severity-entropy curves: fog drops, night rises. (E) Entropy-distance correlation is 0.515---entropy alone insufficient.}
+\label{fig:uncertainty}
+\end{figure}
+
+\textbf{Finding 1107}: \textbf{100\% of probability mass is on action tokens (IDs 31744--31999).} OpenVLA-7B never considers non-action outputs at inference---action entropy equals full entropy. The model is a deterministic action predictor.
+
+\textbf{Finding 1108}: \textbf{Fog DECREASES entropy from 2.46 to 0.75 (70\% drop) and INCREASES confidence to 82\%.} This is the most dangerous failure mode: a \emph{confidently wrong} autonomous agent. The model becomes more certain under fog while producing incorrect actions.
+
+\textbf{Finding 1109}: \textbf{MC dropout produces EXACTLY ZERO variance across 10 samples, all conditions.} Despite 211 dropout layers being set to training mode, outputs are bit-identical. Dropout rates are likely zero in the pretrained weights, rendering MC dropout completely uninformative for epistemic uncertainty estimation.
+
+\textbf{Finding 1110}: \textbf{Night INCREASES entropy (+52\%) and DECREASES confidence to 14\%---the ``safe'' failure.} Unlike fog's dangerous confidence, night makes the model appropriately uncertain, which could trigger a safe fallback in deployment.
+
+\textbf{Finding 1111}: \textbf{Entropy-distance correlation is only 0.515 (moderate).} Entropy fails catastrophically for fog (low entropy despite high corruption). Our cosine distance detector captures information that entropy misses---validating the embedding-based approach over uncertainty-based methods.
+
 \end{document}

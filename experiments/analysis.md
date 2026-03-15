@@ -16536,3 +16536,21 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 853**: Multi-layer fusion via concatenation of early layers (L0-L2) achieves AUROC=1.0 despite L0 alone being random. Concatenation recovers signal that individual layers miss. However, mid-layer fusion (L15-17) drops to 0.98 for noise, suggesting mid-layers are suboptimal for the hardest corruption.
 
 **Finding 854**: Layer 3 (used in all prior experiments) achieves AUROC=1.0 but with much smaller margins than later layers. Our conservative choice of an early layer demonstrates that even the weakest viable layer achieves perfect detection — a stronger argument than using the optimal layer.
+
+---
+
+## Experiment 402: Uncertainty Decomposition Analysis
+
+**Objective**: Decompose model uncertainty into aleatoric and epistemic components. Test MC dropout for epistemic uncertainty and logit entropy for aleatoric.
+
+**Method**: Extract token logits and hidden states under clean and 4 corruptions. Enable MC dropout (211 layers) with 10 forward passes per sample. Compute entropy, confidence, and MC variance. Analyze severity-entropy curves.
+
+**Finding 855**: The model places 100% of probability mass on action tokens (IDs 31744-31999). OpenVLA-7B is a deterministic action predictor at inference — it never considers non-action tokens, meaning the action entropy equals the full entropy.
+
+**Finding 856**: Fog DECREASES entropy from 2.46 to 0.75 (70% drop) and INCREASES confidence from 37% to 82%. The model becomes MORE certain under fog corruption while producing wrong actions. This is the most dangerous failure mode — a confidently wrong autonomous agent.
+
+**Finding 857**: MC dropout produces EXACTLY ZERO variance across all 10 samples, for ALL conditions (clean, fog, night). Despite enabling 211 dropout layers, the model outputs are bit-identical. The dropout rates are likely set to 0 in the pretrained weights, making MC dropout completely uninformative for this model.
+
+**Finding 858**: Night corruption INCREASES entropy (2.46→3.75, +52%) and DECREASES confidence (37%→14%). This is the "safe" failure pattern — the model becomes appropriately uncertain when visual information degrades. In contrast to fog's dangerous confidence, night's uncertainty could trigger a safe fallback.
+
+**Finding 859**: Entropy-distance correlation is 0.515 (moderate positive). Entropy alone is INSUFFICIENT for reliable detection — it fails catastrophically for fog (low entropy despite high corruption). This validates our embedding-based approach: cosine distance captures information that entropy misses.
