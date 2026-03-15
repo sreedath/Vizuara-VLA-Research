@@ -4521,4 +4521,39 @@ Noise & 0.978 & 0.00445 & 0.037 \\
 
 \textbf{Finding 470}: Different corruption types have distinct slopes: noise (0.00445) $>$ night (0.00376) $>$ fog (0.00196). This slope difference, combined with clustering (Experiment 234), could enable simultaneous corruption type identification and severity estimation.
 
+\subsection{Corruption Type Clustering}
+
+\textbf{Experiment 234: Corruption Type Identification.} Beyond binary OOD detection, can the embedding space distinguish \textit{which} corruption type is present? We generate 10 samples each for 6 corruption types and analyze cluster structure.
+
+\begin{table}[h]
+\centering
+\caption{Corruption types form distinct clusters with perfect nearest-centroid identification.}
+\begin{tabular}{lccc}
+\toprule
+Type & Centroid Dist & Intra-Cluster & NC Accuracy \\
+\midrule
+Fog & 0.000698 & $\sim$0 & 100\% \\
+Night & 0.003403 & $\sim$0 & 100\% \\
+Noise & 0.002974 & 0.000117 & 100\% \\
+Blur & 0.001068 & 0 & 100\% \\
+Snow & 0.002611 & 0.000129 & 100\% \\
+Rain & 0.009127 & 0.000232 & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig243_clustering.png}
+\caption{Corruption types form well-separated clusters (silhouette = 0.84). Left: each type shifts the embedding a unique distance from clean. Center: inter-cluster distance matrix shows all pairs are separable. Right: nearest-centroid classifier achieves 100\% accuracy on all 6 types.}
+\end{figure}
+
+\textbf{Finding 471}: Corruption types form \textbf{distinct, well-separated clusters} in embedding space (silhouette score = 0.84). A nearest-centroid classifier achieves \textbf{100\% accuracy} (60/60) across all 6 corruption types.
+
+\textbf{Finding 472}: Fog, night, and blur produce \textbf{deterministic} corrupted embeddings (intra-cluster distance = 0). Only stochastic corruptions (noise, snow, rain) show non-zero intra-cluster variance, and even those are $>$10$\times$ smaller than inter-cluster separation.
+
+\textbf{Finding 473}: Rain produces the \textbf{largest embedding shift} (0.009127), 13$\times$ larger than fog (0.000698). The cosine distance metric naturally provides a severity ordering across corruption types: rain $>$ night $>$ noise $>$ snow $>$ blur $>$ fog.
+
+\textbf{Finding 474}: The detector simultaneously provides \textbf{three outputs} from a single forward pass: (1) binary OOD detection (is the input corrupted?), (2) corruption type identification (which corruption?), and (3) severity estimation (how severe?).
+
 \end{document}

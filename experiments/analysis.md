@@ -8823,3 +8823,39 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **All types start from near-zero**: At severity 0.05, all distances are in the 10⁻⁵ range, confirming that very mild corruption is detectable but produces small shifts.
 
 **Finding 228**: Cosine distance scales **linearly with corruption severity** (R² = 0.928-0.980). A single distance measurement predicts severity with MAE = 0.035-0.066, enabling not just binary detection but **quantitative severity estimation**. Night severity is predictable to within ±3.5%.
+
+---
+
+## Experiment 234: Corruption Type Clustering
+
+**Research Question**: Do different corruption types form distinct clusters in embedding space? If embeddings of different corruption types occupy separable regions, the detector can not only detect OOD but also identify the specific corruption type.
+
+**Method**: Generate 10 samples each for 6 corruption types (fog, night, noise, blur, snow, rain). Analyze intra-cluster vs inter-cluster distances, run k-means clustering, compute silhouette scores, and evaluate nearest-centroid classification accuracy.
+
+**Results**:
+
+**Distance to clean centroid**:
+| Type | Mean Dist | Intra-Cluster Dist |
+|------|----------|-------------------|
+| Fog | 0.000698 | ~0 (deterministic) |
+| Night | 0.003403 | ~0 (deterministic) |
+| Noise | 0.002974 | 0.000117 |
+| Blur | 0.001068 | 0 (deterministic) |
+| Snow | 0.002611 | 0.000129 |
+| Rain | 0.009127 | 0.000232 |
+
+**Inter-cluster distances**: Largest separation is night vs rain (0.01138), smallest is noise vs snow (0.00073).
+
+**Clustering metrics**:
+- K-means silhouette (k=6): 0.47
+- True-label silhouette: 0.84
+- K-means purity: 83.3% (night/blur merged into one cluster; rain split into two)
+- **Nearest-centroid accuracy: 100% (60/60)**
+
+**Key Findings**:
+1. **Perfect corruption identification with nearest-centroid**: 100% accuracy across all 6 types. Each corruption type occupies a distinct region of embedding space.
+2. **Fog, night, blur are deterministic**: Zero intra-cluster variance — the same corruption always produces the same embedding.
+3. **Rain produces largest shift**: 0.009127 from clean, 13× larger than fog (0.000698).
+4. **K-means merges night and blur**: Because they have similar embedding structure, unsupervised clustering groups them together. But with corruption-type centroids (supervised), 100% separation is achieved.
+
+**Finding 229**: Corruption types form **distinct, well-separated clusters** in embedding space (silhouette = 0.84). A simple nearest-centroid classifier achieves **100% corruption type identification** across all 6 types. The cosine distance detector can simultaneously detect OOD inputs AND identify the specific corruption type.
