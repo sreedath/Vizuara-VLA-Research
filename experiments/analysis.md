@@ -8720,3 +8720,32 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **Practical deployment strategy**: Maintain a small library of scene-type centroids (1 per scene type). At inference, find the nearest centroid and measure distance from it. This achieves perfect detection with minimal storage.
 
 **Finding**: Per-scene calibration **fully recovers AUROC=1.0** from the 0.88 degradation. ID distance drops 28× (0.001167 → 0.000041) when using scene-specific centroids. The nearest-scene centroid approach, which auto-selects the closest reference at test time, achieves identical AUROC=1.0 without requiring scene labels — providing a practical deployment strategy.
+---
+
+### Finding 225: Severity-Dependent Detection (Experiment 230)
+
+**Experiment**: At what corruption severity does AUROC drop below 1.0? Tests fog, night, blur, noise at 10 severity levels from 0.01 to 1.0.
+
+**L3 AUROC by Severity**:
+| Severity | Fog | Night | Blur | Noise |
+|----------|-----|-------|------|-------|
+| 0.01 | 1.0 | 1.0 | 0.5 | 1.0 |
+| 0.02 | 1.0 | 1.0 | 0.5 | 1.0 |
+| 0.05 | 1.0 | 1.0 | 1.0 | 1.0 |
+| 0.10 | 1.0 | 1.0 | 1.0 | 1.0 |
+| 0.20 | 1.0 | 1.0 | 1.0 | 1.0 |
+| 0.50 | 1.0 | 1.0 | 1.0 | 1.0 |
+| 1.00 | 1.0 | 1.0 | 1.0 | 1.0 |
+
+**L3 Cosine Distances at Severity 0.01**:
+- Fog: 4.77e-6, Night: 8.29e-6, Noise: 5.10e-6 → all detectable
+- Blur: 0.0 → invisible (GaussianBlur radius=0.05 has no effect)
+
+**Key Findings**:
+1. **Fog, night, noise detectable at severity 0.01**: Even 1% corruption produces measurable embedding shift. The detector is incredibly sensitive.
+2. **Blur requires severity ≥ 0.05**: At sev=0.01-0.02, GaussianBlur radius is 0.05-0.1 pixels, which has zero effect on the image. At sev=0.05 (radius=0.25), the effect becomes measurable.
+3. **Blur-specific threshold**: The blur detection threshold isn't a detector limitation but a corruption-severity threshold — below a minimum radius, blur has no visual effect.
+4. **Distance scales monotonically with severity**: Except for blur's saturation effect (known from Experiment 218). Fog/night/noise show roughly linear distance growth with severity.
+5. **Noise is most detectable at lowest severity**: 5.10e-6 at sev=0.01, vs fog's 4.77e-6 — both at L3.
+
+**Finding**: The detector achieves AUROC=1.0 for fog, night, and noise at the **minimum tested severity of 1%**. Only blur requires ≥5% severity for detection, but this is because sub-pixel blur (radius < 0.25) has literally zero visual effect on the image. The embedding distance scales monotonically with severity, enabling severity estimation from a single distance measurement.

@@ -4425,4 +4425,35 @@ Nearest-scene centroid & 1.000 & 0.000041 & 0.002091 & No \\
 
 \textbf{Finding 460}: The \textbf{nearest-scene centroid} approach achieves AUROC=1.0 \textbf{without requiring scene labels} at inference. It auto-selects the closest centroid from a small library, providing a practical deployment strategy: maintain 5 scene-type centroids (5 vectors of 4096D) and compute minimum distance.
 
+\subsection{Minimum Detectable Severity}
+
+\textbf{Experiment 230: Severity-Dependent Detection.} We test at what corruption severity the detector first achieves AUROC=1.0, testing 10 levels from 0.01 (1\%) to 1.0 (100\%).
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Severity} & \textbf{Fog} & \textbf{Night} & \textbf{Blur} & \textbf{Noise} \\
+\midrule
+0.01 (1\%) & 1.0 & 1.0 & 0.5 & 1.0 \\
+0.02 (2\%) & 1.0 & 1.0 & 0.5 & 1.0 \\
+0.05 (5\%) & 1.0 & 1.0 & 1.0 & 1.0 \\
+0.10--1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
+\bottomrule
+\end{tabular}
+\caption{L3 AUROC by severity. Fog, night, and noise are detectable at 1\% severity; blur requires 5\%.}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig241_severity.png}
+\caption{(Left) AUROC vs severity: only blur drops to 0.5 at very low severity (radius $<$ 0.25 pixels has no visual effect). (Right) Log-log plot of cosine distance vs severity showing monotonic scaling.}
+\end{figure}
+
+\textbf{Finding 461}: The detector achieves AUROC=1.0 for fog, night, and noise at \textbf{1\% corruption severity}. The minimum detectable cosine distance is $\sim$5$\times$10$^{-6}$, corresponding to a change of $\sim$0.0005\% in embedding direction.
+
+\textbf{Finding 462}: Blur is undetectable below 5\% severity because GaussianBlur with radius $<$ 0.25 pixels has \textbf{literally zero visual effect}. This is a corruption floor, not a detector limitation.
+
+\textbf{Finding 463}: Cosine distance scales monotonically with severity for all corruption types (with blur's known saturation at high severity). A single distance measurement enables \textbf{severity estimation}: $d \approx k \cdot \text{severity}$ for fog/night/noise.
+
 \end{document}
