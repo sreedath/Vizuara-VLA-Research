@@ -1,0 +1,308 @@
+{
+  "experiment": "layer_sweep",
+  "experiment_number": 186,
+  "timestamp": "20260315_035509",
+  "n_cal": 6,
+  "n_test": 4,
+  "all_layers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32
+  ],
+  "results": {
+    "0": {
+      "layer": 0,
+      "auroc": 0.5,
+      "id_mean_dist": 0.0,
+      "ood_mean_dist": 0.0,
+      "separation_ratio": 0.0,
+      "centroid_norm": 0.8899670839309692
+    },
+    "1": {
+      "layer": 1,
+      "auroc": 1.0,
+      "id_mean_dist": 0.00018978118896484375,
+      "ood_mean_dist": 0.0011055096983909607,
+      "separation_ratio": 5.8251775210345,
+      "centroid_norm": 4.2424516677856445
+    },
+    "2": {
+      "layer": 2,
+      "auroc": 1.0,
+      "id_mean_dist": 0.0004509389400482178,
+      "ood_mean_dist": 0.002259872853755951,
+      "separation_ratio": 5.01148193670326,
+      "centroid_norm": 6.552210807800293
+    },
+    "3": {
+      "layer": 3,
+      "auroc": 1.0,
+      "id_mean_dist": 0.0003857910633087158,
+      "ood_mean_dist": 0.00199064239859581,
+      "separation_ratio": 5.159896306393281,
+      "centroid_norm": 7.93076229095459
+    },
+    "4": {
+      "layer": 4,
+      "auroc": 1.0,
+      "id_mean_dist": 0.0003757476806640625,
+      "ood_mean_dist": 0.0017840899527072906,
+      "separation_ratio": 4.748105097398718,
+      "centroid_norm": 9.704032897949219
+    },
+    "5": {
+      "layer": 5,
+      "auroc": 1.0,
+      "id_mean_dist": 0.0003689378499984741,
+      "ood_mean_dist": 0.0015357621014118195,
+      "separation_ratio": 4.162656895063713,
+      "centroid_norm": 12.612186431884766
+    },
+    "6": {
+      "layer": 6,
+      "auroc": 1.0,
+      "id_mean_dist": 0.00033342838287353516,
+      "ood_mean_dist": 0.0014021992683410645,
+      "separation_ratio": 4.205397380141934,
+      "centroid_norm": 14.601795196533203
+    },
+    "7": {
+      "layer": 7,
+      "auroc": 1.0,
+      "id_mean_dist": 0.0004172772169113159,
+      "ood_mean_dist": 0.0016108117997646332,
+      "separation_ratio": 3.86029082934067,
+      "centroid_norm": 17.16355323791504
+    },
+    "8": {
+      "layer": 8,
+      "auroc": 0.9375,
+      "id_mean_dist": 0.0010611414909362793,
+      "ood_mean_dist": 0.0029113925993442535,
+      "separation_ratio": 2.7436419646650907,
+      "centroid_norm": 19.21997833251953
+    },
+    "9": {
+      "layer": 9,
+      "auroc": 0.953125,
+      "id_mean_dist": 0.0010201483964920044,
+      "ood_mean_dist": 0.002773366868495941,
+      "separation_ratio": 2.718591340410487,
+      "centroid_norm": 22.69532012939453
+    },
+    "10": {
+      "layer": 10,
+      "auroc": 0.90625,
+      "id_mean_dist": 0.002597033977508545,
+      "ood_mean_dist": 0.005992259830236435,
+      "separation_ratio": 2.3073474014576996,
+      "centroid_norm": 25.749088287353516
+    },
+    "11": {
+      "layer": 11,
+      "auroc": 0.90625,
+      "id_mean_dist": 0.006090447306632996,
+      "ood_mean_dist": 0.018149930983781815,
+      "separation_ratio": 2.980065300952284,
+      "centroid_norm": 28.497180938720703
+    },
+    "12": {
+      "layer": 12,
+      "auroc": 0.9375,
+      "id_mean_dist": 0.009830862283706665,
+      "ood_mean_dist": 0.033138860017061234,
+      "separation_ratio": 3.3709006111187607,
+      "centroid_norm": 29.865320205688477
+    },
+    "13": {
+      "layer": 13,
+      "auroc": 0.90625,
+      "id_mean_dist": 0.016683429479599,
+      "ood_mean_dist": 0.04776095226407051,
+      "separation_ratio": 2.8627778261176013,
+      "centroid_norm": 32.67180633544922
+    },
+    "14": {
+      "layer": 14,
+      "auroc": 0.9375,
+      "id_mean_dist": 0.02120998501777649,
+      "ood_mean_dist": 0.06335608288645744,
+      "separation_ratio": 2.9870875691165626,
+      "centroid_norm": 36.17508316040039
+    },
+    "15": {
+      "layer": 15,
+      "auroc": 0.9375,
+      "id_mean_dist": 0.026008054614067078,
+      "ood_mean_dist": 0.08044576272368431,
+      "separation_ratio": 3.093109561945565,
+      "centroid_norm": 42.68007278442383
+    },
+    "16": {
+      "layer": 16,
+      "auroc": 0.9375,
+      "id_mean_dist": 0.031094789505004883,
+      "ood_mean_dist": 0.09972620382905006,
+      "separation_ratio": 3.2071676668620572,
+      "centroid_norm": 45.757015228271484
+    },
+    "17": {
+      "layer": 17,
+      "auroc": 0.9375,
+      "id_mean_dist": 0.03734654188156128,
+      "ood_mean_dist": 0.12010813131928444,
+      "separation_ratio": 3.2160442425589006,
+      "centroid_norm": 49.31612014770508
+    },
+    "18": {
+      "layer": 18,
+      "auroc": 0.9375,
+      "id_mean_dist": 0.039127618074417114,
+      "ood_mean_dist": 0.12578746676445007,
+      "separation_ratio": 3.2147999963538267,
+      "centroid_norm": 53.0186653137207
+    },
+    "19": {
+      "layer": 19,
+      "auroc": 0.953125,
+      "id_mean_dist": 0.041414156556129456,
+      "ood_mean_dist": 0.13005922734737396,
+      "separation_ratio": 3.140453358190615,
+      "centroid_norm": 57.85468673706055
+    },
+    "20": {
+      "layer": 20,
+      "auroc": 0.96875,
+      "id_mean_dist": 0.04304298758506775,
+      "ood_mean_dist": 0.13327693194150925,
+      "separation_ratio": 3.096368052251749,
+      "centroid_norm": 61.347537994384766
+    },
+    "21": {
+      "layer": 21,
+      "auroc": 0.96875,
+      "id_mean_dist": 0.04420354962348938,
+      "ood_mean_dist": 0.131912000477314,
+      "separation_ratio": 2.9841947378089664,
+      "centroid_norm": 65.84201049804688
+    },
+    "22": {
+      "layer": 22,
+      "auroc": 1.0,
+      "id_mean_dist": 0.04439567029476166,
+      "ood_mean_dist": 0.1290174014866352,
+      "separation_ratio": 2.9060807132638375,
+      "centroid_norm": 71.13778686523438
+    },
+    "23": {
+      "layer": 23,
+      "auroc": 1.0,
+      "id_mean_dist": 0.04258783161640167,
+      "ood_mean_dist": 0.1201331727206707,
+      "separation_ratio": 2.8208332727680125,
+      "centroid_norm": 77.7255630493164
+    },
+    "24": {
+      "layer": 24,
+      "auroc": 1.0,
+      "id_mean_dist": 0.04444466531276703,
+      "ood_mean_dist": 0.12028048187494278,
+      "separation_ratio": 2.7062973870513467,
+      "centroid_norm": 82.42101287841797
+    },
+    "25": {
+      "layer": 25,
+      "auroc": 1.0,
+      "id_mean_dist": 0.04116170108318329,
+      "ood_mean_dist": 0.10929413512349129,
+      "separation_ratio": 2.6552385344108096,
+      "centroid_norm": 91.29905700683594
+    },
+    "26": {
+      "layer": 26,
+      "auroc": 1.0,
+      "id_mean_dist": 0.039311572909355164,
+      "ood_mean_dist": 0.10603709518909454,
+      "separation_ratio": 2.6973506036978065,
+      "centroid_norm": 98.75025939941406
+    },
+    "27": {
+      "layer": 27,
+      "auroc": 1.0,
+      "id_mean_dist": 0.03668215870857239,
+      "ood_mean_dist": 0.09775931015610695,
+      "separation_ratio": 2.6650369915867986,
+      "centroid_norm": 108.22700500488281
+    },
+    "28": {
+      "layer": 28,
+      "auroc": 1.0,
+      "id_mean_dist": 0.03835636377334595,
+      "ood_mean_dist": 0.10101421177387238,
+      "separation_ratio": 2.6335711098013572,
+      "centroid_norm": 110.98881530761719
+    },
+    "29": {
+      "layer": 29,
+      "auroc": 1.0,
+      "id_mean_dist": 0.03800968825817108,
+      "ood_mean_dist": 0.10047102347016335,
+      "separation_ratio": 2.643300374457417,
+      "centroid_norm": 116.20758819580078
+    },
+    "30": {
+      "layer": 30,
+      "auroc": 1.0,
+      "id_mean_dist": 0.03672836720943451,
+      "ood_mean_dist": 0.10030747205018997,
+      "separation_ratio": 2.731062647166016,
+      "centroid_norm": 124.78665924072266
+    },
+    "31": {
+      "layer": 31,
+      "auroc": 1.0,
+      "id_mean_dist": 0.03491753339767456,
+      "ood_mean_dist": 0.10156426206231117,
+      "separation_ratio": 2.9086894716969383,
+      "centroid_norm": 132.87283325195312
+    },
+    "32": {
+      "layer": 32,
+      "auroc": 1.0,
+      "id_mean_dist": 0.11138302087783813,
+      "ood_mean_dist": 0.29613756760954857,
+      "separation_ratio": 2.658731690070348,
+      "centroid_norm": 71.98837280273438
+    }
+  }
+}

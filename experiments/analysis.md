@@ -7463,3 +7463,69 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 
 **Finding**: The OOD signal is not concentrated at the last token — it builds progressively along the sequence, achieving perfect AUROC by the midpoint at L3. The second-to-last token actually provides the **best separation ratio** (6.14×), slightly outperforming the last token (5.13×). The first token is completely uninformative (AUROC=0.5), confirming that OOD detection depends on visual token processing. This suggests that early termination after ~50% of tokens could provide strong OOD detection with reduced inference latency.
 
+---
+
+### Finding 181: Comprehensive Layer Sweep (Experiment 186)
+
+**Experiment**: Measure OOD detection AUROC at ALL 33 transformer layers (0-32) to find the complete detection profile.
+
+**Full AUROC Profile**:
+| Layer | AUROC | Sep Ratio | Norm |
+|-------|-------|-----------|------|
+| 0 | 0.500 | 0.00 | 0.9 |
+| 1 | 1.000 | 5.83 | 4.2 |
+| 2 | 1.000 | 5.01 | 6.6 |
+| 3 | 1.000 | 5.16 | 7.9 |
+| 4 | 1.000 | 4.75 | 9.7 |
+| 5 | 1.000 | 4.16 | 12.6 |
+| 6 | 1.000 | 4.21 | 14.6 |
+| 7 | 1.000 | 3.86 | 17.2 |
+| 8 | 0.938 | 2.74 | 19.2 |
+| 9 | 0.953 | 2.72 | 22.7 |
+| 10 | 0.906 | 2.31 | 25.7 |
+| 11 | 0.906 | 2.98 | 28.5 |
+| 12 | 0.938 | 3.37 | 29.9 |
+| 13 | 0.906 | 2.86 | 32.7 |
+| 14 | 0.938 | 2.99 | 36.2 |
+| 15-18 | 0.938 | ~3.2 | 42-53 |
+| 19 | 0.953 | 3.14 | 57.9 |
+| 20-21 | 0.969 | 3.0 | 61-66 |
+| 22-32 | 1.000 | 2.6-2.9 | 71-133 |
+
+**Key Findings**:
+1. **Layer 0 (embedding) is completely uninformative**: AUROC=0.5, norm=0.9. Raw token embeddings carry no visual OOD signal.
+2. **Layer 1 has the HIGHEST separation ratio** (5.83×) — even better than L3 (5.16×). The very first transformer layer already produces the strongest OOD signal.
+3. **Three-region AUROC profile**:
+   - **Early layers 1-7**: Perfect AUROC=1.0, high separation (3.86-5.83×)
+   - **Middle layers 8-21**: AUROC drops to 0.91-0.97, separation decreases — "valley"
+   - **Late layers 22-32**: AUROC recovers to 1.0, but with lower separation (2.6-2.9×)
+4. **The middle-layer valley** (L8-L21) suggests these layers perform abstract reasoning that temporarily dilutes the raw visual OOD signal. The late layers then reconsolidate information for action prediction.
+5. **Norm growth is monotonic** from 0.9 (L0) to 133 (L31), with L32 dropping to 72 — possibly due to output normalization before the LM head.
+
+**Finding**: The layer sweep reveals a **three-region AUROC profile**: perfect detection at early layers (1-7), a middle-layer valley (8-21) where AUROC drops to 0.91-0.97, and recovery to perfect AUROC at late layers (22-32). Layer 1 achieves the **highest separation ratio** (5.83×), surpassing even L3 (5.16×). This suggests the optimal detection layer is L1, not L3 — the very first transformer layer produces the strongest OOD signal after the embedding. The practical implication is dramatic: **OOD detection can be performed after a single transformer layer** with perfect AUROC and maximum separation.
+
+---
+
+### Finding 182: Calibration Set Size Sweep (Experiment 187)
+
+**Experiment**: Sweep calibration set size from 1 to 20 images to find the minimum number needed for reliable OOD detection.
+
+**AUROC by Calibration Size**:
+| n_cal | L3 AUROC | L3 Centroid Shift | L32 AUROC | L32 Centroid Shift |
+|-------|----------|------------------|-----------|-------------------|
+| 1 | 0.944 | 0.000419 | 0.903 | 0.115 |
+| 2 | 0.972 | 0.000077 | 0.944 | 0.029 |
+| 3 | 1.000 | 0.000003 | 1.000 | 0.006 |
+| 4 | 1.000 | 0.000025 | 0.993 | 0.010 |
+| 5 | 1.000 | 0.000010 | 1.000 | 0.005 |
+| 6+ | 1.000 | <0.000005 | 1.000 | <0.003 |
+
+**Key Findings**:
+1. **L3 achieves perfect AUROC with just 3 calibration images**: Centroid shift from 3 images is only 0.000003 — essentially converged.
+2. **L32 needs 3-5 images for perfect AUROC**: Slightly more variable due to higher embedding norms and greater prompt sensitivity.
+3. **Even 1 image achieves AUROC > 0.9**: Single-shot calibration is nearly sufficient at both layers.
+4. **L3 centroid converges 100× faster than L32**: Shift of 0.000419 (1 image) vs 0.115 — reflecting L3's extreme anisotropy (effective rank 2.08).
+5. **Beyond 6 images, there's negligible improvement**: The detector is already fully calibrated.
+
+**Finding**: The detector requires remarkably few calibration images: **3 clean images suffice for perfect AUROC at both layers**. L3's centroid converges 100× faster than L32's, reflecting its extreme anisotropy — with only 2 effective dimensions, the centroid is well-estimated from very few samples. This makes the system highly practical: deployment requires only a handful of clean reference images from the target environment.
+

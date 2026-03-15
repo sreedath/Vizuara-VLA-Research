@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Experiment 186: Comprehensive layer sweep — AUROC at every layer.
+"""Experiment 187: Calibration set size — how many images needed for reliable detection?
 
-Tests OOD detection AUROC at all 33 transformer layers (0-32) to find
-the complete AUROC profile and identify all good detection layers.
+Sweeps calibration set size from 1 to 20 to find the minimum number
+of clean images needed for stable OOD detection.
 """
 
 import json, os, sys, datetime
@@ -42,6 +42,12 @@ def apply_night(a): return np.clip(a*0.15, 0, 255).astype(np.uint8)
 def apply_blur(a, r=8): return np.array(Image.fromarray(a).filter(ImageFilter.GaussianBlur(radius=r)))
 def apply_noise(a, s=50): return np.clip(a.astype(np.float32)+np.random.normal(0,s,a.shape), 0, 255).astype(np.uint8)
 
+def extract_hidden(model, processor, image, prompt, layers):
+    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    with torch.no_grad():
+        fwd = model(**inputs, output_hidden_states=True)
+    return {l: fwd.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
+
 def cosine_distance(a, b):
     return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
 
@@ -55,7 +61,7 @@ def compute_auroc(id_scores, ood_scores):
 
 def main():
     print("=" * 60)
-    print("Experiment 186: Comprehensive Layer Sweep")
+    print("Experiment 187: Calibration Set Size Sweep")
     print("=" * 60, flush=True)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
@@ -67,14 +73,28 @@ def main():
     model.eval()
 
     prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
-    all_layers = list(range(33))  # 0 through 32
+    layers = [3, 32]
 
     creators = [create_highway, create_urban, create_rural]
-    n_cal = 6
-    n_test = 4
+    max_cal = 20
+    n_test = 6
 
-    cal_arrs = [creators[i%3](i) for i in range(n_cal)]
-    test_arrs = [creators[(i+n_cal)%3](i+n_cal) for i in range(n_test)]
+    # Pre-generate and extract all embeddings
+    print("\n--- Extracting all embeddings ---", flush=True)
+    all_cal_arrs = [creators[i%3](i) for i in range(max_cal)]
+    all_cal_embs = {l: [] for l in layers}
+    for arr in all_cal_arrs:
+        h = extract_hidden(model, processor, Image.fromarray(arr), prompt, layers)
+        for l in layers:
+            all_cal_embs[l].append(h[l])
+    print(f"  Cal: {max_cal} embeddings", flush=True)
+
+    test_arrs = [creators[(i+max_cal)%3](i+max_cal) for i in range(n_test)]
+    id_embs = {l: [] for l in layers}
+    for arr in test_arrs:
+        h = extract_hidden(model, processor, Image.fromarray(arr), prompt, layers)
+        for l in layers:
+            id_embs[l].append(h[l])
 
     ood_transforms = {
         "fog_60": lambda a: apply_fog(a, 0.6),
@@ -82,72 +102,54 @@ def main():
         "blur": apply_blur,
         "noise": apply_noise,
     }
-
-    # Extract all hidden states in one pass per image
-    print("\n--- Extracting all-layer embeddings ---", flush=True)
-
-    def extract_all(image):
-        inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-        with torch.no_grad():
-            fwd = model(**inputs, output_hidden_states=True)
-        return {l: fwd.hidden_states[l][0, -1, :].float().cpu().numpy() for l in all_layers}
-
-    # Calibration
-    cal_embs = {l: [] for l in all_layers}
-    for arr in cal_arrs:
-        h = extract_all(Image.fromarray(arr))
-        for l in all_layers:
-            cal_embs[l].append(h[l])
-    print(f"  Calibration: {n_cal} images", flush=True)
-
-    centroids = {l: np.array(cal_embs[l]).mean(axis=0) for l in all_layers}
-
-    # ID test
-    id_embs = {l: [] for l in all_layers}
-    for arr in test_arrs:
-        h = extract_all(Image.fromarray(arr))
-        for l in all_layers:
-            id_embs[l].append(h[l])
-
-    # OOD test
-    ood_embs = {l: [] for l in all_layers}
+    ood_embs = {l: [] for l in layers}
     for cat, tfn in ood_transforms.items():
         for arr in test_arrs:
-            h = extract_all(Image.fromarray(tfn(arr)))
-            for l in all_layers:
+            h = extract_hidden(model, processor, Image.fromarray(tfn(arr)), prompt, layers)
+            for l in layers:
                 ood_embs[l].append(h[l])
-    print(f"  OOD: {len(ood_transforms) * n_test} images", flush=True)
+    print(f"  OOD: {len(ood_embs[3])} embeddings", flush=True)
 
-    # Compute AUROC per layer
-    print("\n--- Layer-by-layer AUROC ---", flush=True)
+    # Sweep calibration size
+    cal_sizes = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20]
+    print("\n--- Calibration size sweep ---", flush=True)
+
     results = {}
-    for l in all_layers:
-        id_dists = [cosine_distance(e, centroids[l]) for e in id_embs[l]]
-        ood_dists = [cosine_distance(e, centroids[l]) for e in ood_embs[l]]
-        auroc = compute_auroc(id_dists, ood_dists)
-        sep = float(np.mean(ood_dists) / (np.mean(id_dists) + 1e-10))
-        emb_norm = float(np.linalg.norm(centroids[l]))
+    for n_cal in cal_sizes:
+        cal_result = {}
+        for l in layers:
+            centroid = np.array(all_cal_embs[l][:n_cal]).mean(axis=0)
+            id_dists = [cosine_distance(e, centroid) for e in id_embs[l]]
+            ood_dists = [cosine_distance(e, centroid) for e in ood_embs[l]]
+            auroc = compute_auroc(id_dists, ood_dists)
+            sep = float(np.mean(ood_dists) / (np.mean(id_dists) + 1e-10))
 
-        results[str(l)] = {
-            "layer": l,
-            "auroc": auroc,
-            "id_mean_dist": float(np.mean(id_dists)),
-            "ood_mean_dist": float(np.mean(ood_dists)),
-            "separation_ratio": sep,
-            "centroid_norm": emb_norm,
-        }
-        print(f"  L{l:2d}: AUROC={auroc:.4f} sep={sep:.2f} norm={emb_norm:.1f}", flush=True)
+            # Centroid stability: distance from full centroid
+            full_centroid = np.array(all_cal_embs[l]).mean(axis=0)
+            centroid_shift = cosine_distance(centroid, full_centroid)
+
+            cal_result[f"L{l}"] = {
+                "auroc": auroc,
+                "separation_ratio": sep,
+                "centroid_shift": centroid_shift,
+                "id_mean": float(np.mean(id_dists)),
+                "ood_mean": float(np.mean(ood_dists)),
+            }
+
+        results[str(n_cal)] = cal_result
+        print(f"  n={n_cal:2d}: L3 AUROC={cal_result['L3']['auroc']:.4f} shift={cal_result['L3']['centroid_shift']:.6f} | L32 AUROC={cal_result['L32']['auroc']:.4f} shift={cal_result['L32']['centroid_shift']:.6f}", flush=True)
 
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
-        "experiment": "layer_sweep",
-        "experiment_number": 186,
+        "experiment": "calibration_size",
+        "experiment_number": 187,
         "timestamp": ts,
-        "n_cal": n_cal, "n_test": n_test,
-        "all_layers": all_layers,
+        "max_cal": max_cal, "n_test": n_test,
+        "cal_sizes": cal_sizes,
+        "layers": layers,
         "results": results,
     }
-    path = os.path.join(RESULTS_DIR, f"layer_sweep_{ts}.json")
+    path = os.path.join(RESULTS_DIR, f"calibration_size_{ts}.json")
     with open(path, "w") as f:
         json.dump(output, f, indent=2)
     print(f"\nSaved: {path}")
