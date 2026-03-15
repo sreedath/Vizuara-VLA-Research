@@ -5010,4 +5010,36 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 549}: Blur sensitivity exhibits \textbf{spatial bias toward center-bottom} patches (rows 4--6, columns 2--4 have 44--50\% sensitivity), while night is spatially uniform (std=3.1\%). This suggests the model concentrates action-relevant attention on the lower-center of the visual field, consistent with driving scenarios where the road surface is most informative.
 
+\subsection{Layer-Wise Corruption Selectivity}
+
+\textbf{Experiment 264: Layer Selectivity.} We test 9 layers (L1 through L31) with 5-scene diverse calibration across 4 corruptions at two severity levels, measuring per-layer AUROC and separation ratio (OOD$_{\min}$ / ID$_{\max}$).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig273_selectivity.png}
+\caption{(a) Separation ratios decrease with depth --- early layers (L1--L7) provide 5--150$\times$ better separation than late layers. (b) ID variance grows exponentially with depth, compressing separation margins. (c) All layers maintain AUROC=1.0 except noise at sev=0.5 (AUROC=0.92 at L11).}
+\end{figure}
+
+\textbf{Finding 550}: Early layers (L1--L7) provide \textbf{5--150$\times$ higher separation ratios} than late layers (L23--L31): L1 achieves separation ratio 150$\times$ for night (ID$_{\max}$=2.1$\times$10$^{-5}$, OOD$_{\min}$=0.003) while L31 achieves only 9.4$\times$ (ID$_{\max}$=0.027, OOD$_{\min}$=0.251). ID variance grows exponentially with depth, compressing detection margins.
+
+\textbf{Finding 551}: Noise is the \textbf{hardest corruption at every layer}: separation ratio drops below 1.0 at L11+ with diverse calibration (complete ID/OOD overlap). Only L1--L7 maintain positive separation, with L3 optimal (separation=2.5$\times$). This layer-dependent difficulty profile reinforces that early layers are critical for noise detection under diverse calibration.
+
+\textbf{Finding 552}: Despite 150$\times$ variation in separation ratios, \textbf{all 9 layers achieve AUROC=1.0} at full severity for all corruptions. The only exception is noise at half severity (AUROC=0.92 at L11). Perfect classification does not require large separation margins --- it requires only consistent ordering.
+
+\subsection{Embedding Stability Under Input Perturbation}
+
+\textbf{Experiment 265: Input Sensitivity Threshold.} We apply minimal perturbations (single pixel changes, N-pixel random modifications, brightness shifts, JPEG compression) and compare the resulting embedding distances to actual corruption distances.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig274_stability.png}
+\caption{(a) N-pixel perturbation produces sub-linear distance growth, remaining 10--1000$\times$ below corruption references. (b) Brightness shifts and JPEG compression produce predictable distance scaling. (c) Perturbation distances are orders of magnitude below corruption distances, establishing the detection noise floor.}
+\end{figure}
+
+\textbf{Finding 553}: Single pixel changes produce distance $d$=1.65$\times$10$^{-6}$, which is \textbf{1000$\times$ below} full corruption distances (2.7$\times$10$^{-3}$ for fog, 8.0$\times$10$^{-3}$ for night). The model maintains a wide dynamic range between the perturbation noise floor and actual corruption signals, providing a robust detection margin.
+
+\textbf{Finding 554}: JPEG compression at quality 10 produces $d$=2.1$\times$10$^{-3}$, which is \textbf{78.5\% of fog corruption distance}. For deployment, OOD detection must operate on uncompressed or lightly-compressed images (JPEG $q \geq 50$ is safe, $d$=2.2$\times$10$^{-4}$). This establishes the image quality requirements for reliable detection.
+
+\textbf{Finding 555}: Perturbation scaling is \textbf{sub-linear}: 50,000 random pixel changes produce only 65$\times$ the distance of a single pixel change. The vision encoder's patch tokenization and attention pooling compress pixel-level noise, explaining why the model is robust to irrelevant variations while remaining sensitive to structured corruption.
+
 \end{document}

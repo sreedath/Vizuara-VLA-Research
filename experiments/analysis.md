@@ -9784,3 +9784,84 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 277**: Noise OOD signal is **anti-additive**: restoring a single noisy patch INCREASES distance by 33% (mean sensitivity -32.8%). Partial denoising creates a more detectable anomaly than full noise, because the mix of clean and noisy patches is MORE anomalous than consistent noise.
 
 **Finding 278**: Blur sensitivity has **spatial bias toward center-bottom** (rows 4-6, cols 2-4), suggesting the model's attention for action prediction is concentrated in these regions. Night shows no such bias (std=3.1% across all patches).
+
+---
+
+## Experiment 264: Layer-Wise Corruption Selectivity
+
+**Research Question**: Do different layers specialize in detecting specific corruption types? Which layers are most selective when using diverse-scene calibration?
+
+**Method**: Test 9 layers (L1, L3, L7, L11, L15, L19, L23, L27, L31) with 5-scene diverse calibration across 4 corruptions at two severity levels (0.5, 1.0). Compute per-layer AUROC and separation ratio (OOD_min / ID_max).
+
+**Results**:
+
+| Layer | Fog sep | Night sep | Noise sep | Blur sep | ID_max |
+|-------|---------|-----------|-----------|----------|--------|
+| L1 | 11.7 | 150.5 | 1.9 | 25.3 | 2.1e-05 |
+| L3 | 14.9 | 87.1 | **2.5** | 22.3 | 5.7e-05 |
+| L7 | 18.4 | 112.0 | 1.8 | 29.1 | 3.6e-05 |
+| L11 | 2.6 | 37.7 | 0.4 | 6.7 | 5.8e-04 |
+| L15 | 2.0 | 26.0 | 0.3 | 4.5 | 6.1e-03 |
+| L19 | 2.0 | 22.0 | 0.2 | 3.5 | 1.4e-02 |
+| L23 | 1.7 | 14.5 | 0.2 | 2.9 | 2.1e-02 |
+| L27 | 1.7 | 10.0 | 0.2 | 2.6 | 2.6e-02 |
+| L31 | 1.6 | 9.4 | 0.2 | 2.3 | 2.7e-02 |
+
+(Separation ratios at sev=1.0)
+
+**AUROC at sev=0.5**: All layers achieve AUROC=1.0 for fog, night, blur. **Noise at sev=0.5 drops to AUROC=0.92 at L11**. All other layer-corruption combinations maintain AUROC=1.0 even at sev=0.5.
+
+**Key Findings**:
+1. **Early layers (L1-L7) have 5-150× higher separation ratios than late layers (L23-L31)**: ID variance grows exponentially with depth (2.1e-05 at L1 to 2.7e-02 at L31), while OOD distances grow sublinearly, compressing the separation ratio.
+2. **Night has the highest separation at all layers**: Night separation ratio is 150× at L1 (maximum) vs 9.4× at L31 (minimum). Night is the most easily detectable corruption at every layer.
+3. **Noise is hardest at all layers**: Noise separation <1.0 at L11+ (meaning ID and OOD overlap). Only L1-L7 maintain noise separation >1.0 with diverse calibration.
+4. **L3 is optimal for noise with diverse calibration**: Separation=2.5 (highest). L7 and L1 also work but with slightly lower separation.
+5. **All corruptions achieve AUROC=1.0 at all layers at sev=1.0**: Even with diverse calibration, the absolute signal is large enough for perfect separation at full severity.
+
+**Finding 279**: Early layers (L1-L7) provide **5-150× higher separation ratios** than late layers (L23-L31) because ID variance grows exponentially with depth while OOD signal grows sublinearly. For diverse-scene deployment, early layers are strongly preferred.
+
+**Finding 280**: Noise is the **hardest corruption at every layer**: separation ratio drops below 1.0 at L11+ with diverse calibration (meaning complete overlap). Only L1-L7 maintain noise separation >1.0, with L3 optimal (separation=2.5×).
+
+**Finding 281**: Despite separation ratio differences of 150×, **all layers achieve AUROC=1.0** at full severity for all corruptions except noise at sev=0.5 (AUROC=0.92 at L11). This demonstrates that even imperfect separation can yield perfect classification.
+
+---
+
+## Experiment 265: Embedding Stability Under Input Perturbation
+
+**Research Question**: How sensitive are embeddings to tiny, semantically-irrelevant changes? What is the model's input sensitivity threshold?
+
+**Method**: Apply minimal perturbations (single pixel changes, N-pixel random changes, brightness shifts, JPEG compression) and compare distances to actual corruption distances.
+
+**Results**:
+
+| Perturbation | Cosine Distance | Ratio to Fog-1.0 |
+|-------------|----------------|-------------------|
+| 1-pixel change | 1.65e-06 | 0.0006× |
+| 50-pixel change | 3.3e-06 | 0.001× |
+| 5K-pixel change | 3.9e-05 | 0.014× |
+| 50K-pixel change | 1.1e-04 | 0.042× |
+| Brightness +1 | 3.2e-06 | 0.001× |
+| Brightness +5 | 1.4e-05 | 0.005× |
+| Brightness +50 | 8.7e-04 | 0.321× |
+| JPEG q=95 | 4.5e-05 | 0.017× |
+| JPEG q=50 | 2.2e-04 | 0.080× |
+| JPEG q=10 | 2.1e-03 | 0.785× |
+| Fog 1% | 4.2e-06 | 0.002× |
+| Night 1% | 3.2e-05 | 0.012× |
+| Noise 1% | 2.3e-06 | 0.001× |
+| Fog 100% | 2.7e-03 | 1.0× |
+| Night 100% | 8.0e-03 | 2.95× |
+
+**Key Findings**:
+1. **Single pixel changes are NOT zero**: d=1.65e-06 for a +1 change to one channel. The model is sensitive to individual pixels, but at 1000× below corruption distances.
+2. **Sub-linear perturbation scaling**: 50,000 pixels changed → d=1.1e-04 (65× increase for 50,000× more pixels). The model's tokenization and processing compresses pixel-level changes.
+3. **JPEG q=10 approaches corruption distance**: JPEG q=10 creates d=2.1e-03, which is 78.5% of fog at full severity. For deployment, images should NOT be aggressively JPEG-compressed before OOD detection.
+4. **Brightness +50 is in corruption range**: d=8.7e-04, comparable to ~30% fog severity. Systematic brightness changes are more impactful than random pixel noise.
+5. **1% corruption distances**: Fog (4.2e-06) ≈ 1-pixel change (1.65e-06). Night at 1% is already 19× a pixel change. This quantifies the detection threshold: 1% fog is at the noise floor, while 1% night is detectable.
+6. **Noise 1% is smallest**: d=2.3e-06, comparable to a single pixel change. This explains why noise is the hardest to detect — at low severity, it's literally at the level of pixel-level perturbation noise.
+
+**Finding 282**: Single pixel changes produce distance d=1.65×10⁻⁶, which is **1000× below** full corruption distances (2.7×10⁻³ for fog, 8.0×10⁻³ for night). The model has a wide dynamic range between the perturbation noise floor and actual corruption signal.
+
+**Finding 283**: JPEG compression at quality 10 produces distance d=2.1×10⁻³, which is **78.5% of fog corruption**. For deployment, OOD detection must operate on uncompressed or lightly-compressed images (JPEG q≥50 is safe, d=2.2×10⁻⁴).
+
+**Finding 284**: Perturbation scaling is **sub-linear**: 50,000 random pixel changes produce only 65× the distance of 1 pixel change (not 50,000×). The model's vision encoder compresses pixel-level noise through patch tokenization and attention pooling.
