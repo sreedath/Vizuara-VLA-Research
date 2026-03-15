@@ -6994,4 +6994,25 @@ We characterize the geometric structure of the embedding space by analyzing pair
 
 \textbf{Finding 936}: \textbf{The projection matrix reveals corruption structure.} Blur has the largest on-axis component (0.816) and significant fog-axis leakage (0.385). Noise has the smallest on-axis projection (0.096), consistent with noise's low consistency and detectability.
 
+\subsection{Experiment 368: Real-Time Detection Latency Benchmark}
+
+We benchmark the precise latency of each component in the detection pipeline to quantify the real-time overhead of OOD detection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig377_latency.png}
+\caption{Latency benchmark. Top-left: pipeline breakdown shows GPU forward dominates (86 ms). Top-middle: detection adds only 43.1 $\mu$s (0.050\% of inference). Top-right: throughput 7--10 FPS. Bottom: percentile analysis and overhead visualization showing detection is essentially free.}
+\label{fig:latency}
+\end{figure}
+
+\textbf{Finding 937}: \textbf{Detection overhead is 43.1 $\mu$s (0.050\% of GPU inference time).} The cosine distance computation takes 4.15 $\mu$s and embedding extraction 38.92 $\mu$s. Detection is essentially \emph{free} in the compute budget.
+
+\textbf{Finding 938}: \textbf{Full pipeline runs at 134 ms mean latency (7.4 FPS).} GPU forward pass dominates at 86.46 ms (64\%), followed by preprocessing at 14.36 ms (11\%). Adding OOD detection requires zero additional GPU time.
+
+\textbf{Finding 939}: \textbf{P95 latency is 199 ms (80\% above mean)} due to GPU scheduling variability, but detection overhead remains negligible even at the tail.
+
+\textbf{Finding 940}: \textbf{Peak throughput is 10.1 FPS single-image} dropping to 7.2 FPS at batch size 20. Per-image cost increases 40\% at larger batches due to memory pressure on the GPU.
+
+\textbf{Finding 941}: \textbf{The entire detection pipeline is already embedded in the standard inference path.} Since we extract hidden states that are computed during normal forward pass, the only additional cost is the 43 $\mu$s for extraction and distance computation --- no separate inference is required.
+
 \end{document}

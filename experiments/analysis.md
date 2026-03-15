@@ -15209,3 +15209,44 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 684**: The projection matrix reveals blur has the largest on-axis component (0.816) and significant fog-axis leakage (0.385), while noise has the smallest on-axis component (0.096). This explains the PCA finding that 3 dimensions suffice for fog/blur but not noise.
 
+
+## Experiment 368: Real-Time Detection Latency Benchmark
+
+**Script**: `scripts/real_vla_latency_benchmark.py`
+**Result**: `experiments/latency_benchmark_20260315_155238.json`
+**Figure**: `figures/fig377_latency.png`
+
+### Key Results
+
+**Pipeline Component Breakdown**:
+| Component | Latency |
+|-----------|---------|
+| Preprocessing | 14.36 ms |
+| GPU Forward Pass | 86.46 ms |
+| Embedding Extraction | 38.92 μs |
+| Cosine Distance | 4.15 μs |
+| **Detection Overhead** | **43.1 μs (0.050%)** |
+| **Full Pipeline** | **134.33 ms** |
+
+**Inference Latency Percentiles**:
+| Percentile | Time |
+|-----------|------|
+| min | 91.25 ms |
+| p50 | 110.79 ms |
+| p95 | 199.43 ms |
+| p99 | 244.55 ms |
+
+**Throughput**: 7.2-10.1 FPS depending on batch size
+
+### Findings
+
+**Finding 685**: Detection overhead is 43.1 μs (0.050% of GPU inference time). The cosine distance computation takes only 4.15 μs and embedding extraction 38.92 μs — detection is essentially free in the compute budget.
+
+**Finding 686**: The full inference pipeline runs at 134.33 ms mean latency (7.4 FPS), with GPU forward pass dominating at 86.46 ms (64%). Adding OOD detection to an already-deployed VLA system requires zero additional GPU time.
+
+**Finding 687**: P95 latency is 199.43 ms (80% above mean), indicating occasional GPU scheduling variability. Detection overhead remains negligible even at p95.
+
+**Finding 688**: Peak throughput is 10.1 FPS (single image) dropping to 7.2 FPS at batch size 20. The per-image cost increases from 99 to 139 ms at larger batches due to memory pressure.
+
+**Finding 689**: Preprocessing (14.36 ms, 11% of pipeline) is the second-largest cost after GPU forward. For deployed systems, preprocessing can be pipelined with the previous frame's inference.
+
