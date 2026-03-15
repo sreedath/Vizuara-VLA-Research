@@ -1,0 +1,833 @@
+{
+  "experiment": "severity_estimation",
+  "experiment_number": 311,
+  "timestamp": "20260315_113417",
+  "calibration": {
+    "fog": [
+      {
+        "severity": 0.05,
+        "distance": 1.2934207916259766e-05,
+        "n_actions_changed": 4,
+        "total_action_shift": 158
+      },
+      {
+        "severity": 0.1,
+        "distance": 6.252527236938477e-05,
+        "n_actions_changed": 4,
+        "total_action_shift": 55
+      },
+      {
+        "severity": 0.15000000000000002,
+        "distance": 0.00010651350021362305,
+        "n_actions_changed": 2,
+        "total_action_shift": 39
+      },
+      {
+        "severity": 0.2,
+        "distance": 0.00016802549362182617,
+        "n_actions_changed": 4,
+        "total_action_shift": 55
+      },
+      {
+        "severity": 0.25,
+        "distance": 0.00025159120559692383,
+        "n_actions_changed": 4,
+        "total_action_shift": 77
+      },
+      {
+        "severity": 0.30000000000000004,
+        "distance": 0.00034558773040771484,
+        "n_actions_changed": 4,
+        "total_action_shift": 77
+      },
+      {
+        "severity": 0.35000000000000003,
+        "distance": 0.00046133995056152344,
+        "n_actions_changed": 4,
+        "total_action_shift": 77
+      },
+      {
+        "severity": 0.4,
+        "distance": 0.0005706548690795898,
+        "n_actions_changed": 7,
+        "total_action_shift": 235
+      },
+      {
+        "severity": 0.45,
+        "distance": 0.0007002353668212891,
+        "n_actions_changed": 7,
+        "total_action_shift": 235
+      },
+      {
+        "severity": 0.5,
+        "distance": 0.0008426308631896973,
+        "n_actions_changed": 7,
+        "total_action_shift": 235
+      },
+      {
+        "severity": 0.55,
+        "distance": 0.0009887218475341797,
+        "n_actions_changed": 7,
+        "total_action_shift": 235
+      },
+      {
+        "severity": 0.6000000000000001,
+        "distance": 0.0011508464813232422,
+        "n_actions_changed": 7,
+        "total_action_shift": 235
+      },
+      {
+        "severity": 0.65,
+        "distance": 0.00133514404296875,
+        "n_actions_changed": 7,
+        "total_action_shift": 260
+      },
+      {
+        "severity": 0.7000000000000001,
+        "distance": 0.0014816522598266602,
+        "n_actions_changed": 6,
+        "total_action_shift": 258
+      },
+      {
+        "severity": 0.75,
+        "distance": 0.0016965866088867188,
+        "n_actions_changed": 7,
+        "total_action_shift": 342
+      },
+      {
+        "severity": 0.8,
+        "distance": 0.0018665194511413574,
+        "n_actions_changed": 6,
+        "total_action_shift": 259
+      },
+      {
+        "severity": 0.8500000000000001,
+        "distance": 0.002057969570159912,
+        "n_actions_changed": 6,
+        "total_action_shift": 261
+      },
+      {
+        "severity": 0.9,
+        "distance": 0.0022712349891662598,
+        "n_actions_changed": 7,
+        "total_action_shift": 264
+      },
+      {
+        "severity": 0.9500000000000001,
+        "distance": 0.0024851560592651367,
+        "n_actions_changed": 7,
+        "total_action_shift": 264
+      },
+      {
+        "severity": 1.0,
+        "distance": 0.0027054548263549805,
+        "n_actions_changed": 6,
+        "total_action_shift": 309
+      },
+      {
+        "r2_linear": 0.970046679550411,
+        "r2_quad": 0.999639978601523
+      }
+    ],
+    "night": [
+      {
+        "severity": 0.05,
+        "distance": 3.1828880310058594e-05,
+        "n_actions_changed": 0,
+        "total_action_shift": 0
+      },
+      {
+        "severity": 0.1,
+        "distance": 0.00013381242752075195,
+        "n_actions_changed": 0,
+        "total_action_shift": 0
+      },
+      {
+        "severity": 0.15000000000000002,
+        "distance": 0.0002383589744567871,
+        "n_actions_changed": 1,
+        "total_action_shift": 74
+      },
+      {
+        "severity": 0.2,
+        "distance": 0.0003681182861328125,
+        "n_actions_changed": 1,
+        "total_action_shift": 74
+      },
+      {
+        "severity": 0.25,
+        "distance": 0.0006166696548461914,
+        "n_actions_changed": 4,
+        "total_action_shift": 77
+      },
+      {
+        "severity": 0.30000000000000004,
+        "distance": 0.0008627772331237793,
+        "n_actions_changed": 4,
+        "total_action_shift": 77
+      },
+      {
+        "severity": 0.35000000000000003,
+        "distance": 0.0011506080627441406,
+        "n_actions_changed": 5,
+        "total_action_shift": 208
+      },
+      {
+        "severity": 0.4,
+        "distance": 0.0015032291412353516,
+        "n_actions_changed": 4,
+        "total_action_shift": 133
+      },
+      {
+        "severity": 0.45,
+        "distance": 0.0018325448036193848,
+        "n_actions_changed": 4,
+        "total_action_shift": 133
+      },
+      {
+        "severity": 0.5,
+        "distance": 0.0021948814392089844,
+        "n_actions_changed": 7,
+        "total_action_shift": 467
+      },
+      {
+        "severity": 0.55,
+        "distance": 0.0025489330291748047,
+        "n_actions_changed": 6,
+        "total_action_shift": 406
+      },
+      {
+        "severity": 0.6000000000000001,
+        "distance": 0.0028502345085144043,
+        "n_actions_changed": 6,
+        "total_action_shift": 365
+      },
+      {
+        "severity": 0.65,
+        "distance": 0.003195822238922119,
+        "n_actions_changed": 7,
+        "total_action_shift": 384
+      },
+      {
+        "severity": 0.7000000000000001,
+        "distance": 0.0035696029663085938,
+        "n_actions_changed": 6,
+        "total_action_shift": 346
+      },
+      {
+        "severity": 0.75,
+        "distance": 0.003999829292297363,
+        "n_actions_changed": 6,
+        "total_action_shift": 457
+      },
+      {
+        "severity": 0.8,
+        "distance": 0.004476428031921387,
+        "n_actions_changed": 7,
+        "total_action_shift": 490
+      },
+      {
+        "severity": 0.8500000000000001,
+        "distance": 0.004935920238494873,
+        "n_actions_changed": 6,
+        "total_action_shift": 358
+      },
+      {
+        "severity": 0.9,
+        "distance": 0.005623042583465576,
+        "n_actions_changed": 6,
+        "total_action_shift": 456
+      },
+      {
+        "severity": 0.9500000000000001,
+        "distance": 0.006730616092681885,
+        "n_actions_changed": 7,
+        "total_action_shift": 338
+      },
+      {
+        "severity": 1.0,
+        "distance": 0.007991313934326172,
+        "n_actions_changed": 7,
+        "total_action_shift": 393
+      },
+      {
+        "r2_linear": 0.938095054590757,
+        "r2_quad": 0.9891159931412534
+      }
+    ],
+    "blur": [
+      {
+        "severity": 0.05,
+        "distance": 0.0001379847526550293,
+        "n_actions_changed": 5,
+        "total_action_shift": 196
+      },
+      {
+        "severity": 0.1,
+        "distance": 0.0007543563842773438,
+        "n_actions_changed": 7,
+        "total_action_shift": 459
+      },
+      {
+        "severity": 0.15000000000000002,
+        "distance": 0.001426100730895996,
+        "n_actions_changed": 6,
+        "total_action_shift": 372
+      },
+      {
+        "severity": 0.2,
+        "distance": 0.0022547245025634766,
+        "n_actions_changed": 6,
+        "total_action_shift": 551
+      },
+      {
+        "severity": 0.25,
+        "distance": 0.0030140280723571777,
+        "n_actions_changed": 6,
+        "total_action_shift": 440
+      },
+      {
+        "severity": 0.30000000000000004,
+        "distance": 0.003692924976348877,
+        "n_actions_changed": 5,
+        "total_action_shift": 279
+      },
+      {
+        "severity": 0.35000000000000003,
+        "distance": 0.004047751426696777,
+        "n_actions_changed": 7,
+        "total_action_shift": 517
+      },
+      {
+        "severity": 0.4,
+        "distance": 0.004428386688232422,
+        "n_actions_changed": 6,
+        "total_action_shift": 289
+      },
+      {
+        "severity": 0.45,
+        "distance": 0.004735350608825684,
+        "n_actions_changed": 6,
+        "total_action_shift": 321
+      },
+      {
+        "severity": 0.5,
+        "distance": 0.005036652088165283,
+        "n_actions_changed": 7,
+        "total_action_shift": 407
+      },
+      {
+        "severity": 0.55,
+        "distance": 0.00505673885345459,
+        "n_actions_changed": 6,
+        "total_action_shift": 476
+      },
+      {
+        "severity": 0.6000000000000001,
+        "distance": 0.005062103271484375,
+        "n_actions_changed": 6,
+        "total_action_shift": 363
+      },
+      {
+        "severity": 0.65,
+        "distance": 0.005256056785583496,
+        "n_actions_changed": 7,
+        "total_action_shift": 370
+      },
+      {
+        "severity": 0.7000000000000001,
+        "distance": 0.005397975444793701,
+        "n_actions_changed": 5,
+        "total_action_shift": 232
+      },
+      {
+        "severity": 0.75,
+        "distance": 0.0055789947509765625,
+        "n_actions_changed": 6,
+        "total_action_shift": 449
+      },
+      {
+        "severity": 0.8,
+        "distance": 0.005815565586090088,
+        "n_actions_changed": 7,
+        "total_action_shift": 479
+      },
+      {
+        "severity": 0.8500000000000001,
+        "distance": 0.006089568138122559,
+        "n_actions_changed": 7,
+        "total_action_shift": 478
+      },
+      {
+        "severity": 0.9,
+        "distance": 0.006152153015136719,
+        "n_actions_changed": 7,
+        "total_action_shift": 532
+      },
+      {
+        "severity": 0.9500000000000001,
+        "distance": 0.006197094917297363,
+        "n_actions_changed": 5,
+        "total_action_shift": 463
+      },
+      {
+        "severity": 1.0,
+        "distance": 0.006263315677642822,
+        "n_actions_changed": 5,
+        "total_action_shift": 463
+      },
+      {
+        "r2_linear": 0.869428193373763,
+        "r2_quad": 0.9794572965172856
+      }
+    ],
+    "noise": [
+      {
+        "severity": 0.05,
+        "distance": 4.231929779052734e-06,
+        "n_actions_changed": 4,
+        "total_action_shift": 158
+      },
+      {
+        "severity": 0.1,
+        "distance": 2.7835369110107422e-05,
+        "n_actions_changed": 4,
+        "total_action_shift": 158
+      },
+      {
+        "severity": 0.15000000000000002,
+        "distance": 1.5139579772949219e-05,
+        "n_actions_changed": 4,
+        "total_action_shift": 158
+      },
+      {
+        "severity": 0.2,
+        "distance": 2.4974346160888672e-05,
+        "n_actions_changed": 4,
+        "total_action_shift": 163
+      },
+      {
+        "severity": 0.25,
+        "distance": 4.8041343688964844e-05,
+        "n_actions_changed": 6,
+        "total_action_shift": 334
+      },
+      {
+        "severity": 0.30000000000000004,
+        "distance": 4.57763671875e-05,
+        "n_actions_changed": 6,
+        "total_action_shift": 345
+      },
+      {
+        "severity": 0.35000000000000003,
+        "distance": 7.039308547973633e-05,
+        "n_actions_changed": 6,
+        "total_action_shift": 345
+      },
+      {
+        "severity": 0.4,
+        "distance": 8.845329284667969e-05,
+        "n_actions_changed": 7,
+        "total_action_shift": 385
+      },
+      {
+        "severity": 0.45,
+        "distance": 0.00012630224227905273,
+        "n_actions_changed": 7,
+        "total_action_shift": 403
+      },
+      {
+        "severity": 0.5,
+        "distance": 0.00015681982040405273,
+        "n_actions_changed": 7,
+        "total_action_shift": 403
+      },
+      {
+        "severity": 0.55,
+        "distance": 0.0001862049102783203,
+        "n_actions_changed": 6,
+        "total_action_shift": 177
+      },
+      {
+        "severity": 0.6000000000000001,
+        "distance": 0.0002129673957824707,
+        "n_actions_changed": 6,
+        "total_action_shift": 247
+      },
+      {
+        "severity": 0.65,
+        "distance": 0.00023418664932250977,
+        "n_actions_changed": 6,
+        "total_action_shift": 247
+      },
+      {
+        "severity": 0.7000000000000001,
+        "distance": 0.0002459883689880371,
+        "n_actions_changed": 6,
+        "total_action_shift": 323
+      },
+      {
+        "severity": 0.75,
+        "distance": 0.00030237436294555664,
+        "n_actions_changed": 6,
+        "total_action_shift": 283
+      },
+      {
+        "severity": 0.8,
+        "distance": 0.00033551454544067383,
+        "n_actions_changed": 6,
+        "total_action_shift": 248
+      },
+      {
+        "severity": 0.8500000000000001,
+        "distance": 0.00037044286727905273,
+        "n_actions_changed": 6,
+        "total_action_shift": 248
+      },
+      {
+        "severity": 0.9,
+        "distance": 0.0004207491874694824,
+        "n_actions_changed": 6,
+        "total_action_shift": 313
+      },
+      {
+        "severity": 0.9500000000000001,
+        "distance": 0.0004693269729614258,
+        "n_actions_changed": 6,
+        "total_action_shift": 233
+      },
+      {
+        "severity": 1.0,
+        "distance": 0.0005123615264892578,
+        "n_actions_changed": 6,
+        "total_action_shift": 283
+      },
+      {
+        "r2_linear": 0.95263724050585,
+        "r2_quad": 0.9965268699521026
+      }
+    ]
+  },
+  "estimation": {
+    "fog": {
+      "estimates": [
+        {
+          "true_severity": 0.075,
+          "distance": 5.048513412475586e-05,
+          "estimated_severity": 0.08786057692307693,
+          "abs_error": 0.012860576923076933
+        },
+        {
+          "true_severity": 0.15,
+          "distance": 0.00010651350021362305,
+          "estimated_severity": 0.15000000000000002,
+          "abs_error": 2.7755575615628914e-17
+        },
+        {
+          "true_severity": 0.25,
+          "distance": 0.00025159120559692383,
+          "estimated_severity": 0.25,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.35,
+          "distance": 0.00046133995056152344,
+          "estimated_severity": 0.35000000000000003,
+          "abs_error": 5.551115123125783e-17
+        },
+        {
+          "true_severity": 0.45,
+          "distance": 0.0007002353668212891,
+          "estimated_severity": 0.45,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.55,
+          "distance": 0.0009887218475341797,
+          "estimated_severity": 0.55,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.65,
+          "distance": 0.00133514404296875,
+          "estimated_severity": 0.65,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.75,
+          "distance": 0.0016965866088867188,
+          "estimated_severity": 0.75,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.85,
+          "distance": 0.002057969570159912,
+          "estimated_severity": 0.8500000000000001,
+          "abs_error": 1.1102230246251565e-16
+        },
+        {
+          "true_severity": 0.95,
+          "distance": 0.0024851560592651367,
+          "estimated_severity": 0.9500000000000001,
+          "abs_error": 1.1102230246251565e-16
+        }
+      ],
+      "mae": 0.001286057692307724,
+      "max_error": 0.012860576923076933
+    },
+    "night": {
+      "estimates": [
+        {
+          "true_severity": 0.075,
+          "distance": 5.906820297241211e-05,
+          "estimated_severity": 0.06335476329631795,
+          "abs_error": 0.011645236703682046
+        },
+        {
+          "true_severity": 0.15,
+          "distance": 0.0002383589744567871,
+          "estimated_severity": 0.15000000000000002,
+          "abs_error": 2.7755575615628914e-17
+        },
+        {
+          "true_severity": 0.25,
+          "distance": 0.0006166696548461914,
+          "estimated_severity": 0.25,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.35,
+          "distance": 0.0011506080627441406,
+          "estimated_severity": 0.35000000000000003,
+          "abs_error": 5.551115123125783e-17
+        },
+        {
+          "true_severity": 0.45,
+          "distance": 0.0018325448036193848,
+          "estimated_severity": 0.45,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.55,
+          "distance": 0.0025489330291748047,
+          "estimated_severity": 0.55,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.65,
+          "distance": 0.003195822238922119,
+          "estimated_severity": 0.65,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.75,
+          "distance": 0.003999829292297363,
+          "estimated_severity": 0.75,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.85,
+          "distance": 0.004935920238494873,
+          "estimated_severity": 0.8500000000000001,
+          "abs_error": 1.1102230246251565e-16
+        },
+        {
+          "true_severity": 0.95,
+          "distance": 0.006730616092681885,
+          "estimated_severity": 0.9500000000000001,
+          "abs_error": 1.1102230246251565e-16
+        }
+      ],
+      "mae": 0.001164523670368235,
+      "max_error": 0.011645236703682046
+    },
+    "blur": {
+      "estimates": [
+        {
+          "true_severity": 0.075,
+          "distance": 0.00041800737380981445,
+          "estimated_severity": 0.0727154046997389,
+          "abs_error": 0.002284595300261094
+        },
+        {
+          "true_severity": 0.15,
+          "distance": 0.001426100730895996,
+          "estimated_severity": 0.15000000000000002,
+          "abs_error": 2.7755575615628914e-17
+        },
+        {
+          "true_severity": 0.25,
+          "distance": 0.0030140280723571777,
+          "estimated_severity": 0.25,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.35,
+          "distance": 0.004047751426696777,
+          "estimated_severity": 0.35000000000000003,
+          "abs_error": 5.551115123125783e-17
+        },
+        {
+          "true_severity": 0.45,
+          "distance": 0.004735350608825684,
+          "estimated_severity": 0.45,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.55,
+          "distance": 0.00505673885345459,
+          "estimated_severity": 0.55,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.65,
+          "distance": 0.005256056785583496,
+          "estimated_severity": 0.65,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.75,
+          "distance": 0.0055789947509765625,
+          "estimated_severity": 0.75,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.85,
+          "distance": 0.006089568138122559,
+          "estimated_severity": 0.8500000000000001,
+          "abs_error": 1.1102230246251565e-16
+        },
+        {
+          "true_severity": 0.95,
+          "distance": 0.006197094917297363,
+          "estimated_severity": 0.9500000000000001,
+          "abs_error": 1.1102230246251565e-16
+        }
+      ],
+      "mae": 0.00022845953002613995,
+      "max_error": 0.002284595300261094
+    },
+    "noise": {
+      "estimates": [
+        {
+          "true_severity": 0.075,
+          "distance": 5.4836273193359375e-06,
+          "estimated_severity": 0.05265151515151516,
+          "abs_error": 0.02234848484848484
+        },
+        {
+          "true_severity": 0.15,
+          "distance": 1.5139579772949219e-05,
+          "estimated_severity": 0.0731060606060606,
+          "abs_error": 0.07689393939393939
+        },
+        {
+          "true_severity": 0.25,
+          "distance": 4.8041343688964844e-05,
+          "estimated_severity": 0.25,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.35,
+          "distance": 7.039308547973633e-05,
+          "estimated_severity": 0.35000000000000003,
+          "abs_error": 5.551115123125783e-17
+        },
+        {
+          "true_severity": 0.45,
+          "distance": 0.00012630224227905273,
+          "estimated_severity": 0.45,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.55,
+          "distance": 0.0001862049102783203,
+          "estimated_severity": 0.55,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.65,
+          "distance": 0.00023418664932250977,
+          "estimated_severity": 0.65,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.75,
+          "distance": 0.00030237436294555664,
+          "estimated_severity": 0.75,
+          "abs_error": 0.0
+        },
+        {
+          "true_severity": 0.85,
+          "distance": 0.00037044286727905273,
+          "estimated_severity": 0.8500000000000001,
+          "abs_error": 1.1102230246251565e-16
+        },
+        {
+          "true_severity": 0.95,
+          "distance": 0.0004693269729614258,
+          "estimated_severity": 0.9500000000000001,
+          "abs_error": 1.1102230246251565e-16
+        }
+      ],
+      "mae": 0.00992424242424245,
+      "max_error": 0.07689393939393939
+    }
+  },
+  "thresholds": {
+    "fog": {
+      "safe_max_severity": 0.0,
+      "safe_max_distance": 1.2934207916259766e-05,
+      "first_action_change_sev": 0.05,
+      "first_action_change_d": 1.2934207916259766e-05,
+      "majority_change_sev": 0.05,
+      "all_change_sev": 0.4
+    },
+    "night": {
+      "safe_max_severity": 0.10000000000000002,
+      "safe_max_distance": 0.0002383589744567871,
+      "first_action_change_sev": 0.15000000000000002,
+      "first_action_change_d": 0.0002383589744567871,
+      "majority_change_sev": 0.25,
+      "all_change_sev": 0.5
+    },
+    "blur": {
+      "safe_max_severity": 0.0,
+      "safe_max_distance": 0.0001379847526550293,
+      "first_action_change_sev": 0.05,
+      "first_action_change_d": 0.0001379847526550293,
+      "majority_change_sev": 0.05,
+      "all_change_sev": 0.1
+    },
+    "noise": {
+      "safe_max_severity": 0.0,
+      "safe_max_distance": 4.231929779052734e-06,
+      "first_action_change_sev": 0.05,
+      "first_action_change_d": 4.231929779052734e-06,
+      "majority_change_sev": 0.05,
+      "all_change_sev": 0.4
+    }
+  },
+  "correlation": {
+    "fog": {
+      "distance_action_correlation": 0.8126761648370107,
+      "max_action_shift": 342,
+      "distance_at_max_shift": 0.0016965866088867188
+    },
+    "night": {
+      "distance_action_correlation": 0.7659289500839919,
+      "max_action_shift": 490,
+      "distance_at_max_shift": 0.004476428031921387
+    },
+    "blur": {
+      "distance_action_correlation": 0.2749069838914882,
+      "max_action_shift": 551,
+      "distance_at_max_shift": 0.0022547245025634766
+    },
+    "noise": {
+      "distance_action_correlation": 0.08805394305570852,
+      "max_action_shift": 403,
+      "distance_at_max_shift": 0.00012630224227905273
+    }
+  }
+}
