@@ -5170,4 +5170,20 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 579}: Blur detection performance is \textbf{directly proportional to spatial frequency}: checkerboard (high-frequency edges) produces $d$=0.009, random textures $d$=0.006, gradients $d$=0.00004, solid colors $d$=0. In practice, real robot camera images always contain sufficient texture for blur detection.
 
+\subsection{Combined Metric Analysis}
+
+\textbf{Experiment 274: Multi-Metric Detection.} We extract 6 metrics per forward pass across 5 scenes: cosine distance (L3, L31), L2 norm change (L31), attention entropy change (L31), output entropy, and top-1 probability. We test each individually and in weighted combinations.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig283_combined.png}
+\caption{(a) All 4 embedding-space metrics achieve AUROC=1.0 for all corruptions. (b) Separation ratios span 3.5$\times$10$^3$ to 4.9$\times$10$^{14}$. (c) Output-space metrics (entropy, top-1 probability) overlap between clean and corrupted --- they are NOT discriminative.}
+\end{figure}
+
+\textbf{Finding 580}: \textbf{Four independent metrics} all achieve AUROC=1.0: cosine distance (L3), cosine distance (L31), L2 norm change, and attention entropy change. The detection power derives from the underlying phenomenon (zero in-distribution variance), not from any particular metric choice --- any measure of embedding shift achieves perfect separation.
+
+\textbf{Finding 581}: Output-space metrics are \textbf{NOT discriminative}: output entropy (clean: 2.51, corrupted: 2.01--3.80) and top-1 probability (clean: 0.33, corrupted: 0.13--0.45) overlap heavily between clean and corrupted conditions. The model's expressed uncertainty does not reliably indicate visual corruption.
+
+\textbf{Finding 582}: \textbf{No combined metric improves} over cosine distance alone. Since the simplest single-metric detector already achieves perfect separation, adding metrics, layers, or complexity provides zero benefit. This validates the minimalist detector design: one metric (cosine distance), one layer (L3), one calibration image.
+
 \end{document}

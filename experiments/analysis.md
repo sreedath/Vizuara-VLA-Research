@@ -10170,3 +10170,42 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 307**: Gaussian blur on **solid color images produces exactly zero distance** because blur is the identity on uniform content. This is the only content-dependent failure mode: blur detection requires spatial frequency content in the image.
 
 **Finding 308**: Checkerboard scenes produce the **highest blur distance** (0.009) due to high-frequency edges, while gradients produce the lowest (0.00004). Blur detection performance is directly proportional to the image's spatial frequency content.
+
+---
+
+## Experiment 274: Combined Metric for Robust Detection
+
+**Research Question**: Can combining cosine distance with other metrics (L2 norm change, attention entropy change, output entropy) improve detection robustness?
+
+**Method**: Extract 6 metrics per forward pass across 5 diverse scenes: cosine distance (L3, L31), L2 norm change (L31), attention entropy change (L31), output entropy, and top-1 probability. Test individual and weighted combinations.
+
+**Results**:
+
+**Individual Metric AUROC (same-image calibration)**:
+All 4 embedding-space metrics achieve **AUROC=1.0** for all 4 corruptions:
+
+| Metric | Fog | Night | Noise | Blur | Separation |
+|--------|-----|-------|-------|------|-----------|
+| Cos L3 | 1.0 | 1.0 | 1.0 | 1.0 | 3.5K-65K× |
+| Cos L31 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0M-4.3M× |
+| Norm change | 1.0 | 1.0 | 1.0 | 1.0 | 794B-5.7T× |
+| Attn ent change | 1.0 | 1.0 | 1.0 | 1.0 | 9.9T-487T× |
+
+**Output-space metrics are NOT discriminative**:
+- Output entropy: clean=2.51, corrupted=2.01-3.80 (overlapping)
+- Top-1 probability: clean=0.33, corrupted=0.13-0.45 (overlapping)
+
+**Combined metric AUROC**: All combinations achieve AUROC=1.0 (same as individual metrics).
+
+**Key Findings**:
+1. **All 4 embedding-space metrics achieve AUROC=1.0**: With same-image calibration, cosine distance is not unique — L2 norm change and attention entropy change also achieve perfect detection.
+2. **Cosine L3 has the lowest (but still astronomical) separation**: 3,470-64,716× separation ratio. L31 metrics have millions-to-trillions separation but are more prompt-sensitive.
+3. **Output-space metrics fail**: Entropy and top-1 probability overlap between clean and corrupted conditions. The model's output confidence is NOT a reliable OOD indicator.
+4. **Combined metrics add nothing**: Since each individual metric already achieves AUROC=1.0, no combination can improve. The simplest detector (cosine distance L3) is optimal.
+5. **The detector's power comes from the data, not the metric**: Any metric that captures the clean→corrupt embedding shift achieves perfect detection because the shift is so well-separated from zero ID variance.
+
+**Finding 309**: **Four independent metrics** (cosine distance, L2 norm change, attention entropy change at L31, and cosine distance at L31) all achieve AUROC=1.0 for all corruptions. The detection power comes from the phenomenon (zero ID variance), not the specific metric choice.
+
+**Finding 310**: Output-space metrics (**entropy, top-1 probability**) are NOT discriminative for OOD detection: corrupted conditions produce entropy 2.01-3.80 vs clean 2.51, with heavy overlap. The model's expressed uncertainty does not reliably indicate corruption.
+
+**Finding 311**: **No combined metric improves** over cosine distance alone. Since the simplest detector already achieves perfect separation, adding complexity provides zero benefit — validating our one-metric, one-layer, one-image detector design.
