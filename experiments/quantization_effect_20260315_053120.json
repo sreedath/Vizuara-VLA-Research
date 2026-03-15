@@ -1,0 +1,56 @@
+{
+  "experiment": "quantization_effect",
+  "experiment_number": 210,
+  "timestamp": "20260315_053120",
+  "n_cal": 10,
+  "n_test": 8,
+  "layers": [
+    1,
+    3,
+    32
+  ],
+  "results": {
+    "bfloat16": {
+      "L1": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean_dist": -0.0,
+        "ood_mean_dist": 0.001333
+      },
+      "L3": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean_dist": 0.0,
+        "ood_mean_dist": 0.002338
+      },
+      "L32": {
+        "overall_auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean_dist": 0.0,
+        "ood_mean_dist": 0.353265
+      },
+      "gpu_memory_gb": 15.39
+    },
+    "int8": {
+      "error": "`.to` is not supported for `4-bit` or `8-bit` bitsandbytes models. Please use the model as it is, since the model has already been set to the correct devices and casted to the correct `dtype`."
+    },
+    "int4": {
+      "error": "`.to` is not supported for `4-bit` or `8-bit` bitsandbytes models. Please use the model as it is, since the model has already been set to the correct devices and casted to the correct `dtype`."
+    }
+  }
+}

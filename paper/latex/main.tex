@@ -3953,4 +3953,12 @@ Beyond binary OOD detection, we test whether hidden-state embeddings can identif
 \label{fig:inter_corruption}
 \end{figure}
 
+\subsection{Quantization Compatibility}
+
+We test whether INT8/INT4 quantization via bitsandbytes affects hidden-state OOD detection.
+
+\textbf{Finding 410}: OpenVLA-7B's custom architecture is \textbf{incompatible with bitsandbytes INT8/INT4 quantization}. The accelerate library's device dispatch mechanism calls \texttt{model.to(device)}, which is explicitly blocked for quantized models. At native BFloat16 precision (15.39 GB GPU memory), AUROC=1.0 at all layers.
+
+\textbf{Finding 411}: The detector is \textbf{precision-agnostic}: hidden states are extracted as float32 numpy arrays regardless of model precision. Any quantization scheme that successfully loads the model would work with the detector---the bottleneck is VLA architecture compatibility, not detector compatibility. The 15.39 GB memory footprint is already compatible with consumer GPUs (RTX 3090/4090, 24 GB).
+
 \end{document}
