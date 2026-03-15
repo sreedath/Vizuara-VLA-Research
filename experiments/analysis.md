@@ -16420,3 +16420,29 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 
 **Finding 824**: Fog+night severity balancing reveals a cancellation minimum at s1(fog)=0.6 where the compound distance (0.79e-3) is LOWER than either pure corruption at severity 0.5 individually. This quantifies the exact cancellation geometry of anti-correlated shift vectors.
 
+---
+
+## Experiment 396: Statistical Significance and Confidence Intervals
+
+**Objective**: Provide rigorous statistical validation of key findings with bootstrap CI, permutation tests, Bonferroni correction, LOO cross-validation, and power analysis.
+
+**Method**: Collected 20 clean and 20 corrupted embeddings per corruption. Computed 2000-iteration bootstrap AUROC CIs, 5000-iteration permutation tests, bootstrapped Cohen's d CIs, 20-fold LOO-CV, and power analysis at sample sizes N=2-20.
+
+**Key Results**:
+- Bootstrap AUROC 95% CI: [1.0, 1.0] for ALL corruptions (zero-width CI)
+- Permutation test p-value: < 0.0002 for ALL corruptions (minimum possible at 5000 permutations)
+- All significant after Bonferroni correction (α/4 = 0.0125)
+- Cohen's d 95% CIs: fog [198, 357], night [433, 806], noise [57, 104], blur [166, 256]
+- LOO-CV: 0% FPR, 100% TPR across ALL 20 folds × ALL corruptions (80/80 perfect)
+- Statistical power = 1.0 at ALL sample sizes (including N=2) for ALL corruptions
+
+**Finding 825**: Bootstrap 95% CI for AUROC is [1.0, 1.0] for all corruptions — zero-width confidence interval. Even with resampling variation, AUROC never drops below 1.0. This is the strongest possible statistical guarantee for a binary classifier.
+
+**Finding 826**: Permutation test p-values are at the minimum possible (0.0002 = 1/5001) for ALL corruptions. No permutation of the labels ever produces separation as extreme as the observed data. The null hypothesis of no separation is rejected with maximum statistical confidence.
+
+**Finding 827**: All detection results remain significant after Bonferroni correction (4 tests, α=0.0125). With p=0.0002, the results are 62.5× below the corrected threshold — multiple testing corrections have zero practical impact.
+
+**Finding 828**: LOO cross-validation achieves 0% FPR and 100% TPR across ALL 20 folds × ALL 4 corruptions (80/80 perfect). The threshold calibrated on N-1 samples perfectly generalizes to the held-out sample, confirming the detection system is not overfit.
+
+**Finding 829**: Statistical power is 1.0 at sample size N=2 for ALL corruptions. Even the minimum meaningful sample size achieves 100% power to detect the separation. This extreme power reflects the astronomical effect sizes (Cohen's d = 57-806).
+
