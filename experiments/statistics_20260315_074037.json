@@ -1,0 +1,63 @@
+{
+  "experiment": "statistics",
+  "experiment_number": 247,
+  "timestamp": "20260315_074037",
+  "layer": 3,
+  "results": {
+    "clean": {
+      "mean": 0.003105,
+      "std": 0.129796,
+      "median": 0.001102,
+      "min": -1.148438,
+      "max": 5.875,
+      "skewness": 28.390488,
+      "kurtosis": 1149.868164,
+      "pct_positive": 0.5083,
+      "pct_large": 0.0056
+    },
+    "fog": {
+      "mean": 0.00305,
+      "std": 0.129356,
+      "median": 0.001099,
+      "min": -1.148438,
+      "max": 5.875,
+      "skewness": 28.43811,
+      "kurtosis": 1158.975342,
+      "pct_positive": 0.5115,
+      "pct_large": 0.0056
+    },
+    "night": {
+      "mean": 0.003293,
+      "std": 0.133285,
+      "median": 0.000381,
+      "min": -1.195312,
+      "max": 6.0625,
+      "skewness": 28.684063,
+      "kurtosis": 1169.052246,
+      "pct_positive": 0.5027,
+      "pct_large": 0.0056
+    },
+    "noise": {
+      "mean": 0.002969,
+      "std": 0.127181,
+      "median": 0.001183,
+      "min": -1.132812,
+      "max": 5.6875,
+      "skewness": 27.852766,
+      "kurtosis": 1110.583862,
+      "pct_positive": 0.5093,
+      "pct_large": 0.0059
+    },
+    "blur": {
+      "mean": 0.003049,
+      "std": 0.127829,
+      "median": 0.000534,
+      "min": -1.15625,
+      "max": 5.71875,
+      "skewness": 27.617001,
+      "kurtosis": 1103.404541,
+      "pct_positive": 0.5068,
+      "pct_large": 0.0059
+    }
+  }
+}

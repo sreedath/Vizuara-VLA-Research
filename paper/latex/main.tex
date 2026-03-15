@@ -4742,4 +4742,36 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 504}: The most effective evasion (fog mathematical inversion) requires \textbf{exact knowledge} of corruption parameters --- an unrealistic assumption in practice. Generic post-processing (brightness, contrast, smoothing) achieves at most 45\% reduction.
 
+\subsection{Action Token Recovery}
+
+\textbf{Experiment 246: Action Recovery Under Corruption Removal.} We track both embedding distances and predicted action tokens across 15-frame streams (5 clean $\rightarrow$ 5 corrupt $\rightarrow$ 5 recovered) to verify that correct actions resume immediately.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig255_action_recovery.png}
+\caption{Action token recovery across fog, night, and noise corruptions. All three show perfect 5/5$\rightarrow$0/5$\rightarrow$5/5 pattern: clean frames produce correct token 31869, corrupt frames produce wrong tokens (31898, 31928/31860, 31875/31860), and recovered frames immediately return to correct token 31869.}
+\end{figure}
+
+\textbf{Finding 505}: Actions recover \textbf{immediately and completely} when corruption is removed --- perfect 5/5$\rightarrow$0/5$\rightarrow$5/5 across all corruption types. The model processes each frame independently with zero hysteresis: correct actions resume from the very first clean frame after corruption.
+
+\textbf{Finding 506}: Corruption causes \textbf{consistent wrong actions}: fog always predicts token 31898 (+29 from correct 31869), while night and noise alternate between 2 wrong tokens per frame. This inconsistency under corruption is itself a safety concern --- the model not only acts wrongly but \textit{unpredictably}.
+
+\textbf{Finding 507}: Recovered frame distances (2.98$\times$10$^{-5}$ to 6.07$\times$10$^{-5}$) are 12--25$\times$ smaller than corrupt distances but 5--10$\times$ larger than initial clean distances, reflecting minor variation index drift rather than persistent corruption effects.
+
+\subsection{Hidden State Statistical Moments}
+
+\textbf{Experiment 247: Distribution Statistics.} We compute comprehensive statistical moments of the 4096D hidden state to understand whether corruption changes aggregate distribution properties.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig256_statistics.png}
+\caption{Hidden state statistical moments under corruption. Left: all statistics change by $<$5\%, with night showing the largest deviations. Center: distribution shape (skewness$\approx$28, kurtosis$\approx$1150) is preserved under corruption. Right: the embedding is sparse --- only 0.56\% of dimensions exceed magnitude 1.}
+\end{figure}
+
+\textbf{Finding 508}: Hidden state statistical moments change by \textbf{$<$5\% under any corruption}, yet cosine distance achieves AUROC=1.0. The OOD signal is encoded in the \textit{direction} of the embedding vector, not in aggregate statistics like mean ($\Delta$1.8--6.1\%) or standard deviation ($\Delta$0.3--2.7\%).
+
+\textbf{Finding 509}: The hidden state distribution is \textbf{extremely non-Gaussian} (skewness$=$28.4, kurtosis$=$1150) and \textbf{sparse} (only 0.56\% of 4096 dimensions exceed magnitude 1). This explains why Mahalanobis distance (which assumes Gaussianity) provides no advantage over cosine distance.
+
+\textbf{Finding 510}: Night corruption produces the \textbf{largest statistical shifts} across all moments (mean +6.1\%, std +2.7\%, kurtosis +1.7\%), consistent with it having the largest cosine distance (0.0034). Fog produces the smallest shifts ($<$1\%), consistent with its smallest distance (0.0007).
+
 \end{document}

@@ -1,0 +1,345 @@
+{
+  "experiment": "action_recovery",
+  "experiment_number": 246,
+  "timestamp": "20260315_073930",
+  "layer": 3,
+  "clean_action_token": 31869,
+  "results": {
+    "fog": {
+      "frames": [
+        {
+          "frame": 0,
+          "phase": "clean",
+          "distance": 0.0,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 1,
+          "phase": "clean",
+          "distance": 1.67e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 2,
+          "phase": "clean",
+          "distance": 3.52e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 3,
+          "phase": "clean",
+          "distance": 5.19e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 4,
+          "phase": "clean",
+          "distance": 6.62e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 5,
+          "phase": "corrupt",
+          "distance": 0.00074416,
+          "action_token": 31898,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 6,
+          "phase": "corrupt",
+          "distance": 0.00073385,
+          "action_token": 31898,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 7,
+          "phase": "corrupt",
+          "distance": 0.00071979,
+          "action_token": 31898,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 8,
+          "phase": "corrupt",
+          "distance": 0.00076413,
+          "action_token": 31898,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 9,
+          "phase": "corrupt",
+          "distance": 0.00075054,
+          "action_token": 31898,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 10,
+          "phase": "recovered",
+          "distance": 2.98e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 11,
+          "phase": "recovered",
+          "distance": 4.023e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 12,
+          "phase": "recovered",
+          "distance": 4.905e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 13,
+          "phase": "recovered",
+          "distance": 6.068e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 14,
+          "phase": "recovered",
+          "distance": 5.817e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        }
+      ],
+      "clean_action_match": "5/5",
+      "corrupt_action_match": "0/5",
+      "recovered_action_match": "5/5"
+    },
+    "night": {
+      "frames": [
+        {
+          "frame": 0,
+          "phase": "clean",
+          "distance": 0.0,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 1,
+          "phase": "clean",
+          "distance": 1.67e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 2,
+          "phase": "clean",
+          "distance": 3.52e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 3,
+          "phase": "clean",
+          "distance": 5.19e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 4,
+          "phase": "clean",
+          "distance": 6.62e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 5,
+          "phase": "corrupt",
+          "distance": 0.00346839,
+          "action_token": 31928,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 6,
+          "phase": "corrupt",
+          "distance": 0.00340843,
+          "action_token": 31860,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 7,
+          "phase": "corrupt",
+          "distance": 0.00341308,
+          "action_token": 31860,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 8,
+          "phase": "corrupt",
+          "distance": 0.00344342,
+          "action_token": 31860,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 9,
+          "phase": "corrupt",
+          "distance": 0.00352806,
+          "action_token": 31860,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 10,
+          "phase": "recovered",
+          "distance": 2.98e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 11,
+          "phase": "recovered",
+          "distance": 4.023e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 12,
+          "phase": "recovered",
+          "distance": 4.905e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 13,
+          "phase": "recovered",
+          "distance": 6.068e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 14,
+          "phase": "recovered",
+          "distance": 5.817e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        }
+      ],
+      "clean_action_match": "5/5",
+      "corrupt_action_match": "0/5",
+      "recovered_action_match": "5/5"
+    },
+    "noise": {
+      "frames": [
+        {
+          "frame": 0,
+          "phase": "clean",
+          "distance": 0.0,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 1,
+          "phase": "clean",
+          "distance": 1.67e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 2,
+          "phase": "clean",
+          "distance": 3.52e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 3,
+          "phase": "clean",
+          "distance": 5.19e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 4,
+          "phase": "clean",
+          "distance": 6.62e-06,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 5,
+          "phase": "corrupt",
+          "distance": 0.00305849,
+          "action_token": 31875,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 6,
+          "phase": "corrupt",
+          "distance": 0.00324953,
+          "action_token": 31860,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 7,
+          "phase": "corrupt",
+          "distance": 0.00308883,
+          "action_token": 31875,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 8,
+          "phase": "corrupt",
+          "distance": 0.00311053,
+          "action_token": 31860,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 9,
+          "phase": "corrupt",
+          "distance": 0.00293559,
+          "action_token": 31875,
+          "action_matches_clean": false
+        },
+        {
+          "frame": 10,
+          "phase": "recovered",
+          "distance": 2.98e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 11,
+          "phase": "recovered",
+          "distance": 4.023e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 12,
+          "phase": "recovered",
+          "distance": 4.905e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 13,
+          "phase": "recovered",
+          "distance": 6.068e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        },
+        {
+          "frame": 14,
+          "phase": "recovered",
+          "distance": 5.817e-05,
+          "action_token": 31869,
+          "action_matches_clean": true
+        }
+      ],
+      "clean_action_match": "5/5",
+      "corrupt_action_match": "0/5",
+      "recovered_action_match": "5/5"
+    }
+  }
+}
