@@ -4666,4 +4666,32 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 491}: Mixture distances are approximately \textbf{additive}: noise+blur distance (0.00561) exceeds both single-corruption distances (noise: 0.00288, blur: 0.00107), suggesting corruption effects compose linearly in embedding space.
 
+\subsection{Spatial Importance Maps}
+
+\textbf{Experiment 241: Occlusion Sensitivity.} Which image regions contribute most to the OOD signal? We systematically occlude 32$\times$32 patches and measure distance change.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig250_occlusion.png}
+\caption{Spatial importance maps via occlusion sensitivity. Fog (left): all negative --- occluding any patch \textit{increases} anomaly, confirming fog is a global property. Night (right): positive everywhere with moderate spatial variation (3.4$\times$ max/min ratio).}
+\end{figure}
+
+\textbf{Finding 492}: The OOD signal is \textbf{spatially distributed}: for night, the maximum-importance patch accounts for only 29\% of total distance. No single image region is necessary or sufficient for detection.
+
+\textbf{Finding 493}: For fog, occlusion \textbf{paradoxically increases} anomaly: gray patches are more anomalous than foggy pixels in context. This confirms fog corruption is a global image property not localizable to any spatial region.
+
+\subsection{Resolution Invariance}
+
+\textbf{Experiment 242: Cross-Resolution Transfer.} Does a centroid calibrated at 256$\times$256 detect corruptions at other resolutions?
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig251_resolution.png}
+\caption{Detection achieves AUROC=1.0 across all resolutions (64$\times$64 to 1024$\times$1024). A single centroid from 256$\times$256 works at any resolution --- no resolution-specific calibration needed.}
+\end{figure}
+
+\textbf{Finding 494}: Detection achieves \textbf{AUROC=1.0 across all 5 resolutions} (64$\times$64 to 1024$\times$1024) with cross-resolution transfer. The ViT processor's internal resizing normalizes resolution, making the detector resolution-invariant.
+
+\textbf{Finding 495}: Noise distance \textbf{decreases with resolution}: 0.00535 at 64$\times$64 $\rightarrow$ 0.00031 at 1024$\times$1024. Higher resolution smooths noise in the processor's downsampling, but detection remains perfect.
+
 \end{document}

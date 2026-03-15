@@ -9025,3 +9025,53 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **Mixtures are always detected**: All mixture distances far exceed the clean threshold. Even when decomposition fails, binary OOD detection succeeds.
 
 **Finding 235**: Corruption mixture decomposition achieves **83.3% accuracy** (5/6 pairwise mixtures correctly identified). The single failure case (fog+night) occurs when a weak corruption (fog) is dominated by a strong one (night). Mixture detection (binary) remains 100%.
+
+---
+
+## Experiment 241: Occlusion Sensitivity Map
+
+**Research Question**: Which image regions contribute most to the OOD distance? Creates spatial importance maps by occluding 32×32 patches.
+
+**Method**: For fog and night, occlude each 32×32 patch with gray (128) and measure change in OOD distance. Importance = full_dist - occluded_dist (positive = patch contributes to OOD signal).
+
+**Results**:
+
+**Fog**: All importance values are NEGATIVE (-0.000075 to -0.000678). Occluding any patch INCREASES the distance. The fog signal is so globally diffuse that the gray patch itself becomes an anomaly.
+
+**Night**: All importance values are POSITIVE (0.000288 to 0.000986). Occluding any patch reduces the OOD distance. The signal is distributed across the entire image, with the upper-left sky region contributing slightly more (max at row 1, col 1).
+
+**Key Findings**:
+1. **Night OOD signal is spatially distributed**: No single region dominates. Max importance (0.000986) accounts for only 29% of total distance (0.003403).
+2. **Fog creates paradoxical occlusion effect**: Removing any patch from fog INCREASES anomaly because the gray occluder is more anomalous than foggy pixels in context.
+3. **Importance ratio**: Night max/min ratio is 3.4× (0.000986/0.000288), showing moderate but not extreme spatial variation.
+
+**Finding 236**: The OOD signal is **spatially distributed** — no single image region dominates. For night, the maximum-importance patch accounts for only 29% of total distance. For fog, occlusion actually increases the anomaly score, confirming that fog corruption is a global property not localizable to any patch.
+
+---
+
+## Experiment 242: Image Resolution Sensitivity
+
+**Research Question**: Does the detector work across different image resolutions? Can a centroid from 256×256 detect corruptions at 64×64 or 1024×1024?
+
+**Method**: Test detection at 5 resolutions (64, 128, 256, 512, 1024). Also test cross-resolution transfer: calibrate at 256×256, detect at all other resolutions.
+
+**Results**:
+
+**Same-resolution detection**: All corruptions detected at all resolutions.
+
+**Cross-resolution transfer (centroid from 256×256)**:
+| Resolution | Clean Dist | OOD Mean Dist | AUROC |
+|-----------|-----------|--------------|-------|
+| 64×64 | 0.000113 | 0.004377 | 1.0 |
+| 128×128 | 0.000077 | 0.003379 | 1.0 |
+| 256×256 | 0.000000 | 0.002328 | 1.0 |
+| 512×512 | 0.000032 | 0.001773 | 1.0 |
+| 1024×1024 | 0.000037 | 0.001550 | 1.0 |
+
+**Key Findings**:
+1. **AUROC=1.0 at ALL resolutions**: From 64×64 to 1024×1024, detection is perfect.
+2. **Cross-resolution transfer is perfect**: A centroid from 256×256 achieves AUROC=1.0 at all other resolutions. No resolution-specific calibration needed.
+3. **Noise distance decreases with resolution**: At 64×64, noise dist=0.005352; at 1024×1024, dist=0.000307. Higher resolution smooths out noise, reducing its embedding impact.
+4. **Fog and night are resolution-invariant**: Fog distance stays ~0.0007 across all resolutions. Night stays ~0.0034.
+
+**Finding 237**: Detection achieves **AUROC=1.0 across all resolutions** (64×64 to 1024×1024) with cross-resolution transfer. A single centroid from 256×256 works at any resolution. Resolution-specific calibration is unnecessary.

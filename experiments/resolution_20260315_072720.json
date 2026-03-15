@@ -1,0 +1,82 @@
+{
+  "experiment": "resolution_sensitivity",
+  "experiment_number": 242,
+  "timestamp": "20260315_072720",
+  "layer": 3,
+  "resolutions": [
+    64,
+    128,
+    256,
+    512,
+    1024
+  ],
+  "same_resolution_results": {
+    "64x64": {
+      "distances": {
+        "fog": 0.000762,
+        "night": 0.003311,
+        "noise": 0.008402
+      },
+      "all_detected": true
+    },
+    "128x128": {
+      "distances": {
+        "fog": 0.000742,
+        "night": 0.003634,
+        "noise": 0.005352
+      },
+      "all_detected": true
+    },
+    "256x256": {
+      "distances": {
+        "fog": 0.000698,
+        "night": 0.003403,
+        "noise": 0.002883
+      },
+      "all_detected": true
+    },
+    "512x512": {
+      "distances": {
+        "fog": 0.000704,
+        "night": 0.003585,
+        "noise": 0.000925
+      },
+      "all_detected": true
+    },
+    "1024x1024": {
+      "distances": {
+        "fog": 0.00071,
+        "night": 0.003584,
+        "noise": 0.000307
+      },
+      "all_detected": true
+    }
+  },
+  "cross_resolution_results": {
+    "64x64": {
+      "clean_dist_to_256_centroid": 0.000113,
+      "mean_ood_dist": 0.004377,
+      "auroc_vs_256_centroid": 1.0
+    },
+    "128x128": {
+      "clean_dist_to_256_centroid": 7.7e-05,
+      "mean_ood_dist": 0.003379,
+      "auroc_vs_256_centroid": 1.0
+    },
+    "256x256": {
+      "clean_dist_to_256_centroid": 0.0,
+      "mean_ood_dist": 0.002328,
+      "auroc_vs_256_centroid": 1.0
+    },
+    "512x512": {
+      "clean_dist_to_256_centroid": 3.2e-05,
+      "mean_ood_dist": 0.001773,
+      "auroc_vs_256_centroid": 1.0
+    },
+    "1024x1024": {
+      "clean_dist_to_256_centroid": 3.7e-05,
+      "mean_ood_dist": 0.00155,
+      "auroc_vs_256_centroid": 1.0
+    }
+  }
+}
