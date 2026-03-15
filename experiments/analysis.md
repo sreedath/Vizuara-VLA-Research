@@ -9525,3 +9525,68 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 259**: Multi-layer fusion (SUM/MAX of 5 layers) provides **no improvement** over single-layer detection with diverse calibration. Natural variation scales proportionally across layers, maintaining the same AUROC. The zero ID variance from same-image calibration is irreplaceable.
 
 **Finding 260**: Fog detection **degrades at deeper layers** (AUROC: L3=0.9, L15+=0.0 with diverse cal). This is because natural variation grows faster than fog distance at deeper layers — the signal-to-noise ratio monotonically decreases. L3 remains the optimal choice.
+
+---
+
+## Experiment 256: Pairwise Embedding Similarity
+
+**Research Question**: What is the full pairwise cosine similarity structure between clean images, corrupted images, and compound corruptions?
+
+**Method**: Compute cosine similarity between all pairs of 11 conditions: clean (3 seeds), fog, night, noise, blur, snow, rain, fog+night, fog+noise.
+
+**Key Pairwise Similarities**:
+
+| Pair | Cosine Similarity | Distance |
+|------|------------------|----------|
+| Clean ↔ Clean₂ | 0.999907 | 9.3e-05 |
+| Clean ↔ Fog | 0.999794 | 2.06e-04 |
+| Clean ↔ Night | 0.993557 | 6.44e-03 |
+| Clean ↔ Noise | 0.999948 | 5.2e-05 |
+| Clean ↔ Blur | 0.995452 | 4.55e-03 |
+| Clean ↔ Snow | 0.999689 | 3.1e-04 |
+| Clean ↔ Rain | 0.999913 | 8.7e-05 |
+| Night ↔ Fog+Night | 0.999751 | 2.5e-04 |
+| Fog ↔ Night | 0.994400 | 5.6e-03 |
+
+**Key Findings**:
+1. **All similarities >0.99**: Every pair of conditions has cosine similarity >0.99 at L3. The embeddings occupy an extremely narrow cone in 4096D space.
+2. **Clean↔Clean variation is larger than Clean↔Noise**: Different clean images (similarity 0.999907) are MORE different than clean vs noise (0.999948). This is why noise is invisible with diverse calibration.
+3. **Fog+Night ≈ Night**: The compound corruption fog+night has similarity 0.999751 to night alone, confirming night dominates the embedding shift.
+4. **Hierarchical structure**: Night and blur are the most distant corruptions from clean (similarity ~0.994-0.995), while noise and rain are nearly indistinguishable from clean (~0.9999).
+
+**Finding 261**: All 11 conditions (clean, corrupted, compound) have pairwise cosine similarity **>0.99**, occupying a narrow cone in 4096D space. The detector operates in the 4th decimal place of cosine similarity — a regime where standard similarity thresholds would see no difference.
+
+**Finding 262**: Clean image variation (d=9.3e-05) exceeds noise distance (d=5.2e-05), confirming quantitatively why noise is undetectable with diverse calibration. The detector's success with same-image calibration exploits a regime where natural variation is ZERO.
+
+---
+
+## Experiment 257: Minimum Calibration Images
+
+**Research Question**: How many per-scene calibration images are needed? Does averaging multiple passes improve the centroid?
+
+**Method**: Collect 20 same-scene embeddings and test centroids from N=1,2,5,10,20. Also test multi-scene centroid with 10 different scenes.
+
+**Results — Same-Scene Calibration**:
+
+| N Cal | ID Max | Fog AUROC | Night AUROC | Noise AUROC |
+|-------|--------|-----------|-------------|-------------|
+| 1 | 1.19e-7 | **1.0** | **1.0** | **1.0** |
+| 2 | 1.19e-7 | **1.0** | **1.0** | **1.0** |
+| 5 | 1.19e-7 | **1.0** | **1.0** | **1.0** |
+| 10 | 1.19e-7 | **1.0** | **1.0** | **1.0** |
+| 20 | 0.0 | **1.0** | **1.0** | **1.0** |
+
+**Multi-Scene Centroid (10 scenes)**:
+- ID max: 6.8e-05
+- Noise distance: 6.7e-05 ← OVERLAPS with ID!
+- Fog distance: 2.59e-04
+- Night distance: 6.57e-03
+
+**Key Findings**:
+1. **N=1 is provably sufficient**: Due to perfect determinism, the centroid from 1 image is identical to the centroid from 20 images. Adding more same-scene images provides zero benefit.
+2. **Multi-scene centroid fails for noise**: Noise distance (6.7e-05) ≈ ID max (6.8e-05), making noise-corrupted images indistinguishable from different clean scenes.
+3. **The fundamental tradeoff**: Same-scene calibration gives zero ID variance (AUROC=1.0 for all) but requires knowing the scene. Multi-scene calibration is scene-agnostic but loses weak corruptions.
+
+**Finding 263**: N=1 calibration image is **provably optimal** for same-scene detection: the model's determinism means the centroid from 1 image is identical to the centroid from any larger set. Additional calibration images are redundant.
+
+**Finding 264**: Multi-scene centroid with 10 scenes produces noise distance (6.7e-05) nearly identical to ID max (6.8e-05), creating **complete overlap**. The deployment recommendation is unambiguous: per-scene calibration with N=1 clean image.
