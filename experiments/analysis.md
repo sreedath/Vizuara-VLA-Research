@@ -16446,3 +16446,21 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 
 **Finding 829**: Statistical power is 1.0 at sample size N=2 for ALL corruptions. Even the minimum meaningful sample size achieves 100% power to detect the separation. This extreme power reflects the astronomical effect sizes (Cohen's d = 57-806).
 
+
+---
+
+## Experiment 397: Attention Pattern Shifts Under Corruption
+
+**Objective**: Examine how attention patterns change under corruption and whether attention provides a complementary detection signal to hidden states.
+
+**Method**: Extract full attention maps (32 layers × 32 heads) from OpenVLA-7B under clean and 4 corruption types. Compute per-layer attention cosine distance, entropy changes, and compare sensitivity to hidden state detection.
+
+**Finding 830**: Attention patterns are 13-189× more sensitive to corruption than hidden states. For fog: 12.7×, night: 20.3×, noise: 188.7×, blur: 17.3× more sensitive. The best attention layer cosine distance vastly exceeds the hidden state cosine distance for every corruption type.
+
+**Finding 831**: The final layer (L31) is the best detection layer for 3 out of 4 corruptions (fog=0.045, night=0.182, blur=0.134), while L20 is best for noise (0.035). This suggests the final transformer layer concentrates corruption-relevant information in its attention patterns.
+
+**Finding 832**: Early layers (L2-L3) are the worst for detection with ~1000× less sensitivity than the best layers. For noise: L3 cosine distance = 0.000007 vs L20 = 0.035 (5000×). This confirms that corruption sensitivity is an emergent property of deep layers, not present in shallow feature extraction.
+
+**Finding 833**: Night corruption causes the largest attention entropy decrease (-0.595 at L31), indicating attention becomes MORE focused under extreme darkness. This is counterintuitive—one might expect degraded input to cause diffuse attention, but the model concentrates on whatever signal remains.
+
+**Finding 834**: The attention sensitivity hierarchy matches the hidden state hierarchy: night > blur > fog > noise. This consistency across two independent signal types (attention patterns vs hidden state embeddings) validates that the corruption severity ordering is a genuine property of the model, not an artifact of the measurement method.

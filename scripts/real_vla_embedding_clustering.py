@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
-"""Experiment 358: Embedding Space Clustering
+"""Experiment 398: Embedding Space Clustering Analysis (Enhanced)
 
-Can corruption types be clustered in embedding space?
-1. K-means clustering of corrupted embeddings
-2. Hierarchical clustering dendrogram (cosine linkage)
-3. Cluster purity: do corruptions form distinct clusters?
-4. Overlap analysis: which corruptions are closest?
-5. Severity-dependent cluster separation
+Examines whether corruption types form distinct clusters in the embedding space
+and whether unsupervised clustering can separate clean from corrupted embeddings.
+
+Tests:
+1. K-means clustering (k=2: clean vs corrupt, k=5: per-corruption)
+2. DBSCAN density-based clustering
+3. Silhouette scores for cluster quality
+4. Inter/intra-cluster distances
+5. Corruption type separability (pairwise)
+6. Severity gradient within clusters
 """
 
 import json, time, os, sys
@@ -14,12 +18,7 @@ import numpy as np
 import torch
 from PIL import Image, ImageFilter
 from transformers import AutoModelForVision2Seq, AutoProcessor
-
-def extract_hidden(model, processor, image, prompt, layer=3):
-    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-    with torch.no_grad():
-        fwd = model(**inputs, output_hidden_states=True)
-    return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
+from collections import Counter
 
 def apply_corruption(image, ctype, severity=1.0):
     arr = np.array(image).astype(np.float32) / 255.0
@@ -34,55 +33,99 @@ def apply_corruption(image, ctype, severity=1.0):
         return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
     return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
+def extract_hidden(model, processor, image, prompt, layer=3):
+    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    with torch.no_grad():
+        fwd = model(**inputs, output_hidden_states=True)
+    return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
+
 def cosine_dist(a, b):
-    dot = np.dot(a, b)
+    a, b = np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64)
     na, nb = np.linalg.norm(a), np.linalg.norm(b)
-    if na < 1e-10 or nb < 1e-10:
-        return 0.0
-    return 1.0 - dot / (na * nb)
+    if na < 1e-12 or nb < 1e-12:
+        return 1.0
+    return 1.0 - np.dot(a, b) / (na * nb)
 
-def kmeans_cosine(embeddings, k, max_iter=100):
-    """Simple k-means with cosine distance."""
-    n = len(embeddings)
-    rng = np.random.RandomState(42)
-    # Initialize with random centroids
-    indices = rng.choice(n, k, replace=False)
-    centroids = [embeddings[i].copy() for i in indices]
+def kmeans_simple(X, k, max_iter=100, seed=42):
+    """Simple k-means implementation (no sklearn dependency)."""
+    rng = np.random.RandomState(seed)
+    n = len(X)
+    # k-means++ init
+    centers = [X[rng.randint(n)]]
+    for _ in range(1, k):
+        dists = np.array([min(np.sum((x - c)**2) for c in centers) for x in X])
+        probs = dists / dists.sum()
+        centers.append(X[rng.choice(n, p=probs)])
+    centers = np.array(centers)
 
-    for iteration in range(max_iter):
-        # Assign
-        assignments = []
-        for emb in embeddings:
-            dists = [cosine_dist(emb, c) for c in centroids]
-            assignments.append(int(np.argmin(dists)))
-
-        # Update centroids
-        new_centroids = []
-        for ci in range(k):
-            members = [embeddings[j] for j in range(n) if assignments[j] == ci]
-            if members:
-                new_centroids.append(np.mean(members, axis=0))
-            else:
-                new_centroids.append(centroids[ci])
-
-        # Check convergence
-        moved = sum(cosine_dist(c1, c2) for c1, c2 in zip(centroids, new_centroids))
-        centroids = new_centroids
-        if moved < 1e-10:
+    for _ in range(max_iter):
+        labels = np.array([np.argmin([np.sum((x - c)**2) for c in centers]) for x in X])
+        new_centers = np.array([X[labels == j].mean(axis=0) if np.sum(labels == j) > 0
+                                else centers[j] for j in range(k)])
+        if np.allclose(centers, new_centers):
             break
+        centers = new_centers
+    return labels, centers
 
-    return assignments, centroids
+def dbscan_simple(X, eps, min_samples=2):
+    """Simple DBSCAN implementation."""
+    n = len(X)
+    dist_matrix = np.zeros((n, n))
+    for i in range(n):
+        for j in range(i+1, n):
+            d = np.sqrt(np.sum((X[i] - X[j])**2))
+            dist_matrix[i, j] = d
+            dist_matrix[j, i] = d
 
-def compute_purity(assignments, labels, k):
-    """Compute cluster purity."""
-    total = len(assignments)
-    correct = 0
-    for ci in range(k):
-        cluster_labels = [labels[j] for j in range(total) if assignments[j] == ci]
-        if cluster_labels:
-            most_common = max(set(cluster_labels), key=cluster_labels.count)
-            correct += cluster_labels.count(most_common)
-    return correct / total
+    labels = np.full(n, -1)
+    cluster_id = 0
+    visited = set()
+
+    for i in range(n):
+        if i in visited:
+            continue
+        visited.add(i)
+        neighbors = np.where(dist_matrix[i] <= eps)[0]
+        if len(neighbors) < min_samples:
+            continue
+        labels[i] = cluster_id
+        seed_set = list(neighbors)
+        j = 0
+        while j < len(seed_set):
+            q = seed_set[j]
+            if q not in visited:
+                visited.add(q)
+                q_neighbors = np.where(dist_matrix[q] <= eps)[0]
+                if len(q_neighbors) >= min_samples:
+                    seed_set.extend([x for x in q_neighbors if x not in visited])
+            if labels[q] == -1:
+                labels[q] = cluster_id
+            j += 1
+        cluster_id += 1
+    return labels
+
+def silhouette_score(X, labels):
+    """Compute mean silhouette score."""
+    unique = np.unique(labels[labels >= 0])
+    if len(unique) < 2:
+        return 0.0
+    scores = []
+    for i in range(len(X)):
+        if labels[i] < 0:
+            continue
+        same = X[labels == labels[i]]
+        if len(same) <= 1:
+            scores.append(0.0)
+            continue
+        a = np.mean([np.sqrt(np.sum((X[i] - s)**2)) for s in same if not np.array_equal(s, X[i])])
+        b = float('inf')
+        for c in unique:
+            if c == labels[i]:
+                continue
+            other = X[labels == c]
+            b = min(b, np.mean([np.sqrt(np.sum((X[i] - o)**2)) for o in other]))
+        scores.append((b - a) / max(a, b))
+    return float(np.mean(scores)) if scores else 0.0
 
 def main():
     print("Loading model...")
@@ -93,229 +136,248 @@ def main():
     model.eval()
 
     prompt = "In: What action should the robot take to pick up the object?\nOut:"
-    results = {}
-    ctypes = ['fog', 'night', 'noise', 'blur']
+    corruptions = ['fog', 'night', 'noise', 'blur']
+    severities = [0.3, 0.5, 0.7, 1.0]
 
-    # Generate embeddings
-    print("Generating embeddings...")
-    seeds = list(range(0, 2000, 100))[:20]
-    clean_embs = {}
-    corrupt_embs = {ct: {} for ct in ctypes}
+    # Generate multiple scenes
+    scenes = []
+    for seed in [42, 123, 456, 789, 999]:
+        scenes.append(Image.fromarray(
+            np.random.RandomState(seed).randint(0, 255, (224, 224, 3), dtype=np.uint8)))
 
-    for seed in seeds:
-        rng = np.random.RandomState(seed)
-        px = rng.randint(50, 200, (224, 224, 3), dtype=np.uint8)
-        img = Image.fromarray(px)
-        clean_embs[seed] = extract_hidden(model, processor, img, prompt)
-
-        for ct in ctypes:
-            corrupted = apply_corruption(img, ct, 0.5)
-            corrupt_embs[ct][seed] = extract_hidden(model, processor, corrupted, prompt)
-
-    # ========== 1. K-Means Clustering ==========
-    print("\n=== K-Means Clustering ===")
-
-    # Combine all embeddings: clean + 4 corruptions
-    all_embs = []
-    all_labels = []  # 0=clean, 1=fog, 2=night, 3=noise, 4=blur
+    # Collect embeddings
+    print("Extracting embeddings...")
+    embeddings = []
+    labels_true = []  # 0=clean, 1=fog, 2=night, 3=noise, 4=blur
     label_names = ['clean', 'fog', 'night', 'noise', 'blur']
 
-    for seed in seeds:
-        all_embs.append(clean_embs[seed])
-        all_labels.append(0)
-    for ci, ct in enumerate(ctypes):
-        for seed in seeds:
-            all_embs.append(corrupt_embs[ct][seed])
-            all_labels.append(ci + 1)
+    for si, scene in enumerate(scenes):
+        print(f"  Scene {si+1}/5")
+        # Clean
+        emb = extract_hidden(model, processor, scene, prompt)
+        embeddings.append(emb)
+        labels_true.append(0)
 
-    all_embs_arr = np.array(all_embs)
+        # Corrupted
+        for ci, c in enumerate(corruptions):
+            for sev in severities:
+                corrupted = apply_corruption(scene, c, sev)
+                emb = extract_hidden(model, processor, corrupted, prompt)
+                embeddings.append(emb)
+                labels_true.append(ci + 1)
 
-    # Try k=2 (clean vs corrupt), k=4 (corruption types), k=5 (all classes)
-    kmeans_results = {}
-    for k in [2, 3, 4, 5]:
-        assignments, centroids = kmeans_cosine(all_embs, k)
-        purity = compute_purity(assignments, all_labels, k)
+    X = np.array(embeddings)
+    labels_true = np.array(labels_true)
+    n_total = len(X)
+    n_clean = np.sum(labels_true == 0)
+    n_corrupt = n_total - n_clean
+    print(f"Total embeddings: {n_total} ({n_clean} clean, {n_corrupt} corrupted)")
 
-        # If k=2, check if clean separates from all corrupt
-        if k == 2:
-            cluster_0_labels = [all_labels[j] for j in range(len(all_labels)) if assignments[j] == 0]
-            cluster_1_labels = [all_labels[j] for j in range(len(all_labels)) if assignments[j] == 1]
-            clean_in_0 = cluster_0_labels.count(0)
-            clean_in_1 = cluster_1_labels.count(0)
-            clean_separated = (clean_in_0 == 20 and clean_in_1 == 0) or (clean_in_1 == 20 and clean_in_0 == 0)
+    # PCA to manageable dimensions for clustering
+    X_centered = X - X.mean(axis=0)
+    cov = np.cov(X_centered.T)
+    eigvals, eigvecs = np.linalg.eigh(cov)
+    idx = np.argsort(eigvals)[::-1]
+    eigvecs = eigvecs[:, idx]
+
+    results = {}
+
+    # === Test 1: K-means binary (clean vs corrupt) ===
+    print("\n=== K-means Binary Clustering ===")
+    for n_dims in [2, 5, 10, 50]:
+        X_proj = X_centered @ eigvecs[:, :n_dims]
+        km_labels, km_centers = kmeans_simple(X_proj, k=2)
+
+        c0_count = np.sum(km_labels == 0)
+        c1_count = np.sum(km_labels == 1)
+
+        clean_in_0 = np.sum((km_labels == 0) & (labels_true == 0))
+        clean_in_1 = np.sum((km_labels == 1) & (labels_true == 0))
+
+        if clean_in_0 / max(1, c0_count) > clean_in_1 / max(1, c1_count):
+            pred_clean = 0
         else:
-            clean_separated = None
+            pred_clean = 1
 
-        kmeans_results[str(k)] = {
-            'purity': float(purity),
-            'clean_separated': clean_separated,
-        }
-        print(f"  k={k}: purity={purity:.3f}" + (f", clean_separated={clean_separated}" if clean_separated is not None else ""))
+        pred_binary = (km_labels != pred_clean).astype(int)
+        true_binary = (labels_true > 0).astype(int)
+        accuracy = float(np.mean(pred_binary == true_binary))
 
-    results['kmeans'] = kmeans_results
+        sil = silhouette_score(X_proj, km_labels)
 
-    # ========== 2. Pairwise Distance Matrix ==========
-    print("\n=== Pairwise Class Distances ===")
-
-    class_centroids = {}
-    for ci, name in enumerate(label_names):
-        mask = [j for j in range(len(all_labels)) if all_labels[j] == ci]
-        class_centroids[name] = np.mean([all_embs[j] for j in mask], axis=0)
-
-    pairwise_dists = {}
-    for i, n1 in enumerate(label_names):
-        for j, n2 in enumerate(label_names):
-            if i >= j:
-                continue
-            d = float(cosine_dist(class_centroids[n1], class_centroids[n2]))
-            pairwise_dists[n1 + '_vs_' + n2] = d
-
-    # Find closest and farthest pairs
-    closest = min(pairwise_dists.items(), key=lambda x: x[1])
-    farthest = max(pairwise_dists.items(), key=lambda x: x[1])
-
-    results['pairwise_distances'] = {
-        'distances': pairwise_dists,
-        'closest': {'pair': closest[0], 'distance': closest[1]},
-        'farthest': {'pair': farthest[0], 'distance': farthest[1]},
-    }
-    print(f"  Closest: {closest[0]} = {closest[1]:.6f}")
-    print(f"  Farthest: {farthest[0]} = {farthest[1]:.6f}")
-
-    # ========== 3. Within-Class vs Between-Class ==========
-    print("\n=== Within vs Between Class Distance ===")
-
-    within_class = {}
-    for ci, name in enumerate(label_names):
-        members = [all_embs[j] for j in range(len(all_labels)) if all_labels[j] == ci]
-        pairwise = []
-        for a_idx in range(len(members)):
-            for b_idx in range(a_idx+1, len(members)):
-                pairwise.append(float(cosine_dist(members[a_idx], members[b_idx])))
-        within_class[name] = {
-            'mean': float(np.mean(pairwise)) if pairwise else 0,
-            'max': float(max(pairwise)) if pairwise else 0,
-            'std': float(np.std(pairwise)) if pairwise else 0,
+        print(f"  {n_dims}D: accuracy={accuracy:.3f}, silhouette={sil:.4f}")
+        results[f"kmeans_binary_{n_dims}d"] = {
+            "accuracy": accuracy,
+            "silhouette": sil,
+            "cluster_sizes": [int(c0_count), int(c1_count)]
         }
 
-    between_class = {}
-    for i, n1 in enumerate(label_names):
-        for j, n2 in enumerate(label_names):
-            if i >= j:
+    # === Test 2: K-means per-corruption (k=5) ===
+    print("\n=== K-means 5-class Clustering ===")
+    for n_dims in [5, 10, 50]:
+        X_proj = X_centered @ eigvecs[:, :n_dims]
+        km_labels, km_centers = kmeans_simple(X_proj, k=5)
+
+        total_correct = 0
+        for cluster in range(5):
+            mask = km_labels == cluster
+            if np.sum(mask) == 0:
                 continue
-            members1 = [all_embs[k] for k in range(len(all_labels)) if all_labels[k] == i]
-            members2 = [all_embs[k] for k in range(len(all_labels)) if all_labels[k] == j]
-            cross_dists = []
-            for m1 in members1:
-                for m2 in members2:
-                    cross_dists.append(float(cosine_dist(m1, m2)))
-            between_class[n1 + '_vs_' + n2] = {
-                'mean': float(np.mean(cross_dists)),
-                'min': float(min(cross_dists)),
+            most_common = Counter(labels_true[mask]).most_common(1)[0][1]
+            total_correct += most_common
+        purity = total_correct / n_total
+
+        sil = silhouette_score(X_proj, km_labels)
+
+        print(f"  {n_dims}D: purity={purity:.3f}, silhouette={sil:.4f}")
+        results[f"kmeans_5class_{n_dims}d"] = {
+            "purity": float(purity),
+            "silhouette": sil
+        }
+
+    # === Test 3: DBSCAN on low-dim projections ===
+    print("\n=== DBSCAN Clustering ===")
+    for n_dims in [2, 5, 10]:
+        X_proj = X_centered @ eigvecs[:, :n_dims]
+        all_dists = []
+        for i in range(min(50, n_total)):
+            for j in range(i+1, min(50, n_total)):
+                all_dists.append(np.sqrt(np.sum((X_proj[i] - X_proj[j])**2)))
+        median_dist = np.median(all_dists)
+
+        for eps_mult in [0.3, 0.5, 0.7]:
+            eps = median_dist * eps_mult
+            db_labels = dbscan_simple(X_proj, eps=eps, min_samples=3)
+            n_clusters = len(set(db_labels) - {-1})
+            n_noise = int(np.sum(db_labels == -1))
+
+            if n_clusters >= 2:
+                sil = silhouette_score(X_proj, db_labels)
+            else:
+                sil = 0.0
+
+            print(f"  {n_dims}D eps={eps_mult}: {n_clusters} clusters, {n_noise} noise, sil={sil:.4f}")
+            results[f"dbscan_{n_dims}d_eps{eps_mult}"] = {
+                "n_clusters": n_clusters,
+                "n_noise": n_noise,
+                "silhouette": sil,
+                "eps": float(eps)
             }
 
-    # Compute Fisher's discriminant ratio for each corruption vs clean
-    fisher_ratios = {}
-    for ct in ctypes:
-        within_clean = within_class['clean']['mean']
-        within_corrupt = within_class[ct]['mean']
-        between = between_class['clean_vs_' + ct]['mean']
-        pooled_within = (within_clean + within_corrupt) / 2
-        fisher_ratios[ct] = float(between / pooled_within) if pooled_within > 0 else float('inf')
+    # === Test 4: Inter/Intra cluster distances ===
+    print("\n=== Inter/Intra Cluster Distances ===")
+    cluster_centers = {}
+    for label in range(5):
+        mask = labels_true == label
+        cluster_centers[label] = X[mask].mean(axis=0)
 
-    results['class_separation'] = {
-        'within_class': within_class,
-        'between_class': between_class,
-        'fisher_ratios': fisher_ratios,
-    }
-    for ct in ctypes:
-        print(f"  {ct}: within={within_class[ct]['mean']:.6f}, "
-              f"between={between_class['clean_vs_'+ct]['mean']:.6f}, "
-              f"Fisher={fisher_ratios[ct]:.2f}")
+    intra_dists = {}
+    for label in range(5):
+        mask = labels_true == label
+        dists = [cosine_dist(x, cluster_centers[label]) for x in X[mask]]
+        intra_dists[label_names[label]] = {
+            "mean": float(np.mean(dists)),
+            "std": float(np.std(dists)),
+            "max": float(np.max(dists))
+        }
+        print(f"  {label_names[label]} intra: mean={np.mean(dists):.6f}, max={np.max(dists):.6f}")
 
-    # ========== 4. Severity-Dependent Clustering ==========
-    print("\n=== Severity-Dependent Clustering ===")
+    inter_dists = {}
+    for i in range(5):
+        for j in range(i+1, 5):
+            d = cosine_dist(cluster_centers[i], cluster_centers[j])
+            key = f"{label_names[i]}_vs_{label_names[j]}"
+            inter_dists[key] = float(d)
+            print(f"  {key}: {d:.6f}")
 
-    sev_cluster = {}
-    for sev in [0.1, 0.3, 0.5, 0.7, 1.0]:
-        sev_embs = []
-        sev_labels = []
+    # Separation ratio
+    separation_ratios = {}
+    for label in range(1, 5):
+        inter = cosine_dist(cluster_centers[0], cluster_centers[label])
+        intra_clean = intra_dists['clean']['max']
+        intra_corrupt = intra_dists[label_names[label]]['max']
+        ratio = inter / max(intra_clean + intra_corrupt, 1e-12)
+        separation_ratios[label_names[label]] = float(ratio)
+        print(f"  clean-{label_names[label]} separation ratio: {ratio:.2f}")
 
-        for seed in seeds[:10]:
-            rng = np.random.RandomState(seed)
-            px = rng.randint(50, 200, (224, 224, 3), dtype=np.uint8)
-            img = Image.fromarray(px)
+    results["intra_cluster_distances"] = intra_dists
+    results["inter_cluster_distances"] = inter_dists
+    results["separation_ratios"] = separation_ratios
 
-            sev_embs.append(clean_embs[seed])
-            sev_labels.append(0)
+    # === Test 5: Pairwise corruption separability ===
+    print("\n=== Pairwise Corruption Separability ===")
+    pairwise = {}
+    for i in range(1, 5):
+        for j in range(i+1, 5):
+            embs_i = X[labels_true == i]
+            embs_j = X[labels_true == j]
 
-            for ci, ct in enumerate(ctypes):
-                corrupted = apply_corruption(img, ct, sev)
-                emb = extract_hidden(model, processor, corrupted, prompt)
-                sev_embs.append(emb)
-                sev_labels.append(ci + 1)
+            center_i = embs_i.mean(axis=0)
+            center_j = embs_j.mean(axis=0)
+            midpoint = (center_i + center_j) / 2
+            direction = center_j - center_i
+            dir_norm = np.linalg.norm(direction)
+            if dir_norm > 1e-12:
+                direction = direction / dir_norm
 
-        assignments, _ = kmeans_cosine(sev_embs, 5)
-        purity = compute_purity(assignments, sev_labels, 5)
-        sev_cluster[str(sev)] = {'purity': float(purity)}
-        print(f"  sev={sev}: k=5 purity={purity:.3f}")
+            proj_i = [np.dot(e - midpoint, direction) for e in embs_i]
+            proj_j = [np.dot(e - midpoint, direction) for e in embs_j]
 
-    results['severity_clustering'] = sev_cluster
+            correct = sum(1 for p in proj_i if p < 0) + sum(1 for p in proj_j if p >= 0)
+            total = len(proj_i) + len(proj_j)
+            accuracy = correct / total
 
-    # ========== 5. Nearest-Neighbor Classification ==========
-    print("\n=== 1-NN Classification ===")
+            centroid_dist = cosine_dist(center_i, center_j)
 
-    # Leave-one-out 1-NN
-    correct = 0
-    total = len(all_labels)
-    confusion = {n: {m: 0 for m in label_names} for n in label_names}
+            key = f"{label_names[i]}_vs_{label_names[j]}"
+            pairwise[key] = {
+                "linear_accuracy": float(accuracy),
+                "centroid_cosine_dist": float(centroid_dist)
+            }
+            print(f"  {key}: acc={accuracy:.3f}, cos_dist={centroid_dist:.6f}")
 
-    for i in range(total):
-        best_dist = float('inf')
-        best_label = -1
-        for j in range(total):
-            if i == j:
-                continue
-            d = cosine_dist(all_embs[i], all_embs[j])
-            if d < best_dist:
-                best_dist = d
-                best_label = all_labels[j]
+    results["pairwise_separability"] = pairwise
 
-        true_name = label_names[all_labels[i]]
-        pred_name = label_names[best_label]
-        confusion[true_name][pred_name] += 1
-        if best_label == all_labels[i]:
-            correct += 1
+    # === Test 6: Severity gradient within clusters ===
+    print("\n=== Severity Gradient Analysis ===")
+    severity_gradients = {}
+    for ci, c in enumerate(corruptions):
+        dists_by_sev = {}
+        for sev in severities:
+            sev_embs = []
+            for si in range(len(scenes)):
+                idx = si * (1 + len(corruptions) * len(severities)) + 1 + ci * len(severities) + severities.index(sev)
+                sev_embs.append(X[idx])
 
-    nn_accuracy = correct / total
+            clean_center = cluster_centers[0]
+            dists = [cosine_dist(e, clean_center) for e in sev_embs]
+            dists_by_sev[str(sev)] = {
+                "mean": float(np.mean(dists)),
+                "std": float(np.std(dists))
+            }
 
-    results['nearest_neighbor'] = {
-        'accuracy': float(nn_accuracy),
-        'confusion': confusion,
-        'n_total': total,
-        'n_correct': correct,
-    }
-    print(f"  1-NN accuracy: {nn_accuracy:.3f} ({correct}/{total})")
-    for name in label_names:
-        row = [str(confusion[name][m]) for m in label_names]
-        print(f"    {name}: [{', '.join(row)}]")
+        means = [dists_by_sev[str(s)]["mean"] for s in severities]
+        monotonic = all(means[i] <= means[i+1] for i in range(len(means)-1))
+
+        severity_gradients[c] = {
+            "by_severity": dists_by_sev,
+            "monotonic": monotonic,
+            "gradient": float(means[-1] - means[0])
+        }
+        grad_str = " -> ".join(f"{m:.6f}" for m in means)
+        print(f"  {c}: {grad_str} (monotonic={monotonic})")
+
+    results["severity_gradients"] = severity_gradients
+    results["n_embeddings"] = n_total
+    results["n_scenes"] = len(scenes)
+    results["n_corruptions"] = len(corruptions)
+    results["n_severities"] = len(severities)
 
     # Save
-    ts = time.strftime("%Y%m%d_%H%M%S")
-    out_path = f"experiments/embedding_clustering_{ts}.json"
-    def convert(obj):
-        if isinstance(obj, (np.floating, np.float32, np.float64)): return float(obj)
-        if isinstance(obj, (np.integer, np.int32, np.int64)): return int(obj)
-        if isinstance(obj, np.ndarray): return obj.tolist()
-        if isinstance(obj, np.bool_): return bool(obj)
-        return obj
-    def recursive_convert(d):
-        if isinstance(d, dict): return {k: recursive_convert(v) for k, v in d.items()}
-        if isinstance(d, list): return [recursive_convert(x) for x in d]
-        return convert(d)
-    results = recursive_convert(results)
+    out_path = "/workspace/Vizuara-VLA-Research/experiments/embedding_clustering_" + \
+               time.strftime("%Y%m%d_%H%M%S") + ".json"
     with open(out_path, 'w') as f:
-        json.dump(results, f, indent=2, default=convert)
+        json.dump(results, f, indent=2)
     print(f"\nResults saved to {out_path}")
 
 if __name__ == "__main__":

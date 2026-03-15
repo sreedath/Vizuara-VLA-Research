@@ -7808,4 +7808,25 @@ We provide rigorous statistical validation through bootstrap confidence interval
 
 \textbf{Finding 1081}: \textbf{These results exceed any reasonable statistical threshold.} With zero-width CIs, minimum-possible $p$-values, perfect LOO-CV, and 100\% power at $N=2$, the detection phenomenon is not marginally significant---it is a deterministic property of the system, not a statistical trend.
 
+\subsection{Experiment 397: Attention Pattern Shifts Under Corruption}
+
+We examine how attention patterns (32 layers $\times$ 32 heads) change under corruption and whether attention provides a complementary detection signal to hidden states. For each corruption type, we extract full attention maps and compute per-layer cosine distance, entropy changes, and per-head L1 divergence.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig406_attention.png}
+\caption{Experiment 397: Attention patterns under corruption. (A) Per-layer attention cosine distance shows 1000$\times$ sensitivity range from early to late layers. (B) Attention is 13--189$\times$ more sensitive than hidden states. (C) Best layer (L31) vs worst layer (L2-L3) comparison. (D) Entropy shifts---night causes attention to focus ($-0.60$). (E) Corruption severity ranking consistent across both signal types.}
+\label{fig:attention_corruption}
+\end{figure}
+
+\textbf{Finding 1082}: \textbf{Attention patterns are 13--189$\times$ more sensitive to corruption than hidden states.} For fog: $12.7\times$, night: $20.3\times$, noise: $188.7\times$, blur: $17.3\times$. The best attention layer's cosine distance vastly exceeds the hidden state distance for every corruption.
+
+\textbf{Finding 1083}: \textbf{The final layer (L31) is the best attention detection layer for 3/4 corruptions} (fog=0.045, night=0.182, blur=0.134), while L20 is best for noise (0.035). Corruption-relevant information concentrates in final-layer attention.
+
+\textbf{Finding 1084}: \textbf{Early layers (L2-L3) show $\sim$1000$\times$ less attention sensitivity than the best layers.} For noise: L3 cosine=0.000007 vs L20=0.035 (5000$\times$). Corruption sensitivity is an emergent property of deep layers.
+
+\textbf{Finding 1085}: \textbf{Night corruption causes the largest attention entropy decrease ($-0.60$ at L31).} Counterintuitively, extreme darkness makes attention MORE focused---the model concentrates on whatever signal remains rather than distributing attention diffusely.
+
+\textbf{Finding 1086}: \textbf{The attention sensitivity hierarchy (night $>$ blur $>$ fog $>$ noise) matches the hidden state hierarchy.} Consistency across two independent signal types validates that corruption severity ordering is a genuine model property, not a measurement artifact.
+
 \end{document}
