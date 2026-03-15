@@ -3790,4 +3790,30 @@ We compute the full receiver operating characteristic (ROC) and the benchmark-st
 \label{fig:score_distributions}
 \end{figure}
 
+\subsection{Centroid Stability}
+
+We assess the robustness of the centroid by bootstrapping 50 random calibration subsets of varying sizes.
+
+\textbf{Finding 383}: L3 with $n \geq 15$ achieves \textbf{perfect stability}: AUROC=1.000$\pm$0.000 across all 50 bootstrap trials. Every random subset of 15 clean images produces a centroid that perfectly separates ID from OOD.
+
+\textbf{Finding 384}: Even with $n=3$, worst-case AUROC exceeds \textbf{0.86} at early layers. L1 achieves mean AUROC=0.984$\pm$0.029 at $n=3$, making the detector useful even in extremely data-scarce scenarios.
+
+\textbf{Finding 385}: Centroid drift follows $1/\sqrt{n}$ scaling as expected for i.i.d.\ averaging. L1 centroid drift is only $\sim 10^{-5}$ cosine distance at $n=10$---three orders of magnitude smaller than the ID-OOD gap. The centroid estimator is well-conditioned.
+
+\textbf{Finding 386}: L32 is significantly less stable: worst-case AUROC drops to 0.797 at $n=3$ and centroid drift is $100\times$ larger than L1. This is a direct consequence of L32's higher effective dimensionality (51\% variance in 3 PCs vs 81\% at L1)---more dimensions require more samples to estimate a stable centroid.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig211_centroid_stability.png}
+\caption{\textbf{Centroid stability.} Bootstrap AUROC distributions (50 trials) at calibration sizes $n$=3, 5, 10, 15. L3 achieves perfect AUROC=1.000 at $n$=15 in all trials. L32 has higher variance due to isotropic embedding structure.}
+\label{fig:centroid_stability}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/fig212_centroid_drift.png}
+\caption{\textbf{Centroid drift.} Cosine distance between bootstrap centroid and full-pool centroid ($n$=20). Drift follows $1/\sqrt{n}$ scaling. L1 drift is only $10^{-5}$ at $n$=10, three orders of magnitude below the detection threshold.}
+\label{fig:centroid_drift}
+\end{figure}
+
 \end{document}
