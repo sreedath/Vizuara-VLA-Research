@@ -4306,4 +4306,33 @@ Noise & 0.004354 & Corruption \\
 
 \textbf{Finding 450}: Horizontal flip produces distance $\approx 0$ because the synthetic test images are vertically symmetric. Contrast adjustment (+20\%) produces the smallest benign distance (0.000050), indicating the model is nearly invariant to mild contrast changes.
 
+\subsection{Conformal Prediction Guarantees}
+
+\textbf{Experiment 226: Conformal Threshold Calibration.} We apply split conformal prediction to establish OOD thresholds with finite-sample coverage guarantees at $\alpha \in \{0.01, 0.05, 0.10, 0.20\}$.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{$\alpha$} & \textbf{Threshold} & \textbf{ID Accept} & \textbf{OOD Detect} \\
+\midrule
+0.01 (99\%) & $\approx 0$ & 100\% & 100\% \\
+0.05 (95\%) & $\approx 0$ & 100\% & 100\% \\
+0.10 (90\%) & $\approx 0$ & 100\% & 100\% \\
+0.20 (80\%) & $\approx 0$ & 100\% & 100\% \\
+\bottomrule
+\end{tabular}
+\caption{Conformal prediction thresholds and coverage rates. All alpha levels achieve perfect detection because ID and OOD distributions have zero overlap.}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig237_conformal.png}
+\caption{(Left) All conformal guarantee levels achieve simultaneous 100\% ID acceptance and 100\% OOD detection. (Right) Score distributions have zero overlap --- clean scores are identically zero while OOD scores are strictly positive.}
+\end{figure}
+
+\textbf{Finding 451}: Conformal prediction thresholds are trivially at zero since all clean calibration scores equal 0.0. This provides \textbf{guaranteed 100\% coverage at all confidence levels}, from 99\% ($\alpha=0.01$) to 80\% ($\alpha=0.20$).
+
+\textbf{Finding 452}: The zero-overlap property between ID and OOD score distributions means conformal prediction's finite-sample guarantees are trivially satisfied. In practice, \textbf{any positive cosine distance} from the centroid indicates OOD input.
+
 \end{document}

@@ -1,0 +1,252 @@
+{
+  "experiment": "conformal_prediction",
+  "experiment_number": 226,
+  "timestamp": "20260315_063327",
+  "n_centroid": 10,
+  "n_conformal_cal": 10,
+  "n_test": 10,
+  "alphas": [
+    0.01,
+    0.05,
+    0.1,
+    0.2
+  ],
+  "layers": [
+    1,
+    3
+  ],
+  "results": {
+    "L1": {
+      "cal_scores": [
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07
+      ],
+      "cal_mean": -1.2e-07,
+      "cal_max": -1.2e-07,
+      "test_id_scores": [
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07,
+        -1.2e-07
+      ],
+      "alpha_0.01": {
+        "threshold": -1.2e-07,
+        "id_acceptance_rate": 1.0,
+        "ood_detection": {
+          "fog": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00042391
+          },
+          "night": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00206625
+          },
+          "blur": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00058126
+          },
+          "noise": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00223701
+          }
+        }
+      },
+      "alpha_0.05": {
+        "threshold": -1.2e-07,
+        "id_acceptance_rate": 1.0,
+        "ood_detection": {
+          "fog": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00042391
+          },
+          "night": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00206625
+          },
+          "blur": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00058126
+          },
+          "noise": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00223701
+          }
+        }
+      },
+      "alpha_0.1": {
+        "threshold": -1.2e-07,
+        "id_acceptance_rate": 1.0,
+        "ood_detection": {
+          "fog": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00042391
+          },
+          "night": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00206625
+          },
+          "blur": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00058126
+          },
+          "noise": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00223701
+          }
+        }
+      },
+      "alpha_0.2": {
+        "threshold": -1.2e-07,
+        "id_acceptance_rate": 1.0,
+        "ood_detection": {
+          "fog": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00042391
+          },
+          "night": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00206625
+          },
+          "blur": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00058126
+          },
+          "noise": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00223701
+          }
+        }
+      }
+    },
+    "L3": {
+      "cal_scores": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cal_mean": 0.0,
+      "cal_max": 0.0,
+      "test_id_scores": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "alpha_0.01": {
+        "threshold": 0.0,
+        "id_acceptance_rate": 1.0,
+        "ood_detection": {
+          "fog": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00069761
+          },
+          "night": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00340277
+          },
+          "blur": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00106847
+          },
+          "noise": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00427752
+          }
+        }
+      },
+      "alpha_0.05": {
+        "threshold": 0.0,
+        "id_acceptance_rate": 1.0,
+        "ood_detection": {
+          "fog": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00069761
+          },
+          "night": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00340277
+          },
+          "blur": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00106847
+          },
+          "noise": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00427752
+          }
+        }
+      },
+      "alpha_0.1": {
+        "threshold": 0.0,
+        "id_acceptance_rate": 1.0,
+        "ood_detection": {
+          "fog": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00069761
+          },
+          "night": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00340277
+          },
+          "blur": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00106847
+          },
+          "noise": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00427752
+          }
+        }
+      },
+      "alpha_0.2": {
+        "threshold": 0.0,
+        "id_acceptance_rate": 1.0,
+        "ood_detection": {
+          "fog": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00069761
+          },
+          "night": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00340277
+          },
+          "blur": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00106847
+          },
+          "noise": {
+            "detection_rate": 1.0,
+            "mean_score": 0.00427752
+          }
+        }
+      }
+    }
+  }
+}
