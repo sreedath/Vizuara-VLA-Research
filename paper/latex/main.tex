@@ -5504,4 +5504,40 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 636}: \textbf{Cross-semantic detection degrades to AUROC 0.60--0.79}, confirming that per-scene (or per-scene-type) calibration is essential for deployment. The road scene provides the best universal centroid (avg AUROC $= 0.787$) due to moderate visual complexity, while random noise and solid colors are poor universal centroids. This motivates a deployment strategy of maintaining a small library of per-scene centroids.
 
+\subsection{Information-Theoretic Analysis}
+
+\textbf{Experiment 296: Embedding Information Content.} We compute information-theoretic properties of OOD embeddings: effective rank via SVD, Fisher information w.r.t.\ severity, mutual information between corruption type and embedding direction, channel capacity, and SVD compression bounds across all 4 corruption types at 11 severity levels.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig305_info_theory.png}
+\caption{Information-theoretic analysis. (a) Effective rank: fog is most 1D (rank 3.57), noise most complex (5.59). (b) Fisher information vs severity: night accelerates exponentially, blur peaks early then saturates. (c) Direction similarity matrix: noise anti-correlated with fog ($-0.48$), night-blur most similar (0.61). (d) Severity channel: 3.3--3.5 bits (10--11 distinguishable levels). (e) SVD compression: 90\% variance in 4D. (f) PC variance ratios: fog 95\% in PC1.}
+\end{figure}
+
+\textbf{Finding 637}: \textbf{Fog embeddings are nearly 1-dimensional} with effective rank 3.57 and PC1 capturing 94.8\% of variance, while noise has the highest effective rank (5.59). This confirms fog produces the geometrically simplest perturbation --- a near-perfect rank-1 shift in embedding space. Blur and night have intermediate complexity (effective rank 4.4--5.3).
+
+\textbf{Finding 638}: \textbf{Fisher information reveals fundamentally different severity dynamics}: night has \emph{exponentially increasing} sensitivity (Fisher $1.9 \to 13.5$ from severity 0.1 to 1.0), meaning the model becomes progressively more sensitive at extreme darkness. Blur has \emph{front-loaded} sensitivity (Fisher $12.3 \to 1.1$), saturating rapidly. Fog and noise have flat, low Fisher ($< 1.0$), indicating uniform but weak sensitivity.
+
+\textbf{Finding 639}: \textbf{The corruption detection channel has capacity $\sim$3.5 bits} --- enough to distinguish 11 severity levels monotonically. Combined with 100\% direction-based type classification (40/40 correct), the embedding jointly encodes corruption type and severity with sufficient fidelity for practical severity estimation. Noise achieves 10 distinguishable levels (3.32 bits) vs 11 for others due to non-monotonic low-severity distances.
+
+\textbf{Finding 640}: \textbf{90\% of cross-corruption embedding variance is captured in just 4 dimensions} ($1024\times$ compression from 4096D), with 99\% in 9D. This validates random projection results (Experiment~221) and explains why extreme compression preserves perfect detection --- the intrinsic dimensionality of the OOD signal is $\leq 5$.
+
+\subsection{Attention Head Specialization}
+
+\textbf{Experiment 297: Per-Head Detection Analysis.} We examine whether specific attention heads specialize for OOD detection by computing per-head AUROC (using 128D head slices of hidden states), attention entropy changes, and cross-corruption head pattern similarity at layers L0, L3, L7, L15, L31 across all 32 heads.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig306_attn_spec.png}
+\caption{Attention head specialization analysis. (a) Per-head AUROC heatmap: L0 all 0.5 (red), L3+ all 1.0 (green). (b--c) Entropy change distributions for fog and night by layer. (d) Head agreement: all 32 heads achieve AUROC=1.0 at L3+. (e) Cross-corruption head pattern similarity varies by layer. (f) L31 per-head entropy changes: night produces largest reductions (up to $-1.82$ nats).}
+\end{figure}
+
+\textbf{Finding 641}: \textbf{No attention head specialization}: at L3 and beyond, ALL 32 heads individually achieve AUROC=1.0 for ALL corruption types. Each 128D head slice carries the full OOD signal independently. The detection property is not concentrated in specific ``corruption-sensitive'' heads but is universally distributed across every attention head.
+
+\textbf{Finding 642}: \textbf{L0 is a complete information bottleneck}: all 32 heads show AUROC=0.5 (random chance) at L0, confirming that the vision encoder's raw output does not yet encode corruption-detectable information. The critical information transformation occurs between L0 and L3, where detection jumps from 0\% to 100\% for every head simultaneously.
+
+\textbf{Finding 643}: \textbf{Night produces the largest attention entropy reductions} at deep layers (up to $-1.82$ nats at L31 Head 5), indicating the model dramatically ``sharpens'' its attention under extreme darkness. L15 shows the highest per-head variance (range $-1.06$ to $+1.48$ for night), suggesting middle layers have the most head-diverse responses.
+
+\textbf{Finding 644}: \textbf{Night and blur share the most similar head-level entropy patterns} ($\cos = 0.881$ at L31), consistent with their embedding direction similarity ($0.611$ from Experiment~296). Fog and noise are maximally anti-correlated at L3 ($\cos = -0.833$), supporting the geometric finding that noise shifts embeddings opposite to fog.
+
 \end{document}
