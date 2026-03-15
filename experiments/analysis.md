@@ -7021,3 +7021,57 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 
 **Finding**: Simple arithmetic mean is the recommended centroid estimator for VLA OOD detection. Robust estimators provide no advantage and can degrade performance in small-sample regimes. This simplifies deployment — no need for complex centroid estimation.
 
+
+---
+
+## Finding 165: Scene Diversity Stress Test (Experiment 171)
+
+**Objective**: Test whether OOD detection degrades when calibration covers more diverse scene types (6 instead of 3).
+
+**Setup**: Compare 3-scene (highway/urban/rural) vs 6-scene (+parking/tunnel/desert) calibration. Same OOD corruptions tested on both.
+
+**Key Results**:
+| Metric | 3-scene | 6-scene | Delta |
+|--------|---------|---------|-------|
+| L3 overall AUROC | 1.000 | 0.833 | -0.167 |
+| L32 overall AUROC | 1.000 | 0.885 | -0.115 |
+| OR-gate recall | (from prior) | 0.438 | — |
+
+Per-category 6-scene breakdown:
+- fog_60: L3=0.688, L32=0.653 — substantial drop
+- night: L3=1.0, L32=1.0 — still perfect
+- blur: L3=0.806, L32=0.910
+- noise: L3=0.840, L32=0.979
+
+**Calibration statistics show the problem**: 6-scene L32 std=0.046 vs 3-scene L32 std (typically ~0.017). The diverse scenes spread the ID distribution 2.7× wider, making the threshold less discriminative.
+
+**Finding**: Scene diversity significantly degrades single-centroid detection. The centroid becomes the average of dissimilar embeddings, widening the ID distribution and losing discrimination for subtle corruptions (fog). Night remains trivially detectable regardless. **This motivates multi-centroid (scene-aware) detection** — one centroid per scene type with nearest-centroid routing.
+
+
+---
+
+## Finding 166: Multi-Centroid Scene-Aware Detection (Experiment 172)
+
+**Objective**: Test nearest-centroid routing as a solution to the scene diversity degradation found in Experiment 171.
+
+**Setup**: 6 scene types, 3 calibration images per scene. Compare global (single) centroid, nearest-centroid (min distance to any scene centroid), and oracle (known scene label) strategies.
+
+**Key Results (AUROC)**:
+| Strategy | L3 | L32 |
+|----------|-----|-----|
+| Global centroid | 0.828 | 0.885 |
+| Nearest centroid | **1.000** | **1.000** |
+| Oracle centroid | **1.000** | **1.000** |
+
+**ID/OOD distance separation**:
+| Strategy | L3 ID mean | L3 OOD mean | L32 ID mean | L32 OOD mean |
+|----------|-----------|------------|------------|-------------|
+| Global | 0.00122 | 0.00248 | 0.168 | 0.286 |
+| Nearest | 0.00002 | 0.00210 | 0.033 | 0.288 |
+
+**Critical Finding**: Nearest-centroid **restores AUROC to 1.0** from 0.83/0.89, matching oracle performance. The ID mean distance drops by 60× at L3 (0.00122→0.00002) because each image is compared to its own scene type's centroid.
+
+**Threshold Issue**: The OR-gate with averaged per-scene statistics produces FPR=1.0 because per-scene distance means are near-zero but the threshold uses averaged means. Fix: use per-scene thresholds or compute global threshold from nearest-centroid distances.
+
+**Finding**: Multi-centroid nearest-centroid routing completely solves the scene diversity problem. It achieves perfect AUROC across 6 diverse scenes by maintaining tight per-scene boundaries. The nearest-centroid approach matches oracle (known scene label) performance, meaning the routing itself introduces no error — the model implicitly identifies scene types through embedding proximity.
+

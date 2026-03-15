@@ -1,0 +1,76 @@
+{
+  "experiment": "multi_centroid_scenes",
+  "experiment_number": 172,
+  "timestamp": "20260315_030619",
+  "n_cal_per_scene": 3,
+  "n_test_per_scene": 2,
+  "n_scenes": 6,
+  "scene_names": [
+    "highway",
+    "urban",
+    "rural",
+    "parking",
+    "tunnel",
+    "desert"
+  ],
+  "ood_categories": [
+    "fog_60",
+    "night",
+    "blur",
+    "noise"
+  ],
+  "layers": [
+    3,
+    32
+  ],
+  "strategies": {
+    "global_centroid": {
+      "L3": {
+        "auroc": 0.828125,
+        "id_mean": 0.0012175639470418294,
+        "ood_mean": 0.0024803305665651956
+      },
+      "L32": {
+        "auroc": 0.8854166666666666,
+        "id_mean": 0.1682835171620051,
+        "ood_mean": 0.2862812156478564
+      },
+      "or_gate": {
+        "recall": 0.4375,
+        "fpr": 0.0,
+        "precision": 1.0,
+        "f1": 0.6086956521739131
+      }
+    },
+    "nearest_centroid": {
+      "L3": {
+        "auroc": 1.0,
+        "id_mean": 1.8730759620666504e-05,
+        "ood_mean": 0.0021022967994213104
+      },
+      "L32": {
+        "auroc": 1.0,
+        "id_mean": 0.0332214484612147,
+        "ood_mean": 0.2881276570260525
+      },
+      "or_gate": {
+        "recall": 1.0,
+        "fpr": 1.0,
+        "precision": 0.8,
+        "f1": 0.888888888888889
+      }
+    },
+    "oracle_centroid": {
+      "L3": {
+        "auroc": 1.0,
+        "id_mean": 1.8730759620666504e-05,
+        "ood_mean": 0.002322514851888021
+      },
+      "L32": {
+        "auroc": 1.0,
+        "id_mean": 0.0332214484612147,
+        "ood_mean": 0.29357704644401866
+      }
+    }
+  }
+}

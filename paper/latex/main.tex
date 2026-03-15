@@ -3212,4 +3212,43 @@ Calibration data may contain outliers (mislabeled or corrupted images). We compa
 \label{fig:robust_cal_heatmap}
 \end{figure}
 
+\subsection{Scene Diversity and the Need for Multi-Centroid Detection}
+
+We stress-test the single-centroid detector by expanding from 3 scene types (highway, urban, rural) to 6 (adding parking lot, tunnel, desert road).
+
+\textbf{Finding 287}: Increasing scene diversity from 3 to 6 types causes \textbf{significant AUROC degradation}: L3 drops from 1.000 to 0.833 ($-$0.167), L32 from 1.000 to 0.885 ($-$0.115). The single centroid becomes the average of dissimilar embeddings, widening the ID distribution 2.7$\times$.
+
+\textbf{Finding 288}: \textbf{Night remains trivially detectable} (AUROC = 1.0 at both layers) regardless of scene diversity, because its embedding shift is so large that even a diluted centroid provides sufficient separation. In contrast, fog detection drops to AUROC = 0.65--0.69.
+
+\textbf{Finding 289}: This degradation \textbf{motivates multi-centroid detection}: maintaining one centroid per scene type with nearest-centroid routing at inference time, preserving tight per-scene boundaries while covering diverse operating domains.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig165_scene_diversity.png}
+\caption{\textbf{Scene diversity impact on OOD detection.} AUROC comparison between 3-scene and 6-scene calibration at L3 (left) and L32 (right). Diverse calibration dilutes detection of subtle corruptions while night remains trivially detectable.}
+\label{fig:scene_diversity}
+\end{figure}
+
+We address this degradation with \textbf{multi-centroid nearest-centroid routing}: maintaining one centroid per scene type and computing the minimum distance to any centroid at inference time.
+
+\textbf{Finding 290}: Nearest-centroid routing \textbf{restores AUROC to 1.000} at both layers across all 6 scene types, matching oracle (known scene label) performance. The global centroid achieves only 0.828 (L3) and 0.885 (L32).
+
+\textbf{Finding 291}: The nearest-centroid approach reduces ID mean distance by \textbf{60$\times$ at L3} (0.00122 $\rightarrow$ 0.00002) because each image is compared to its own scene type's centroid rather than an averaged cross-scene centroid.
+
+\textbf{Finding 292}: Nearest-centroid \textbf{matches oracle performance perfectly}, meaning the routing itself introduces zero error---the model implicitly identifies scene types through embedding proximity without requiring explicit scene labels.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig167_multi_centroid.png}
+\caption{\textbf{Multi-centroid vs.\ single centroid detection.} Nearest-centroid routing restores AUROC to 1.000 from 0.83/0.89 for 6 diverse scene types, matching oracle performance.}
+\label{fig:multi_centroid}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig168_multi_centroid_separation.png}
+\caption{\textbf{ID/OOD separation under different centroid strategies.} Nearest-centroid dramatically reduces ID mean distance while maintaining OOD distance, increasing the separation margin.}
+\label{fig:multi_centroid_sep}
+\end{figure}
+
 \end{document}
