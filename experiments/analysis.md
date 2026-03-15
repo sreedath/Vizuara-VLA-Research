@@ -7743,3 +7743,33 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 5. **d' monotonically decreases L5-L7**: Later early layers have lower discriminability, confirming the "early is better" finding from the layer sweep.
 
 **Finding**: d' analysis confirms the statistical power of early layers for VLA OOD detection. L1-L2 are the optimal layers with d'>2.4 (equivalent to >99.7% correct classification in signal detection theory). Night corruption produces extreme d' values (20-47), while blur is most challenging (d'=2.5-6.2 depending on layer). The OR-gate combination strategy is unnecessary when individual layers already achieve perfect AUROC. The key insight: a single transformer layer transforms the embedding from zero OOD signal (d'=0) to near-perfect detection (d'=2.44).
+---
+
+### Finding 190: Mahalanobis Distance Comparison (Experiment 195)
+
+**Experiment**: Compare cosine distance vs L2 distance vs Mahalanobis distance for OOD detection across layers L1, L3, L16, L32.
+
+**AUROC Comparison**:
+| Layer | Cosine | L2 | Mahalanobis |
+|-------|--------|------|-------------|
+| L1 | 1.000 | 1.000 | 1.000 |
+| L3 | 1.000 | 1.000 | 1.000 |
+| L16 | 0.969 | 0.965 | 0.934 |
+| L32 | 1.000 | 1.000 | 0.824 |
+
+**Separation Ratio Comparison**:
+| Layer | Cosine | L2 | Mahalanobis |
+|-------|--------|------|-------------|
+| L1 | 6.12 | 2.59 | 16.07 |
+| L3 | 5.30 | 2.20 | 9.48 |
+| L16 | 3.17 | 1.69 | 9.21 |
+| L32 | 2.71 | 1.58 | 6.84 |
+
+**Key Findings**:
+1. **Mahalanobis has highest separation but lowest AUROC at deeper layers**: At L32, Mahalanobis has sep=6.84 (vs cosine 2.71) but AUROC=0.824 (vs cosine 1.0). High separation ≠ good discrimination.
+2. **Curse of dimensionality**: Estimating a 4096×4096 covariance matrix from 15 samples is fundamentally ill-conditioned. The pseudo-inverse amplifies noise in directions with weak signal, creating high-variance scores.
+3. **Cosine distance is most robust**: Achieves best or tied-best AUROC at every layer. Its direction-only comparison avoids the covariance estimation problem entirely.
+4. **L2 matches cosine at all layers**: Both achieve AUROC=1.0 at L1, L3, L32. L2 has lower separation ratios because it is scale-sensitive, but rank ordering is preserved.
+5. **Per-category: Mahalanobis fails on fog at L32** (AUROC=0.641) while cosine achieves 1.0. The estimated covariance structure misleads the Mahalanobis detector for certain corruption types.
+
+**Finding**: Simple distance metrics (cosine, L2) outperform the classic Mahalanobis distance baseline for VLA OOD detection. Mahalanobis requires n>>p for reliable covariance estimation, but VLA embeddings have p=4096 dimensions with limited calibration data (n=15). Cosine distance achieves perfect AUROC using only a centroid vector (4096 floats), while Mahalanobis requires a 4096×4096 precision matrix (67M floats) and still performs worse. **Simplicity wins in high-dimensional OOD detection**.

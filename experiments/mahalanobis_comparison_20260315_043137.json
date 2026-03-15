@@ -1,0 +1,183 @@
+{
+  "experiment": "mahalanobis_comparison",
+  "experiment_number": 195,
+  "timestamp": "20260315_043137",
+  "n_cal": 15,
+  "n_test": 8,
+  "layers": [
+    1,
+    3,
+    16,
+    32
+  ],
+  "results": {
+    "L1": {
+      "cosine": {
+        "auroc": 1.0,
+        "id_mean": 0.0001732856035232544,
+        "ood_mean": 0.0010605733841657639,
+        "separation": 6.120374402516352
+      },
+      "l2": {
+        "auroc": 1.0,
+        "id_mean": 0.08079136162996292,
+        "ood_mean": 0.20961648924276233,
+        "separation": 2.5945408612295036
+      },
+      "mahalanobis": {
+        "auroc": 1.0,
+        "id_mean": 2.427322596311569,
+        "ood_mean": 39.00380778312683,
+        "separation": 16.068654344003587
+      },
+      "per_category": {
+        "fog_60": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "night": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "blur": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "noise": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        }
+      }
+    },
+    "L3": {
+      "cosine": {
+        "auroc": 1.0,
+        "id_mean": 0.00036579370498657227,
+        "ood_mean": 0.001939292997121811,
+        "separation": 5.30160153257106
+      },
+      "l2": {
+        "auroc": 1.0,
+        "id_mean": 0.2221311703324318,
+        "ood_mean": 0.488498211838305,
+        "separation": 2.1991430148561575
+      },
+      "mahalanobis": {
+        "auroc": 1.0,
+        "id_mean": 3.9909394681453705,
+        "ood_mean": 37.82219636440277,
+        "separation": 9.477015791730718
+      },
+      "per_category": {
+        "fog_60": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "night": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "blur": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "noise": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        }
+      }
+    },
+    "L16": {
+      "cosine": {
+        "auroc": 0.96875,
+        "id_mean": 0.03113972395658493,
+        "ood_mean": 0.09879896230995655,
+        "separation": 3.1727629355490103
+      },
+      "l2": {
+        "auroc": 0.96484375,
+        "id_mean": 11.668276309967041,
+        "ood_mean": 19.777394086122513,
+        "separation": 1.6949713531431516
+      },
+      "mahalanobis": {
+        "auroc": 0.93359375,
+        "id_mean": 96.5851657986641,
+        "ood_mean": 889.1225566864014,
+        "separation": 9.205580891571847
+      },
+      "per_category": {
+        "fog_60": {
+          "cosine_auroc": 0.875,
+          "l2_auroc": 0.859375,
+          "mahalanobis_auroc": 0.953125
+        },
+        "night": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "blur": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "noise": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 0.78125
+        }
+      }
+    },
+    "L32": {
+      "cosine": {
+        "auroc": 1.0,
+        "id_mean": 0.10636499524116516,
+        "ood_mean": 0.2885278444737196,
+        "separation": 2.712620289675829
+      },
+      "l2": {
+        "auroc": 1.0,
+        "id_mean": 35.45416879653931,
+        "ood_mean": 56.109055280685425,
+        "separation": 1.5825799104900744
+      },
+      "mahalanobis": {
+        "auroc": 0.82421875,
+        "id_mean": 126.62754917144775,
+        "ood_mean": 866.5598250031471,
+        "separation": 6.843375163402882
+      },
+      "per_category": {
+        "fog_60": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 0.640625
+        },
+        "night": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 0.65625
+        },
+        "blur": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "noise": {
+          "cosine_auroc": 1.0,
+          "l2_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        }
+      }
+    }
+  }
+}

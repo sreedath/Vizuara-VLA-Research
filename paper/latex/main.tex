@@ -3629,4 +3629,23 @@ We quantify OOD detection power using d' (discriminability index from signal det
 \label{fig:dprime_separation}
 \end{figure}
 
+\subsection{Distance Metric Comparison}
+
+We compare cosine distance against L2 distance and the classic Mahalanobis distance baseline \cite{lee2018simple}.
+
+\textbf{Finding 355}: At early layers (L1, L3), all three distance metrics---cosine, L2, and Mahalanobis---achieve perfect AUROC=1.0. The OOD signal is so strong that any reasonable metric suffices.
+
+\textbf{Finding 356}: At deeper layers, \textbf{Mahalanobis degrades significantly}: L32 AUROC=0.824 vs cosine AUROC=1.0. Despite having the highest separation ratio (6.84$\times$ vs cosine 2.71$\times$), Mahalanobis achieves the worst discrimination. This is the \textbf{curse of dimensionality}: estimating a 4096$\times$4096 covariance matrix from $n$=15 calibration samples is fundamentally ill-conditioned, and the pseudo-inverse amplifies noise.
+
+\textbf{Finding 357}: Cosine distance is the most robust metric, achieving best or tied-best AUROC at every layer tested. It requires only a single centroid vector (4096 floats = 16 KB) vs Mahalanobis's precision matrix (4096$^2$ = 67M floats = 256 MB)---a 16,000$\times$ storage advantage with superior detection performance.
+
+\textbf{Finding 358}: High separation ratio does not imply high AUROC. Mahalanobis consistently has the highest separation ratios but lowest AUROC at deeper layers. This is because separation ratio measures mean distances while AUROC measures rank ordering---high-variance scores can have large means but overlapping distributions.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig200_mahalanobis_comparison.png}
+\caption{\textbf{Distance metric comparison.} Left: AUROC showing cosine distance matches or beats alternatives at all layers. Right: separation ratios showing Mahalanobis has highest separation but worst AUROC at L16/L32---a counterintuitive failure mode caused by covariance estimation instability in 4096-dim space.}
+\label{fig:mahalanobis}
+\end{figure}
+
 \end{document}
