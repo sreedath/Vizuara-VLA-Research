@@ -9987,3 +9987,49 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 292**: Cross-type shift directions are **mostly distinct** (mean similarity 0.22 vs within-type 0.94), with noise nearly orthogonal to all other types (|similarity| < 0.13). This enables a corruption TYPE classifier based on shift direction alone.
 
 **Finding 293**: Night and blur share the most directional overlap (0.649), consistent with both corruptions reducing visual information content. Fog and noise are anti-correlated (-0.134), suggesting they perturb complementary aspects of the representation.
+
+---
+
+## Experiment 269: Action Token Entropy Across Dimensions
+
+**Research Question**: How does corruption affect the model's confidence (entropy) on each of the 7 action dimensions? Does the model become uniformly less confident, or are some dimensions more affected?
+
+**Method**: Autoregressively decode all 7 action tokens for clean and 4 corruptions, measuring per-dimension entropy, top-1 probability, and predicted token.
+
+**Results**:
+
+**Per-Dimension Entropy Change (%)**:
+
+| Dim | Clean Ent | Fog | Night | Noise | Blur |
+|-----|----------|-----|-------|-------|------|
+| 0 | 2.38 | −12% | **+63%** | +21% | **+74%** |
+| 1 | 1.55 | −4% | +34% | **−71%** | +29% |
+| 2 | 0.37 | **+473%** | +142% | −9% | **+465%** |
+| 3 | 1.70 | **−98%** | +11% | −9% | **−97%** |
+| 4 | 1.43 | +12% | −40% | −53% | −49% |
+| 5 | 1.62 | −14% | +1% | **−70%** | −45% |
+| 6 | 1.63 | −12% | **−100%** | **−99%** | −4% |
+
+**Generated Action Tokens**:
+
+| Condition | d0 | d1 | d2 | d3 | d4 | d5 | d6 |
+|-----------|-----|-----|-----|-----|-----|-----|-----|
+| Clean | 200 | 141 | 191 | 167 | 148 | 27 | 80 |
+| Fog | 145 | 105 | 136 | 118 | 121 | 91 | 81 |
+| Night | 112 | 105 | 234 | 111 | 124 | 80 | **128** |
+| Noise | 188 | 103 | 167 | 153 | 197 | 86 | **128** |
+| Blur | 102 | 108 | 199 | 128 | 156 | 71 | 93 |
+
+**Key Findings**:
+1. **Entropy changes are NOT uniform**: Some dimensions become MORE uncertain (dim2: +465% under fog/blur), while others become LESS uncertain (dim3: -98% under fog/blur, dim6: -100% under night).
+2. **dim6 under night: entropy → 0.001 (from 1.63)**: The model is 99.9% confident about dim6 under night — and it predicts the WRONG token (128 instead of 80). This is the most dangerous failure mode: maximum confidence in the wrong answer.
+3. **dim2 is entropic-ally volatile**: Low clean entropy (0.37) but fog/blur cause 4.7× entropy explosion. This dimension is the least robust to corruption.
+4. **dim3 under fog/blur: entropy → 0.03 (from 1.70)**: Near-certain wrong prediction (token 118/128 instead of 167). The model "locks onto" a wrong answer with 98% entropy reduction.
+5. **Night and noise converge to dim6=128**: Both corruptions predict exactly the same wrong token for dim6 with near-zero entropy, suggesting a common failure attractor.
+6. **All tokens change under all corruptions**: Not a single dimension maintains its clean prediction across all corruption types.
+
+**Finding 294**: Corruption causes **dimension-specific entropy changes** ranging from +473% (dim2 under fog/blur: massive uncertainty increase) to −100% (dim6 under night: near-zero uncertainty on wrong answer). The model does NOT uniformly lose confidence — it becomes selectively overconfident on specific wrong dimensions.
+
+**Finding 295**: dim6 under night achieves entropy 0.001 (clean: 1.63), predicting token 128 with **99.9% confidence** — the wrong answer. This is the most dangerous failure mode: the model is maximally certain about a completely incorrect action dimension.
+
+**Finding 296**: Night and noise both converge to dim6=128 with near-zero entropy (0.001 and 0.017), suggesting a **common failure attractor** in the model's action space where corrupted inputs are mapped to the same confident-wrong prediction.

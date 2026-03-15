@@ -5090,4 +5090,20 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 564}: Night and blur share the most directional overlap (0.649), consistent with both corruptions reducing visual information content. Fog and noise are \textbf{anti-correlated} ($-$0.134), perturbing complementary aspects of the representation. These geometric relationships match the corruption physics: brightness reduction (night) and frequency filtering (blur) have more in common than additive noise.
 
+\subsection{Action Token Entropy Across Dimensions}
+
+\textbf{Experiment 269: Per-Dimension Confidence.} We autoregressively decode all 7 action tokens for clean and corrupted inputs, measuring per-dimension entropy to characterize how corruption affects the model's confidence on each action component.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig278_action_ent.png}
+\caption{(a) Per-dimension entropy: corruption creates dimension-specific effects --- some dimensions gain uncertainty (d2: +465\%), others lose it (d6: $-$100\%). (b) Entropy change heatmap showing the heterogeneous impact. (c) Action token deviations: all 7 dimensions change under corruption.}
+\end{figure}
+
+\textbf{Finding 565}: Corruption causes \textbf{dimension-specific entropy changes} ranging from +473\% (dim 2 under fog: massive uncertainty increase) to $-$100\% (dim 6 under night: near-zero uncertainty on wrong answer). The model does not uniformly lose confidence --- it becomes selectively overconfident on specific wrong dimensions while becoming uncertain on others.
+
+\textbf{Finding 566}: Dim 6 under night achieves entropy \textbf{0.001 nats} (clean: 1.63), predicting token 128 with 99.9\% confidence --- the \textit{wrong} answer (clean: token 80). This is the most dangerous failure mode: maximum certainty about a completely incorrect action component. Our embedding-based detector catches this before execution.
+
+\textbf{Finding 567}: Night and noise both converge to dim 6 = token 128 with near-zero entropy (0.001 and 0.017 nats), suggesting a \textbf{common failure attractor} in the model's action space. Corrupted inputs are mapped to the same confident-wrong prediction regardless of corruption type, revealing a structural vulnerability in the action decoder.
+
 \end{document}
