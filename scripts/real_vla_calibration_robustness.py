@@ -1,410 +1,232 @@
+#!/usr/bin/env python3
+"""Experiment 330: Calibration Robustness (Real OpenVLA-7B)
+
+Tests detector robustness under various calibration conditions:
+1. Stale calibration: what if scene changes after calibration?
+2. Calibration with slightly corrupted image
+3. Multi-scene centroid effectiveness
+4. Random reference point
+5. Per-scene vs global calibration
+6. Calibration with gradual scene drift
 """
-Calibration Robustness Study on Real OpenVLA-7B.
 
-Tests how robust the OOD detection performance is to:
-1. Different calibration set sizes (4, 8, 16, 24, 32 samples)
-2. Different calibration compositions (highway-only, urban-only, mixed)
-3. Calibration from one condition, test on another (transfer)
-4. Random subsampling stability (5 random seeds per size)
-
-Uses the optimal 0.7*cosine + 0.3*mass combination from Exp 44.
-
-Experiment 45 in the CalibDrive series.
-"""
-import os
-import json
-import datetime
+import json, time, os, sys
 import numpy as np
 import torch
-from PIL import Image
-from sklearn.metrics import roc_auc_score
+from PIL import Image, ImageFilter
+from transformers import AutoModelForVision2Seq, AutoProcessor
 
-RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
-os.makedirs(RESULTS_DIR, exist_ok=True)
-
-SIZE = (256, 256)
-
-
-def create_realistic_highway(idx):
-    rng = np.random.default_rng(idx * 4101)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    for y in range(SIZE[0]//2):
-        frac = y / (SIZE[0]//2)
-        img[y, :] = [int(80+55*frac), int(150+56*frac), int(255-20*frac)]
-    for y in range(SIZE[0]//2, SIZE[0]):
-        base = 60 + rng.integers(-5, 6)
-        img[y, :] = [base, base, base]
-    for y in range(SIZE[0]//2+10, SIZE[0], 20):
-        if (y//20)%2 == 0:
-            img[y:y+8, SIZE[1]//2-2:SIZE[1]//2+2] = [220, 220, 220]
-    noise = rng.integers(-3, 4, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_realistic_urban(idx):
-    rng = np.random.default_rng(idx * 4102)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//4] = [135, 206, 235]
-    for x_start in range(0, SIZE[1], 40):
-        h = rng.integers(SIZE[0]//4, SIZE[0]//2)
-        color = rng.integers(100, 200, 3)
-        img[SIZE[0]//4:h, x_start:x_start+38] = color
-    img[SIZE[0]//2:SIZE[0]//2+20] = [180, 170, 160]
-    img[SIZE[0]//2+20:] = [70, 70, 70]
-    noise = rng.integers(-3, 4, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_night_driving(idx):
-    rng = np.random.default_rng(idx * 4103)
-    img = np.full((*SIZE, 3), 15, dtype=np.uint8)
-    img[SIZE[0]//2:] = [30, 30, 30]
-    for y in range(SIZE[0]//2, SIZE[0]):
-        width = int((y - SIZE[0]//2) * 0.8)
-        center = SIZE[1] // 2
-        brightness = max(0, 120 - (y - SIZE[0]//2))
-        img[y, max(0, center-width):min(SIZE[1], center+width)] = [brightness, brightness, int(brightness*0.8)]
-    noise = rng.integers(-2, 3, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_foggy_road(idx):
-    base = create_realistic_highway(idx + 2000)
-    rng = np.random.default_rng(idx * 4104)
-    fog = np.full_like(base, 200)
-    alpha = 0.5 + rng.random() * 0.2
-    return (base * (1-alpha) + fog * alpha).astype(np.uint8)
-
-def create_snow_road(idx):
-    rng = np.random.default_rng(idx * 4105)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [200, 210, 220]
-    for y in range(SIZE[0]//2, SIZE[0]):
-        b = 200 + rng.integers(-10, 10)
-        img[y, :] = [b, b, b]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_flooded_road(idx):
-    rng = np.random.default_rng(idx * 4106)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [100, 100, 110]
-    for y in range(SIZE[0]//2, SIZE[0]):
-        depth = (y - SIZE[0]//2) / (SIZE[0]//2)
-        img[y, :] = [int(40+30*depth), int(80+40*depth), int(140+50*depth)]
-    noise = rng.integers(-3, 4, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_offroad(idx):
-    rng = np.random.default_rng(idx * 4107)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]
-    for x in range(0, SIZE[1], 15):
-        h = SIZE[0]//3 + rng.integers(0, 30)
-        img[SIZE[0]//3:h, x:x+12] = [30+rng.integers(0,30), 100+rng.integers(0,50), 20+rng.integers(0,30)]
-    img[SIZE[0]//2:] = [140, 100, 60]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_tunnel(idx):
-    rng = np.random.default_rng(idx * 4108)
-    img = np.full((*SIZE, 3), 10, dtype=np.uint8)
-    cy, cx = SIZE[0]//2 - 20, SIZE[1]//2
-    for y in range(SIZE[0]):
-        for x in range(SIZE[1]):
-            dist = np.sqrt((y - cy)**2 + (x - cx)**2)
-            if dist < 40:
-                b = int(200 * (1 - dist/40))
-                img[y, x] = [b, b, b]
-    img[SIZE[0]//2:] = np.clip(img[SIZE[0]//2:].astype(int) + 20, 0, 255).astype(np.uint8)
-    noise = rng.integers(-2, 3, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-
-def extract_features(model, processor, image, prompt):
+def extract_hidden(model, processor, image, prompt, layer=3):
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
     with torch.no_grad():
-        outputs = model.generate(
-            **inputs, max_new_tokens=7, do_sample=False,
-            output_scores=True, output_hidden_states=True,
-            return_dict_in_generate=True,
-        )
-    if hasattr(outputs, 'hidden_states') and outputs.hidden_states:
-        last_step = outputs.hidden_states[-1]
-        if isinstance(last_step, tuple):
-            hidden = last_step[-1][0, -1, :].float().cpu().numpy()
-        else:
-            hidden = last_step[0, -1, :].float().cpu().numpy()
-    else:
-        hidden = np.zeros(4096)
+        fwd = model(**inputs, output_hidden_states=True)
+    return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
 
-    vocab_size = outputs.scores[0].shape[-1]
-    action_start = vocab_size - 256
-    masses = []
-    for score in outputs.scores[:7]:
-        full_probs = torch.softmax(score[0].float(), dim=0)
-        masses.append(float(full_probs[action_start:].sum()))
-
-    return hidden, float(np.mean(masses))
-
+def apply_corruption(image, ctype, severity=1.0):
+    arr = np.array(image).astype(np.float32) / 255.0
+    if ctype == 'fog':
+        arr = arr * (1 - 0.6 * severity) + 0.6 * severity
+    elif ctype == 'night':
+        arr = arr * max(0.01, 1.0 - 0.95 * severity)
+    elif ctype == 'noise':
+        arr = arr + np.random.RandomState(42).randn(*arr.shape) * 0.3 * severity
+        arr = np.clip(arr, 0, 1)
+    elif ctype == 'blur':
+        return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
+    return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
 def cosine_dist(a, b):
-    return 1.0 - float(np.dot(a / (np.linalg.norm(a) + 1e-10),
-                               b / (np.linalg.norm(b) + 1e-10)))
+    dot = np.dot(a, b)
+    na, nb = np.linalg.norm(a), np.linalg.norm(b)
+    if na < 1e-10 or nb < 1e-10:
+        return 0.0
+    return 1.0 - dot / (na * nb)
 
+def compute_auroc(id_scores, ood_scores):
+    id_s = np.asarray(id_scores)
+    ood_s = np.asarray(ood_scores)
+    n_id, n_ood = len(id_s), len(ood_s)
+    if n_id == 0 or n_ood == 0:
+        return 0.5
+    count = sum(float(np.sum(o > id_s) + 0.5 * np.sum(o == id_s)) for o in ood_s)
+    return count / (n_id * n_ood)
 
 def main():
-    print("=" * 70, flush=True)
-    print("CALIBRATION ROBUSTNESS STUDY", flush=True)
-    print("=" * 70, flush=True)
-
-    from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading model...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
-        device_map="auto", trust_remote_code=True,
-    )
-    processor = AutoProcessor.from_pretrained(
-        "openvla/openvla-7b", trust_remote_code=True,
-    )
+        device_map="auto", trust_remote_code=True)
+    processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
-    print("Model loaded.", flush=True)
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
+    prompt = "In: What action should the robot take to pick up the object?\nOut:"
+    results = {}
 
-    # Step 1: Generate a large calibration pool (40 samples, 10 per condition)
-    print("\nGenerating calibration pool...", flush=True)
-    cal_fns = {
-        'highway': create_realistic_highway,
-        'urban': create_realistic_urban,
-        'night': create_night_driving,
-        'foggy': create_foggy_road,
-    }
-    cal_pool = {}  # scene -> list of (hidden, mass) tuples
-    for scene, fn in cal_fns.items():
-        cal_pool[scene] = []
-        for i in range(10):
-            img = Image.fromarray(fn(i + 6000))
-            hidden, mass = extract_features(model, processor, img, prompt)
-            cal_pool[scene].append({'hidden': hidden, 'mass': mass, 'idx': i})
-        print(f"  {scene}: {len(cal_pool[scene])} samples", flush=True)
+    scenes = {}
+    scene_embs = {}
+    for seed in [0, 42, 99, 123, 255, 777, 1000, 2000, 5000, 9999]:
+        rng = np.random.RandomState(seed)
+        px = rng.randint(50, 200, (224, 224, 3)).astype(np.uint8)
+        img = Image.fromarray(px)
+        emb = extract_hidden(model, processor, img, prompt)
+        scenes[seed] = img
+        scene_embs[seed] = emb
 
-    # Step 2: Generate fixed test set
-    print("\nGenerating test set...", flush=True)
-    test_data = []
-    test_fns = {
-        'highway_r': (create_realistic_highway, False, 8),
-        'urban_r': (create_realistic_urban, False, 8),
-        'night_r': (create_night_driving, False, 6),
-        'foggy_r': (create_foggy_road, False, 6),
-        'snow': (create_snow_road, True, 6),
-        'flooded': (create_flooded_road, True, 6),
-        'offroad': (create_offroad, True, 6),
-        'tunnel': (create_tunnel, True, 6),
-    }
-    for scene, (fn, is_ood, n) in test_fns.items():
-        for i in range(n):
-            img = Image.fromarray(fn(i + 7000))
-            hidden, mass = extract_features(model, processor, img, prompt)
-            test_data.append({
-                'hidden': hidden, 'mass': mass,
-                'scenario': scene, 'is_ood': is_ood,
-            })
-    print(f"  Test set: {len(test_data)} ({sum(1 for t in test_data if not t['is_ood'])} ID, "
-          f"{sum(1 for t in test_data if t['is_ood'])} OOD)", flush=True)
+    ctypes = ['fog', 'night', 'noise', 'blur']
 
-    easy = [t for t in test_data if not t['is_ood']]
-    ood = [t for t in test_data if t['is_ood']]
-    labels = [0]*len(easy) + [1]*len(ood)
-    all_test = easy + ood
+    # ========== 1. Stale calibration ==========
+    print("\n=== Stale Calibration ===")
+    stale_results = {}
+    cal_emb = scene_embs[42]
+    for test_seed in [0, 99, 123, 777, 9999]:
+        test_img = scenes[test_seed]
+        test_emb = scene_embs[test_seed]
+        clean_d = cosine_dist(cal_emb, test_emb)
+        ood_dists = {}
+        for ct in ctypes:
+            img = apply_corruption(test_img, ct, 0.5)
+            emb = extract_hidden(model, processor, img, prompt)
+            ood_dists[ct] = float(cosine_dist(cal_emb, emb))
+        separable = min(ood_dists.values()) > clean_d
+        stale_results[f"cal42_test{test_seed}"] = {
+            'clean_dist': float(clean_d), 'ood_dists': ood_dists,
+            'separable': bool(separable), 'margin': float(min(ood_dists.values()) - clean_d),
+        }
+        print(f"  cal=42, test={test_seed}: clean_d={clean_d:.6f}, min_ood={min(ood_dists.values()):.6f}, sep={separable}")
+    results['stale_calibration'] = stale_results
 
-    def compute_auroc(cal_hidden_list, cal_mass_list, use_per_scene_centroids=None):
-        """Compute AUROC using optimal 0.7*cosine + 0.3*mass combo."""
-        global_centroid = np.mean(cal_hidden_list, axis=0)
+    # ========== 2. Corrupted calibration ==========
+    print("\n=== Corrupted Calibration ===")
+    corrupt_cal_results = {}
+    base_img = scenes[42]
+    true_clean = scene_embs[42]
+    for cal_corruption in ['fog', 'noise', 'blur']:
+        for cal_sev in [0.01, 0.05, 0.1, 0.2]:
+            cal_img = apply_corruption(base_img, cal_corruption, cal_sev)
+            cal_emb_c = extract_hidden(model, processor, cal_img, prompt)
+            clean_d = cosine_dist(cal_emb_c, true_clean)
+            ood_dists = []
+            for ct in ctypes:
+                img = apply_corruption(base_img, ct, 0.5)
+                emb = extract_hidden(model, processor, img, prompt)
+                ood_dists.append(float(cosine_dist(cal_emb_c, emb)))
+            auroc = compute_auroc([clean_d], ood_dists)
+            key = f"{cal_corruption}_{cal_sev}"
+            corrupt_cal_results[key] = {
+                'cal_clean_dist': float(clean_d), 'ood_dists': ood_dists, 'auroc': float(auroc),
+            }
+            print(f"  cal={cal_corruption}@{cal_sev}: AUROC={auroc:.3f}")
+    results['corrupted_calibration'] = corrupt_cal_results
 
-        if use_per_scene_centroids:
-            scene_centroids = {}
-            for scene_name, indices in use_per_scene_centroids.items():
-                if indices:
-                    scene_centroids[scene_name] = np.mean(
-                        [cal_hidden_list[i] for i in indices], axis=0)
+    # ========== 3. Multi-scene centroid ==========
+    print("\n=== Multi-Scene Centroid ===")
+    centroid_results = {}
+    for n_cal in [1, 2, 3, 5, 8]:
+        cal_seeds = list(scenes.keys())[:n_cal]
+        centroid = np.mean([scene_embs[s] for s in cal_seeds], axis=0)
+        test_seeds = [s for s in scenes.keys() if s not in cal_seeds]
+        clean_dists = [cosine_dist(centroid, scene_embs[s]) for s in test_seeds]
+        ood_dists = []
+        for s in test_seeds[:3]:
+            for ct in ctypes:
+                img = apply_corruption(scenes[s], ct, 0.5)
+                emb = extract_hidden(model, processor, img, prompt)
+                ood_dists.append(float(cosine_dist(centroid, emb)))
+        auroc = compute_auroc(clean_dists, ood_dists)
+        centroid_results[f"n={n_cal}"] = {
+            'auroc': float(auroc),
+            'max_clean_dist': float(np.max(clean_dists)) if clean_dists else 0,
+            'min_ood_dist': float(np.min(ood_dists)),
+            'separable': bool(min(ood_dists) > max(clean_dists)) if clean_dists else True,
+        }
+        print(f"  n={n_cal}: AUROC={auroc:.3f}")
+    results['multi_scene_centroid'] = centroid_results
 
-        cos_scores = []
-        mass_scores = []
-        for t in all_test:
-            if use_per_scene_centroids and scene_centroids:
-                cos = min(cosine_dist(t['hidden'], c) for c in scene_centroids.values())
-            else:
-                cos = cosine_dist(t['hidden'], global_centroid)
-            cos_scores.append(cos)
-            mass_scores.append(1 - t['mass'])
+    # ========== 4. Random reference ==========
+    print("\n=== Random Reference ===")
+    random_ref_results = {}
+    for trial in range(5):
+        rng = np.random.RandomState(trial)
+        random_emb = rng.randn(4096).astype(np.float32)
+        random_emb = random_emb / np.linalg.norm(random_emb) * np.linalg.norm(scene_embs[42])
+        clean_d = cosine_dist(random_emb, scene_embs[42])
+        ood_dists = []
+        for ct in ctypes:
+            img = apply_corruption(scenes[42], ct, 0.5)
+            emb = extract_hidden(model, processor, img, prompt)
+            ood_dists.append(float(cosine_dist(random_emb, emb)))
+        auroc = compute_auroc([clean_d], ood_dists)
+        random_ref_results[f"trial_{trial}"] = {
+            'clean_dist': float(clean_d), 'auroc': float(auroc),
+        }
+        print(f"  Trial {trial}: AUROC={auroc:.3f}")
+    results['random_reference'] = random_ref_results
 
-        cos_n = np.array(cos_scores)
-        mass_n = np.array(mass_scores)
-        # Normalize to [0,1]
-        cos_min, cos_max = cos_n.min(), cos_n.max()
-        mass_min, mass_max = mass_n.min(), mass_n.max()
-        if cos_max > cos_min:
-            cos_n = (cos_n - cos_min) / (cos_max - cos_min)
-        if mass_max > mass_min:
-            mass_n = (mass_n - mass_min) / (mass_max - mass_min)
+    # ========== 5. Per-scene vs global ==========
+    print("\n=== Per-Scene vs Global ===")
+    global_centroid = np.mean(list(scene_embs.values()), axis=0)
+    comparison_results = {}
+    for test_seed in [42, 99, 777]:
+        test_img = scenes[test_seed]
+        global_clean = cosine_dist(global_centroid, scene_embs[test_seed])
+        per_scene_ood = []
+        global_ood = []
+        for ct in ctypes:
+            img = apply_corruption(test_img, ct, 0.5)
+            emb = extract_hidden(model, processor, img, prompt)
+            per_scene_ood.append(float(cosine_dist(scene_embs[test_seed], emb)))
+            global_ood.append(float(cosine_dist(global_centroid, emb)))
+        comparison_results[f"scene_{test_seed}"] = {
+            'per_scene_clean': 0.0, 'global_clean': float(global_clean),
+            'per_scene_min_ood': float(min(per_scene_ood)),
+            'global_min_ood': float(min(global_ood)),
+            'per_scene_sep': True, 'global_sep': bool(min(global_ood) > global_clean),
+        }
+        print(f"  Scene {test_seed}: global_sep={min(global_ood) > global_clean}")
+    results['per_scene_vs_global'] = comparison_results
 
-        combo = 0.7 * cos_n + 0.3 * mass_n
-        auroc_combo = roc_auc_score(labels, combo)
-        auroc_cos = roc_auc_score(labels, cos_scores)
-        return auroc_combo, auroc_cos
-
-    # ===================================================================
-    # Experiment A: Calibration size sensitivity
-    # ===================================================================
-    print("\n" + "=" * 60, flush=True)
-    print("A. Calibration Size Sensitivity", flush=True)
-    print("=" * 60, flush=True)
-
-    all_cal = []
-    for scene in ['highway', 'urban', 'night', 'foggy']:
-        all_cal.extend(cal_pool[scene])
-
-    sizes = [2, 4, 8, 12, 16, 24, 32, 40]
-    n_seeds = 5
-
-    print(f"\n  {'Size':>6} | {'Combo AUROC':>12} ({'±std':>6}) | "
-          f"{'Cos AUROC':>12} ({'±std':>6})", flush=True)
-    print("  " + "-" * 60, flush=True)
-
-    size_results = []
-    for size in sizes:
-        combo_aurocs = []
-        cos_aurocs = []
-        for seed in range(n_seeds):
-            rng = np.random.default_rng(seed * 42 + size)
-            if size >= len(all_cal):
-                indices = list(range(len(all_cal)))
-            else:
-                indices = rng.choice(len(all_cal), size=size, replace=False)
-            cal_h = [all_cal[i]['hidden'] for i in indices]
-            cal_m = [all_cal[i]['mass'] for i in indices]
-            combo, cos = compute_auroc(cal_h, cal_m)
-            combo_aurocs.append(combo)
-            cos_aurocs.append(cos)
-
-        mean_combo = np.mean(combo_aurocs)
-        std_combo = np.std(combo_aurocs)
-        mean_cos = np.mean(cos_aurocs)
-        std_cos = np.std(cos_aurocs)
-        print(f"  {size:>6} | {mean_combo:>12.3f} ({std_combo:>6.3f}) | "
-              f"{mean_cos:>12.3f} ({std_cos:>6.3f})", flush=True)
-        size_results.append({
-            'size': size, 'combo_mean': mean_combo, 'combo_std': std_combo,
-            'cos_mean': mean_cos, 'cos_std': std_cos,
-        })
-
-    # ===================================================================
-    # Experiment B: Composition sensitivity
-    # ===================================================================
-    print("\n" + "=" * 60, flush=True)
-    print("B. Calibration Composition", flush=True)
-    print("=" * 60, flush=True)
-
-    compositions = {
-        'highway only (10)': {'highway': list(range(10))},
-        'urban only (10)': {'urban': list(range(10))},
-        'night only (10)': {'night': list(range(10))},
-        'foggy only (10)': {'foggy': list(range(10))},
-        'highway+urban (20)': {'highway': list(range(10)), 'urban': list(range(10))},
-        'highway+night (20)': {'highway': list(range(10)), 'night': list(range(10))},
-        'all 4 scenes (40)': {s: list(range(10)) for s in cal_fns},
-        'all 4 scenes (20)': {s: list(range(5)) for s in cal_fns},
-    }
-
-    print(f"\n  {'Composition':<30} | {'Combo':>8} | {'Cosine':>8}", flush=True)
-    print("  " + "-" * 55, flush=True)
-
-    comp_results = []
-    for name, comp in compositions.items():
-        cal_h = []
-        cal_m = []
-        per_scene_indices = {}
-        idx = 0
-        for scene, sample_ids in comp.items():
-            scene_start = idx
-            for sid in sample_ids:
-                cal_h.append(cal_pool[scene][sid]['hidden'])
-                cal_m.append(cal_pool[scene][sid]['mass'])
-                idx += 1
-            per_scene_indices[scene] = list(range(scene_start, idx))
-
-        combo_g, cos_g = compute_auroc(cal_h, cal_m)
-        combo_ps, cos_ps = compute_auroc(cal_h, cal_m,
-                                          use_per_scene_centroids=per_scene_indices)
-        print(f"  {name:<30} | {combo_g:>8.3f} | {cos_g:>8.3f} | "
-              f"(per-scene: {combo_ps:.3f})", flush=True)
-        comp_results.append({
-            'name': name, 'combo_global': combo_g, 'cos_global': cos_g,
-            'combo_perscene': combo_ps, 'cos_perscene': cos_ps,
-        })
-
-    # ===================================================================
-    # Experiment C: Transfer across conditions
-    # ===================================================================
-    print("\n" + "=" * 60, flush=True)
-    print("C. Transfer Across Conditions", flush=True)
-    print("=" * 60, flush=True)
-
-    print(f"\n  {'Cal condition':<20} | {'Overall':>8} | {'Snow':>8} | "
-          f"{'Flood':>8} | {'Offroad':>8} | {'Tunnel':>8}", flush=True)
-    print("  " + "-" * 75, flush=True)
-
-    transfer_results = []
-    for cal_scene in cal_fns:
-        cal_h = [cal_pool[cal_scene][i]['hidden'] for i in range(10)]
-        cal_m = [cal_pool[cal_scene][i]['mass'] for i in range(10)]
-        centroid = np.mean(cal_h, axis=0)
-
-        # Overall
-        cos_all = [cosine_dist(t['hidden'], centroid) for t in all_test]
-        mass_all = [1 - t['mass'] for t in all_test]
-        cos_n = np.array(cos_all)
-        mass_n = np.array(mass_all)
-        cos_n = (cos_n - cos_n.min()) / (cos_n.max() - cos_n.min() + 1e-10)
-        mass_n = (mass_n - mass_n.min()) / (mass_n.max() - mass_n.min() + 1e-10)
-        overall = roc_auc_score(labels, 0.7 * cos_n + 0.3 * mass_n)
-
-        # Per-OOD type
-        per_ood = {}
-        for ood_type in ['snow', 'flooded', 'offroad', 'tunnel']:
-            type_ood = [t for t in ood if t['scenario'] == ood_type]
-            type_labels = [0]*len(easy) + [1]*len(type_ood)
-            type_all = easy + type_ood
-            type_cos = [cosine_dist(t['hidden'], centroid) for t in type_all]
-            type_mass = [1 - t['mass'] for t in type_all]
-            tc_n = np.array(type_cos)
-            tm_n = np.array(type_mass)
-            tc_n = (tc_n - tc_n.min()) / (tc_n.max() - tc_n.min() + 1e-10)
-            tm_n = (tm_n - tm_n.min()) / (tm_n.max() - tm_n.min() + 1e-10)
-            per_ood[ood_type] = roc_auc_score(type_labels, 0.7 * tc_n + 0.3 * tm_n)
-
-        print(f"  {cal_scene:<20} | {overall:>8.3f} | {per_ood['snow']:>8.3f} | "
-              f"{per_ood['flooded']:>8.3f} | {per_ood['offroad']:>8.3f} | "
-              f"{per_ood['tunnel']:>8.3f}", flush=True)
-        transfer_results.append({
-            'cal_scene': cal_scene, 'overall': overall, **per_ood,
-        })
+    # ========== 6. Scene drift ==========
+    print("\n=== Scene Drift ===")
+    drift_results = {}
+    base_arr = np.array(scenes[42]).astype(float)
+    cal_emb_d = scene_embs[42]
+    for drift_pct in [0, 1, 2, 5, 10, 20, 50]:
+        rng_d = np.random.RandomState(123)
+        drift = rng_d.randn(*base_arr.shape) * drift_pct / 100 * 255
+        drifted_arr = np.clip(base_arr + drift, 0, 255).astype(np.uint8)
+        drifted_img = Image.fromarray(drifted_arr)
+        drifted_emb = extract_hidden(model, processor, drifted_img, prompt)
+        clean_d = cosine_dist(cal_emb_d, drifted_emb)
+        ood_dists = []
+        for ct in ['fog', 'blur']:
+            img = apply_corruption(drifted_img, ct, 0.5)
+            emb = extract_hidden(model, processor, img, prompt)
+            ood_dists.append(float(cosine_dist(cal_emb_d, emb)))
+        drift_results[f"drift_{drift_pct}pct"] = {
+            'clean_dist': float(clean_d), 'ood_dists': ood_dists,
+            'separable': bool(min(ood_dists) > clean_d),
+            'margin': float(min(ood_dists) - clean_d),
+        }
+        print(f"  Drift {drift_pct}%: clean_d={clean_d:.6f}, margin={min(ood_dists)-clean_d:.6f}")
+    results['scene_drift'] = drift_results
 
     # Save
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    output = {
-        'experiment': 'calibration_robustness',
-        'experiment_number': 45,
-        'timestamp': timestamp,
-        'n_cal_pool': sum(len(v) for v in cal_pool.values()),
-        'n_test': len(test_data),
-        'size_sensitivity': size_results,
-        'composition': comp_results,
-        'transfer': transfer_results,
-    }
-    output_path = os.path.join(RESULTS_DIR, f"calibration_robustness_{timestamp}.json")
-    with open(output_path, 'w') as f:
-        json.dump(output, f, indent=2)
-    print(f"\nSaved to {output_path}", flush=True)
-
+    ts = time.strftime("%Y%m%d_%H%M%S")
+    out_path = f"experiments/cal_robustness_{ts}.json"
+    def convert(obj):
+        if isinstance(obj, (np.floating, np.float32, np.float64)): return float(obj)
+        if isinstance(obj, (np.integer, np.int32, np.int64)): return int(obj)
+        if isinstance(obj, np.ndarray): return obj.tolist()
+        if isinstance(obj, np.bool_): return bool(obj)
+        return obj
+    def recursive_convert(d):
+        if isinstance(d, dict): return {k: recursive_convert(v) for k, v in d.items()}
+        if isinstance(d, list): return [recursive_convert(x) for x in d]
+        return convert(d)
+    results = recursive_convert(results)
+    with open(out_path, 'w') as f:
+        json.dump(results, f, indent=2, default=convert)
+    print(f"\nResults saved to {out_path}")
 
 if __name__ == "__main__":
     main()

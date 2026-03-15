@@ -6166,4 +6166,25 @@ We analyze how the corruption detection signal distributes across image and text
 
 \textbf{Finding 771}: \textbf{50\% of the total detection signal is carried by just 37\% of tokens.} The signal is moderately concentrated (Gini=0.20), distributed across many image tokens rather than concentrated in a few. The maximum single-token distance (0.67 for blur) is only 0.19\% of the total sum, confirming robust, distributed signal representation.
 
+\subsection{Experiment 330: Calibration Robustness}
+
+We test the detector's sensitivity to calibration quality: corrupted calibration images, scene drift, random reference points, and multi-scene centroids.
+
+\textbf{Setup.} We calibrate with intentionally corrupted images (fog/noise/blur at 0.01--0.2 severity), measure drift tolerance from 0--50\%, compare random reference points, and evaluate multi-scene centroids with $n=1$--$8$ scenes.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig339_calrobust.png}
+\caption{\textbf{Figure~339: Calibration robustness.} (A)~Fog/noise calibration robust to 20\% corruption; blur at 20\% fails. (B)~Scene drift tolerated up to $\sim$35\%. (C)~Random references fail; per-scene calibration essential. (D)~Multi-scene centroid AUROC=1.0 at all sizes.}
+\label{fig:calrobust}
+\end{figure}
+
+\textbf{Finding 772}: \textbf{Calibrating with 20\% blur corruption destroys detection (AUROC=0.5), but fog/noise calibration is robust to 20\%.} Blur at 20\% shifts the calibration embedding far enough that it overlaps with some OOD samples. This establishes a critical deployment requirement: \emph{the calibration image must be clean}. A corrupted calibration image is a single point of failure.
+
+\textbf{Finding 773}: \textbf{Detection tolerates up to $\sim$35\% scene drift.} As the scene gradually changes (random pixel perturbation), the detection margin decreases from $9.4 \times 10^{-4}$ at 0\% to $4.6 \times 10^{-4}$ at 20\% to $-6.9 \times 10^{-4}$ at 50\%. This provides a quantitative bound on recalibration frequency: the detector can tolerate moderate scene evolution but requires recalibration after substantial changes.
+
+\textbf{Finding 774}: \textbf{Random reference points fail (AUROC=0.25--0.75).} A random 4096D vector produces near-chance detection. The clean embedding encodes scene-specific information; no arbitrary point can substitute. This confirms that the zero-variance property is a feature of the \emph{correct} reference point, not of any reference point.
+
+\textbf{Finding 775}: \textbf{Multi-scene centroid achieves AUROC=1.0 for $n=1$ to $n=8$.} Averaging embeddings from multiple scenes still enables perfect detection as long as test-time distances are measured from the centroid. The key requirement is scene-matched calibration, not the number of calibration samples.
+
 \end{document}
