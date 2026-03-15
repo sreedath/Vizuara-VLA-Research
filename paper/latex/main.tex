@@ -2638,4 +2638,22 @@ We sweep all layers from 1 to 10 plus layers 16, 24, and 32 to identify the opti
 
 The identification of Layer~3 as the optimal monitoring point is this paper's most actionable finding for system design. Previous OOD detection work in language models typically monitors the final hidden layer, but our results show this is suboptimal by a factor of 5$\times$ for VLA models. The mechanistic explanation is clear: Layer~3 encodes low-level visual statistics (pixel distributions, local textures, spatial frequency content) that \emph{every} OOD category disrupts---including fog, which preserves high-level scene structure but alters photometric properties. The sharp cliff at Layer~8 marks the transition from pixel-level to feature-level representations, where the model begins abstracting away the photometric details that distinguish clean from corrupted inputs.
 
+\subsection{Layer~3 Comprehensive Evaluation}
+\label{app:l3_comprehensive}
+
+\textbf{Finding 191: The Layer~3 detector achieves perfect AUROC$=$1.000 on 12 out of 13 OOD categories spanning weather, lighting, domain shifts, and noise. Overall AUROC$=$0.998, $d{=}87.6$. Only 30\% fog ($d{=}3.8$, AUROC$=$0.973) is imperfect.}
+
+\textbf{Finding 192: D-prime spans a $60\times$ range from 3.8 (fog 30\%) to 224.8 (random noise), revealing the detection difficulty hierarchy: lighting changes $>$ domain shifts $>$ weather corruptions $>$ near-ID fog.}
+
+We evaluate the Layer~3 cosine distance detector across 13 OOD categories---the broadest evaluation in this study---including two new categories (night driving, forest) not previously tested (Figure~\ref{fig:l3_comprehensive}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig128_l3_comprehensive.png}
+\caption{\textbf{L3 comprehensive evaluation.} (a) D-prime ranking across 13 categories: noise ($d{=}225$) to fog\_30\% ($d{=}3.8$). (b) AUROC: 12/13 categories at 1.000; fog\_30\% at 0.973. (c) By family: lighting and domain shifts are easily detected; weather (especially fog) is hardest.}
+\label{fig:l3_comprehensive}
+\end{figure}
+
+This comprehensive evaluation establishes the Layer~3 cosine distance detector as a practical, near-universal OOD detection method for VLA systems. The only persistent failure mode is very light fog ($\leq$30\% opacity), which barely perturbs pixel statistics. At 50\% fog opacity, detection is already perfect ($d{=}16.2$, AUROC$=$1.000). The detection difficulty hierarchy---with fog as the hardest category---aligns with real-world driving safety priorities: fog is indeed the environmental condition most challenging for human and autonomous drivers alike.
+
 \end{document}

@@ -6293,3 +6293,50 @@ Given that L3 outperforms L32 (Exp 140), which exact layer is optimal? We sweep 
 5. **The d-prime profile follows a U-shape with asymmetry**: Early peak (L3=175.2), mid-layer valley (L8-16≈35-40), late partial recovery (L24-32≈35-55). The early peak is 3× higher than the late recovery.
 
 6. **Mechanistic explanation**: Layers 1-7 capture low-level visual statistics (pixel distributions, textures, edges) that every OOD category — including fog — disrupts. Layers 8-16 begin abstracting to mid-level features where fog's structural preservation creates overlap. Layers 24-32 encode high-level semantics that separate domains but miss photometric changes.
+
+---
+
+## Finding 136: L3 Comprehensive OOD Detection (Experiment 142)
+
+### Research Question
+How well does the Layer 3 detector perform across the broadest set of OOD categories, including weather (fog/rain/snow), lighting (twilight/night), domain shifts (indoor/underwater/desert/forest/construction), and noise?
+
+### Setup
+- **Model**: OpenVLA-7B (bfloat16, NVIDIA A40), **Layer 3**
+- **ID**: 30 images (15 highway + 15 urban)
+- **OOD**: 13 categories × 15 images = 195 OOD images
+- **Categories**: noise, indoor, twilight, snow, fog_30%, fog_50%, fog_70%, rain, construction, underwater, desert, night, forest
+
+### Results (Ranked by D-prime)
+
+| Category | AUROC | D-prime | Gap |
+|----------|-------|---------|-----|
+| noise | 1.000 | 224.8 | +0.0037 |
+| rain | 1.000 | 156.5 | +0.0021 |
+| night | 1.000 | 141.7 | +0.0024 |
+| underwater | 1.000 | 141.3 | +0.0024 |
+| twilight | 1.000 | 118.9 | +0.0019 |
+| indoor | 1.000 | 94.7 | +0.0016 |
+| snow | 1.000 | 79.7 | +0.0014 |
+| forest | 1.000 | 74.1 | +0.0012 |
+| desert | 1.000 | 38.1 | +0.0006 |
+| fog_70% | 1.000 | 29.1 | +0.0004 |
+| construction | 1.000 | 19.6 | +0.0003 |
+| fog_50% | 1.000 | 16.2 | +0.0002 |
+| **fog_30%** | **0.973** | **3.8** | **-0.00003** |
+
+**Overall: AUROC=0.998, d=87.6**
+
+### Key Insights
+
+1. **12 out of 13 categories perfectly detected**: Only fog_30% falls below AUROC=1.000. All other categories — including difficult weather and lighting conditions — are perfectly separated.
+
+2. **D-prime ranges over 60×**: From 3.8 (fog_30%) to 224.8 (noise). The range reflects the diversity of visual corruption that different OOD categories impose.
+
+3. **Fog_30% is the only remaining challenge**: At d=3.8 and AUROC=0.973, light fog represents the boundary of detection capability. This is because 30% fog barely changes pixel statistics.
+
+4. **Category families**: Extreme (noise: d=225) > Lighting (twilight/night: d≈130) > Domain (indoor/underwater/forest: d≈70-140) > Weather (rain/fog/snow: d≈4-157).
+
+5. **Rain is much easier than fog (d=157 vs d=16)**: Rain darkens the scene and adds high-frequency streaks, which are very detectable at L3. Fog only reduces contrast uniformly.
+
+6. **Construction is surprisingly detectable (d=19.6)**: Despite sharing the road structure with ID scenes, the orange barriers provide distinctive pixel-level features that L3 captures.
