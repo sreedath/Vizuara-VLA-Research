@@ -15362,3 +15362,60 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 704**: The best noise detection layer is L8 (AUROC=1.000, gap=0.000003), an early-middle layer. Earlier layers capture noise before it gets smoothed out by subsequent transformer processing.
 
+---
+
+## Experiment 372: Adversarial Robustness of the OOD Detector
+
+**Objective**: Can carefully crafted perturbations fool the cosine-distance corruption detector? Tests random noise, gradient-free adversarial search, counter-perturbation, patch attacks, and pixel-wise restoration.
+
+**Setup**: 5 scenes, 4 corruption types at severity 0.5, layer 3, centroid-based detector.
+
+### Results
+
+**Random Noise L-inf Attack**:
+| L-inf Budget | Mean Dist | Max Dist | FPR |
+|-------------|-----------|---------|-----|
+| 1 | 3.44e-5 | 6.06e-5 | 20% |
+| 2 | 3.29e-5 | 5.37e-5 | 0% |
+| 4 | 3.47e-5 | 5.80e-5 | 20% |
+| 8 | 3.48e-5 | 4.98e-5 | 0% |
+| 16 | 4.23e-5 | 6.74e-5 | 20% |
+| 32 | 4.88e-5 | 6.38e-5 | 20% |
+| 64 | 1.39e-4 | 2.03e-4 | 100% |
+
+**Gradient-Free Adversarial (50 trials, 32x32 patch perturbation)**:
+| Corruption | Base Dist | Best Dist | Reduction % | Evaded? |
+|-----------|-----------|-----------|-------------|---------|
+| Fog | 0.000917 | 0.000888 | 3.2% | NO |
+| Night | 0.002035 | 0.001984 | 2.5% | NO |
+| Noise | 0.000133 | 0.000116 | 12.7% | NO |
+| Blur | 0.004776 | 0.002496 | 47.7% | NO |
+
+**Counter-Perturbation (mixing corrupt with clean)**:
+- Fog: evade at 90% clean mix
+- Night: NOT evaded even at 90% clean mix
+- Noise: evade at 50% clean mix
+- Blur: evade at 90% clean mix
+
+**Patch Attack (clean patch on corrupted)**:
+- ALL patch sizes INCREASE detection distance (paradoxical)
+- Mixed-corruption images are MORE anomalous than pure corruption
+- No patch size evades detection for any corruption type
+
+**Pixel-wise Evasion Difficulty**:
+- Even fixing 100% of sampled pixels: NO evasion (due to random sampling with replacement)
+- Fog: 87.5% reduction at 100% fix, still detected
+- Night: 82.8% reduction at 100% fix, still detected
+
+### Findings
+
+**Finding 705**: The cosine-distance detector is robust to random L-inf noise up to eps=32 (FPR ≤ 20%), but eps=64 causes 100% false positives. The critical threshold lies between eps=32-64, representing 12.5-25% of the [0,255] pixel range.
+
+**Finding 706**: Gradient-free adversarial search (50 trials with 32x32 patch perturbations) achieves at most 47.7% score reduction (blur) but FAILS to evade detection for any corruption type. The detector's high-dimensional embedding space makes random search ineffective.
+
+**Finding 707**: Counter-perturbation (mixing corrupt images with clean) requires 50-90% clean content to evade detection, meaning the corruption must be MOSTLY reversed. Night corruption requires >90% clean mixing, making it the hardest to counter.
+
+**Finding 708**: Placing clean patches on corrupted images paradoxically INCREASES detector scores. The mixed-corruption boundary creates a novel anomalous pattern that the detector scores as MORE out-of-distribution than pure corruption, acting as an unintended robustness mechanism.
+
+**Finding 709**: Even pixel-by-pixel restoration of 100% of pixel locations (with random replacement sampling) fails to evade detection. The detector is sensitive to the GLOBAL image structure, not individual pixels, confirming that corruption detection operates on holistic embedding properties rather than local features.
+

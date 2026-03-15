@@ -1,0 +1,558 @@
+{
+  "linf_noise": {
+    "1": {
+      "mean_dist": 3.441572334850207e-05,
+      "max_dist": 6.0558319091796875e-05,
+      "false_positive_rate": 0.2,
+      "exceeds_threshold": true
+    },
+    "2": {
+      "mean_dist": 3.2925607229117304e-05,
+      "max_dist": 5.370378494262695e-05,
+      "false_positive_rate": 0.0,
+      "exceeds_threshold": false
+    },
+    "4": {
+      "mean_dist": 3.4725664590951055e-05,
+      "max_dist": 5.799531936645508e-05,
+      "false_positive_rate": 0.2,
+      "exceeds_threshold": true
+    },
+    "8": {
+      "mean_dist": 3.4821034205378965e-05,
+      "max_dist": 4.976987838745117e-05,
+      "false_positive_rate": 0.0,
+      "exceeds_threshold": false
+    },
+    "16": {
+      "mean_dist": 4.2307376133976504e-05,
+      "max_dist": 6.73532485961914e-05,
+      "false_positive_rate": 0.2,
+      "exceeds_threshold": true
+    },
+    "32": {
+      "mean_dist": 4.881620407104492e-05,
+      "max_dist": 6.383657455444336e-05,
+      "false_positive_rate": 0.2,
+      "exceeds_threshold": true
+    },
+    "64": {
+      "mean_dist": 0.00013935565948486328,
+      "max_dist": 0.0002034306526184082,
+      "false_positive_rate": 1.0,
+      "exceeds_threshold": true
+    }
+  },
+  "adversarial": {
+    "fog_seed0": {
+      "base_dist": 0.0008893013000488281,
+      "best_dist": 0.0008536577224731445,
+      "reduction": 3.5643577575683594e-05,
+      "reduction_pct": 4.008042812347412,
+      "still_detected": true,
+      "n_trials": 50
+    },
+    "fog_seed100": {
+      "base_dist": 0.000946342945098877,
+      "best_dist": 0.0009230971336364746,
+      "reduction": 2.3245811462402344e-05,
+      "reduction_pct": 2.456383466720581,
+      "still_detected": true,
+      "n_trials": 50
+    },
+    "night_seed0": {
+      "base_dist": 0.0019497871398925781,
+      "best_dist": 0.0018974542617797852,
+      "reduction": 5.233287811279297e-05,
+      "reduction_pct": 2.684030294418335,
+      "still_detected": true,
+      "n_trials": 50
+    },
+    "night_seed100": {
+      "base_dist": 0.0021201372146606445,
+      "best_dist": 0.0020706653594970703,
+      "reduction": 4.947185516357422e-05,
+      "reduction_pct": 2.3334269523620605,
+      "still_detected": true,
+      "n_trials": 50
+    },
+    "noise_seed0": {
+      "base_dist": 0.00016033649444580078,
+      "best_dist": 0.00013720989227294922,
+      "reduction": 2.3126602172851562e-05,
+      "reduction_pct": 14.423791885375977,
+      "still_detected": true,
+      "n_trials": 50
+    },
+    "noise_seed100": {
+      "base_dist": 0.00010585784912109375,
+      "best_dist": 9.429454803466797e-05,
+      "reduction": 1.1563301086425781e-05,
+      "reduction_pct": 10.923423767089844,
+      "still_detected": true,
+      "n_trials": 50
+    },
+    "blur_seed0": {
+      "base_dist": 0.004582583904266357,
+      "best_dist": 0.002495110034942627,
+      "reduction": 0.0020874738693237305,
+      "reduction_pct": 45.55233383178711,
+      "still_detected": true,
+      "n_trials": 50
+    },
+    "blur_seed100": {
+      "base_dist": 0.0049697160720825195,
+      "best_dist": 0.002497255802154541,
+      "reduction": 0.0024724602699279785,
+      "reduction_pct": 49.75053405761719,
+      "still_detected": true,
+      "n_trials": 50
+    }
+  },
+  "counter_perturbation": {
+    "fog_mix0.1": {
+      "mix_ratio": 0.1,
+      "dist": 0.0007247328758239746,
+      "detected": true
+    },
+    "fog_mix0.2": {
+      "mix_ratio": 0.2,
+      "dist": 0.0005859136581420898,
+      "detected": true
+    },
+    "fog_mix0.3": {
+      "mix_ratio": 0.3,
+      "dist": 0.0004661679267883301,
+      "detected": true
+    },
+    "fog_mix0.5": {
+      "mix_ratio": 0.5,
+      "dist": 0.00023728609085083008,
+      "detected": true
+    },
+    "fog_mix0.7": {
+      "mix_ratio": 0.7,
+      "dist": 9.85264778137207e-05,
+      "detected": true
+    },
+    "fog_mix0.9": {
+      "mix_ratio": 0.9,
+      "dist": 3.88026237487793e-05,
+      "detected": false
+    },
+    "night_mix0.1": {
+      "mix_ratio": 0.1,
+      "dist": 0.0016553997993469238,
+      "detected": true
+    },
+    "night_mix0.2": {
+      "mix_ratio": 0.2,
+      "dist": 0.0013631582260131836,
+      "detected": true
+    },
+    "night_mix0.3": {
+      "mix_ratio": 0.3,
+      "dist": 0.0010833144187927246,
+      "detected": true
+    },
+    "night_mix0.5": {
+      "mix_ratio": 0.5,
+      "dist": 0.0005799531936645508,
+      "detected": true
+    },
+    "night_mix0.7": {
+      "mix_ratio": 0.7,
+      "dist": 0.0002517104148864746,
+      "detected": true
+    },
+    "night_mix0.9": {
+      "mix_ratio": 0.9,
+      "dist": 6.854534149169922e-05,
+      "detected": true
+    },
+    "noise_mix0.1": {
+      "mix_ratio": 0.1,
+      "dist": 0.00012111663818359375,
+      "detected": true
+    },
+    "noise_mix0.2": {
+      "mix_ratio": 0.2,
+      "dist": 0.00010085105895996094,
+      "detected": true
+    },
+    "noise_mix0.3": {
+      "mix_ratio": 0.3,
+      "dist": 7.241964340209961e-05,
+      "detected": true
+    },
+    "noise_mix0.5": {
+      "mix_ratio": 0.5,
+      "dist": 3.814697265625e-05,
+      "detected": false
+    },
+    "noise_mix0.7": {
+      "mix_ratio": 0.7,
+      "dist": 3.5881996154785156e-05,
+      "detected": false
+    },
+    "noise_mix0.9": {
+      "mix_ratio": 0.9,
+      "dist": 3.6597251892089844e-05,
+      "detected": false
+    },
+    "blur_mix0.1": {
+      "mix_ratio": 0.1,
+      "dist": 0.0031836628913879395,
+      "detected": true
+    },
+    "blur_mix0.2": {
+      "mix_ratio": 0.2,
+      "dist": 0.0019344687461853027,
+      "detected": true
+    },
+    "blur_mix0.3": {
+      "mix_ratio": 0.3,
+      "dist": 0.0009951591491699219,
+      "detected": true
+    },
+    "blur_mix0.5": {
+      "mix_ratio": 0.5,
+      "dist": 0.00027424097061157227,
+      "detected": true
+    },
+    "blur_mix0.7": {
+      "mix_ratio": 0.7,
+      "dist": 9.21487808227539e-05,
+      "detected": true
+    },
+    "blur_mix0.9": {
+      "mix_ratio": 0.9,
+      "dist": 4.178285598754883e-05,
+      "detected": false
+    }
+  },
+  "patch_attack": {
+    "fog_patch16": {
+      "patch_size": 16,
+      "patch_area_pct": 0.5102040816326531,
+      "dist": 0.003122568130493164,
+      "base_dist": 0.0008893013000488281,
+      "reduction_pct": -251.12600708007812,
+      "evaded": false
+    },
+    "fog_patch32": {
+      "patch_size": 32,
+      "patch_area_pct": 2.0408163265306123,
+      "dist": 0.0015824437141418457,
+      "base_dist": 0.0008893013000488281,
+      "reduction_pct": -77.9423599243164,
+      "evaded": false
+    },
+    "fog_patch64": {
+      "patch_size": 64,
+      "patch_area_pct": 8.16326530612245,
+      "dist": 0.001807570457458496,
+      "base_dist": 0.0008893013000488281,
+      "reduction_pct": -103.25736999511719,
+      "evaded": false
+    },
+    "fog_patch112": {
+      "patch_size": 112,
+      "patch_area_pct": 25.0,
+      "dist": 0.001901388168334961,
+      "base_dist": 0.0008893013000488281,
+      "reduction_pct": -113.80697631835938,
+      "evaded": false
+    },
+    "night_patch16": {
+      "patch_size": 16,
+      "patch_area_pct": 0.5102040816326531,
+      "dist": 0.004004776477813721,
+      "base_dist": 0.0019497871398925781,
+      "reduction_pct": -105.39557647705078,
+      "evaded": false
+    },
+    "night_patch32": {
+      "patch_size": 32,
+      "patch_area_pct": 2.0408163265306123,
+      "dist": 0.0030705928802490234,
+      "base_dist": 0.0019497871398925781,
+      "reduction_pct": -57.48349380493164,
+      "evaded": false
+    },
+    "night_patch64": {
+      "patch_size": 64,
+      "patch_area_pct": 8.16326530612245,
+      "dist": 0.0030045509338378906,
+      "base_dist": 0.0019497871398925781,
+      "reduction_pct": -54.09635925292969,
+      "evaded": false
+    },
+    "night_patch112": {
+      "patch_size": 112,
+      "patch_area_pct": 25.0,
+      "dist": 0.002120375633239746,
+      "base_dist": 0.0019497871398925781,
+      "reduction_pct": -8.749082565307617,
+      "evaded": false
+    },
+    "noise_patch16": {
+      "patch_size": 16,
+      "patch_area_pct": 0.5102040816326531,
+      "dist": 0.0001423358917236328,
+      "base_dist": 0.00016033649444580078,
+      "reduction_pct": 11.226765632629395,
+      "evaded": false
+    },
+    "noise_patch32": {
+      "patch_size": 32,
+      "patch_area_pct": 2.0408163265306123,
+      "dist": 0.0002576112747192383,
+      "base_dist": 0.00016033649444580078,
+      "reduction_pct": -60.66914367675781,
+      "evaded": false
+    },
+    "noise_patch64": {
+      "patch_size": 64,
+      "patch_area_pct": 8.16326530612245,
+      "dist": 0.0006944537162780762,
+      "base_dist": 0.00016033649444580078,
+      "reduction_pct": -333.1226806640625,
+      "evaded": false
+    },
+    "noise_patch112": {
+      "patch_size": 112,
+      "patch_area_pct": 25.0,
+      "dist": 0.0006767511367797852,
+      "base_dist": 0.00016033649444580078,
+      "reduction_pct": -322.081787109375,
+      "evaded": false
+    },
+    "blur_patch16": {
+      "patch_size": 16,
+      "patch_area_pct": 0.5102040816326531,
+      "dist": 0.0029007792472839355,
+      "base_dist": 0.004582583904266357,
+      "reduction_pct": 36.699920654296875,
+      "evaded": false
+    },
+    "blur_patch32": {
+      "patch_size": 32,
+      "patch_area_pct": 2.0408163265306123,
+      "dist": 0.0034117698669433594,
+      "base_dist": 0.004582583904266357,
+      "reduction_pct": 25.549211502075195,
+      "evaded": false
+    },
+    "blur_patch64": {
+      "patch_size": 64,
+      "patch_area_pct": 8.16326530612245,
+      "dist": 0.004441440105438232,
+      "base_dist": 0.004582583904266357,
+      "reduction_pct": 3.0800046920776367,
+      "evaded": false
+    },
+    "blur_patch112": {
+      "patch_size": 112,
+      "patch_area_pct": 25.0,
+      "dist": 0.002650618553161621,
+      "base_dist": 0.004582583904266357,
+      "reduction_pct": 42.15886688232422,
+      "evaded": false
+    }
+  },
+  "evasion_difficulty": {
+    "fog_frac0.01": {
+      "fraction_fixed": 0.01,
+      "dist": 0.0008061528205871582,
+      "base_dist": 0.0008893013000488281,
+      "evaded": false
+    },
+    "fog_frac0.05": {
+      "fraction_fixed": 0.05,
+      "dist": 0.000682830810546875,
+      "base_dist": 0.0008893013000488281,
+      "evaded": false
+    },
+    "fog_frac0.1": {
+      "fraction_fixed": 0.1,
+      "dist": 0.0005741119384765625,
+      "base_dist": 0.0008893013000488281,
+      "evaded": false
+    },
+    "fog_frac0.2": {
+      "fraction_fixed": 0.2,
+      "dist": 0.00047093629837036133,
+      "base_dist": 0.0008893013000488281,
+      "evaded": false
+    },
+    "fog_frac0.3": {
+      "fraction_fixed": 0.3,
+      "dist": 0.0004181861877441406,
+      "base_dist": 0.0008893013000488281,
+      "evaded": false
+    },
+    "fog_frac0.5": {
+      "fraction_fixed": 0.5,
+      "dist": 0.00026291608810424805,
+      "base_dist": 0.0008893013000488281,
+      "evaded": false
+    },
+    "fog_frac0.75": {
+      "fraction_fixed": 0.75,
+      "dist": 0.00020247697830200195,
+      "base_dist": 0.0008893013000488281,
+      "evaded": false
+    },
+    "fog_frac1.0": {
+      "fraction_fixed": 1.0,
+      "dist": 0.00011134147644042969,
+      "base_dist": 0.0008893013000488281,
+      "evaded": false
+    },
+    "night_frac0.01": {
+      "fraction_fixed": 0.01,
+      "dist": 0.002617061138153076,
+      "base_dist": 0.0019497871398925781,
+      "evaded": false
+    },
+    "night_frac0.05": {
+      "fraction_fixed": 0.05,
+      "dist": 0.0022750496864318848,
+      "base_dist": 0.0019497871398925781,
+      "evaded": false
+    },
+    "night_frac0.1": {
+      "fraction_fixed": 0.1,
+      "dist": 0.0021175146102905273,
+      "base_dist": 0.0019497871398925781,
+      "evaded": false
+    },
+    "night_frac0.2": {
+      "fraction_fixed": 0.2,
+      "dist": 0.001376509666442871,
+      "base_dist": 0.0019497871398925781,
+      "evaded": false
+    },
+    "night_frac0.3": {
+      "fraction_fixed": 0.3,
+      "dist": 0.0010377168655395508,
+      "base_dist": 0.0019497871398925781,
+      "evaded": false
+    },
+    "night_frac0.5": {
+      "fraction_fixed": 0.5,
+      "dist": 0.0007209181785583496,
+      "base_dist": 0.0019497871398925781,
+      "evaded": false
+    },
+    "night_frac0.75": {
+      "fraction_fixed": 0.75,
+      "dist": 0.0004876852035522461,
+      "base_dist": 0.0019497871398925781,
+      "evaded": false
+    },
+    "night_frac1.0": {
+      "fraction_fixed": 1.0,
+      "dist": 0.0003351569175720215,
+      "base_dist": 0.0019497871398925781,
+      "evaded": false
+    },
+    "noise_frac0.01": {
+      "fraction_fixed": 0.01,
+      "dist": 0.00014078617095947266,
+      "base_dist": 0.00016033649444580078,
+      "evaded": false
+    },
+    "noise_frac0.05": {
+      "fraction_fixed": 0.05,
+      "dist": 0.00016224384307861328,
+      "base_dist": 0.00016033649444580078,
+      "evaded": false
+    },
+    "noise_frac0.1": {
+      "fraction_fixed": 0.1,
+      "dist": 0.00013190507888793945,
+      "base_dist": 0.00016033649444580078,
+      "evaded": false
+    },
+    "noise_frac0.2": {
+      "fraction_fixed": 0.2,
+      "dist": 0.0001564621925354004,
+      "base_dist": 0.00016033649444580078,
+      "evaded": false
+    },
+    "noise_frac0.3": {
+      "fraction_fixed": 0.3,
+      "dist": 0.00015169382095336914,
+      "base_dist": 0.00016033649444580078,
+      "evaded": false
+    },
+    "noise_frac0.5": {
+      "fraction_fixed": 0.5,
+      "dist": 9.483098983764648e-05,
+      "base_dist": 0.00016033649444580078,
+      "evaded": false
+    },
+    "noise_frac0.75": {
+      "fraction_fixed": 0.75,
+      "dist": 9.292364120483398e-05,
+      "base_dist": 0.00016033649444580078,
+      "evaded": false
+    },
+    "noise_frac1.0": {
+      "fraction_fixed": 1.0,
+      "dist": 8.90493392944336e-05,
+      "base_dist": 0.00016033649444580078,
+      "evaded": false
+    },
+    "blur_frac0.01": {
+      "fraction_fixed": 0.01,
+      "dist": 0.0014952421188354492,
+      "base_dist": 0.004582583904266357,
+      "evaded": false
+    },
+    "blur_frac0.05": {
+      "fraction_fixed": 0.05,
+      "dist": 0.0009056329727172852,
+      "base_dist": 0.004582583904266357,
+      "evaded": false
+    },
+    "blur_frac0.1": {
+      "fraction_fixed": 0.1,
+      "dist": 0.0007321834564208984,
+      "base_dist": 0.004582583904266357,
+      "evaded": false
+    },
+    "blur_frac0.2": {
+      "fraction_fixed": 0.2,
+      "dist": 0.00043445825576782227,
+      "base_dist": 0.004582583904266357,
+      "evaded": false
+    },
+    "blur_frac0.3": {
+      "fraction_fixed": 0.3,
+      "dist": 0.00023108720779418945,
+      "base_dist": 0.004582583904266357,
+      "evaded": false
+    },
+    "blur_frac0.5": {
+      "fraction_fixed": 0.5,
+      "dist": 0.00012427568435668945,
+      "base_dist": 0.004582583904266357,
+      "evaded": false
+    },
+    "blur_frac0.75": {
+      "fraction_fixed": 0.75,
+      "dist": 9.202957153320312e-05,
+      "base_dist": 0.004582583904266357,
+      "evaded": false
+    },
+    "blur_frac1.0": {
+      "fraction_fixed": 1.0,
+      "dist": 8.511543273925781e-05,
+      "base_dist": 0.004582583904266357,
+      "evaded": false
+    }
+  }
+}

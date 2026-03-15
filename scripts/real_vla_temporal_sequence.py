@@ -1,185 +1,332 @@
-"""
-Temporal Consistency under Sequential Inputs.
+#!/usr/bin/env python3
+"""Experiment 373: Temporal Sequence Detection Analysis
 
-Simulates a driving sequence with gradual OOD transition — starting
-from clear highway, smoothly interpolating to an OOD scene, and
-measuring how the detector responds frame-by-frame. Tests whether
-the detector produces smooth, predictable score trajectories.
-
-Experiment 121 in the CalibDrive series.
+How does the detector behave when corruptions appear/disappear over time?
+1. Sudden onset: clean→corrupt transition detection latency
+2. Gradual onset: slow corruption ramp detection threshold
+3. Intermittent corruption: flickering corruption pattern
+4. Recovery dynamics: corrupt→clean transition
+5. Sequence-level statistics: running average, CUSUM, EMA detectors
 """
-import os
-import json
-import datetime
+
+import json, time, os, sys
 import numpy as np
 import torch
-from PIL import Image
-from sklearn.metrics import roc_auc_score
+from PIL import Image, ImageFilter
+from transformers import AutoModelForVision2Seq, AutoProcessor
 
-RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
-os.makedirs(RESULTS_DIR, exist_ok=True)
-SIZE = (256, 256)
-
-
-def create_highway(idx):
-    rng = np.random.default_rng(idx * 15001)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]
-    img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_noise(idx):
-    rng = np.random.default_rng(idx * 15003)
-    return rng.integers(0, 256, (*SIZE, 3), dtype=np.uint8)
-
-def create_indoor(idx):
-    rng = np.random.default_rng(idx * 15004)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:] = [200, 180, 160]
-    img[SIZE[0]//2:, :] = [100, 80, 60]
-    img[:SIZE[0]//3, SIZE[1]//3:2*SIZE[1]//3] = [150, 200, 255]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-
-def extract_hidden(model, processor, image, prompt):
+def extract_hidden(model, processor, image, prompt, layer=3):
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
     with torch.no_grad():
         fwd = model(**inputs, output_hidden_states=True)
-    if not hasattr(fwd, 'hidden_states') or not fwd.hidden_states:
-        return None
-    return fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
+    return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
 
+def apply_corruption(image, ctype, severity=1.0):
+    arr = np.array(image).astype(np.float32) / 255.0
+    if ctype == 'fog':
+        arr = arr * (1 - 0.6 * severity) + 0.6 * severity
+    elif ctype == 'night':
+        arr = arr * max(0.01, 1.0 - 0.95 * severity)
+    elif ctype == 'noise':
+        arr = arr + np.random.RandomState(42).randn(*arr.shape) * 0.3 * severity
+        arr = np.clip(arr, 0, 1)
+    elif ctype == 'blur':
+        return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
+    return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
 def cosine_dist(a, b):
-    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
-
+    dot = np.dot(a, b)
+    na, nb = np.linalg.norm(a), np.linalg.norm(b)
+    if na < 1e-10 or nb < 1e-10:
+        return 0.0
+    return 1.0 - dot / (na * nb)
 
 def main():
-    print("=" * 70, flush=True)
-    print("TEMPORAL SEQUENCE ANALYSIS", flush=True)
-    print("=" * 70, flush=True)
-
-    from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading model...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
-        device_map="auto", trust_remote_code=True,
-    )
-    processor = AutoProcessor.from_pretrained(
-        "openvla/openvla-7b", trust_remote_code=True,
-    )
+        device_map="auto", trust_remote_code=True)
+    processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
-    print("Model loaded.", flush=True)
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
+    prompt = "In: What action should the robot take to pick up the object?\nOut:"
+    results = {}
+    ctypes = ['fog', 'night', 'noise', 'blur']
 
-    # Build calibration centroid
-    print("\n--- Calibrating ---", flush=True)
-    cal_embeds = []
-    for i in range(10):
-        h = extract_hidden(model, processor, Image.fromarray(create_highway(i + 2200)), prompt)
-        if h is not None:
-            cal_embeds.append(h)
-    centroid = np.mean(cal_embeds, axis=0)
-    print(f"  Calibration: {len(cal_embeds)} samples", flush=True)
+    # Generate test images
+    print("Generating images...")
+    seeds = list(range(0, 500, 100))[:5]
+    images = {}
+    clean_embs = {}
+    for seed in seeds:
+        rng = np.random.RandomState(seed)
+        px = rng.randint(50, 200, (224, 224, 3), dtype=np.uint8)
+        images[seed] = Image.fromarray(px)
+        clean_embs[seed] = extract_hidden(model, processor, images[seed], prompt)
 
-    # Sequence 1: Highway → Noise (smooth interpolation)
-    print("\n--- Sequence: Highway → Noise ---", flush=True)
-    base_highway = create_highway(9999)
-    base_noise = create_noise(9999)
-    alphas = np.linspace(0, 1, 21)  # 0%, 5%, ..., 100% noise
-    seq1_results = []
-    for alpha in alphas:
-        blended = np.clip(
-            (1 - alpha) * base_highway.astype(float) + alpha * base_noise.astype(float),
-            0, 255
-        ).astype(np.uint8)
-        h = extract_hidden(model, processor, Image.fromarray(blended), prompt)
-        if h is not None:
-            score = cosine_dist(h, centroid)
-            seq1_results.append({'alpha': float(alpha), 'score': score})
-            print(f"  alpha={alpha:.2f}: score={score:.4f}", flush=True)
+    centroid = np.mean(list(clean_embs.values()), axis=0)
+    clean_dists = [cosine_dist(centroid, clean_embs[s]) for s in seeds]
+    threshold = max(clean_dists)
+    print(f"  Detection threshold: {threshold:.6f}")
 
-    # Sequence 2: Highway → Indoor (smooth interpolation)
-    print("\n--- Sequence: Highway → Indoor ---", flush=True)
-    base_indoor = create_indoor(9999)
-    seq2_results = []
-    for alpha in alphas:
-        blended = np.clip(
-            (1 - alpha) * base_highway.astype(float) + alpha * base_indoor.astype(float),
-            0, 255
-        ).astype(np.uint8)
-        h = extract_hidden(model, processor, Image.fromarray(blended), prompt)
-        if h is not None:
-            score = cosine_dist(h, centroid)
-            seq2_results.append({'alpha': float(alpha), 'score': score})
-            print(f"  alpha={alpha:.2f}: score={score:.4f}", flush=True)
+    # ========== 1. Sudden Onset: Clean→Corrupt Transition ==========
+    print("\n=== Sudden Onset Detection ===")
 
-    # Sequence 3: Sudden transition (highway, highway, ..., noise, noise, ...)
-    print("\n--- Sequence: Sudden transition ---", flush=True)
-    seq3_results = []
-    for i in range(20):
-        if i < 10:
-            img = create_highway(i + 3000)
-            label = 'highway'
-        else:
-            img = create_noise(i + 3000)
-            label = 'noise'
-        h = extract_hidden(model, processor, Image.fromarray(img), prompt)
-        if h is not None:
-            score = cosine_dist(h, centroid)
-            seq3_results.append({'frame': i, 'label': label, 'score': score})
-            print(f"  frame={i} ({label}): score={score:.4f}", flush=True)
+    sudden_onset = {}
+    for ct in ctypes:
+        for seed in seeds[:3]:
+            sequence_dists = []
+            sequence_labels = []
 
-    # Sequence 4: Oscillating (highway, noise, highway, noise, ...)
-    print("\n--- Sequence: Oscillating ---", flush=True)
-    seq4_results = []
-    for i in range(20):
-        if i % 2 == 0:
-            img = create_highway(i + 4000)
-            label = 'highway'
-        else:
-            img = create_noise(i + 4000)
-            label = 'noise'
-        h = extract_hidden(model, processor, Image.fromarray(img), prompt)
-        if h is not None:
-            score = cosine_dist(h, centroid)
-            seq4_results.append({'frame': i, 'label': label, 'score': score})
-            print(f"  frame={i} ({label}): score={score:.4f}", flush=True)
+            for t in range(10):
+                if t < 5:
+                    emb = clean_embs[seed]
+                    sequence_labels.append('clean')
+                else:
+                    corrupt_img = apply_corruption(images[seed], ct, 0.5)
+                    emb = extract_hidden(model, processor, corrupt_img, prompt)
+                    sequence_labels.append('corrupt')
 
-    # Analyze score smoothness
-    print("\n--- Score Smoothness ---", flush=True)
-    for seq_name, seq_data in [('highway_to_noise', seq1_results),
-                                ('highway_to_indoor', seq2_results)]:
-        scores = [d['score'] for d in seq_data]
-        diffs = np.diff(scores)
-        monotonicity = np.sum(diffs > 0) / len(diffs)
-        max_jump = float(np.max(np.abs(diffs)))
-        mean_step = float(np.mean(np.abs(diffs)))
-        print(f"  {seq_name}: monotonicity={monotonicity:.2f}, max_jump={max_jump:.4f}, "
-              f"mean_step={mean_step:.4f}", flush=True)
+                d = cosine_dist(emb, centroid)
+                sequence_dists.append(d)
+
+            onset_frame = 5
+            detection_frame = None
+            for t in range(onset_frame, len(sequence_dists)):
+                if sequence_dists[t] > threshold:
+                    detection_frame = t
+                    break
+
+            latency = (detection_frame - onset_frame) if detection_frame is not None else -1
+
+            key = f"{ct}_seed{seed}"
+            sudden_onset[key] = {
+                'sequence_dists': [float(d) for d in sequence_dists],
+                'onset_frame': onset_frame,
+                'detection_frame': detection_frame,
+                'detection_latency': latency,
+                'clean_mean_dist': float(np.mean(sequence_dists[:5])),
+                'corrupt_mean_dist': float(np.mean(sequence_dists[5:])),
+                'jump_ratio': float(np.mean(sequence_dists[5:]) / max(np.mean(sequence_dists[:5]), 1e-10)),
+            }
+            print(f"  {ct}_s{seed}: latency={latency} frames, "
+                  f"jump_ratio={sudden_onset[key]['jump_ratio']:.2f}x")
+
+    results['sudden_onset'] = sudden_onset
+
+    # ========== 2. Gradual Onset: Slow Corruption Ramp ==========
+    print("\n=== Gradual Onset (Severity Ramp) ===")
+
+    gradual_onset = {}
+    for ct in ctypes:
+        seed = seeds[0]
+        severities = np.linspace(0, 1.0, 20)
+        ramp_dists = []
+        ramp_detected = []
+
+        for sev in severities:
+            if sev == 0:
+                emb = clean_embs[seed]
+            else:
+                corrupt_img = apply_corruption(images[seed], ct, sev)
+                emb = extract_hidden(model, processor, corrupt_img, prompt)
+            d = cosine_dist(emb, centroid)
+            ramp_dists.append(d)
+            ramp_detected.append(d > threshold)
+
+        detection_severity = None
+        for i, sev in enumerate(severities):
+            if ramp_detected[i]:
+                detection_severity = float(sev)
+                break
+
+        gradual_onset[ct] = {
+            'severities': [float(s) for s in severities],
+            'distances': [float(d) for d in ramp_dists],
+            'detected': [bool(d) for d in ramp_detected],
+            'detection_severity': detection_severity,
+            'max_dist': float(max(ramp_dists)),
+            'monotonic': all(ramp_dists[i] <= ramp_dists[i+1] for i in range(len(ramp_dists)-1)),
+        }
+        print(f"  {ct}: detection_severity={detection_severity}, "
+              f"monotonic={gradual_onset[ct]['monotonic']}, max_dist={max(ramp_dists):.6f}")
+
+    results['gradual_onset'] = gradual_onset
+
+    # ========== 3. Intermittent Corruption (Flickering) ==========
+    print("\n=== Intermittent Corruption ===")
+
+    intermittent = {}
+    for ct in ctypes:
+        seed = seeds[0]
+        pattern_dists = []
+        pattern_labels = []
+
+        for t in range(20):
+            if t % 2 == 0:
+                emb = clean_embs[seed]
+                pattern_labels.append('clean')
+            else:
+                corrupt_img = apply_corruption(images[seed], ct, 0.5)
+                emb = extract_hidden(model, processor, corrupt_img, prompt)
+                pattern_labels.append('corrupt')
+            d = cosine_dist(emb, centroid)
+            pattern_dists.append(d)
+
+        clean_frames = [pattern_dists[t] for t in range(20) if t % 2 == 0]
+        corrupt_frames = [pattern_dists[t] for t in range(20) if t % 2 == 1]
+
+        # Running average detector (window=3)
+        running_avg = []
+        for t in range(len(pattern_dists)):
+            window = pattern_dists[max(0, t-2):t+1]
+            running_avg.append(float(np.mean(window)))
+
+        # CUSUM detector
+        cusum = [0.0]
+        cusum_threshold = threshold * 2
+        cusum_detections = []
+        for t in range(1, len(pattern_dists)):
+            s = max(0, cusum[-1] + (pattern_dists[t] - threshold))
+            cusum.append(s)
+            if s > cusum_threshold:
+                cusum_detections.append(t)
+
+        intermittent[ct] = {
+            'pattern_dists': [float(d) for d in pattern_dists],
+            'clean_frame_mean': float(np.mean(clean_frames)),
+            'corrupt_frame_mean': float(np.mean(corrupt_frames)),
+            'running_avg': running_avg,
+            'running_avg_detections': sum(1 for r in running_avg if r > threshold),
+            'cusum_values': [float(c) for c in cusum],
+            'cusum_detections': cusum_detections,
+            'instant_detection_rate': sum(1 for d in corrupt_frames if d > threshold) / len(corrupt_frames),
+        }
+        print(f"  {ct}: instant_det_rate={intermittent[ct]['instant_detection_rate']:.2f}, "
+              f"running_avg_dets={intermittent[ct]['running_avg_detections']}/20, "
+              f"cusum_dets={len(cusum_detections)}")
+
+    results['intermittent'] = intermittent
+
+    # ========== 4. Recovery Dynamics: Corrupt→Clean Transition ==========
+    print("\n=== Recovery Dynamics ===")
+
+    recovery = {}
+    for ct in ctypes:
+        for seed in seeds[:3]:
+            sequence_dists = []
+            for t in range(10):
+                if t < 5:
+                    corrupt_img = apply_corruption(images[seed], ct, 0.5)
+                    emb = extract_hidden(model, processor, corrupt_img, prompt)
+                else:
+                    emb = clean_embs[seed]
+                d = cosine_dist(emb, centroid)
+                sequence_dists.append(d)
+
+            recovery_frame = None
+            for t in range(5, len(sequence_dists)):
+                if sequence_dists[t] <= threshold:
+                    recovery_frame = t
+                    break
+
+            recovery_latency = (recovery_frame - 5) if recovery_frame is not None else -1
+
+            key = f"{ct}_seed{seed}"
+            recovery[key] = {
+                'sequence_dists': [float(d) for d in sequence_dists],
+                'recovery_frame': recovery_frame,
+                'recovery_latency': recovery_latency,
+                'corrupt_mean_dist': float(np.mean(sequence_dists[:5])),
+                'clean_mean_dist': float(np.mean(sequence_dists[5:])),
+            }
+            print(f"  {ct}_s{seed}: recovery_latency={recovery_latency} frames")
+
+    results['recovery'] = recovery
+
+    # ========== 5. Sequence-Level Statistics ==========
+    print("\n=== Sequence-Level Detection Comparison ===")
+
+    seq_stats = {}
+    for ct in ctypes:
+        seed = seeds[0]
+        long_seq_dists = []
+        long_seq_labels = []
+
+        for t in range(30):
+            if t < 10 or t >= 20:
+                emb = clean_embs[seed]
+                long_seq_labels.append('clean')
+            else:
+                corrupt_img = apply_corruption(images[seed], ct, 0.5)
+                emb = extract_hidden(model, processor, corrupt_img, prompt)
+                long_seq_labels.append('corrupt')
+            d = cosine_dist(emb, centroid)
+            long_seq_dists.append(d)
+
+        # Detector 1: Instant threshold
+        instant_tp = sum(1 for t in range(10, 20) if long_seq_dists[t] > threshold)
+        instant_fp = sum(1 for t in list(range(10)) + list(range(20, 30)) if long_seq_dists[t] > threshold)
+
+        # Detector 2: Running average (window=5)
+        running5 = []
+        for t in range(len(long_seq_dists)):
+            window = long_seq_dists[max(0, t-4):t+1]
+            running5.append(float(np.mean(window)))
+        ra5_tp = sum(1 for t in range(10, 20) if running5[t] > threshold)
+        ra5_fp = sum(1 for t in list(range(10)) + list(range(20, 30)) if running5[t] > threshold)
+
+        # Detector 3: CUSUM
+        cusum = [0.0]
+        for t in range(1, len(long_seq_dists)):
+            s = max(0, cusum[-1] + (long_seq_dists[t] - threshold))
+            cusum.append(s)
+        cusum_thresh = threshold * 3
+        cusum_tp = sum(1 for t in range(10, 20) if cusum[t] > cusum_thresh)
+        cusum_fp = sum(1 for t in list(range(10)) + list(range(20, 30)) if cusum[t] > cusum_thresh)
+
+        # Detector 4: Exponential moving average
+        ema = [long_seq_dists[0]]
+        alpha = 0.3
+        for t in range(1, len(long_seq_dists)):
+            ema.append(alpha * long_seq_dists[t] + (1 - alpha) * ema[-1])
+        ema_tp = sum(1 for t in range(10, 20) if ema[t] > threshold)
+        ema_fp = sum(1 for t in list(range(10)) + list(range(20, 30)) if ema[t] > threshold)
+
+        seq_stats[ct] = {
+            'sequence_dists': [float(d) for d in long_seq_dists],
+            'instant': {'tp': instant_tp, 'fp': instant_fp, 'sensitivity': instant_tp / 10, 'specificity': 1 - instant_fp / 20},
+            'running_avg5': {'tp': ra5_tp, 'fp': ra5_fp, 'sensitivity': ra5_tp / 10, 'specificity': 1 - ra5_fp / 20},
+            'cusum': {'tp': cusum_tp, 'fp': cusum_fp, 'sensitivity': cusum_tp / 10, 'specificity': 1 - cusum_fp / 20},
+            'ema': {'tp': ema_tp, 'fp': ema_fp, 'sensitivity': ema_tp / 10, 'specificity': 1 - ema_fp / 20},
+            'running_avg5_values': running5,
+            'cusum_values': [float(c) for c in cusum],
+            'ema_values': [float(e) for e in ema],
+        }
+        print(f"  {ct}: instant={instant_tp}/10 TP {instant_fp}/20 FP, "
+              f"RA5={ra5_tp}/10 TP {ra5_fp}/20 FP, "
+              f"CUSUM={cusum_tp}/10 TP {cusum_fp}/20 FP, "
+              f"EMA={ema_tp}/10 TP {ema_fp}/20 FP")
+
+    results['sequence_detectors'] = seq_stats
 
     # Save
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    output = {
-        'experiment': 'temporal_sequence',
-        'experiment_number': 121,
-        'timestamp': timestamp,
-        'sequences': {
-            'highway_to_noise': seq1_results,
-            'highway_to_indoor': seq2_results,
-            'sudden_transition': seq3_results,
-            'oscillating': seq4_results,
-        },
-    }
-    output_path = os.path.join(RESULTS_DIR, f"temporal_sequence_{timestamp}.json")
-    with open(output_path, 'w') as f:
-        json.dump(output, f, indent=2)
-    print(f"\nSaved to {output_path}", flush=True)
-
+    ts = time.strftime("%Y%m%d_%H%M%S")
+    out_path = f"experiments/temporal_sequence_{ts}.json"
+    def convert(obj):
+        if isinstance(obj, (np.floating, np.float32, np.float64)): return float(obj)
+        if isinstance(obj, (np.integer, np.int32, np.int64)): return int(obj)
+        if isinstance(obj, np.ndarray): return obj.tolist()
+        if isinstance(obj, np.bool_): return bool(obj)
+        return obj
+    def recursive_convert(d):
+        if isinstance(d, dict): return {k: recursive_convert(v) for k, v in d.items()}
+        if isinstance(d, list): return [recursive_convert(x) for x in d]
+        return convert(d)
+    results = recursive_convert(results)
+    with open(out_path, 'w') as f:
+        json.dump(results, f, indent=2, default=convert)
+    print(f"\nResults saved to {out_path}")
 
 if __name__ == "__main__":
     main()
