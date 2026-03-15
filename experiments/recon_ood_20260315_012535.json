@@ -1,0 +1,491 @@
+{
+  "experiment": "recon_ood",
+  "experiment_number": 150,
+  "timestamp": "20260315_012535",
+  "n_cal": 15,
+  "n_test_id": 10,
+  "n_ood_per_cat": 6,
+  "ood_categories": [
+    "fog_30",
+    "fog_60",
+    "night",
+    "blur",
+    "noise",
+    "occlusion",
+    "snow",
+    "overexpose"
+  ],
+  "layers": [
+    3,
+    32
+  ],
+  "k_values": [
+    1,
+    2,
+    3,
+    5,
+    10
+  ],
+  "results": {
+    "L3": {
+      "cosine": {
+        "overall_auroc": 0.9833333333333333,
+        "overall_d_prime": 1.8648069962177745,
+        "per_category": {
+          "fog_30": {
+            "auroc": 0.8666666666666667,
+            "d_prime": 1.5707917247412313
+          },
+          "fog_60": {
+            "auroc": 1.0,
+            "d_prime": 7.664218615456014
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 23.356836881096665
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 4.3730966958839534
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 6.662075757150853
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 2.0092933216558
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 4.509761970422954
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 4.519749657272146
+          }
+        }
+      },
+      "recon_k1": {
+        "overall_auroc": 0.9875,
+        "overall_d_prime": 1.9586821875681852,
+        "per_category": {
+          "fog_30": {
+            "auroc": 0.9,
+            "d_prime": 1.776153142560428
+          },
+          "fog_60": {
+            "auroc": 1.0,
+            "d_prime": 5.747088402544034
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 28.721260287199822
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 4.5577370927191305
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 6.683221208738072
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 3.2076468496004678
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 4.14635865136504
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 6.368991932093292
+          }
+        }
+      },
+      "recon_k2": {
+        "overall_auroc": 1.0,
+        "overall_d_prime": 1.9899851767493504,
+        "per_category": {
+          "fog_30": {
+            "auroc": 1.0,
+            "d_prime": 9.162404372779964
+          },
+          "fog_60": {
+            "auroc": 1.0,
+            "d_prime": 17.455920474651332
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 25.133539400258467
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 4.140105378256578
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 9.706710478626015
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 3.8644884396329413
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 4.8690237618196734
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 6.294434703003587
+          }
+        }
+      },
+      "recon_k3": {
+        "overall_auroc": 1.0,
+        "overall_d_prime": 1.9733818871271185,
+        "per_category": {
+          "fog_30": {
+            "auroc": 1.0,
+            "d_prime": 8.917807832097141
+          },
+          "fog_60": {
+            "auroc": 1.0,
+            "d_prime": 14.604489632075763
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 24.87469973131928
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 4.934850905992757
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 9.517744596234836
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 3.5370445440448277
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 4.956095419258455
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 6.559626296016036
+          }
+        }
+      },
+      "recon_k5": {
+        "overall_auroc": 1.0,
+        "overall_d_prime": 1.9558727064221164,
+        "per_category": {
+          "fog_30": {
+            "auroc": 1.0,
+            "d_prime": 8.689707504434029
+          },
+          "fog_60": {
+            "auroc": 1.0,
+            "d_prime": 16.237084820074323
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 25.065077559212053
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 5.0095247309186925
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 17.548478785297664
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 3.5503779659459163
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 5.408507885714909
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 7.015129160406172
+          }
+        }
+      },
+      "recon_k10": {
+        "overall_auroc": 1.0,
+        "overall_d_prime": 1.9620468872258603,
+        "per_category": {
+          "fog_30": {
+            "auroc": 1.0,
+            "d_prime": 8.488165997397086
+          },
+          "fog_60": {
+            "auroc": 1.0,
+            "d_prime": 18.475352550684175
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 24.576385013812775
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 4.968233766516575
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 20.32127125919631
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 3.892242180235672
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 5.526723225811195
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 6.820960541687349
+          }
+        }
+      }
+    },
+    "L32": {
+      "cosine": {
+        "overall_auroc": 0.9625,
+        "overall_d_prime": 2.2710944381317355,
+        "per_category": {
+          "fog_30": {
+            "auroc": 0.7,
+            "d_prime": 1.0867568915964871
+          },
+          "fog_60": {
+            "auroc": 1.0,
+            "d_prime": 3.94103650480473
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 13.498088658470209
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 3.6189723391540625
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 9.594110324236915
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 2.6215366004694034
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 13.280608970302703
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 10.700695810592373
+          }
+        }
+      },
+      "recon_k1": {
+        "overall_auroc": 0.9583333333333334,
+        "overall_d_prime": 2.5106848945849434,
+        "per_category": {
+          "fog_30": {
+            "auroc": 0.75,
+            "d_prime": 0.9605810725896602
+          },
+          "fog_60": {
+            "auroc": 0.9166666666666666,
+            "d_prime": 2.536995656282866
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 10.719183527818192
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 4.611529143359438
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 8.244237201249256
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 3.2940294185994734
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 11.387042698859439
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 12.366491286916977
+          }
+        }
+      },
+      "recon_k2": {
+        "overall_auroc": 1.0,
+        "overall_d_prime": 2.712642048166106,
+        "per_category": {
+          "fog_30": {
+            "auroc": 1.0,
+            "d_prime": 2.5600375959848156
+          },
+          "fog_60": {
+            "auroc": 1.0,
+            "d_prime": 3.952479853122338
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 23.53460801866689
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 5.784866883911938
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 9.63299673201887
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 3.959945908095023
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 13.873490752392966
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 18.794847506574015
+          }
+        }
+      },
+      "recon_k3": {
+        "overall_auroc": 1.0,
+        "overall_d_prime": 2.707871020230183,
+        "per_category": {
+          "fog_30": {
+            "auroc": 1.0,
+            "d_prime": 2.5999987541318235
+          },
+          "fog_60": {
+            "auroc": 1.0,
+            "d_prime": 4.0743043964188494
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 26.58076932451094
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 5.862500252613055
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 10.011503586110313
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 3.972948663309568
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 13.870696459682746
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 19.194269583406186
+          }
+        }
+      },
+      "recon_k5": {
+        "overall_auroc": 1.0,
+        "overall_d_prime": 2.6945333134870952,
+        "per_category": {
+          "fog_30": {
+            "auroc": 1.0,
+            "d_prime": 2.6611501558734365
+          },
+          "fog_60": {
+            "auroc": 1.0,
+            "d_prime": 4.104554377697757
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 31.83085093782698
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 5.73475016462871
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 10.162330974393752
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 4.01690705766197
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 13.773449773826298
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 18.75855651717569
+          }
+        }
+      },
+      "recon_k10": {
+        "overall_auroc": 1.0,
+        "overall_d_prime": 2.606475502113276,
+        "per_category": {
+          "fog_30": {
+            "auroc": 1.0,
+            "d_prime": 2.6523633711715706
+          },
+          "fog_60": {
+            "auroc": 1.0,
+            "d_prime": 4.0518408481588555
+          },
+          "night": {
+            "auroc": 1.0,
+            "d_prime": 61.53586614859402
+          },
+          "blur": {
+            "auroc": 1.0,
+            "d_prime": 5.5692208809532495
+          },
+          "noise": {
+            "auroc": 1.0,
+            "d_prime": 10.4354541414157
+          },
+          "occlusion": {
+            "auroc": 1.0,
+            "d_prime": 4.004267675819814
+          },
+          "snow": {
+            "auroc": 1.0,
+            "d_prime": 13.267056022936469
+          },
+          "overexpose": {
+            "auroc": 1.0,
+            "d_prime": 18.120839262639166
+          }
+        }
+      }
+    }
+  }
+}

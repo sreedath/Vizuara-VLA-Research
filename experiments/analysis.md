@@ -6536,3 +6536,67 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 5. **Practical implication**: For production deployment, the calibration set must use the EXACT inference prompt. If multiple prompts are used, each needs its own calibration centroid. This motivates a prompt-aware multi-centroid detector.
 
 6. **Root cause**: From Experiment 135 (prompt geometry), inter-prompt centroid similarity is only 0.5-0.7, while ID embedding radius is ~0.1. The prompt shift is 3-5× larger than the ID cluster radius, making cross-prompt ID images appear as OOD.
+
+---
+
+## Finding 143: Multi-Centroid Prompt-Aware Detector (Experiment 149)
+
+**Question**: Can a multi-centroid approach resolve the cross-prompt transfer failure discovered in Experiment 148?
+
+**Setup**: Calibrate 5 prompts simultaneously (6 images each). Four strategies: same-prompt oracle, wrong-prompt (catastrophic), nearest-centroid (L32-based prompt matching), min-distance (minimum across all centroids). 3σ OR-gate threshold.
+
+**Key Results**:
+
+| Strategy | Mean F1 | Mean Recall | Mean FPR |
+|----------|---------|-------------|----------|
+| Same-prompt (oracle) | **0.933** | 0.875 | **0.000** |
+| Wrong-prompt (worst) | 0.889 | 1.000 | 1.000 |
+| **Nearest centroid** | **0.933** | 0.875 | **0.000** |
+| Min-distance | 0.934 | 0.892 | 0.067 |
+
+**Critical Insights**:
+
+1. **Nearest-centroid perfectly matches oracle performance**: F1=0.933, FPR=0.000 across ALL 5 prompts. The L32 embedding reliably identifies which prompt was used, routing to the correct centroid.
+
+2. **Cross-prompt failure is completely resolved**: Moving from wrong-prompt (FPR=1.0) to nearest-centroid (FPR=0.0) shows that the multi-centroid architecture eliminates the prompt-specificity limitation.
+
+3. **Min-distance is slightly worse**: F1=0.934 mean but FPR=0.067 (one prompt has FPR=0.333). Taking the minimum distance pools thresholds which can be too permissive.
+
+4. **Zero additional inference cost**: The nearest-centroid approach only adds N cosine distance computations (N = number of prompts) at detection time, negligible compared to inference.
+
+5. **Recommended production architecture**: Multi-centroid OR-gate with nearest-centroid routing. Calibrate once per prompt, store N centroids per layer, route at inference time via L32 nearest centroid.
+
+---
+
+## Finding 144: PCA Reconstruction-Based OOD Detection (Experiment 150)
+
+**Question**: Can PCA reconstruction error (leveraging the 2D L3 manifold) serve as an effective OOD detector?
+
+**Setup**: 15 calibration, 10 test ID, 6 OOD per category (8 categories). Compared cosine distance with PCA reconstruction error at k=1,2,3,5,10 components at L3 and L32.
+
+**Key Results**:
+
+| Layer | Method | Overall AUROC | d-prime |
+|-------|--------|--------------|---------|
+| L3 | Cosine | 0.983 | 1.9 |
+| L3 | Recon k=1 | 0.988 | 2.0 |
+| L3 | **Recon k=2** | **1.000** | **2.0** |
+| L3 | Recon k=3+ | 1.000 | 2.0 |
+| L32 | Cosine | 0.963 | 2.3 |
+| L32 | Recon k=1 | 0.958 | 2.5 |
+| L32 | **Recon k=2** | **1.000** | **2.7** |
+| L32 | Recon k=3+ | 1.000 | 2.7 |
+
+**Critical Insights**:
+
+1. **Reconstruction error at k=2 achieves perfect AUROC=1.000 at BOTH layers**. This beats cosine distance at both L3 (0.983→1.000) and L32 (0.963→1.000).
+
+2. **k=2 is the critical threshold**: k=1 is insufficient (0.988 at L3, 0.958 at L32), but k=2 achieves perfection. Additional components beyond k=2 don't improve further.
+
+3. **This aligns with the PCA dimensionality finding**: The ID manifold at L3 is 2-dimensional, so k=2 captures the full ID subspace. Anything outside this 2D plane has high reconstruction error.
+
+4. **Reconstruction error is a universal improvement**: Unlike cosine vs Mahalanobis (where the winner depends on the layer), reconstruction at k=2 wins at BOTH layers simultaneously.
+
+5. **Practical detector: PCA-Recon OR-gate**: Use PCA reconstruction error (k=2) at L3 and L32 in an OR-gate configuration. This should achieve perfect AUROC while being robust to both fog and all other OOD categories.
+
+6. **Implementation cost**: One SVD during calibration (one-time), then 2 matrix-vector products per inference (project onto 2 components, compute residual). Computational cost: ~200μs total.

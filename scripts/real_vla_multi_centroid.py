@@ -1,324 +1,272 @@
+#!/usr/bin/env python3
+"""Experiment 149: Multi-centroid prompt-aware detector.
+
+Calibrates with N prompts simultaneously. At inference, computes distance to
+the nearest centroid (matching the inference prompt). Tests if a prompt-aware
+multi-centroid approach enables cross-prompt generalization.
 """
-Multi-Centroid and Prototype-Based OOD Detection on Real OpenVLA-7B.
 
-Tests whether using multiple centroids (one per driving scenario) improves
-OOD detection compared to a single global centroid.
-
-Methods tested:
-1. Single centroid (baseline): min cosine distance to global mean
-2. Per-scene centroids: min cosine distance to nearest scene centroid
-3. Cluster prototypes: k-means with k=2,3,5 on calibration set
-4. Max cosine similarity: use max similarity to any calibration sample
-5. Quantile-based: use 5th percentile of similarities to calibration set
-
-Also tests on expanded OOD set including checker pattern.
-
-Experiment 36 in the CalibDrive series.
-"""
-import os
-import json
-import time
-import datetime
+import json, os, sys, datetime
 import numpy as np
 import torch
-from PIL import Image
-from sklearn.cluster import KMeans
-from sklearn.metrics import roc_auc_score
+from pathlib import Path
+from PIL import Image, ImageFilter
 
-RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
-os.makedirs(RESULTS_DIR, exist_ok=True)
+SCRIPT_DIR = Path(__file__).parent
+REPO_DIR = SCRIPT_DIR.parent
+EXPERIMENTS_DIR = REPO_DIR / "experiments"
+EXPERIMENTS_DIR.mkdir(exist_ok=True)
+RESULTS_DIR = str(EXPERIMENTS_DIR)
 
-SCENARIOS = {
-    'highway': {'n': 25, 'speed': '30', 'difficulty': 'easy'},
-    'urban': {'n': 25, 'speed': '15', 'difficulty': 'easy'},
-    'ood_noise': {'n': 12, 'speed': '25', 'difficulty': 'ood'},
-    'ood_blank': {'n': 12, 'speed': '25', 'difficulty': 'ood'},
-    'ood_indoor': {'n': 12, 'speed': '25', 'difficulty': 'ood'},
-    'ood_inverted': {'n': 12, 'speed': '30', 'difficulty': 'ood'},
-    'ood_checker': {'n': 12, 'speed': '25', 'difficulty': 'ood'},
-    'ood_blackout': {'n': 12, 'speed': '25', 'difficulty': 'ood'},
-}
+SIZE = (256, 256)
+rng = np.random.RandomState(42)
 
+def create_highway(idx):
+    img = np.zeros((*SIZE, 3), dtype=np.uint8)
+    img[:SIZE[0]//2] = [135, 206, 235]; img[SIZE[0]//2:] = [80, 80, 80]
+    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
+    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
 
-def create_scene_image(scenario, idx, size=(256, 256)):
-    np.random.seed(idx * 3600 + hash(scenario) % 36000)
-    if scenario == 'highway':
-        img = np.zeros((*size, 3), dtype=np.uint8)
-        img[:size[0]//2] = [135, 206, 235]
-        img[size[0]//2:] = [80, 80, 80]
-    elif scenario == 'urban':
-        img = np.zeros((*size, 3), dtype=np.uint8)
-        img[:size[0]//3] = [135, 206, 235]
-        img[size[0]//3:size[0]//2] = [139, 119, 101]
-        img[size[0]//2:] = [80, 80, 80]
-    elif scenario == 'ood_noise':
-        img = np.random.randint(0, 256, (*size, 3), dtype=np.uint8)
-    elif scenario == 'ood_blank':
-        img = np.full((*size, 3), 128, dtype=np.uint8)
-    elif scenario == 'ood_indoor':
-        img = np.zeros((*size, 3), dtype=np.uint8)
-        img[:size[0]//3] = [210, 180, 140]
-        img[size[0]//3:2*size[0]//3] = [180, 120, 80]
-        img[2*size[0]//3:] = [100, 70, 50]
-    elif scenario == 'ood_inverted':
-        img = np.zeros((*size, 3), dtype=np.uint8)
-        img[:size[0]//2] = [135, 206, 235]
-        img[size[0]//2:] = [80, 80, 80]
-        img = 255 - img
-    elif scenario == 'ood_checker':
-        img = np.zeros((*size, 3), dtype=np.uint8)
-        block = 32
-        for y in range(0, size[0], block):
-            for x in range(0, size[1], block):
-                if (y // block + x // block) % 2 == 0:
-                    img[y:y+block, x:x+block] = [255, 255, 255]
-    elif scenario == 'ood_blackout':
-        img = np.full((*size, 3), 5, dtype=np.uint8)
-    else:
-        img = np.random.randint(0, 256, (*size, 3), dtype=np.uint8)
-    noise = np.random.randint(-3, 3, img.shape, dtype=np.int16)
-    img = np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-    return Image.fromarray(img)
+def create_urban(idx):
+    img = np.zeros((*SIZE, 3), dtype=np.uint8)
+    img[:SIZE[0]//3] = [135, 206, 235]; img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]; img[SIZE[0]//2:] = [60, 60, 60]
+    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
 
+def create_rural(idx):
+    img = np.zeros((*SIZE, 3), dtype=np.uint8)
+    img[:SIZE[0]//3] = [100, 180, 255]; img[SIZE[0]//3:SIZE[0]*2//3] = [34, 139, 34]; img[SIZE[0]*2//3:] = [90, 90, 90]
+    return np.clip(img.astype(np.int16) + rng.randint(-8, 9, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
 
-def cosine_dist(a, b):
-    a_n = a / (np.linalg.norm(a) + 1e-10)
-    b_n = b / (np.linalg.norm(b) + 1e-10)
-    return 1.0 - float(np.dot(a_n, b_n))
+def apply_fog(a, alpha):
+    return np.clip(a*(1-alpha)+np.full_like(a,[200,200,210])*alpha, 0, 255).astype(np.uint8)
+def apply_night(a): return np.clip(a*0.15, 0, 255).astype(np.uint8)
+def apply_blur(a, r=8): return np.array(Image.fromarray(a).filter(ImageFilter.GaussianBlur(radius=r)))
+def apply_noise(a, s=50): return np.clip(a.astype(np.float32)+np.random.normal(0,s,a.shape), 0, 255).astype(np.uint8)
+def apply_occlusion(a):
+    o=a.copy(); h,w=o.shape[:2]; o[h//4:3*h//4, w//4:3*w//4]=128; return o
 
+def extract_hidden(model, processor, image, prompt, layers):
+    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    with torch.no_grad():
+        fwd = model(**inputs, output_hidden_states=True)
+    return {l: fwd.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
+
+def cosine_distance(a, b):
+    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
 
 def main():
-    print("=" * 70, flush=True)
-    print("MULTI-CENTROID OOD DETECTION", flush=True)
-    print("=" * 70, flush=True)
+    print("=" * 60)
+    print("Experiment 149: Multi-Centroid Prompt-Aware Detector")
+    print("=" * 60, flush=True)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
     print("Loading OpenVLA-7B...", flush=True)
     model = AutoModelForVision2Seq.from_pretrained(
-        "openvla/openvla-7b",
-        torch_dtype=torch.bfloat16,
-        device_map="auto",
-        trust_remote_code=True,
-    )
-    processor = AutoProcessor.from_pretrained(
-        "openvla/openvla-7b",
-        trust_remote_code=True,
-    )
+        "openvla/openvla-7b", torch_dtype=torch.bfloat16,
+        device_map="auto", trust_remote_code=True)
+    processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
-    print("Model loaded.", flush=True)
 
-    prompt = "In: What action should the robot take to drive forward at {speed} m/s safely?\nOut:"
-    total = sum(s['n'] for s in SCENARIOS.values())
-    print(f"Total samples: {total}", flush=True)
-
-    all_samples = []
-    all_hidden = []
-    sample_idx = 0
-
-    for scenario, config in SCENARIOS.items():
-        for i in range(config['n']):
-            sample_idx += 1
-            image = create_scene_image(scenario, i)
-            p = prompt.format(speed=config['speed'])
-            inputs = processor(p, image).to(model.device, dtype=torch.bfloat16)
-
-            with torch.no_grad():
-                outputs = model.generate(
-                    **inputs,
-                    max_new_tokens=7,
-                    do_sample=False,
-                    output_scores=True,
-                    output_hidden_states=True,
-                    return_dict_in_generate=True,
-                )
-
-            # Hidden state
-            if hasattr(outputs, 'hidden_states') and outputs.hidden_states:
-                last_step = outputs.hidden_states[-1]
-                if isinstance(last_step, tuple):
-                    hidden = last_step[-1][0, -1, :].float().cpu().numpy()
-                else:
-                    hidden = last_step[0, -1, :].float().cpu().numpy()
-            else:
-                hidden = np.zeros(4096)
-
-            # Action mass
-            vocab_size = outputs.scores[0].shape[-1]
-            action_start = vocab_size - 256
-            dim_masses = []
-            for score in outputs.scores[:7]:
-                full_logits = score[0].float()
-                full_probs = torch.softmax(full_logits, dim=0).cpu().numpy()
-                action_probs = full_probs[action_start:]
-                dim_masses.append(float(action_probs.sum()))
-
-            sample = {
-                'scenario': scenario,
-                'difficulty': config['difficulty'],
-                'idx': i,
-                'action_mass': float(np.mean(dim_masses)),
-            }
-            all_samples.append(sample)
-            all_hidden.append(hidden)
-
-            if sample_idx % 20 == 0 or sample_idx == total:
-                print(f"  [{sample_idx}/{total}] {scenario}_{i}: "
-                      f"mass={sample['action_mass']:.4f}", flush=True)
-
-    hidden_arr = np.array(all_hidden)
-
-    # Split: first half easy = calibration, second half = test
-    easy_idxs = [i for i, s in enumerate(all_samples) if s['difficulty'] == 'easy']
-    ood_idxs = [i for i, s in enumerate(all_samples) if s['difficulty'] == 'ood']
-
-    np.random.seed(42)
-    np.random.shuffle(easy_idxs)
-    cal_easy = easy_idxs[:len(easy_idxs)//2]
-    test_easy = easy_idxs[len(easy_idxs)//2:]
-
-    highway_cal = [i for i in cal_easy if all_samples[i]['scenario'] == 'highway']
-    urban_cal = [i for i in cal_easy if all_samples[i]['scenario'] == 'urban']
-
-    print(f"\nCalibration: {len(cal_easy)} ({len(highway_cal)} hwy, {len(urban_cal)} urban)")
-    print(f"Test easy: {len(test_easy)}, OOD: {len(ood_idxs)}", flush=True)
-
-    # ===================================================================
-    # Method 1: Single global centroid (baseline)
-    # ===================================================================
-    print("\n" + "=" * 70, flush=True)
-    print("METHOD COMPARISON", flush=True)
-    print("=" * 70, flush=True)
-
-    # 1. Global centroid
-    global_mean = np.mean(hidden_arr[cal_easy], axis=0)
-    global_norm = global_mean / (np.linalg.norm(global_mean) + 1e-10)
-    global_cos = [cosine_dist(hidden_arr[i], global_mean) for i in range(len(all_samples))]
-
-    # 2. Per-scene centroids (min distance to nearest)
-    hwy_mean = np.mean(hidden_arr[highway_cal], axis=0)
-    urb_mean = np.mean(hidden_arr[urban_cal], axis=0)
-    scene_cos = [min(cosine_dist(hidden_arr[i], hwy_mean),
-                     cosine_dist(hidden_arr[i], urb_mean))
-                 for i in range(len(all_samples))]
-
-    # 3. K-means prototypes (k=2, 3, 5)
-    kmeans_cos = {}
-    for k in [2, 3, 5]:
-        km = KMeans(n_clusters=k, random_state=42, n_init=10)
-        km.fit(hidden_arr[cal_easy])
-        centroids = km.cluster_centers_
-        k_cos = [min(cosine_dist(hidden_arr[i], c) for c in centroids)
-                 for i in range(len(all_samples))]
-        kmeans_cos[k] = k_cos
-
-    # 4. Max similarity to any calibration sample
-    max_sim = []
-    for i in range(len(all_samples)):
-        sims = [1.0 - cosine_dist(hidden_arr[i], hidden_arr[j]) for j in cal_easy]
-        max_sim.append(1.0 - max(sims))  # convert to distance
-
-    # 5. 5th percentile similarity to calibration set
-    quantile_dist = []
-    for i in range(len(all_samples)):
-        dists = [cosine_dist(hidden_arr[i], hidden_arr[j]) for j in cal_easy]
-        quantile_dist.append(np.percentile(dists, 5))  # 5th pctl = closest
-
-    # 6. Mean of top-3 nearest (kNN k=3)
-    knn3_dist = []
-    for i in range(len(all_samples)):
-        dists = sorted([cosine_dist(hidden_arr[i], hidden_arr[j]) for j in cal_easy])
-        knn3_dist.append(np.mean(dists[:3]))
-
-    # Evaluate all methods
-    methods = {
-        'Global centroid': global_cos,
-        'Per-scene (2 centroids)': scene_cos,
-        'KMeans k=2': kmeans_cos[2],
-        'KMeans k=3': kmeans_cos[3],
-        'KMeans k=5': kmeans_cos[5],
-        'Max similarity': max_sim,
-        '5th pctl distance': quantile_dist,
-        'kNN k=3 mean': knn3_dist,
+    prompts = {
+        "drive_forward": "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:",
+        "navigate": "In: What action should the robot take to navigate this road?\nOut:",
+        "follow_lane": "In: What action should the robot take to follow the lane markings?\nOut:",
+        "stop": "In: What action should the robot take to stop the vehicle?\nOut:",
+        "turn_left": "In: What action should the robot take to turn left at the intersection?\nOut:",
     }
 
-    # Labels: 0 = easy (test), 1 = OOD
-    eval_idxs = test_easy + ood_idxs
-    labels = [0] * len(test_easy) + [1] * len(ood_idxs)
+    creators = [create_highway, create_urban, create_rural]
+    layers = [3, 32]
+    n_cal = 6
+    n_test = 6
 
-    print(f"\n{'Method':<25} | {'AUROC':>8} | {'Easy mean':>10} | {'OOD mean':>10} | {'Gap':>8}", flush=True)
-    print("-" * 75, flush=True)
+    cal_arrs = [creators[i%3](i) for i in range(n_cal)]
+    test_arrs = [creators[(i+n_cal)%3](i+n_cal) for i in range(n_test)]
 
-    method_aurocs = {}
-    for name, scores in methods.items():
-        eval_scores = [scores[i] for i in eval_idxs]
-        auroc = roc_auc_score(labels, eval_scores)
-        easy_mean = np.mean([scores[i] for i in test_easy])
-        ood_mean = np.mean([scores[i] for i in ood_idxs])
-        gap = ood_mean - easy_mean
-        method_aurocs[name] = auroc
-        print(f"  {name:<23} | {auroc:>8.3f} | {easy_mean:>10.4f} | {ood_mean:>10.4f} | {gap:>+8.4f}", flush=True)
-
-    # Per-OOD-type breakdown for top methods
-    print(f"\nPer-OOD-Type AUROC", flush=True)
-    print("-" * 90, flush=True)
-    ood_types = [s for s in SCENARIOS if s.startswith('ood_')]
-    header_parts = [f"{'Method':<25}"]
-    for t in ood_types:
-        header_parts.append(f"{t[4:]:>10}")
-    print("  " + " | ".join(header_parts), flush=True)
-    print("  " + "-" * 85, flush=True)
-
-    for name, scores in methods.items():
-        parts = [f"{name:<23}"]
-        for ood_type in ood_types:
-            type_idxs = [i for i in ood_idxs if all_samples[i]['scenario'] == ood_type]
-            type_labels = [0] * len(test_easy) + [1] * len(type_idxs)
-            type_scores = [scores[i] for i in test_easy] + [scores[i] for i in type_idxs]
-            if len(set(type_labels)) > 1:
-                auroc = roc_auc_score(type_labels, type_scores)
-                parts.append(f"{auroc:>10.3f}")
-            else:
-                parts.append(f"{'N/A':>10}")
-        print("  " + " | ".join(parts), flush=True)
-
-    # Bootstrap confidence intervals for top 3 methods
-    print(f"\nBootstrap AUROC (20 iterations)", flush=True)
-    print("-" * 60, flush=True)
-    top_methods = sorted(method_aurocs.items(), key=lambda x: -x[1])[:4]
-
-    for name, _ in top_methods:
-        scores = methods[name]
-        bootstrap_aurocs = []
-        for b in range(20):
-            rng = np.random.default_rng(b)
-            b_easy = rng.choice(test_easy, len(test_easy), replace=True).tolist()
-            b_ood = rng.choice(ood_idxs, len(ood_idxs), replace=True).tolist()
-            b_idxs = b_easy + b_ood
-            b_labels = [0] * len(b_easy) + [1] * len(b_ood)
-            b_scores = [scores[i] for i in b_idxs]
-            bootstrap_aurocs.append(roc_auc_score(b_labels, b_scores))
-        mean_auroc = np.mean(bootstrap_aurocs)
-        std_auroc = np.std(bootstrap_aurocs)
-        print(f"  {name:<23}: {mean_auroc:.3f} ± {std_auroc:.3f}", flush=True)
-
-    # Save
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    output = {
-        'experiment': 'multi_centroid',
-        'experiment_number': 36,
-        'timestamp': timestamp,
-        'n_calibration': len(cal_easy),
-        'n_test_easy': len(test_easy),
-        'n_ood': len(ood_idxs),
-        'samples': [{k: v for k, v in s.items()} for s in all_samples],
-        'method_aurocs': method_aurocs,
+    ood_transforms = {
+        "fog_30": lambda a: apply_fog(a, 0.3),
+        "fog_60": lambda a: apply_fog(a, 0.6),
+        "night": apply_night,
+        "blur": apply_blur,
+        "noise": apply_noise,
+        "occlusion": apply_occlusion,
     }
+    n_ood_per = 4
 
-    output_path = os.path.join(RESULTS_DIR, f"multi_centroid_{timestamp}.json")
-    with open(output_path, 'w') as f:
+    # Step 1: Calibrate ALL prompts
+    print("\n--- Calibrating all prompts ---", flush=True)
+    centroids = {}  # {prompt_name: {layer: centroid}}
+    cal_stats = {}  # {prompt_name: {layer: {mean, std}}}
+    for pname, prompt in prompts.items():
+        centroids[pname] = {}
+        cal_stats[pname] = {}
+        for l in layers:
+            embs = []
+            for arr in cal_arrs:
+                h = extract_hidden(model, processor, Image.fromarray(arr), prompt, layers)
+                embs.append(h[l])
+            embs = np.array(embs)
+            centroid = embs.mean(axis=0)
+            dists = [cosine_distance(e, centroid) for e in embs]
+            centroids[pname][l] = centroid
+            cal_stats[pname][l] = {"mean": float(np.mean(dists)), "std": float(np.std(dists))}
+        print(f"  {pname}: calibrated", flush=True)
+
+    # Step 2: Define detection strategies
+    sigma = 3.0
+
+    def single_centroid_detect(d_l3, d_l32, cal_pname):
+        """Standard: check against the calibration prompt's centroid only."""
+        t3 = cal_stats[cal_pname][3]["mean"] + sigma * cal_stats[cal_pname][3]["std"]
+        t32 = cal_stats[cal_pname][32]["mean"] + sigma * cal_stats[cal_pname][32]["std"]
+        return d_l3 > t3 or d_l32 > t32
+
+    def nearest_centroid_detect(emb_l3, emb_l32):
+        """Multi-centroid: find nearest prompt centroid, then check distance."""
+        best_dist = float('inf')
+        best_pname = None
+        for pname in prompts:
+            d = cosine_distance(emb_l32, centroids[pname][32])
+            if d < best_dist:
+                best_dist = d
+                best_pname = pname
+        # Check against nearest centroid's thresholds
+        d3 = cosine_distance(emb_l3, centroids[best_pname][3])
+        d32 = best_dist
+        t3 = cal_stats[best_pname][3]["mean"] + sigma * cal_stats[best_pname][3]["std"]
+        t32 = cal_stats[best_pname][32]["mean"] + sigma * cal_stats[best_pname][32]["std"]
+        return d3 > t3 or d32 > t32
+
+    def min_distance_detect(emb_l3, emb_l32):
+        """Min-distance: take minimum distance across all centroids, check against pooled threshold."""
+        min_d3 = min(cosine_distance(emb_l3, centroids[p][3]) for p in prompts)
+        min_d32 = min(cosine_distance(emb_l32, centroids[p][32]) for p in prompts)
+        # Pooled threshold: mean of all per-prompt thresholds
+        pool_t3 = np.mean([cal_stats[p][3]["mean"] + sigma * cal_stats[p][3]["std"] for p in prompts])
+        pool_t32 = np.mean([cal_stats[p][32]["mean"] + sigma * cal_stats[p][32]["std"] for p in prompts])
+        return min_d3 > pool_t3 or min_d32 > pool_t32
+
+    # Step 3: Evaluate
+    print("\n--- Evaluating ---", flush=True)
+    results = {}
+
+    for inf_pname, inf_prompt in prompts.items():
+        print(f"\n  Inference prompt: {inf_pname}", flush=True)
+
+        # Collect embeddings for test ID and OOD
+        id_embs = {l: [] for l in layers}
+        for arr in test_arrs:
+            h = extract_hidden(model, processor, Image.fromarray(arr), inf_prompt, layers)
+            for l in layers:
+                id_embs[l].append(h[l])
+
+        ood_embs = {l: {c: [] for c in ood_transforms} for l in layers}
+        for cat, tfn in ood_transforms.items():
+            for j in range(n_ood_per):
+                arr = tfn(test_arrs[j % n_test])
+                h = extract_hidden(model, processor, Image.fromarray(arr), inf_prompt, layers)
+                for l in layers:
+                    ood_embs[l][cat].append(h[l])
+
+        # Evaluate each strategy
+        strat_results = {}
+
+        # 1. Same-prompt single centroid (oracle)
+        id_flags = sum(1 for i in range(n_test)
+                      if single_centroid_detect(
+                          cosine_distance(id_embs[3][i], centroids[inf_pname][3]),
+                          cosine_distance(id_embs[32][i], centroids[inf_pname][32]),
+                          inf_pname))
+        ood_flags = 0; ood_total = 0
+        for cat in ood_transforms:
+            for j in range(n_ood_per):
+                if single_centroid_detect(
+                    cosine_distance(ood_embs[3][cat][j], centroids[inf_pname][3]),
+                    cosine_distance(ood_embs[32][cat][j], centroids[inf_pname][32]),
+                    inf_pname):
+                    ood_flags += 1
+                ood_total += 1
+        fpr = id_flags / n_test
+        rec = ood_flags / ood_total
+        prec = ood_flags / (ood_flags + id_flags) if (ood_flags + id_flags) > 0 else 1.0
+        f1 = 2*prec*rec / (prec+rec) if (prec+rec) > 0 else 0.0
+        strat_results["same_prompt"] = {"fpr": float(fpr), "recall": float(rec), "precision": float(prec), "f1": float(f1)}
+
+        # 2. Wrong-prompt single centroid (worst case: use first OTHER prompt)
+        wrong_pname = [p for p in prompts if p != inf_pname][0]
+        id_flags = sum(1 for i in range(n_test)
+                      if single_centroid_detect(
+                          cosine_distance(id_embs[3][i], centroids[wrong_pname][3]),
+                          cosine_distance(id_embs[32][i], centroids[wrong_pname][32]),
+                          wrong_pname))
+        ood_flags = 0; ood_total = 0
+        for cat in ood_transforms:
+            for j in range(n_ood_per):
+                if single_centroid_detect(
+                    cosine_distance(ood_embs[3][cat][j], centroids[wrong_pname][3]),
+                    cosine_distance(ood_embs[32][cat][j], centroids[wrong_pname][32]),
+                    wrong_pname):
+                    ood_flags += 1
+                ood_total += 1
+        fpr = id_flags / n_test
+        rec = ood_flags / ood_total
+        prec = ood_flags / (ood_flags + id_flags) if (ood_flags + id_flags) > 0 else 1.0
+        f1 = 2*prec*rec / (prec+rec) if (prec+rec) > 0 else 0.0
+        strat_results["wrong_prompt"] = {"fpr": float(fpr), "recall": float(rec), "precision": float(prec), "f1": float(f1)}
+
+        # 3. Nearest centroid
+        id_flags = sum(1 for i in range(n_test)
+                      if nearest_centroid_detect(id_embs[3][i], id_embs[32][i]))
+        ood_flags = 0; ood_total = 0
+        for cat in ood_transforms:
+            for j in range(n_ood_per):
+                if nearest_centroid_detect(ood_embs[3][cat][j], ood_embs[32][cat][j]):
+                    ood_flags += 1
+                ood_total += 1
+        fpr = id_flags / n_test
+        rec = ood_flags / ood_total
+        prec = ood_flags / (ood_flags + id_flags) if (ood_flags + id_flags) > 0 else 1.0
+        f1 = 2*prec*rec / (prec+rec) if (prec+rec) > 0 else 0.0
+        strat_results["nearest_centroid"] = {"fpr": float(fpr), "recall": float(rec), "precision": float(prec), "f1": float(f1)}
+
+        # 4. Min distance
+        id_flags = sum(1 for i in range(n_test)
+                      if min_distance_detect(id_embs[3][i], id_embs[32][i]))
+        ood_flags = 0; ood_total = 0
+        for cat in ood_transforms:
+            for j in range(n_ood_per):
+                if min_distance_detect(ood_embs[3][cat][j], ood_embs[32][cat][j]):
+                    ood_flags += 1
+                ood_total += 1
+        fpr = id_flags / n_test
+        rec = ood_flags / ood_total
+        prec = ood_flags / (ood_flags + id_flags) if (ood_flags + id_flags) > 0 else 1.0
+        f1 = 2*prec*rec / (prec+rec) if (prec+rec) > 0 else 0.0
+        strat_results["min_distance"] = {"fpr": float(fpr), "recall": float(rec), "precision": float(prec), "f1": float(f1)}
+
+        results[inf_pname] = strat_results
+        for sn, sr in strat_results.items():
+            print(f"    {sn:20s}: F1={sr['f1']:.3f} Recall={sr['recall']:.3f} FPR={sr['fpr']:.3f}", flush=True)
+
+    # Summary
+    print("\n" + "=" * 80)
+    print("STRATEGY COMPARISON (mean across prompts)")
+    for sn in ["same_prompt", "wrong_prompt", "nearest_centroid", "min_distance"]:
+        f1s = [results[p][sn]["f1"] for p in prompts]
+        fprs = [results[p][sn]["fpr"] for p in prompts]
+        recs = [results[p][sn]["recall"] for p in prompts]
+        print(f"  {sn:20s}: F1={np.mean(f1s):.3f}±{np.std(f1s):.3f}  Recall={np.mean(recs):.3f}  FPR={np.mean(fprs):.3f}")
+
+    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    output = {"experiment": "multi_centroid", "experiment_number": 149, "timestamp": ts,
+              "n_cal": n_cal, "n_test_id": n_test, "n_ood_per_cat": n_ood_per,
+              "ood_categories": list(ood_transforms.keys()),
+              "prompts": list(prompts.keys()), "sigma": sigma,
+              "layers": layers, "results": results}
+    path = os.path.join(RESULTS_DIR, f"multi_centroid_{ts}.json")
+    with open(path, "w") as f:
         json.dump(output, f, indent=2)
-    print(f"\nSaved to {output_path}", flush=True)
-
+    print(f"\nSaved: {path}")
 
 if __name__ == "__main__":
     main()

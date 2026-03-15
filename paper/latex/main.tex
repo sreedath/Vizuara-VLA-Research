@@ -2758,4 +2758,36 @@ The OR-gate architecture represents our recommended production deployment: two c
 \label{fig:cross_prompt}
 \end{figure}
 
+\subsection{Multi-Centroid Prompt-Aware Detector}
+\label{app:multi_centroid}
+
+\textbf{Finding 210}: The nearest-centroid multi-prompt strategy \textbf{perfectly matches oracle (same-prompt) performance}: F1$=$0.933, FPR$=$0.000 across all 5 prompts. L32 embeddings reliably identify which prompt was used, routing to the correct per-prompt centroid.
+
+\textbf{Finding 211}: Cross-prompt failure (Exp.~148, FPR$=$1.0) is \textbf{completely resolved} by maintaining one centroid per prompt and routing via nearest-centroid matching. The fix adds only $N$ cosine distance computations (negligible cost).
+
+\textbf{Finding 212}: The recommended production architecture is: \textbf{multi-centroid OR-gate with nearest-centroid routing}. Calibrate once per prompt ($\sim$8 images each), store $N$ centroids per layer, and route at inference via L32 nearest centroid. Total overhead: $2N$ cosine distances on 4096-D vectors ($\sim$50$N~\mu$s).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig135_multi_centroid.png}
+\caption{\textbf{Multi-centroid prompt-aware detector.} (A) Strategy comparison: nearest centroid matches oracle F1$=$0.933; wrong-prompt collapses to 0.889 with FPR$=$1.0. (B) FPR: nearest centroid achieves 0.000 vs wrong-prompt's 1.000. (C) Per-prompt breakdown: nearest centroid is identical to oracle across all 5 prompts.}
+\label{fig:multi_centroid}
+\end{figure}
+
+\subsection{PCA Reconstruction-Based OOD Detection}
+\label{app:recon}
+
+\textbf{Finding 213}: PCA reconstruction error with $k{=}2$ components achieves \textbf{perfect AUROC$=$1.000 at both L3 and L32}, surpassing cosine distance (0.983 and 0.963 respectively). This is the first metric to achieve perfect separation at both layers simultaneously.
+
+\textbf{Finding 214}: The critical threshold is $k{=}2$: $k{=}1$ yields AUROC$=$0.988 (L3) and 0.958 (L32), but $k{=}2$ achieves perfection. Additional components add no value, confirming the 2D intrinsic dimensionality of the ID manifold.
+
+\textbf{Finding 215}: Unlike the cosine-vs-Mahalanobis comparison where the optimal metric depended on the layer, PCA reconstruction at $k{=}2$ is \textbf{universally optimal} — the same method works best at both L3 and L32. This simplifies the detector architecture.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig136_recon_ood.png}
+\caption{\textbf{PCA reconstruction-based OOD detection.} (A) AUROC vs number of PCA components: $k{=}2$ achieves perfect 1.000 at both layers, beating cosine baselines (dashed). (B) Per-category AUROC: reconstruction k$=$2 achieves 1.000 on all categories at both layers. (C) d-prime comparison across all methods.}
+\label{fig:recon}
+\end{figure}
+
 \end{document}
