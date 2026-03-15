@@ -1,0 +1,241 @@
+{
+  "experiment": "preprocess_robustness",
+  "experiment_number": 291,
+  "timestamp": "20260315_101253",
+  "reference_corruption_distances": {
+    "fog": 0.0027054548263549805,
+    "night": 0.007991313934326172,
+    "blur": 0.006263315677642822,
+    "noise": 0.0005123615264892578
+  },
+  "resize": [
+    {
+      "resolution": 64,
+      "distance": 0.002134263515472412
+    },
+    {
+      "resolution": 112,
+      "distance": 0.0009309649467468262
+    },
+    {
+      "resolution": 160,
+      "distance": 0.0005717873573303223
+    },
+    {
+      "resolution": 224,
+      "distance": 0.0
+    },
+    {
+      "resolution": 320,
+      "distance": 0.0002817511558532715
+    },
+    {
+      "resolution": 448,
+      "distance": 0.0003533363342285156
+    },
+    {
+      "resolution": 640,
+      "distance": 0.00028693675994873047
+    },
+    {
+      "resolution": 1024,
+      "distance": 0.00028192996978759766
+    }
+  ],
+  "jpeg": [
+    {
+      "quality": 100,
+      "distance": 4.786252975463867e-05
+    },
+    {
+      "quality": 95,
+      "distance": 4.5418739318847656e-05
+    },
+    {
+      "quality": 90,
+      "distance": 4.3272972106933594e-05
+    },
+    {
+      "quality": 80,
+      "distance": 3.933906555175781e-05
+    },
+    {
+      "quality": 70,
+      "distance": 7.987022399902344e-05
+    },
+    {
+      "quality": 50,
+      "distance": 0.00021719932556152344
+    },
+    {
+      "quality": 30,
+      "distance": 0.0004786849021911621
+    },
+    {
+      "quality": 10,
+      "distance": 0.002124011516571045
+    },
+    {
+      "quality": 5,
+      "distance": 0.0034623146057128906
+    },
+    {
+      "quality": 1,
+      "distance": 0.005626380443572998
+    }
+  ],
+  "rotation": [
+    {
+      "angle": 0.1,
+      "distance": 0.00021916627883911133
+    },
+    {
+      "angle": 0.5,
+      "distance": 0.0007947087287902832
+    },
+    {
+      "angle": 1,
+      "distance": 0.0006654262542724609
+    },
+    {
+      "angle": 2,
+      "distance": 0.0005428791046142578
+    },
+    {
+      "angle": 5,
+      "distance": 0.0010869503021240234
+    },
+    {
+      "angle": 10,
+      "distance": 0.001498401165008545
+    },
+    {
+      "angle": 15,
+      "distance": 0.001258254051208496
+    },
+    {
+      "angle": 30,
+      "distance": 0.001570582389831543
+    },
+    {
+      "angle": 45,
+      "distance": 0.0014715194702148438
+    },
+    {
+      "angle": 90,
+      "distance": 7.462501525878906e-05
+    },
+    {
+      "angle": 180,
+      "distance": 8.970499038696289e-05
+    }
+  ],
+  "flips": {
+    "horizontal": 5.078315734863281e-05,
+    "vertical": 5.14984130859375e-05,
+    "both": 8.970499038696289e-05
+  },
+  "color_space": {
+    "bgr": 3.1828880310058594e-05,
+    "grayscale": 0.0010497570037841797,
+    "inverted": 6.437301635742188e-05
+  },
+  "translation": [
+    {
+      "shift_pixels": 1,
+      "distance": 5.6862831115722656e-05
+    },
+    {
+      "shift_pixels": 2,
+      "distance": 0.00010925531387329102
+    },
+    {
+      "shift_pixels": 5,
+      "distance": 0.00012385845184326172
+    },
+    {
+      "shift_pixels": 10,
+      "distance": 0.00011599063873291016
+    },
+    {
+      "shift_pixels": 20,
+      "distance": 0.00013047456741333008
+    },
+    {
+      "shift_pixels": 50,
+      "distance": 0.0003917813301086426
+    }
+  ],
+  "brightness": [
+    {
+      "brightness_factor": 0.5,
+      "distance": 0.002412259578704834
+    },
+    {
+      "brightness_factor": 0.7,
+      "distance": 0.000943303108215332
+    },
+    {
+      "brightness_factor": 0.8,
+      "distance": 0.0004413723945617676
+    },
+    {
+      "brightness_factor": 0.9,
+      "distance": 0.00013405084609985352
+    },
+    {
+      "brightness_factor": 0.95,
+      "distance": 3.063678741455078e-05
+    },
+    {
+      "brightness_factor": 1.0,
+      "distance": 0.0
+    },
+    {
+      "brightness_factor": 1.05,
+      "distance": 1.6808509826660156e-05
+    },
+    {
+      "brightness_factor": 1.1,
+      "distance": 6.55055046081543e-05
+    },
+    {
+      "brightness_factor": 1.2,
+      "distance": 0.0002243518829345703
+    },
+    {
+      "brightness_factor": 1.5,
+      "distance": 0.0010722875595092773
+    },
+    {
+      "brightness_factor": 2.0,
+      "distance": 0.002235889434814453
+    }
+  ],
+  "combined_detection": {
+    "none": {
+      "fog": 0.0027054548263549805,
+      "night": 0.007991313934326172,
+      "blur": 0.006263315677642822,
+      "noise": 0.0005123615264892578
+    },
+    "jpeg_50": {
+      "fog": 0.004069387912750244,
+      "night": 0.009183347225189209,
+      "blur": 0.00699770450592041,
+      "noise": 0.0006733536720275879
+    },
+    "rotate_5": {
+      "fog": 0.003518819808959961,
+      "night": 0.006350994110107422,
+      "blur": 0.004632771015167236,
+      "noise": 0.0003382563591003418
+    },
+    "resize_112": {
+      "fog": 0.004085063934326172,
+      "night": 0.008216381072998047,
+      "blur": 0.005917191505432129,
+      "noise": 0.0009972453117370605
+    }
+  }
+}
