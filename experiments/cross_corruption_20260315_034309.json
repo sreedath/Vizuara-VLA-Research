@@ -1,0 +1,472 @@
+{
+  "experiment": "cross_corruption_transfer",
+  "experiment_number": 183,
+  "timestamp": "20260315_034309",
+  "n_base": 8,
+  "corruption_types": [
+    "fog_60",
+    "night",
+    "blur",
+    "noise",
+    "snow",
+    "rain"
+  ],
+  "layers": [
+    3,
+    32
+  ],
+  "results": {
+    "L3": {
+      "baseline_auroc": {
+        "fog_60": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0,
+        "snow": 1.0,
+        "rain": 1.0
+      },
+      "transfer_detection_at_3sigma": {
+        "fog_60": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        },
+        "night": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        },
+        "blur": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        },
+        "noise": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        },
+        "snow": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        },
+        "rain": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        }
+      },
+      "cross_centroid_distances": {
+        "fog_60": {
+          "fog_60": {
+            "mean_dist": 0.00019403547048568726,
+            "clean_mean_dist": 0.001049920916557312
+          },
+          "night": {
+            "mean_dist": 0.004740916192531586,
+            "clean_mean_dist": 0.001049920916557312
+          },
+          "blur": {
+            "mean_dist": 0.0018228068947792053,
+            "clean_mean_dist": 0.001049920916557312
+          },
+          "noise": {
+            "mean_dist": 0.0032059475779533386,
+            "clean_mean_dist": 0.001049920916557312
+          },
+          "snow": {
+            "mean_dist": 0.003179594874382019,
+            "clean_mean_dist": 0.001049920916557312
+          },
+          "rain": {
+            "mean_dist": 0.006486490368843079,
+            "clean_mean_dist": 0.001049920916557312
+          }
+        },
+        "night": {
+          "fog_60": {
+            "mean_dist": 0.004742063581943512,
+            "clean_mean_dist": 0.00363362580537796
+          },
+          "night": {
+            "mean_dist": 0.0001931712031364441,
+            "clean_mean_dist": 0.00363362580537796
+          },
+          "blur": {
+            "mean_dist": 0.003208838403224945,
+            "clean_mean_dist": 0.00363362580537796
+          },
+          "noise": {
+            "mean_dist": 0.006231673061847687,
+            "clean_mean_dist": 0.00363362580537796
+          },
+          "snow": {
+            "mean_dist": 0.00667581707239151,
+            "clean_mean_dist": 0.00363362580537796
+          },
+          "rain": {
+            "mean_dist": 0.008259192109107971,
+            "clean_mean_dist": 0.00363362580537796
+          }
+        },
+        "blur": {
+          "fog_60": {
+            "mean_dist": 0.001634441316127777,
+            "clean_mean_dist": 0.0014392435550689697
+          },
+          "night": {
+            "mean_dist": 0.003019772469997406,
+            "clean_mean_dist": 0.0014392435550689697
+          },
+          "blur": {
+            "mean_dist": 0.00038230419158935547,
+            "clean_mean_dist": 0.0014392435550689697
+          },
+          "noise": {
+            "mean_dist": 0.003553055226802826,
+            "clean_mean_dist": 0.0014392435550689697
+          },
+          "snow": {
+            "mean_dist": 0.00394633412361145,
+            "clean_mean_dist": 0.0014392435550689697
+          },
+          "rain": {
+            "mean_dist": 0.006199240684509277,
+            "clean_mean_dist": 0.0014392435550689697
+          }
+        },
+        "noise": {
+          "fog_60": {
+            "mean_dist": 0.0030720606446266174,
+            "clean_mean_dist": 0.001914970576763153
+          },
+          "night": {
+            "mean_dist": 0.006098814308643341,
+            "clean_mean_dist": 0.001914970576763153
+          },
+          "blur": {
+            "mean_dist": 0.003607243299484253,
+            "clean_mean_dist": 0.001914970576763153
+          },
+          "noise": {
+            "mean_dist": 0.00032510608434677124,
+            "clean_mean_dist": 0.001914970576763153
+          },
+          "snow": {
+            "mean_dist": 0.0009122267365455627,
+            "clean_mean_dist": 0.001914970576763153
+          },
+          "rain": {
+            "mean_dist": 0.003370054066181183,
+            "clean_mean_dist": 0.001914970576763153
+          }
+        },
+        "snow": {
+          "fog_60": {
+            "mean_dist": 0.003045782446861267,
+            "clean_mean_dist": 0.002099446952342987
+          },
+          "night": {
+            "mean_dist": 0.006541728973388672,
+            "clean_mean_dist": 0.002099446952342987
+          },
+          "blur": {
+            "mean_dist": 0.003999695181846619,
+            "clean_mean_dist": 0.002099446952342987
+          },
+          "noise": {
+            "mean_dist": 0.0009124502539634705,
+            "clean_mean_dist": 0.002099446952342987
+          },
+          "snow": {
+            "mean_dist": 0.0003266558051109314,
+            "clean_mean_dist": 0.002099446952342987
+          },
+          "rain": {
+            "mean_dist": 0.002489916980266571,
+            "clean_mean_dist": 0.002099446952342987
+          }
+        },
+        "rain": {
+          "fog_60": {
+            "mean_dist": 0.0063364505767822266,
+            "clean_mean_dist": 0.004608042538166046
+          },
+          "night": {
+            "mean_dist": 0.008108854293823242,
+            "clean_mean_dist": 0.004608042538166046
+          },
+          "blur": {
+            "mean_dist": 0.006235428154468536,
+            "clean_mean_dist": 0.004608042538166046
+          },
+          "noise": {
+            "mean_dist": 0.003353908658027649,
+            "clean_mean_dist": 0.004608042538166046
+          },
+          "snow": {
+            "mean_dist": 0.0024732276797294617,
+            "clean_mean_dist": 0.004608042538166046
+          },
+          "rain": {
+            "mean_dist": 0.0003405064344406128,
+            "clean_mean_dist": 0.004608042538166046
+          }
+        }
+      },
+      "detectability_fraction": {
+        "fog_60": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0,
+        "snow": 1.0,
+        "rain": 1.0
+      }
+    },
+    "L32": {
+      "baseline_auroc": {
+        "fog_60": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0,
+        "snow": 1.0,
+        "rain": 1.0
+      },
+      "transfer_detection_at_3sigma": {
+        "fog_60": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        },
+        "night": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        },
+        "blur": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        },
+        "noise": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        },
+        "snow": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        },
+        "rain": {
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "snow": 1.0,
+          "rain": 1.0
+        }
+      },
+      "cross_centroid_distances": {
+        "fog_60": {
+          "fog_60": {
+            "mean_dist": 0.08331026136875153,
+            "clean_mean_dist": 0.17373592406511307
+          },
+          "night": {
+            "mean_dist": 0.43410102277994156,
+            "clean_mean_dist": 0.17373592406511307
+          },
+          "blur": {
+            "mean_dist": 0.31554682552814484,
+            "clean_mean_dist": 0.17373592406511307
+          },
+          "noise": {
+            "mean_dist": 0.3352467343211174,
+            "clean_mean_dist": 0.17373592406511307
+          },
+          "snow": {
+            "mean_dist": 0.3550988659262657,
+            "clean_mean_dist": 0.17373592406511307
+          },
+          "rain": {
+            "mean_dist": 0.4511692225933075,
+            "clean_mean_dist": 0.17373592406511307
+          }
+        },
+        "night": {
+          "fog_60": {
+            "mean_dist": 0.4362486004829407,
+            "clean_mean_dist": 0.43121596425771713
+          },
+          "night": {
+            "mean_dist": 0.06921835988759995,
+            "clean_mean_dist": 0.43121596425771713
+          },
+          "blur": {
+            "mean_dist": 0.3671903982758522,
+            "clean_mean_dist": 0.43121596425771713
+          },
+          "noise": {
+            "mean_dist": 0.4750317260622978,
+            "clean_mean_dist": 0.43121596425771713
+          },
+          "snow": {
+            "mean_dist": 0.5180903449654579,
+            "clean_mean_dist": 0.43121596425771713
+          },
+          "rain": {
+            "mean_dist": 0.5165027156472206,
+            "clean_mean_dist": 0.43121596425771713
+          }
+        },
+        "blur": {
+          "fog_60": {
+            "mean_dist": 0.3152089864015579,
+            "clean_mean_dist": 0.2935624495148659
+          },
+          "night": {
+            "mean_dist": 0.3602225333452225,
+            "clean_mean_dist": 0.2935624495148659
+          },
+          "blur": {
+            "mean_dist": 0.08454252779483795,
+            "clean_mean_dist": 0.2935624495148659
+          },
+          "noise": {
+            "mean_dist": 0.4282118156552315,
+            "clean_mean_dist": 0.2935624495148659
+          },
+          "snow": {
+            "mean_dist": 0.4560181722044945,
+            "clean_mean_dist": 0.2935624495148659
+          },
+          "rain": {
+            "mean_dist": 0.45519421994686127,
+            "clean_mean_dist": 0.2935624495148659
+          }
+        },
+        "noise": {
+          "fog_60": {
+            "mean_dist": 0.2965490147471428,
+            "clean_mean_dist": 0.2836029380559921
+          },
+          "night": {
+            "mean_dist": 0.4407239630818367,
+            "clean_mean_dist": 0.2836029380559921
+          },
+          "blur": {
+            "mean_dist": 0.39536909759044647,
+            "clean_mean_dist": 0.2836029380559921
+          },
+          "noise": {
+            "mean_dist": 0.13306891173124313,
+            "clean_mean_dist": 0.2836029380559921
+          },
+          "snow": {
+            "mean_dist": 0.23246413469314575,
+            "clean_mean_dist": 0.2836029380559921
+          },
+          "rain": {
+            "mean_dist": 0.37945690751075745,
+            "clean_mean_dist": 0.2836029380559921
+          }
+        },
+        "snow": {
+          "fog_60": {
+            "mean_dist": 0.3216082826256752,
+            "clean_mean_dist": 0.30425509810447693
+          },
+          "night": {
+            "mean_dist": 0.49081970006227493,
+            "clean_mean_dist": 0.30425509810447693
+          },
+          "blur": {
+            "mean_dist": 0.4278384670615196,
+            "clean_mean_dist": 0.30425509810447693
+          },
+          "noise": {
+            "mean_dist": 0.23722071200609207,
+            "clean_mean_dist": 0.30425509810447693
+          },
+          "snow": {
+            "mean_dist": 0.1297702118754387,
+            "clean_mean_dist": 0.30425509810447693
+          },
+          "rain": {
+            "mean_dist": 0.32083630561828613,
+            "clean_mean_dist": 0.30425509810447693
+          }
+        },
+        "rain": {
+          "fog_60": {
+            "mean_dist": 0.4267140179872513,
+            "clean_mean_dist": 0.3891194686293602
+          },
+          "night": {
+            "mean_dist": 0.49662716686725616,
+            "clean_mean_dist": 0.3891194686293602
+          },
+          "blur": {
+            "mean_dist": 0.43288976699113846,
+            "clean_mean_dist": 0.3891194686293602
+          },
+          "noise": {
+            "mean_dist": 0.38849715143442154,
+            "clean_mean_dist": 0.3891194686293602
+          },
+          "snow": {
+            "mean_dist": 0.3255359008908272,
+            "clean_mean_dist": 0.3891194686293602
+          },
+          "rain": {
+            "mean_dist": 0.12230498343706131,
+            "clean_mean_dist": 0.3891194686293602
+          }
+        }
+      },
+      "detectability_fraction": {
+        "fog_60": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0,
+        "snow": 1.0,
+        "rain": 1.0
+      }
+    }
+  }
+}

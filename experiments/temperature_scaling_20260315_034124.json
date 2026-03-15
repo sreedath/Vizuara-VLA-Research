@@ -1,0 +1,209 @@
+{
+  "experiment": "temperature_scaling",
+  "experiment_number": 182,
+  "timestamp": "20260315_034124",
+  "n_cal": 8,
+  "n_test": 6,
+  "temperatures": [
+    0.1,
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.5,
+    2.0,
+    3.0,
+    5.0,
+    10.0
+  ],
+  "layers": [
+    3,
+    32
+  ],
+  "results": {
+    "L3": {
+      "0.1": {
+        "temperature": 0.1,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.00038173794746398926,
+        "ood_cosine_mean": 0.0019487639268239338,
+        "separation_ratio": 5.104976933188112
+      },
+      "0.25": {
+        "temperature": 0.25,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.00038159886995951336,
+        "ood_cosine_mean": 0.001948644717534383,
+        "separation_ratio": 5.106525098170808
+      },
+      "0.5": {
+        "temperature": 0.5,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.00038159886995951336,
+        "ood_cosine_mean": 0.001948644717534383,
+        "separation_ratio": 5.106525098170808
+      },
+      "0.75": {
+        "temperature": 0.75,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.0003816386063893636,
+        "ood_cosine_mean": 0.0019486794869105022,
+        "separation_ratio": 5.106084509474202
+      },
+      "1.0": {
+        "temperature": 1.0,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.00038159886995951336,
+        "ood_cosine_mean": 0.001948644717534383,
+        "separation_ratio": 5.106525098170808
+      },
+      "1.5": {
+        "temperature": 1.5,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.0003816386063893636,
+        "ood_cosine_mean": 0.0019486794869105022,
+        "separation_ratio": 5.106084509474202
+      },
+      "2.0": {
+        "temperature": 2.0,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.00038159886995951336,
+        "ood_cosine_mean": 0.001948644717534383,
+        "separation_ratio": 5.106525098170808
+      },
+      "3.0": {
+        "temperature": 3.0,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.0003816386063893636,
+        "ood_cosine_mean": 0.0019486794869105022,
+        "separation_ratio": 5.106084509474202
+      },
+      "5.0": {
+        "temperature": 5.0,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.0003816386063893636,
+        "ood_cosine_mean": 0.00194865216811498,
+        "separation_ratio": 5.106012926599967
+      },
+      "10.0": {
+        "temperature": 10.0,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.0003816386063893636,
+        "ood_cosine_mean": 0.00194865216811498,
+        "separation_ratio": 5.106012926599967
+      }
+    },
+    "L32": {
+      "0.1": {
+        "temperature": 0.1,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 0.9722222222222222,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.11049784223238628,
+        "ood_cosine_mean": 0.29231056322654086,
+        "separation_ratio": 2.6453961186612815
+      },
+      "0.25": {
+        "temperature": 0.25,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 0.9722222222222222,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.11049781243006389,
+        "ood_cosine_mean": 0.29231054335832596,
+        "separation_ratio": 2.6453966523436385
+      },
+      "0.5": {
+        "temperature": 0.5,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 0.9722222222222222,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.11049781243006389,
+        "ood_cosine_mean": 0.29231054335832596,
+        "separation_ratio": 2.6453966523436385
+      },
+      "0.75": {
+        "temperature": 0.75,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 0.9722222222222222,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.1104977826277415,
+        "ood_cosine_mean": 0.29231051603953045,
+        "separation_ratio": 2.645397118598862
+      },
+      "1.0": {
+        "temperature": 1.0,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 0.9722222222222222,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.11049781243006389,
+        "ood_cosine_mean": 0.29231054335832596,
+        "separation_ratio": 2.6453966523436385
+      },
+      "1.5": {
+        "temperature": 1.5,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 0.9722222222222222,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.1104977826277415,
+        "ood_cosine_mean": 0.29231051603953045,
+        "separation_ratio": 2.645397118598862
+      },
+      "2.0": {
+        "temperature": 2.0,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 0.9722222222222222,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.11049781243006389,
+        "ood_cosine_mean": 0.29231054335832596,
+        "separation_ratio": 2.6453966523436385
+      },
+      "3.0": {
+        "temperature": 3.0,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 0.9722222222222222,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.1104977826277415,
+        "ood_cosine_mean": 0.29231051603953045,
+        "separation_ratio": 2.645397118598862
+      },
+      "5.0": {
+        "temperature": 5.0,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 0.9722222222222222,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.11049785216649373,
+        "ood_cosine_mean": 0.2923105408747991,
+        "separation_ratio": 2.64539567854964
+      },
+      "10.0": {
+        "temperature": 10.0,
+        "cosine_auroc": 1.0,
+        "l2_auroc": 0.9722222222222222,
+        "mahalanobis_auroc": 1.0,
+        "id_cosine_mean": 0.11049785216649373,
+        "ood_cosine_mean": 0.2923105408747991,
+        "separation_ratio": 2.64539567854964
+      }
+    }
+  }
+}

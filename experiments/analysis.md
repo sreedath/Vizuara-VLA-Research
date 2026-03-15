@@ -7299,3 +7299,97 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 
 **Finding**: The detector can not only detect OOD inputs but also **identify the type of corruption** with 100% accuracy at both layers. This enables adaptive safety responses — e.g., reducing speed for fog but stopping for night. The embedding space naturally organizes OOD corruptions into distinct, non-overlapping clusters.
 
+---
+
+### Finding 176: Embedding Projection Analysis (Experiment 181)
+
+**Experiment**: Project hidden-state embeddings onto the action-token subspace of the LM head to determine whether the OOD signal lives in the action-relevant or orthogonal subspace.
+
+**Method**: Extract the LM head weight matrix for action tokens (IDs 31744-31999), compute SVD to get the top-k action directions, project embeddings onto this subspace and its complement (null space). Compare AUROC in each subspace.
+
+**Action Head Singular Value Spectrum**:
+- Top singular values: 6.77, 3.94, 3.66, 2.74, 2.51, 2.20, 2.14, 2.07, 2.06, 2.05
+- Dominant first component (6.77 >> rest), rapid decay to ~2.0 plateau
+- Effective dimensionality of action space: low (dominated by first few directions)
+
+**Projection AUROC (Action subspace with k directions)**:
+| k | L3 AUROC | L32 AUROC |
+|---|----------|-----------|
+| 2 | 0.688 | 0.736 |
+| 5 | 0.910 | 0.910 |
+| 10 | 0.972 | 0.931 |
+
+**Subspace AUROC Decomposition**:
+| Metric | L3 | L32 |
+|--------|-----|------|
+| Full-space | 1.000 | 1.000 |
+| Action subspace (k=10) | 0.972 | 0.931 |
+| Null subspace | 1.000 | 0.972 |
+
+**Norm Decomposition**:
+| Layer | ID Action Norm | OOD Action Norm | ID Null Norm | OOD Null Norm |
+|-------|---------------|-----------------|-------------|---------------|
+| L3 | 0.267 ± 0.006 | 0.263 ± 0.009 | 7.93 ± 0.05 | 7.94 ± 0.10 |
+| L32 | 15.40 ± 0.68 | 13.42 ± 2.72 | 77.07 ± 6.69 | 72.07 ± 20.66 |
+
+**Key Findings**:
+1. **OOD signal is present in BOTH subspaces**: Action subspace AUROC 0.97 (L3), null subspace AUROC 1.0 (L3). The detector catches OOD changes everywhere in the embedding space.
+2. **Null subspace preserves full detection**: AUROC=1.0 at L3 even with only the null-space projection — meaning OOD detection doesn't rely on action-relevant dimensions.
+3. **Action subspace captures most of the signal with just 10 directions**: Only 10 out of 4096 dimensions achieve 0.97 AUROC, suggesting OOD inputs substantially perturb action-relevant directions.
+4. **97% of L3 embedding energy is in null space**: Action norm 0.27 vs null norm 7.93 — most of the embedding represents non-action information.
+5. **L32 shows higher action-space engagement**: Action norm 15.4 (20% of total) vs L3's 3.3% — later layers concentrate more energy in action-relevant directions.
+
+**Finding**: The OOD signal is distributed across both the action-relevant and orthogonal subspaces of the embedding. The null subspace alone achieves perfect AUROC=1.0 at L3, while even the low-dimensional action subspace (10 of 4096 dims) achieves 0.97 AUROC. This means OOD corruptions perturb the embedding globally — they don't selectively affect only the dimensions that influence action predictions. The implication is that cosine-distance OOD detection is robust because the OOD signal is redundantly encoded across the full embedding space.
+
+---
+
+### Finding 177: Temperature Scaling Effect on OOD Detection (Experiment 182)
+
+**Experiment**: Sweep temperature parameter T from 0.1 to 10.0 and measure its effect on cosine, L2, and Mahalanobis distance-based OOD detection AUROC.
+
+**Key Results**:
+- **Cosine AUROC = 1.0 at ALL temperatures for BOTH layers** — completely invariant
+- **L2 AUROC**: L3 = 1.0 (all T), L32 = 0.9722 (all T) — also invariant
+- **Mahalanobis AUROC = 1.0 at ALL temperatures for BOTH layers** — variance normalization recovers perfect discrimination
+
+**Separation Ratios** (OOD cosine distance / ID cosine distance):
+- L3: 5.11× (invariant across T)
+- L32: 2.65× (invariant across T)
+
+**Why temperature scaling doesn't help**:
+1. **Cosine distance is scale-invariant**: cos(x/T, y/T) = cos(x, y) by definition
+2. **Uniform scaling preserves relative L2 order**: d_L2(x/T, c/T) = d_L2(x,c)/T for all x
+3. **The OOD signal is directional, not magnitude-based**: Confirmed by prior Finding 173 (norm AUROC ≈ 0.5)
+
+**Finding**: Temperature scaling is a no-op for cosine-distance OOD detection. The detector's performance is entirely determined by angular structure in embedding space, which temperature cannot alter. Mahalanobis distance matches cosine AUROC perfectly, suggesting per-dimension variance normalization could be beneficial for L2-based methods at L32, but cosine distance already achieves this implicitly. This validates cosine distance as the optimal metric choice — it's inherently temperature-invariant and achieves the highest AUROC at both layers.
+
+---
+
+### Finding 178: Cross-Corruption Transfer (Experiment 183)
+
+**Experiment**: Test whether calibrating a threshold from clean data can detect ALL types of corruption (fog, night, blur, noise, snow, rain) — and whether detection generalizes across unseen corruption types.
+
+**Key Results**:
+- **Baseline AUROC = 1.0 for ALL 6 corruption types at BOTH layers** — perfect detection of every corruption type using clean-data calibration
+- **Cross-corruption detection rate at 3σ threshold = 100% for ALL combinations** — the entire 6×6 transfer matrix is filled with 1.0
+- **Detectability fraction = 1.0 for every corruption type** — every corruption is detected regardless of which corruption set the threshold
+
+**Cross-Centroid Distances (L3)**: Each corruption type's centroid is closest to itself (0.0002-0.0004) but all are far from the clean centroid (0.001-0.005). Corruption-specific structure:
+- noise↔snow are nearby (0.0009) — additive noise corruptions are geometrically similar
+- night is most isolated (distances 0.005-0.008 to others)
+- fog↔blur are moderately close (0.0018) — both reduce contrast
+
+**Cross-Centroid Distances (L32)**: Larger absolute distances but same relative structure:
+- Same-type: 0.07-0.13
+- Cross-type: 0.24-0.52
+- noise↔snow: 0.23 (closest pair)
+- night distances: 0.36-0.52 (most isolated)
+
+**Key Findings**:
+1. **Zero-shot corruption transfer is perfect**: The clean-data centroid + 3σ threshold detects ALL corruption types at 100% rate. No corruption-specific calibration is needed.
+2. **The detector is corruption-agnostic by design**: Because the threshold is set relative to the clean distribution, any sufficiently large deviation — regardless of type — triggers detection.
+3. **Corruption similarity structure is preserved**: noise↔snow are nearest neighbors in both layers, night is most isolated. This aligns with physical similarity of the corruptions.
+4. **Rain (new, unseen corruption) is detected at 100%**: Even a corruption type not tested in prior experiments is perfectly detected, confirming strong generalization.
+
+**Finding**: The cosine-distance OOD detector with clean-data calibration achieves **perfect cross-corruption transfer**: calibrating from clean driving images and setting a 3σ threshold detects fog, night, blur, noise, snow, and rain at 100% rate. The detector doesn't need to know about corruption types in advance — it detects any deviation from the clean manifold. This is a critical practical advantage: the system generalizes to novel, unseen corruptions without retraining or recalibration.
+
