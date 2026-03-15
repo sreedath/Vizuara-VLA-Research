@@ -1,0 +1,981 @@
+{
+  "experiment": "temporal_sequence",
+  "experiment_number": 301,
+  "timestamp": "20260315_105222",
+  "fog_bank": {
+    "sequence": [
+      {
+        "time": 0,
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 1,
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 2,
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 3,
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 4,
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 5,
+        "severity": 0.1,
+        "distance": 6.252527236938477e-05,
+        "detected": true
+      },
+      {
+        "time": 6,
+        "severity": 0.2,
+        "distance": 0.00016802549362182617,
+        "detected": true
+      },
+      {
+        "time": 7,
+        "severity": 0.3,
+        "distance": 0.00034558773040771484,
+        "detected": true
+      },
+      {
+        "time": 8,
+        "severity": 0.4,
+        "distance": 0.0005706548690795898,
+        "detected": true
+      },
+      {
+        "time": 9,
+        "severity": 0.5,
+        "distance": 0.0008426308631896973,
+        "detected": true
+      },
+      {
+        "time": 10,
+        "severity": 0.6,
+        "distance": 0.0011508464813232422,
+        "detected": true
+      },
+      {
+        "time": 11,
+        "severity": 0.7,
+        "distance": 0.0014816522598266602,
+        "detected": true
+      },
+      {
+        "time": 12,
+        "severity": 0.8,
+        "distance": 0.0018665194511413574,
+        "detected": true
+      },
+      {
+        "time": 13,
+        "severity": 0.9,
+        "distance": 0.0022712349891662598,
+        "detected": true
+      },
+      {
+        "time": 14,
+        "severity": 1.0,
+        "distance": 0.0027054548263549805,
+        "detected": true
+      },
+      {
+        "time": 15,
+        "severity": 0.9,
+        "distance": 0.0022712349891662598,
+        "detected": true
+      },
+      {
+        "time": 16,
+        "severity": 0.8,
+        "distance": 0.0018665194511413574,
+        "detected": true
+      },
+      {
+        "time": 17,
+        "severity": 0.7,
+        "distance": 0.0014816522598266602,
+        "detected": true
+      },
+      {
+        "time": 18,
+        "severity": 0.6,
+        "distance": 0.0011508464813232422,
+        "detected": true
+      },
+      {
+        "time": 19,
+        "severity": 0.5,
+        "distance": 0.0008426308631896973,
+        "detected": true
+      },
+      {
+        "time": 20,
+        "severity": 0.4,
+        "distance": 0.0005706548690795898,
+        "detected": true
+      },
+      {
+        "time": 21,
+        "severity": 0.30000000000000004,
+        "distance": 0.00034558773040771484,
+        "detected": true
+      },
+      {
+        "time": 22,
+        "severity": 0.19999999999999996,
+        "distance": 0.00016802549362182617,
+        "detected": true
+      },
+      {
+        "time": 23,
+        "severity": 0.09999999999999998,
+        "distance": 6.252527236938477e-05,
+        "detected": true
+      },
+      {
+        "time": 24,
+        "severity": 0.0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 25,
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 26,
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 27,
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 28,
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 29,
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      }
+    ],
+    "tp": 19,
+    "fn": 0,
+    "fp": 0,
+    "tn": 11
+  },
+  "sunset": {
+    "sequence": [
+      {
+        "time": 0,
+        "severity": 0.0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 1,
+        "severity": 0.03333333333333333,
+        "distance": 4.4465065002441406e-05,
+        "detected": true
+      },
+      {
+        "time": 2,
+        "severity": 0.06666666666666667,
+        "distance": 4.547834396362305e-05,
+        "detected": true
+      },
+      {
+        "time": 3,
+        "severity": 0.1,
+        "distance": 0.00013381242752075195,
+        "detected": true
+      },
+      {
+        "time": 4,
+        "severity": 0.13333333333333333,
+        "distance": 0.0002084970474243164,
+        "detected": true
+      },
+      {
+        "time": 5,
+        "severity": 0.16666666666666666,
+        "distance": 0.00029861927032470703,
+        "detected": true
+      },
+      {
+        "time": 6,
+        "severity": 0.2,
+        "distance": 0.0003681182861328125,
+        "detected": true
+      },
+      {
+        "time": 7,
+        "severity": 0.23333333333333334,
+        "distance": 0.0005494356155395508,
+        "detected": true
+      },
+      {
+        "time": 8,
+        "severity": 0.26666666666666666,
+        "distance": 0.0006929636001586914,
+        "detected": true
+      },
+      {
+        "time": 9,
+        "severity": 0.3,
+        "distance": 0.0008627772331237793,
+        "detected": true
+      },
+      {
+        "time": 10,
+        "severity": 0.3333333333333333,
+        "distance": 0.001066744327545166,
+        "detected": true
+      },
+      {
+        "time": 11,
+        "severity": 0.36666666666666664,
+        "distance": 0.0012673735618591309,
+        "detected": true
+      },
+      {
+        "time": 12,
+        "severity": 0.4,
+        "distance": 0.0015032291412353516,
+        "detected": true
+      },
+      {
+        "time": 13,
+        "severity": 0.43333333333333335,
+        "distance": 0.0017563700675964355,
+        "detected": true
+      },
+      {
+        "time": 14,
+        "severity": 0.4666666666666667,
+        "distance": 0.0019813179969787598,
+        "detected": true
+      },
+      {
+        "time": 15,
+        "severity": 0.5,
+        "distance": 0.0021948814392089844,
+        "detected": true
+      },
+      {
+        "time": 16,
+        "severity": 0.5333333333333333,
+        "distance": 0.0024570226669311523,
+        "detected": true
+      },
+      {
+        "time": 17,
+        "severity": 0.5666666666666667,
+        "distance": 0.00267869234085083,
+        "detected": true
+      },
+      {
+        "time": 18,
+        "severity": 0.6,
+        "distance": 0.0028502345085144043,
+        "detected": true
+      },
+      {
+        "time": 19,
+        "severity": 0.6333333333333333,
+        "distance": 0.0030947327613830566,
+        "detected": true
+      },
+      {
+        "time": 20,
+        "severity": 0.6666666666666666,
+        "distance": 0.0033107995986938477,
+        "detected": true
+      },
+      {
+        "time": 21,
+        "severity": 0.7,
+        "distance": 0.0035696029663085938,
+        "detected": true
+      },
+      {
+        "time": 22,
+        "severity": 0.7333333333333333,
+        "distance": 0.0038652420043945312,
+        "detected": true
+      },
+      {
+        "time": 23,
+        "severity": 0.7666666666666667,
+        "distance": 0.004130303859710693,
+        "detected": true
+      },
+      {
+        "time": 24,
+        "severity": 0.8,
+        "distance": 0.004476428031921387,
+        "detected": true
+      },
+      {
+        "time": 25,
+        "severity": 0.8333333333333334,
+        "distance": 0.0047664642333984375,
+        "detected": true
+      },
+      {
+        "time": 26,
+        "severity": 0.8666666666666667,
+        "distance": 0.005183756351470947,
+        "detected": true
+      },
+      {
+        "time": 27,
+        "severity": 0.9,
+        "distance": 0.005623042583465576,
+        "detected": true
+      },
+      {
+        "time": 28,
+        "severity": 0.9333333333333333,
+        "distance": 0.006339073181152344,
+        "detected": true
+      },
+      {
+        "time": 29,
+        "severity": 0.9666666666666667,
+        "distance": 0.007191002368927002,
+        "detected": true
+      },
+      {
+        "time": 30,
+        "severity": 1.0,
+        "distance": 0.007991313934326172,
+        "detected": true
+      }
+    ],
+    "first_detect_time": 1,
+    "first_detect_severity": 0.03333333333333333
+  },
+  "glitches": {
+    "sequence": [
+      {
+        "time": 0,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 1,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 2,
+        "is_glitch": true,
+        "distance": 0.00015681982040405273,
+        "detected": true
+      },
+      {
+        "time": 3,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 4,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 5,
+        "is_glitch": true,
+        "distance": 0.00015681982040405273,
+        "detected": true
+      },
+      {
+        "time": 6,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 7,
+        "is_glitch": true,
+        "distance": 0.00015681982040405273,
+        "detected": true
+      },
+      {
+        "time": 8,
+        "is_glitch": true,
+        "distance": 0.00015681982040405273,
+        "detected": true
+      },
+      {
+        "time": 9,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 10,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 11,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 12,
+        "is_glitch": true,
+        "distance": 0.00015681982040405273,
+        "detected": true
+      },
+      {
+        "time": 13,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 14,
+        "is_glitch": true,
+        "distance": 0.00015681982040405273,
+        "detected": true
+      },
+      {
+        "time": 15,
+        "is_glitch": true,
+        "distance": 0.00015681982040405273,
+        "detected": true
+      },
+      {
+        "time": 16,
+        "is_glitch": true,
+        "distance": 0.00015681982040405273,
+        "detected": true
+      },
+      {
+        "time": 17,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 18,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 19,
+        "is_glitch": false,
+        "distance": 0.0,
+        "detected": false
+      }
+    ],
+    "tp": 8,
+    "fn": 0,
+    "fp": 0,
+    "tn": 12
+  },
+  "journey": {
+    "sequence": [
+      {
+        "time": 0,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 1,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 2,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 3,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 4,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 5,
+        "corruption": "fog",
+        "severity": 0.5,
+        "distance": 0.0008426308631896973,
+        "detected": true
+      },
+      {
+        "time": 6,
+        "corruption": "fog",
+        "severity": 0.5,
+        "distance": 0.0008426308631896973,
+        "detected": true
+      },
+      {
+        "time": 7,
+        "corruption": "fog",
+        "severity": 0.5,
+        "distance": 0.0008426308631896973,
+        "detected": true
+      },
+      {
+        "time": 8,
+        "corruption": "fog",
+        "severity": 0.5,
+        "distance": 0.0008426308631896973,
+        "detected": true
+      },
+      {
+        "time": 9,
+        "corruption": "fog",
+        "severity": 0.5,
+        "distance": 0.0008426308631896973,
+        "detected": true
+      },
+      {
+        "time": 10,
+        "corruption": "fog",
+        "severity": 1.0,
+        "distance": 0.0027054548263549805,
+        "detected": true
+      },
+      {
+        "time": 11,
+        "corruption": "fog",
+        "severity": 1.0,
+        "distance": 0.0027054548263549805,
+        "detected": true
+      },
+      {
+        "time": 12,
+        "corruption": "fog",
+        "severity": 1.0,
+        "distance": 0.0027054548263549805,
+        "detected": true
+      },
+      {
+        "time": 13,
+        "corruption": "fog",
+        "severity": 1.0,
+        "distance": 0.0027054548263549805,
+        "detected": true
+      },
+      {
+        "time": 14,
+        "corruption": "fog",
+        "severity": 1.0,
+        "distance": 0.0027054548263549805,
+        "detected": true
+      },
+      {
+        "time": 15,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 16,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 17,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 18,
+        "corruption": "night",
+        "severity": 0.3,
+        "distance": 0.0008627772331237793,
+        "detected": true
+      },
+      {
+        "time": 19,
+        "corruption": "night",
+        "severity": 0.3,
+        "distance": 0.0008627772331237793,
+        "detected": true
+      },
+      {
+        "time": 20,
+        "corruption": "night",
+        "severity": 0.3,
+        "distance": 0.0008627772331237793,
+        "detected": true
+      },
+      {
+        "time": 21,
+        "corruption": "night",
+        "severity": 0.3,
+        "distance": 0.0008627772331237793,
+        "detected": true
+      },
+      {
+        "time": 22,
+        "corruption": "night",
+        "severity": 0.3,
+        "distance": 0.0008627772331237793,
+        "detected": true
+      },
+      {
+        "time": 23,
+        "corruption": "night",
+        "severity": 0.8,
+        "distance": 0.004476428031921387,
+        "detected": true
+      },
+      {
+        "time": 24,
+        "corruption": "night",
+        "severity": 0.8,
+        "distance": 0.004476428031921387,
+        "detected": true
+      },
+      {
+        "time": 25,
+        "corruption": "night",
+        "severity": 0.8,
+        "distance": 0.004476428031921387,
+        "detected": true
+      },
+      {
+        "time": 26,
+        "corruption": "night",
+        "severity": 0.8,
+        "distance": 0.004476428031921387,
+        "detected": true
+      },
+      {
+        "time": 27,
+        "corruption": "night",
+        "severity": 0.8,
+        "distance": 0.004476428031921387,
+        "detected": true
+      },
+      {
+        "time": 28,
+        "corruption": "blur",
+        "severity": 0.5,
+        "distance": 0.005036652088165283,
+        "detected": true
+      },
+      {
+        "time": 29,
+        "corruption": "blur",
+        "severity": 0.5,
+        "distance": 0.005036652088165283,
+        "detected": true
+      },
+      {
+        "time": 30,
+        "corruption": "blur",
+        "severity": 0.5,
+        "distance": 0.005036652088165283,
+        "detected": true
+      },
+      {
+        "time": 31,
+        "corruption": "blur",
+        "severity": 0.5,
+        "distance": 0.005036652088165283,
+        "detected": true
+      },
+      {
+        "time": 32,
+        "corruption": "blur",
+        "severity": 0.5,
+        "distance": 0.005036652088165283,
+        "detected": true
+      },
+      {
+        "time": 33,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 34,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 35,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 36,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 37,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 38,
+        "corruption": "noise",
+        "severity": 1.0,
+        "distance": 0.0005123615264892578,
+        "detected": true
+      },
+      {
+        "time": 39,
+        "corruption": "noise",
+        "severity": 1.0,
+        "distance": 0.0005123615264892578,
+        "detected": true
+      },
+      {
+        "time": 40,
+        "corruption": "noise",
+        "severity": 1.0,
+        "distance": 0.0005123615264892578,
+        "detected": true
+      },
+      {
+        "time": 41,
+        "corruption": "noise",
+        "severity": 1.0,
+        "distance": 0.0005123615264892578,
+        "detected": true
+      },
+      {
+        "time": 42,
+        "corruption": "noise",
+        "severity": 1.0,
+        "distance": 0.0005123615264892578,
+        "detected": true
+      },
+      {
+        "time": 43,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 44,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 45,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 46,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "time": 47,
+        "corruption": "clean",
+        "severity": 0,
+        "distance": 0.0,
+        "detected": false
+      }
+    ],
+    "tp": 30,
+    "fn": 0,
+    "fp": 0,
+    "tn": 18,
+    "sensitivity": 1.0,
+    "specificity": 1.0
+  },
+  "response_times": {
+    "fog_sev0.05": {
+      "corruption": "fog",
+      "severity": 0.05,
+      "distance": 1.2934207916259766e-05,
+      "detected_first_frame": true
+    },
+    "fog_sev0.1": {
+      "corruption": "fog",
+      "severity": 0.1,
+      "distance": 6.252527236938477e-05,
+      "detected_first_frame": true
+    },
+    "fog_sev0.3": {
+      "corruption": "fog",
+      "severity": 0.3,
+      "distance": 0.00034558773040771484,
+      "detected_first_frame": true
+    },
+    "fog_sev0.5": {
+      "corruption": "fog",
+      "severity": 0.5,
+      "distance": 0.0008426308631896973,
+      "detected_first_frame": true
+    },
+    "fog_sev1.0": {
+      "corruption": "fog",
+      "severity": 1.0,
+      "distance": 0.0027054548263549805,
+      "detected_first_frame": true
+    },
+    "night_sev0.05": {
+      "corruption": "night",
+      "severity": 0.05,
+      "distance": 3.1828880310058594e-05,
+      "detected_first_frame": true
+    },
+    "night_sev0.1": {
+      "corruption": "night",
+      "severity": 0.1,
+      "distance": 0.00013381242752075195,
+      "detected_first_frame": true
+    },
+    "night_sev0.3": {
+      "corruption": "night",
+      "severity": 0.3,
+      "distance": 0.0008627772331237793,
+      "detected_first_frame": true
+    },
+    "night_sev0.5": {
+      "corruption": "night",
+      "severity": 0.5,
+      "distance": 0.0021948814392089844,
+      "detected_first_frame": true
+    },
+    "night_sev1.0": {
+      "corruption": "night",
+      "severity": 1.0,
+      "distance": 0.007991313934326172,
+      "detected_first_frame": true
+    },
+    "blur_sev0.05": {
+      "corruption": "blur",
+      "severity": 0.05,
+      "distance": 0.0001379847526550293,
+      "detected_first_frame": true
+    },
+    "blur_sev0.1": {
+      "corruption": "blur",
+      "severity": 0.1,
+      "distance": 0.0007543563842773438,
+      "detected_first_frame": true
+    },
+    "blur_sev0.3": {
+      "corruption": "blur",
+      "severity": 0.3,
+      "distance": 0.003692924976348877,
+      "detected_first_frame": true
+    },
+    "blur_sev0.5": {
+      "corruption": "blur",
+      "severity": 0.5,
+      "distance": 0.005036652088165283,
+      "detected_first_frame": true
+    },
+    "blur_sev1.0": {
+      "corruption": "blur",
+      "severity": 1.0,
+      "distance": 0.006263315677642822,
+      "detected_first_frame": true
+    },
+    "noise_sev0.05": {
+      "corruption": "noise",
+      "severity": 0.05,
+      "distance": 4.231929779052734e-06,
+      "detected_first_frame": true
+    },
+    "noise_sev0.1": {
+      "corruption": "noise",
+      "severity": 0.1,
+      "distance": 2.7835369110107422e-05,
+      "detected_first_frame": true
+    },
+    "noise_sev0.3": {
+      "corruption": "noise",
+      "severity": 0.3,
+      "distance": 4.57763671875e-05,
+      "detected_first_frame": true
+    },
+    "noise_sev0.5": {
+      "corruption": "noise",
+      "severity": 0.5,
+      "distance": 0.00015681982040405273,
+      "detected_first_frame": true
+    },
+    "noise_sev1.0": {
+      "corruption": "noise",
+      "severity": 1.0,
+      "distance": 0.0005123615264892578,
+      "detected_first_frame": true
+    }
+  }
+}

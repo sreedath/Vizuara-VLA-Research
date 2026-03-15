@@ -11384,3 +11384,73 @@ Corruption shifts are **~97-99% orthogonal** to the clean embedding direction.
 **Finding 381**: **The last 3 layers (L30-L32) dominate the residual stream**, contributing 65-75% of total corruption signal for fog/night/blur. L32 alone contributes 33-37% despite being the final projection layer. Noise is more distributed, with significant contributions from L28 and earlier layers.
 
 **Finding 382**: **Per-dimension signal has moderate concentration** (Gini 0.65-0.70): 50% of signal requires 348-472 dimensions, and 90% needs 1670-1788 dimensions. Noise is most concentrated (top 20 dims = 20%, Gini = 0.70), blur most distributed (top 20 dims = 7.4%, Gini = 0.65). This moderate Gini explains why random projection works — signal spans hundreds of dimensions, so random subspaces reliably capture it.
+
+---
+
+## Experiment 300: Calibration Seed Robustness (Real OpenVLA-7B)
+
+**Date:** 2025-03-15 | **GPU:** RunPod A40 | **Model:** openvla-7b (bfloat16)
+
+### Setup
+Tested calibration robustness across 20 different random seeds for calibration images: same-image AUROC per seed, cross-image detection (calibrate on one random image, test on different), multi-image calibration improvement (n=1 to 20), and cross-seed embedding similarity.
+
+### Results
+
+**Same-Image AUROC:** ALL 20 seeds × 4 corruptions = **80/80 AUROC=1.0**. Completely seed-invariant.
+
+**Cross-Image Detection:** ALL 4 cal × 3 test combinations = **12/12 AUROC=1.0**. Cross-image works perfectly for same-type (random noise) images.
+
+**Multi-Image Calibration:**
+
+| N Cal | Overall AUROC | Noise AUROC | Notes |
+|-------|--------------|-------------|-------|
+| 1 | 0.917 | 0.667 | Low-severity noise near cross-image threshold |
+| 2 | 0.917 | 0.667 | |
+| 3 | 0.917 | 0.667 | |
+| 5 | **1.000** | **1.000** | Centroid averaging recovers noise detection |
+| 10 | 1.000 | 1.000 | |
+| 20 | 1.000 | 1.000 | |
+
+**Cross-Seed Embedding Similarity:** cos_sim = 0.9999 (mean), range [0.99990, 0.99995]. All random noise images produce near-identical embeddings.
+
+### Key Findings
+
+**Finding 383**: **Same-image calibration is 100% seed-invariant** — all 20 random seeds achieve AUROC=1.0 for all 4 corruptions. The specific pixel pattern does not matter; any random image works equally well as a calibration sample.
+
+**Finding 384**: **Cross-image detection works perfectly for same-type images** (12/12 AUROC=1.0), because different random noise images produce embeddings with cos_sim > 0.9999. This near-identity explains why one-shot calibration generalizes within image type.
+
+**Finding 385**: **Multi-image centroid from n>=5 images restores perfect cross-image detection** even when test image differs from all calibration images. At n=1-3, noise at severity 0.3 can fall below the cross-image distance threshold, reducing noise AUROC to 0.667.
+
+**Finding 386**: **All random images produce near-identical embeddings** (cos_sim=0.9999), explaining the zero in-distribution variance property. The model's visual encoder maps all random textures to essentially the same hidden state representation.
+
+---
+
+## Experiment 301: Temporal Corruption Sequence Analysis (Real OpenVLA-7B)
+
+**Date:** 2025-03-15 | **GPU:** RunPod A40 | **Model:** openvla-7b (bfloat16)
+
+### Setup
+Simulated 5 realistic driving scenarios with dynamic corruption: fog bank entry/exit (30 frames), gradual sunset (31 frames), intermittent sensor glitches (20 frames), multi-corruption journey (48 frames), and response time analysis at 5 severity levels.
+
+### Results
+
+| Scenario | TP | FN | FP | TN | Sens | Spec | Delay |
+|----------|-----|-----|-----|-----|------|------|-------|
+| Fog bank | 19 | 0 | 0 | 11 | 100% | 100% | 0 frames |
+| Sunset | 30 | 0 | 0 | 1 | 100% | 100% | 0 frames |
+| Glitches | 8 | 0 | 0 | 12 | 100% | 100% | 0 frames |
+| Journey | 30 | 0 | 0 | 18 | 100% | 100% | 0 frames |
+
+**Sunset first detection:** t=1 (severity 3.3%) — corruption detected within the first frame of onset.
+
+**Response time:** ALL 20 corruption/severity combinations detected on the very first frame (zero-lag detection), even at severity 0.05 (5% corruption).
+
+### Key Findings
+
+**Finding 387**: **Zero-lag detection across all temporal scenarios** — the detector identifies every corrupted frame on the first frame of corruption onset, with 0 false negatives and 0 false positives across 129 total frames. The fog bank ramp-up is tracked perfectly with distance proportional to severity.
+
+**Finding 388**: **Sunset (gradual night) is detected at 3.3% severity** — the very first non-clean frame in the 30-step ramp is detected. The cosine distance tracks the severity monotonically, enabling not just detection but continuous severity estimation during the transition.
+
+**Finding 389**: **Intermittent sensor glitches are detected with zero lag** — each noise frame is independently detected regardless of the surrounding clean frames, confirming the detector has no temporal smoothing artifacts or hysteresis that would miss isolated corruption events.
+
+**Finding 390**: **The 48-frame multi-corruption journey achieves 100% sensitivity and 100% specificity**, correctly tracking all transitions: clean→fog→fog(stronger)→clean→night(mild)→night(strong)→blur→clean→noise→clean. Every segment boundary is detected at the exact frame of transition.

@@ -136,7 +136,8 @@ def main():
             }
 
         aurocs = [v["auroc"] for v in cross_image[cal_seed].values()]
-        print(f"  Cal={cal_seed}: {[f'{v[\"auroc\"]:.3f}' for v in cross_image[cal_seed].values()]}, mean={np.mean(aurocs):.3f}")
+        auroc_strs = [f"{a:.3f}" for a in aurocs]
+        print(f"  Cal={cal_seed}: {auroc_strs}, mean={np.mean(aurocs):.3f}")
 
     results["cross_image"] = cross_image
 

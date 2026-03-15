@@ -5576,4 +5576,34 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 652}: \textbf{Per-dimension signal has moderate Gini concentration} (0.65--0.70): 50\% of signal requires 348--472 dimensions, 90\% needs $\sim$1700. This moderate spread explains why random projection preserves detection --- signal spans hundreds of dimensions, so random 32D subspaces reliably capture it.
 
+\subsection{Calibration Seed Robustness}
+
+\textbf{Experiment 300: Multi-Seed Analysis.} We test calibration robustness across 20 different random seeds for calibration images, measuring same-image AUROC, cross-image detection, multi-image centroid improvement, and cross-seed embedding similarity.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig309_cal_seeds.png}
+\caption{Calibration seed robustness. (a) Same-image: 80/80 AUROC=1.0 across all seeds. (b) Cross-image: all AUROC=1.0. (c) Multi-cal: $n \geq 5$ achieves perfect detection; noise needs averaging at $n < 5$. (d) Cross-seed similarity: $0.9999$ (near-identical embeddings). (e--f) Summary statistics.}
+\end{figure}
+
+\textbf{Finding 653}: \textbf{Same-image calibration is 100\% seed-invariant}: all 20 random seeds $\times$ 4 corruptions = 80/80 AUROC=1.0. The specific pixel pattern does not matter --- any random image works equally well as calibration.
+
+\textbf{Finding 654}: \textbf{Different random images produce near-identical embeddings} ($\cos = 0.9999$), explaining the zero in-distribution variance property. Cross-image detection achieves 12/12 AUROC=1.0 for same-type images. Multi-image centroid from $n \geq 5$ images restores perfect detection even for cross-image noise.
+
+\subsection{Temporal Corruption Sequences}
+
+\textbf{Experiment 301: Dynamic Scenario Analysis.} We simulate 5 realistic driving scenarios: fog bank entry/exit (30 frames), gradual sunset (31 frames), intermittent sensor glitches (20 frames), multi-corruption journey (48 frames), and response time at 5 severity levels.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig310_temporal.png}
+\caption{Temporal corruption sequences. (a) Fog bank: distance tracks severity with zero delay. (b) Sunset: detected at 3.3\% severity (frame 1). (c) Glitches: each noise frame detected independently. (d) 48-frame journey: 100\% sensitivity/specificity across all transitions. (e) Response time: all 20 conditions detected first frame. (f) Summary: zero detection latency across all scenarios.}
+\end{figure}
+
+\textbf{Finding 655}: \textbf{Zero-lag detection across all temporal scenarios}: 100\% sensitivity and 100\% specificity across 129 total frames with 0 false negatives and 0 false positives. The detector tracks corruption severity monotonically during fog bank ramp-up and sunset transitions.
+
+\textbf{Finding 656}: \textbf{Sunset (gradual night) detected at 3.3\% severity} --- the very first non-clean frame in a 30-step ramp. All 20 corruption/severity combinations are detected on the first frame of onset, confirming zero-lag detection even at severity 0.05 (5\% corruption).
+
+\textbf{Finding 657}: \textbf{Intermittent glitches detected with zero hysteresis}: each isolated noise frame is independently detected regardless of surrounding clean frames, confirming no temporal smoothing artifacts. The 48-frame multi-corruption journey correctly identifies every segment boundary at the exact transition frame.
+
 \end{document}
