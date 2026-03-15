@@ -4950,4 +4950,32 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 539}: Corrupted actions are \textbf{perfectly deterministic}: 5 runs produce identical tokens. The model consistently predicts the \textit{same wrong actions} under corruption --- not random errors but systematic, reproducible safety hazards.
 
+\subsection{Output Distribution Divergence}
+
+\textbf{Experiment 260: KL Divergence.} We measure KL and JS divergence between clean and corrupted next-token distributions over the 256-bin action vocabulary.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig269_kl_div.png}
+\caption{Left: KL divergence ranges from 1.2 (fog) to 6.8 (night), matching cosine distance ordering. Center: corruption universally increases entropy from 2.1 to 2.5--3.5. Right: top-1 probability drops from 0.57 to 0.23--0.36 --- the model is less confident but still wrong.}
+\end{figure}
+
+\textbf{Finding 540}: KL divergence orders corruptions similarly to cosine distance: fog (1.2) $<$ noise (2.3) $<$ blur (4.2) $<$ night (6.8). However, KL divergence requires the clean reference distribution, making it impractical as a standalone detector compared to the embedding-based approach.
+
+\textbf{Finding 541}: Corruption universally \textbf{reduces model confidence}: top-1 probability drops from 0.57 to 0.23--0.36, and entropy increases from 2.1 to 2.5--3.5 nats. The model becomes more uncertain but still assigns highest probability to a \textit{wrong} action token --- uncertainty alone does not prevent wrong actions.
+
+\subsection{L2 Norm Profile}
+
+\textbf{Experiment 261: Norm Across 33 Layers.} We measure the L2 norm of hidden states at each layer for clean and corrupted conditions.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig270_norm_profile.png}
+\caption{Left: L2 norms grow monotonically from 0.89 (L0) to 126.6 (L31) with L32 dropout. Center: percentage changes are $<$6\% at L0--L31 but spike at L32. Right: L32 (LM head) shows $\pm$19\% norm changes.}
+\end{figure}
+
+\textbf{Finding 542}: L2 norm changes are \textbf{concentrated at L32} (the LM head): night increases norm by 19\%, blur decreases by 16\%. Hidden layers (L0--L31) show $<$6\% changes, confirming the transformer preserves representation \textit{scale} while changing \textit{direction} --- explaining why cosine distance is the ideal metric.
+
+\textbf{Finding 543}: Night \textbf{increases} L32 norm (+19\%) while blur \textbf{decreases} it ($-$16\%), revealing opposite effects: night produces higher-magnitude logits (more extreme predictions), while blur produces dampened logits (more diffuse predictions).
+
 \end{document}

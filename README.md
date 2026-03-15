@@ -8,7 +8,7 @@
 
 Vision-Language-Action (VLA) models like OpenVLA-7B produce confident action predictions even under visual corruption (fog, night, blur, noise) --- silently outputting **wrong and dangerous actions**. We discover that a simple cosine distance metric on the model's hidden-state embeddings achieves **perfect OOD detection (AUROC=1.0)** with just **one clean calibration image**.
 
-## Key Results (510 Findings, 47 Experiments on Real OpenVLA-7B)
+## Key Results (539 Findings, 59 Experiments on Real OpenVLA-7B)
 
 | Property | Result |
 |----------|--------|
@@ -97,6 +97,18 @@ paper/latex/          # NeurIPS-format paper (501 findings, 253 figures)
 | 245 | Evasion Robustness | No post-processing evasion succeeds |
 | 246 | Action Recovery | Perfect 5/5→0/5→5/5 token recovery |
 | 247 | Hidden State Statistics | <5% moment change despite AUROC=1.0 |
+| 248 | Temporal Drift | Bit-identical embeddings across 50 frames |
+| 249 | Full Layer Profile | S-curve with L32 2.5× spike |
+| 250 | Severity Sweep | Blur changes actions at 10% severity |
+| 251 | PCA Subspace | 3-5D intrinsic dimensionality (out of 4096) |
+| 252 | Token Positions | Image tokens carry 100-1000× more signal |
+| 253 | Cross-Corruption Transfer | Same-image calibration essential |
+| 254 | Token Aggregation | 25-29× amplification, AUROC unchanged |
+| 255 | Multi-Layer Fusion | No improvement with diverse calibration |
+| 256 | Pairwise Similarity | All conditions >0.99 similarity |
+| 257 | Min Calibration | N=1 provably optimal |
+| 258 | Interpolation | Smooth monotonic embedding paths |
+| 259 | Full Action Analysis | 6-7/7 dims changed, 291-345 bin deviation |
 
 ## License
 

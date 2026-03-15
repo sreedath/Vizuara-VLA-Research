@@ -9651,3 +9651,64 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 267**: Corruption changes **6-7 of 7 action dimensions** with total deviations of 291-345 bins. Dimension 2 is catastrophically vulnerable — fog and noise shift it by 140 bins (from bin 140 to bin 0), while blur shifts it by 115 bins (to bin 255). This confirms that corruption doesn't just cause minor action errors but fundamentally disrupts the entire action vector.
 
 **Finding 268**: Corrupted actions are **perfectly deterministic**: 5 repeated forward passes produce bit-identical action tokens under each corruption. The model consistently produces the SAME wrong actions, not random ones — a systematic safety hazard.
+
+---
+
+## Experiment 260: KL Divergence Analysis
+
+**Research Question**: How much do corruption affect the full output probability distribution? Can KL divergence serve as an OOD detector?
+
+**Method**: Compute KL divergence, JS divergence, entropy, and top-1 probability between clean and corrupted next-token distributions over the action token vocabulary (256 bins).
+
+**Results**:
+
+| Condition | Top Token | Top-1 Prob | Entropy | KL(clean‖corrupt) | JS |
+|-----------|----------|-----------|---------|-------------------|-----|
+| Clean | 31884 | 0.570 | 2.108 | — | — |
+| Fog | 31974 | 0.358 | 2.537 | 1.219 | 0.271 |
+| Night | 31856 | 0.259 | 3.251 | 6.800 | 0.627 |
+| Noise | 31944 | 0.311 | 2.465 | 2.318 | 0.353 |
+| Blur | 31839 | 0.228 | 3.481 | 4.172 | 0.559 |
+
+**Key Findings**:
+1. **Corruption REDUCES confidence**: Clean top-1 prob is 0.570; all corruptions reduce it (fog: 0.358, blur: 0.228). This is opposite to what the earlier logit analysis (Exp 238) found for the token-level view.
+2. **Night has highest KL**: KL=6.8, consistent with night being the strongest corruption in embedding space.
+3. **Ordering matches cosine distance**: KL ordering (fog < noise < blur < night) approximately matches cosine distance ordering.
+4. **All corruptions increase entropy**: From 2.1 (clean) to 2.5-3.5 (corrupt), meaning corruption makes the model less certain about which action to take.
+
+**Finding 269**: KL divergence between clean and corrupted output distributions ranges from **1.2 (fog) to 6.8 (night)**, with ordering approximately matching cosine distance. However, KL divergence requires the clean distribution as reference, making it impractical as a standalone detector.
+
+**Finding 270**: Corruption universally **reduces model confidence**: top-1 probability drops from 0.57 (clean) to 0.23-0.36 (corrupted), and entropy increases from 2.1 to 2.5-3.5. The model becomes more uncertain, but still assigns highest probability to a WRONG action token.
+
+---
+
+## Experiment 261: L2 Norm Profile Across All Layers
+
+**Research Question**: How does the L2 norm of hidden states change across all 33 layers under corruption? Does norm carry OOD-discriminative information?
+
+**Method**: Compute L2 norm of the last-token hidden state at each of the 33 layers for clean and 4 corruptions.
+
+**Results**:
+- Clean norms grow monotonically from L0 (0.89) to L31 (126.6), with L32 dropping to 83.6.
+- Most corruption-induced norm changes are <2% at layers 0-31.
+- **L32 (LM head) shows dramatic norm changes**: Night +19%, Blur -16%.
+
+**Key Norm Changes at L32**:
+
+| Corruption | L32 Norm | % Change |
+|-----------|---------|----------|
+| Clean | 83.58 | — |
+| Fog | 79.48 | −4.9% |
+| Night | 99.42 | **+18.9%** |
+| Noise | 80.07 | −4.2% |
+| Blur | 69.88 | **−16.4%** |
+
+**Key Findings**:
+1. **Norms grow monotonically**: From 0.89 (L0) to 126.6 (L31), with a sharp drop at L32 (83.6). This is the standard residual stream growth pattern.
+2. **L32 is most norm-sensitive**: While L0-L31 show <6% norm changes, L32 shows ±19% under night and ±16% under blur.
+3. **Night increases norm, blur decreases it**: Night pushes activations higher (+19%), while blur dampens them (−16%). This is consistent with night creating sharper features and blur smoothing them.
+4. **Norm changes are NOT monotonic with depth**: Night norm changes oscillate between positive and negative across layers, unlike cosine distance which grows monotonically.
+
+**Finding 271**: L2 norm changes are **concentrated at L32** (LM head): night increases norm by 19%, blur decreases by 16%. Hidden layers (L0-L31) show norm changes <6%, confirming that the transformer preserves representation scale while changing direction.
+
+**Finding 272**: Night **increases** L32 norm (+19%) while blur **decreases** it (−16%), revealing opposite effects on the final projection: night creates higher-magnitude logits (more extreme predictions), while blur dampens them (more diffuse predictions).
