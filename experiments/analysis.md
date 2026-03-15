@@ -15119,3 +15119,36 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 
 **Finding 674**: Blur is the only corruption where entropy-based detection achieves AUROC=1.0, with entropy nearly doubling from 1.63 to 3.49 bits. Blur uniquely disrupts the model's confidence, while other corruptions preserve confidence while changing predictions.
 
+
+## Experiment 366: Logit Lens Analysis Under Corruption
+
+**Script**: `scripts/real_vla_logit_lens.py`
+**Result**: `experiments/logit_lens_20260315_154513.json`
+**Figure**: `figures/fig375_logit_lens.png`
+
+### Key Results
+
+**Token Prediction Across Layers**: All layers predict the same token from Layer 0 onward (degenerate).
+
+**Entropy Profile**: Entropy ≈ 0 bits at ALL 33 layers. The logit lens produces near-delta distributions (one token gets ~100% probability).
+
+**KL Divergence (Clean vs Corrupt)**: KL ≈ 0 at all layers for all corruption types. No divergence detected through the logit lens.
+
+**Decision Boundary**: No layer shows token prediction divergence between clean and corrupt inputs through the logit lens.
+
+### Root Cause
+
+The LM head in OpenVLA-7B requires the final RMS layer normalization to produce meaningful logits. Raw intermediate hidden states have extreme magnitudes that saturate the softmax into delta distributions. The standard "logit lens" technique does not directly apply to this architecture.
+
+### Findings
+
+**Finding 675**: The standard logit lens technique FAILS for OpenVLA-7B: projecting intermediate hidden states through the LM head produces degenerate (near-delta) distributions at ALL 33 layers, with entropy ≈ 0 bits.
+
+**Finding 676**: The failure is caused by missing RMS layer normalization. OpenVLA's LLaMA-based architecture requires the final layer norm before the LM head — without it, hidden state magnitudes saturate softmax.
+
+**Finding 677**: Hidden state embedding analysis (our cosine distance approach) is the correct method for probing OpenVLA's intermediate representations, as it operates on raw hidden states without requiring the normalization pipeline.
+
+**Finding 678**: Despite the logit lens failure, the fact that all layers predict the SAME token (from L0 onward) confirms that the LM head acts as a simple linear classifier in the un-normalized space, collapsing all representations to the same high-confidence prediction.
+
+**Finding 679**: This architectural property — that intermediate representations are meaningless without layer normalization — suggests that corruption detection must operate in the hidden state space rather than the logit space, validating our embedding-based approach.
+

@@ -1,0 +1,5100 @@
+{
+  "token_emergence": {
+    "0": {
+      "final_token": 0,
+      "first_match_layer": 0,
+      "per_layer": {
+        "0": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "1": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "2": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "3": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "4": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "5": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "6": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "7": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "8": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "9": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "10": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "11": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "12": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "13": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "14": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "15": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "16": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "17": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "18": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "19": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "20": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "21": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "22": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "23": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "24": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "25": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "26": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "27": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "28": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "29": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "30": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "31": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "32": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        }
+      }
+    },
+    "100": {
+      "final_token": 0,
+      "first_match_layer": 0,
+      "per_layer": {
+        "0": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "1": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "2": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "3": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "4": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "5": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "6": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "7": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "8": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "9": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "10": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "11": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "12": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "13": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "14": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "15": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "16": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "17": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "18": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "19": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "20": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "21": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "22": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "23": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "24": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "25": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "26": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "27": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "28": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "29": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "30": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "31": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "32": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        }
+      }
+    },
+    "200": {
+      "final_token": 0,
+      "first_match_layer": 0,
+      "per_layer": {
+        "0": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "1": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "2": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "3": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "4": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "5": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "6": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "7": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "8": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "9": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "10": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "11": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "12": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "13": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "14": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "15": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "16": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "17": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "18": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "19": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "20": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "21": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "22": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "23": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "24": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "25": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "26": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "27": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "28": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "29": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "30": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "31": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "32": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        }
+      }
+    },
+    "300": {
+      "final_token": 0,
+      "first_match_layer": 0,
+      "per_layer": {
+        "0": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "1": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "2": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "3": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "4": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "5": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "6": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "7": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "8": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "9": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "10": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "11": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "12": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "13": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "14": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "15": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "16": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "17": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "18": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "19": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "20": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "21": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "22": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "23": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "24": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "25": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "26": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "27": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "28": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "29": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "30": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "31": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        },
+        "32": {
+          "predicted_token": 0,
+          "matches_final": true,
+          "rank_of_final_token": 0,
+          "entropy": -0.0,
+          "top1_prob": 1.0
+        }
+      }
+    }
+  },
+  "corruption_impact": {
+    "fog": {
+      "mean_first_diverge": null,
+      "min_first_diverge": null,
+      "mean_kl_per_layer": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0,
+        "8": 0.0,
+        "9": 0.0,
+        "10": 0.0,
+        "11": 0.0,
+        "12": 0.0,
+        "13": 0.0,
+        "14": 0.0,
+        "15": 0.0,
+        "16": 0.0,
+        "17": 0.0,
+        "18": 0.0,
+        "19": 0.0,
+        "20": 0.0,
+        "21": 0.0,
+        "22": 0.0,
+        "23": 0.0,
+        "24": 0.0,
+        "25": 0.0,
+        "26": 0.0,
+        "27": 0.0,
+        "28": 0.0,
+        "29": 0.0,
+        "30": 0.0,
+        "31": 0.0,
+        "32": 0.0
+      },
+      "per_seed": {
+        "0": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "100": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "200": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "300": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        }
+      }
+    },
+    "night": {
+      "mean_first_diverge": null,
+      "min_first_diverge": null,
+      "mean_kl_per_layer": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0,
+        "8": 0.0,
+        "9": 0.0,
+        "10": 0.0,
+        "11": 0.0,
+        "12": 0.0,
+        "13": 0.0,
+        "14": 0.0,
+        "15": 0.0,
+        "16": 0.0,
+        "17": 0.0,
+        "18": 0.0,
+        "19": 0.0,
+        "20": 0.0,
+        "21": 0.0,
+        "22": 0.0,
+        "23": 0.0,
+        "24": 0.0,
+        "25": 0.0,
+        "26": 0.0,
+        "27": 0.0,
+        "28": 0.0,
+        "29": 0.0,
+        "30": 0.0,
+        "31": 0.0,
+        "32": 0.0
+      },
+      "per_seed": {
+        "0": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "100": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "200": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "300": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        }
+      }
+    },
+    "noise": {
+      "mean_first_diverge": null,
+      "min_first_diverge": null,
+      "mean_kl_per_layer": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0,
+        "8": 0.0,
+        "9": 0.0,
+        "10": 0.0,
+        "11": 0.0,
+        "12": 0.0,
+        "13": 0.0,
+        "14": 0.0,
+        "15": 0.0,
+        "16": 0.0,
+        "17": 0.0,
+        "18": 0.0,
+        "19": 0.0,
+        "20": 0.0,
+        "21": 0.0,
+        "22": 0.0,
+        "23": 0.0,
+        "24": 0.0,
+        "25": 0.0,
+        "26": 0.0,
+        "27": 0.0,
+        "28": 0.0,
+        "29": 0.0,
+        "30": 0.0,
+        "31": 0.0,
+        "32": 0.0
+      },
+      "per_seed": {
+        "0": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "100": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "200": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "300": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        }
+      }
+    },
+    "blur": {
+      "mean_first_diverge": null,
+      "min_first_diverge": null,
+      "mean_kl_per_layer": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0,
+        "8": 0.0,
+        "9": 0.0,
+        "10": 0.0,
+        "11": 0.0,
+        "12": 0.0,
+        "13": 0.0,
+        "14": 0.0,
+        "15": 0.0,
+        "16": 0.0,
+        "17": 0.0,
+        "18": 0.0,
+        "19": 0.0,
+        "20": 0.0,
+        "21": 0.0,
+        "22": 0.0,
+        "23": 0.0,
+        "24": 0.0,
+        "25": 0.0,
+        "26": 0.0,
+        "27": 0.0,
+        "28": 0.0,
+        "29": 0.0,
+        "30": 0.0,
+        "31": 0.0,
+        "32": 0.0
+      },
+      "per_seed": {
+        "0": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "100": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "200": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        },
+        "300": {
+          "first_diverge_layer": null,
+          "per_layer": [
+            {
+              "layer": 0,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 1,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 2,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 3,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 4,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 5,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 6,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 7,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 8,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 9,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 10,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 11,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 12,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 13,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 14,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 15,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 16,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 17,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 18,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 19,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 20,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 21,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 22,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 23,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 24,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 25,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 26,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 27,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 28,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 29,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 30,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 31,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            },
+            {
+              "layer": 32,
+              "tokens_differ": false,
+              "kl_divergence": 0.0,
+              "clean_entropy": -0.0,
+              "corrupt_entropy": -0.0
+            }
+          ]
+        }
+      }
+    }
+  },
+  "entropy_profile": {
+    "0": {
+      "clean_entropy": [
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0
+      ],
+      "max_entropy_layer": 0,
+      "min_entropy_layer": 0,
+      "final_entropy": -0.0
+    },
+    "100": {
+      "clean_entropy": [
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0
+      ],
+      "max_entropy_layer": 0,
+      "min_entropy_layer": 0,
+      "final_entropy": -0.0
+    },
+    "200": {
+      "clean_entropy": [
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0
+      ],
+      "max_entropy_layer": 0,
+      "min_entropy_layer": 0,
+      "final_entropy": -0.0
+    },
+    "300": {
+      "clean_entropy": [
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0
+      ],
+      "max_entropy_layer": 0,
+      "min_entropy_layer": 0,
+      "final_entropy": -0.0
+    }
+  },
+  "kl_peaks": {
+    "fog": {
+      "peak_layer": 0,
+      "peak_kl": 0.0,
+      "early_mean_kl": 0.0,
+      "late_mean_kl": 0.0
+    },
+    "night": {
+      "peak_layer": 0,
+      "peak_kl": 0.0,
+      "early_mean_kl": 0.0,
+      "late_mean_kl": 0.0
+    },
+    "noise": {
+      "peak_layer": 0,
+      "peak_kl": 0.0,
+      "early_mean_kl": 0.0,
+      "late_mean_kl": 0.0
+    },
+    "blur": {
+      "peak_layer": 0,
+      "peak_kl": 0.0,
+      "early_mean_kl": 0.0,
+      "late_mean_kl": 0.0
+    }
+  },
+  "decision_boundary": {
+    "fog": {
+      "boundary_layer": null,
+      "fraction_diverged": 0
+    },
+    "night": {
+      "boundary_layer": null,
+      "fraction_diverged": 0
+    },
+    "noise": {
+      "boundary_layer": null,
+      "fraction_diverged": 0
+    },
+    "blur": {
+      "boundary_layer": null,
+      "fraction_diverged": 0
+    }
+  }
+}

@@ -99,8 +99,9 @@ def main():
         for l in range(n_layers):
             logits = project_to_logits(clean_hidden[seed][l], lm_head)
             pred_token = int(torch.argmax(logits))
-            top5 = torch.topk(logits, 5)
-            rank_of_final = int((torch.sort(logits, descending=True).indices == final_token).nonzero()[0])
+            sorted_indices = torch.sort(logits, descending=True).indices
+            matches = (sorted_indices == final_token).nonzero(as_tuple=True)[0]
+            rank_of_final = int(matches[0]) if len(matches) > 0 else -1
 
             per_layer[str(l)] = {
                 'predicted_token': pred_token,

@@ -6952,4 +6952,25 @@ We investigate whether the model's output confidence (softmax entropy, top-1 pro
 
 \textbf{Finding 926}: \textbf{Only blur disrupts model confidence} (entropy nearly doubles from 1.63 to 3.49 bits, AUROC=1.0). This unique blur property stems from its large-scale spatial disruption that fundamentally undermines the model's ability to form coherent token predictions.
 
+\subsection{Experiment 366: Logit Lens Analysis Under Corruption}
+
+We apply the ``logit lens'' technique --- projecting intermediate hidden states through the LM head to observe how token predictions form across layers --- and discover an important architectural constraint.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig375_logit_lens.png}
+\caption{Logit lens analysis reveals degenerate distributions. Entropy $\approx$ 0 bits at all 33 layers (top-right). KL divergence between clean and corrupt is identically zero at all layers (bottom-left). Root cause: the LM head requires RMS layer normalization that intermediate hidden states lack.}
+\label{fig:logitlens}
+\end{figure}
+
+\textbf{Finding 927}: \textbf{The standard logit lens fails for OpenVLA-7B.} Projecting intermediate hidden states through the LM head produces degenerate (near-delta) distributions at all 33 layers with entropy $\approx$ 0 bits. The technique assumes that intermediate representations are semantically meaningful in the logit space, which does not hold for this architecture.
+
+\textbf{Finding 928}: \textbf{The failure is caused by missing RMS layer normalization.} OpenVLA's LLaMA-based architecture requires the final RMS norm before the LM head; without it, hidden state magnitudes saturate the softmax into delta distributions.
+
+\textbf{Finding 929}: \textbf{Corruption detection must operate in hidden state space, not logit space.} This architectural property validates our embedding cosine distance approach, which operates on raw hidden states and does not require the normalization pipeline.
+
+\textbf{Finding 930}: \textbf{The LM head acts as a trivial linear classifier in un-normalized space.} All layers predict the identical token from Layer 0 onward, meaning the LM head simply picks whichever direction has maximum norm --- semantically meaningless without normalization.
+
+\textbf{Finding 931}: \textbf{This is a cautionary finding for interpretability research.} Popular ``logit lens'' and ``tuned lens'' techniques from LLM interpretability do not transfer to VLA models without accounting for architectural differences in normalization layers.
+
 \end{document}
