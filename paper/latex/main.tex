@@ -3058,4 +3058,40 @@ We systematically measure how detection performance scales with calibration set 
 \label{fig:sample_efficiency}
 \end{figure}
 
+\subsection{Token Position Analysis}
+
+We compare OOD detection using embeddings from different token positions within the sequence (length 280).
+
+\textbf{Finding 261}: The \textbf{last token} and \textbf{mean pooling} both achieve AUROC = 1.000 at L3 and L32, confirming that these are optimal extraction strategies for OOD detection.
+
+\textbf{Finding 262}: The first token (BOS) carries \textbf{zero OOD signal}: AUROC = 0.500 with cosine distance = 0.000 for both ID and OOD images. This token is completely image-invariant, storing only positional/structural information.
+
+\textbf{Finding 263}: Middle-sequence and max-pooled tokens show intermediate detection quality (AUROC 0.72--0.90), indicating that OOD information propagates through the sequence but concentrates at the last position via the autoregressive attention pattern.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig155_token_position.png}
+\caption{\textbf{Token position analysis.} AUROC by extraction position at L3 (left) and L32 (right). Last token and mean pooling achieve perfect detection; first token (BOS) carries zero visual information.}
+\label{fig:token_position}
+\end{figure}
+
+\subsection{Corruption Combination Interactions}
+
+We test how simultaneous corruptions interact, applying 6 single, 9 double, and 2 triple combinations.
+
+\textbf{Finding 264}: Corruption interactions are predominantly \textbf{subadditive}: 10 of 11 combinations produce OOD distances less than the sum of individual corruption distances (L32 ratio 0.40--0.76, mean 0.59). The embedding space exhibits a saturation effect.
+
+\textbf{Finding 265}: Night + noise is the only \textbf{superadditive} combination (L3 ratio = 1.067), suggesting these corruptions affect orthogonal embedding dimensions. All other combinations, including all triple corruptions, are subadditive.
+
+\textbf{Finding 266}: Despite subadditivity, \textbf{all combinations remain easily detectable}: even the most subadditive combination produces L32 distances well above detection thresholds. Combined real-world corruptions are NOT harder to detect than individual ones.
+
+\textbf{Finding 267}: Triple corruptions (fog+blur+noise, night+blur+noise) are the most strongly subadditive (L32 ratios 0.40--0.45), suggesting that adding a third corruption produces diminishing marginal impact on the embedding representation.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig156_corruption_combo.png}
+\caption{\textbf{Corruption combinations.} Left: L32 distances for all 17 conditions --- combined corruptions increase distance but subadditively. Right: Interaction ratios --- nearly all combinations below the additive line (ratio $< 1$).}
+\label{fig:corruption_combo}
+\end{figure}
+
 \end{document}

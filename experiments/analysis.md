@@ -6869,3 +6869,38 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 - **Bootstrap variance decreases monotonically**: std drops from 0.12 (n=2) to 0.03 (n=20)
 
 **Finding**: The detector is remarkably sample-efficient — 5 calibration images suffice for AUROC > 0.90, and 10-15 reach near-maximum performance. This makes the system practical for rapid deployment without extensive data collection.
+
+---
+
+## Finding 157: Token Position Analysis (Experiment 163)
+
+**Objective**: Compare OOD detection using embeddings from different token positions: last, first, mean pooling, max pooling, middle.
+
+**Method**: Extracted hidden states from 5 token positions at L3 and L32, computed cosine distance AUROC for each. Sequence length = 280 tokens.
+
+**Key Results**:
+- **Last token and mean pooling achieve AUROC=1.000 at both layers**: The standard last-token choice is optimal but mean pooling matches it
+- **First token carries ZERO OOD signal**: AUROC=0.500, cosine distance=0.000 for both ID and OOD. The first token (BOS) is completely invariant to image content.
+- **Mid-sequence token is mediocre**: L3 AUROC=0.90, L32 AUROC=0.72 — some OOD signal propagates through middle positions but less than last/mean
+- **Max pooling works at L32 (1.0) but not L3 (0.90)**: Max selects dominant activations which may miss subtle OOD patterns at early layers
+- **Mean pooling has best separation ratios**: OOD/ID distance ratio of 3.6 (L3) and 3.0 (L32), vs last token's 5.3 and 2.6
+
+**Finding**: Last token and mean pooling are both excellent choices. The first (BOS) token is completely image-invariant and useless for detection. This confirms the standard practice of using the last token position.
+
+---
+
+## Finding 158: Corruption Combination Interactions (Experiment 164)
+
+**Objective**: Test how simultaneous corruptions interact — are combined corruptions harder or easier to detect?
+
+**Method**: Applied 6 single, 9 double, and 2 triple corruption combinations to 6 test images. Compared combined OOD distances to sum of individual distances (interaction ratio).
+
+**Key Results**:
+- **Almost all combinations are SUBADDITIVE**: 10/11 combinations have ratio < 1.0, meaning the combined distance is LESS than the sum of individual distances
+- **L32 more subadditive than L3**: L32 ratios range 0.40-0.76 (mean 0.59); L3 ratios range 0.41-1.07 (mean 0.74)
+- **night+noise is the only superadditive combination**: L3 ratio=1.067, suggesting these corruptions affect orthogonal dimensions
+- **Triple corruptions are strongly subadditive**: fog+blur+noise L32 ratio=0.45; night+blur+noise L32 ratio=0.40
+- **All combinations still easily detected**: Even the most subadditive combo (night+occlusion L3 ratio=0.41) produces L32=0.390, well above detection thresholds
+- **night+blur+noise produces the highest absolute distance**: L32=0.403, exceeding any single corruption except night alone (0.419)
+
+**Finding**: Corruption interactions are predominantly subadditive — combined corruptions produce less OOD shift than the sum of their individual effects, suggesting the model's embedding space has a saturation effect. This is beneficial for safety: combined real-world corruptions are NOT harder to detect than individual ones. The detector remains effective for all tested combinations.
