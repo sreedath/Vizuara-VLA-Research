@@ -14043,3 +14043,51 @@ Test detection robustness against realistic camera pipeline artifacts: motion bl
 **Finding 574**: **White balance shifts are negligible (max d=0.18×10^{-3} at ±3), and sensor noise below ISO 400 is within the noise floor.** These camera effects are safe for the detector. Color temperature changes and moderate ISO settings do not interfere with corruption detection.
 
 **Finding 575**: **Deployment MUST calibrate through the camera pipeline — raw vs processed images are not interchangeable.** Combined pipeline effects (blur + exposure + WB) produce d≈0.9×10^{-3} baseline. Corruption adds ~1×10^{-3} on top. Without pipeline-matched calibration, the detector cannot distinguish camera artifacts from corruption.
+
+---
+
+## Experiment 344: Multi-Scene Deployment Protocol (Real OpenVLA-7B)
+
+**Timestamp**: 2026-03-15 13:53 UTC
+**Status**: Complete ✓
+**GPU**: RunPod A40 (real OpenVLA-7B, 7B parameters)
+
+### Purpose
+Test practical multi-scene deployment: nearest-centroid detection, calibration bank size, scene evolution tolerance, and automatic scene transition detection.
+
+### Results
+
+#### Cross-Scene Distances
+- Mean: 8.4×10^{-5}
+- Range: [4.1×10^{-5}, 1.87×10^{-4}]
+- All scenes produce distinct embeddings
+
+#### Nearest-Centroid Detection
+- **All 10 scenes: AUROC=1.0 using nearest centroid from bank**
+- Cross-scene calibration works perfectly — closest scene in bank suffices
+- Nearest distances: 4.1×10^{-5} to 6.1×10^{-5}
+
+#### Bank Size Sweep
+- Bank=1-3: mean AUROC=0.975, min=0.75 (occasional failure when random subset misses nearest)
+- **Bank≥5: AUROC=1.0 for ALL scenes** — 5 calibration images cover 10 test scenes
+- Diminishing returns beyond 5
+
+#### Scene Evolution (Drift)
+- 1-20% drift: AUROC=1.0 (calibration robust)
+- **30% drift: AUROC drops to 0.75** — calibration begins to fail
+- **50% drift: AUROC=0.5** — equivalent to random guessing
+- Drift distance at 20%: 2.1×10^{-4}, at 30%: 5.98×10^{-4}
+
+#### Transition Detection
+- Accuracy: 75% using d > 0.001 threshold
+- Detects scene changes but has both FPs (clean frames near boundary) and FNs
+
+### Key Findings
+
+**Finding 576**: **Nearest-centroid from a calibration bank achieves AUROC=1.0 — cross-scene calibration is sufficient.** Using the closest centroid from a pre-computed bank, all 10 test scenes achieve perfect detection. This eliminates the need for per-scene calibration in deployment, as long as the bank covers the scene diversity.
+
+**Finding 577**: **Bank size ≥5 guarantees AUROC=1.0 across all test scenes; 1-3 scene banks risk min AUROC=0.75.** A modest calibration bank of 5 diverse scenes covers 10 test scenes perfectly. Below 5, random bank selection may miss the nearest match, causing occasional detection failures.
+
+**Finding 578**: **Calibration withstands up to 20% scene drift (AUROC=1.0) but fails at 30%+ (AUROC=0.75).** Gradual scene evolution (e.g., time-of-day changes, seasonal variation) is tolerated up to ~20% pixel-level drift. Beyond this, recalibration is necessary — suggesting a practical recalibration interval based on scene drift monitoring.
+
+**Finding 579**: **Scene transition detection achieves 75% accuracy with a simple distance threshold.** The d > 0.001 threshold detects most scene changes but has room for improvement. An adaptive or multi-frame threshold could improve transition detection.

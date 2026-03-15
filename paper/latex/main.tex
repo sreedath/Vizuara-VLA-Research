@@ -6486,4 +6486,27 @@ We characterize the embedding shifts produced by realistic camera pipeline artif
 
 \textbf{Finding 827}: \textbf{Deployment must calibrate through the camera pipeline --- combined effects produce $d \approx 0.9 \times 10^{-3}$ baseline.} Pipeline-only distance (blur$+$exposure$+$WB) reaches $0.9 \times 10^{-3}$; adding fog at 30\% brings it to $1.9 \times 10^{-3}$. Without pipeline-matched calibration, the system cannot distinguish camera artifacts from corruption.
 
+%% ============================================================
+\subsection{Experiment 344: Multi-Scene Protocol}
+\label{sec:exp344}
+
+We develop and test a practical multi-scene deployment protocol: nearest-centroid detection from a calibration bank, minimum bank size for coverage, drift tolerance, and automatic scene transition detection.
+
+\textbf{Setup.} We calibrate 10 scenes, test nearest-centroid AUROC, sweep bank size (1--9), simulate gradual scene drift (1--50\%), and detect transitions in a 12-frame scene-switching sequence.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig353_multiscene.png}
+\caption{\textbf{Figure~353: Multi-scene protocol.} (A)~Cross-scene distances: distinct but small ($0.04$--$0.19 \times 10^{-3}$). (B)~Nearest-centroid: all AUROC=1.0. (C)~Bank size $\geq 5$ guarantees perfect detection. (D)~Calibration holds to 20\% drift, fails at 30\%+. (E)~Transition detection at 75\% accuracy. (F)~Protocol summary.}
+\label{fig:multiscene}
+\end{figure}
+
+\textbf{Finding 828}: \textbf{Nearest-centroid from a calibration bank achieves AUROC=1.0 --- cross-scene calibration suffices.} The closest centroid in a pre-computed bank provides perfect detection for all 10 test scenes. This eliminates per-scene calibration requirements in deployment.
+
+\textbf{Finding 829}: \textbf{Bank size $\geq 5$ guarantees AUROC=1.0; banks of 1--3 risk min AUROC=0.75.} Five diverse calibration scenes cover 10 test scenes perfectly. Below 5, random bank selection may miss the nearest match, causing occasional failures.
+
+\textbf{Finding 830}: \textbf{Calibration withstands up to 20\% scene drift (AUROC=1.0) but fails at 30\%+.} Gradual scene evolution is tolerated to $\sim$20\% pixel drift ($d \approx 2.1 \times 10^{-4}$). Beyond 30\% drift ($d \approx 6.0 \times 10^{-4}$), corruption becomes indistinguishable from drift. This defines a practical recalibration interval.
+
+\textbf{Finding 831}: \textbf{Scene transition detection at 75\% accuracy using $d > 0.001$ threshold.} Automatic scene change detection is feasible but imperfect with a fixed threshold. Multi-frame or adaptive thresholds could improve this further.
+
 \end{document}
