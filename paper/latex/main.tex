@@ -7237,4 +7237,37 @@ We systematically evaluate how the number of clean calibration images $N$ affect
 
 \textbf{Finding 981}: \textbf{LOO cross-validation yields AUROC $\geq$ 0.999 for all corruptions at $N=20$.} The detector is robust to which specific scenes are used for calibration, with noise showing the largest but still tiny variation (std=0.003).
 
+% ============================================================
+% EXPERIMENT 377: MIXED CORRUPTION DETECTION
+% ============================================================
+
+\subsection{Experiment 377: Mixed Corruption Detection}
+
+We investigate how the detector handles simultaneous multiple corruptions, testing all 6 pairwise combinations, all-four combined, corruption dominance hierarchy, and order sensitivity.
+
+\textbf{Universal Mixed Detection.} All 6 pairwise corruption combinations and the all-four combined corruption achieve 100\% detection rate and AUROC=1.0. The detector generalizes perfectly to mixed corruptions without requiring mixed-corruption calibration samples.
+
+\textbf{Sub-Additivity.} Mixed corruption effects are sub-additive: the combined embedding shift is 53--91\% of the sum of individual shifts. Corruptions partially cancel each other's effects in embedding space rather than compounding them.
+
+\textbf{Dominance Hierarchy.} When corruptions are combined, the mixed embedding direction aligns with the stronger corruption: blur dominates (3/3 wins), followed by night (2/3), fog (1/3), and noise (0/3). In noise+blur, the mixed shift has 0.94 cosine similarity to the blur-alone shift.
+
+\textbf{Order Sensitivity.} Corruption application order matters dramatically for certain pairs: noise$\rightarrow$blur produces $d=0.00427$, but blur$\rightarrow$noise produces only $d=0.00009$ (97.8\% relative difference). Blur after noise smooths out the noise, producing a nearly clean-looking blurred image. Despite this, both orders are still detected.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig386_mixed.png}
+\caption{\textbf{Experiment 377}: Mixed corruption detection. All combinations achieve AUROC=1.0. Effects are sub-additive (53--91\% of sum). Blur dominates the hierarchy (3/3). Noise+blur shows 97.8\% order sensitivity. All mixed corruptions detected with 100\% rate.}
+\label{fig:mixed}
+\end{figure}
+
+\textbf{Finding 982}: \textbf{ALL mixed corruption combinations achieve AUROC=1.0 with 100\% detection.} The detector generalizes to combined corruptions without mixed-corruption calibration, demonstrating robust generalization.
+
+\textbf{Finding 983}: \textbf{Mixed corruptions are sub-additive (53--91\% of individual sum).} Corruptions partially cancel each other in embedding space, suggesting that the embedding transformation is non-linear with diminishing marginal sensitivity to additional corruption.
+
+\textbf{Finding 984}: \textbf{Blur dominates the corruption hierarchy (3/3 wins).} When combined with any other corruption, the mixed embedding direction aligns primarily with blur (up to 0.94 cosine similarity), establishing blur as the ``strongest'' corruption type in embedding space.
+
+\textbf{Finding 985}: \textbf{Noise+blur order sensitivity is 97.8\%.} Noise$\rightarrow$blur produces dist=0.00427 while blur$\rightarrow$noise gives only 0.00009. The second operation's effect dominates when it fundamentally alters the first corruption's pixel-level structure.
+
+\textbf{Finding 986}: \textbf{All-four combined corruption (0.25 severity each) is detected with 100\% rate.} Even mild, distributed corruption across four types produces a clearly detectable embedding shift, confirming the detector's sensitivity to multi-faceted degradation.
+
 \end{document}

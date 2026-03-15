@@ -1,0 +1,256 @@
+{
+  "pairwise": {
+    "fog+night": {
+      "mean_dist": 0.0019239007961004972,
+      "min_dist": 0.0018038153648376465,
+      "all_detected": true,
+      "detection_rate": 1.0,
+      "sim_to_first": 0.11067117303609848,
+      "sim_to_second": 0.8338050723075867,
+      "dominant": "night",
+      "single_dist_first": 0.000978183699771762,
+      "single_dist_second": 0.00201796879991889,
+      "superadditivity": 0.642123818397522
+    },
+    "fog+noise": {
+      "mean_dist": 0.0005778491613455117,
+      "min_dist": 0.0005164742469787598,
+      "all_detected": true,
+      "detection_rate": 1.0,
+      "sim_to_first": 0.8694309890270233,
+      "sim_to_second": -0.1280093289911747,
+      "dominant": "fog",
+      "single_dist_first": 0.000978183699771762,
+      "single_dist_second": 0.00012093782424926758,
+      "superadditivity": 0.5257372856140137
+    },
+    "fog+blur": {
+      "mean_dist": 0.004722708370536566,
+      "min_dist": 0.0044245123863220215,
+      "all_detected": true,
+      "detection_rate": 1.0,
+      "sim_to_first": 0.6684865474700927,
+      "sim_to_second": 0.9046895384788514,
+      "dominant": "blur",
+      "single_dist_first": 0.000978183699771762,
+      "single_dist_second": 0.004990279674530029,
+      "superadditivity": 0.7912770509719849
+    },
+    "night+noise": {
+      "mean_dist": 0.00182209606282413,
+      "min_dist": 0.0016593337059020996,
+      "all_detected": true,
+      "detection_rate": 1.0,
+      "sim_to_first": 0.8345906376838684,
+      "sim_to_second": 0.24265203401446342,
+      "dominant": "night",
+      "single_dist_first": 0.00201796879991889,
+      "single_dist_second": 0.00012093782424926758,
+      "superadditivity": 0.8518819808959961
+    },
+    "night+blur": {
+      "mean_dist": 0.006400638725608587,
+      "min_dist": 0.005666553974151611,
+      "all_detected": true,
+      "detection_rate": 1.0,
+      "sim_to_first": 0.4812908560037613,
+      "sim_to_second": 0.7734073102474213,
+      "dominant": "blur",
+      "single_dist_first": 0.00201796879991889,
+      "single_dist_second": 0.004990279674530029,
+      "superadditivity": 0.9133007526397705
+    },
+    "noise+blur": {
+      "mean_dist": 0.0043318928219377995,
+      "min_dist": 0.00401383638381958,
+      "all_detected": true,
+      "detection_rate": 1.0,
+      "sim_to_first": -0.27038105577230453,
+      "sim_to_second": 0.9449082672595978,
+      "dominant": "blur",
+      "single_dist_first": 0.00012093782424926758,
+      "single_dist_second": 0.004990279674530029,
+      "superadditivity": 0.8475266098976135
+    }
+  },
+  "all_four": {
+    "per_scene": {
+      "0": {
+        "dist": 0.004445433616638184,
+        "detected": true,
+        "similarity_to_singles": {
+          "fog": 0.2478950321674347,
+          "night": 0.3528830111026764,
+          "noise": -0.3502298593521118,
+          "blur": 0.9046239852905273
+        }
+      },
+      "100": {
+        "dist": 0.004158675670623779,
+        "detected": true,
+        "similarity_to_singles": {
+          "fog": 0.38655662536621094,
+          "night": 0.36165615916252136,
+          "noise": -0.4096377491950989,
+          "blur": 0.9093942046165466
+        }
+      },
+      "200": {
+        "dist": 0.004394888877868652,
+        "detected": true,
+        "similarity_to_singles": {
+          "fog": 0.24613140523433685,
+          "night": 0.32477402687072754,
+          "noise": -0.4605286419391632,
+          "blur": 0.8815691471099854
+        }
+      },
+      "300": {
+        "dist": 0.0044855475425720215,
+        "detected": true,
+        "similarity_to_singles": {
+          "fog": 0.3236565887928009,
+          "night": 0.36067065596580505,
+          "noise": -0.18318471312522888,
+          "blur": 0.912222146987915
+        }
+      },
+      "400": {
+        "dist": 0.004577755928039551,
+        "detected": true,
+        "similarity_to_singles": {
+          "fog": 0.2792927324771881,
+          "night": 0.3912585973739624,
+          "noise": -0.24739600718021393,
+          "blur": 0.8973101377487183
+        }
+      },
+      "500": {
+        "dist": 0.004273593425750732,
+        "detected": true,
+        "similarity_to_singles": {
+          "fog": 0.2567228376865387,
+          "night": 0.3527108132839203,
+          "noise": -0.1364622265100479,
+          "blur": 0.9215561747550964
+        }
+      },
+      "600": {
+        "dist": 0.004418611526489258,
+        "detected": true,
+        "similarity_to_singles": {
+          "fog": 0.2464737445116043,
+          "night": 0.3196350038051605,
+          "noise": -0.35323524475097656,
+          "blur": 0.9065026640892029
+        }
+      },
+      "700": {
+        "dist": 0.0041329264640808105,
+        "detected": true,
+        "similarity_to_singles": {
+          "fog": 0.3155384361743927,
+          "night": 0.3261876106262207,
+          "noise": -0.3907689154148102,
+          "blur": 0.9192800521850586
+        }
+      },
+      "800": {
+        "dist": 0.004401087760925293,
+        "detected": true,
+        "similarity_to_singles": {
+          "fog": 0.30331388115882874,
+          "night": 0.31746888160705566,
+          "noise": -0.43846145272254944,
+          "blur": 0.9111682176589966
+        }
+      },
+      "900": {
+        "dist": 0.004426300525665283,
+        "detected": true,
+        "similarity_to_singles": {
+          "fog": 0.2501455247402191,
+          "night": 0.28256702423095703,
+          "noise": -0.34518831968307495,
+          "blur": 0.9153489470481873
+        }
+      }
+    },
+    "mean_dist": 0.004371482133865357,
+    "detection_rate": 1.0,
+    "mean_sim_to_singles": {
+      "fog": 0.2855726808309555,
+      "night": 0.3389811784029007,
+      "noise": -0.33150931298732755,
+      "blur": 0.9078975677490234
+    }
+  },
+  "dominance": {
+    "fog": {
+      "wins": 1,
+      "total": 3,
+      "win_rate": 0.3333333333333333
+    },
+    "night": {
+      "wins": 2,
+      "total": 3,
+      "win_rate": 0.6666666666666666
+    },
+    "noise": {
+      "wins": 0,
+      "total": 3,
+      "win_rate": 0.0
+    },
+    "blur": {
+      "wins": 3,
+      "total": 3,
+      "win_rate": 1.0
+    }
+  },
+  "order_sensitivity": {
+    "fog+night": {
+      "forward_mean_dist": 0.0019385695923119783,
+      "reverse_mean_dist": 0.0015172123676165938,
+      "order_matters": true,
+      "relative_diff": 0.2173546999692917
+    },
+    "fog+noise": {
+      "forward_mean_dist": 0.0005702853086404502,
+      "reverse_mean_dist": 0.0006950616952963173,
+      "order_matters": true,
+      "relative_diff": 0.21879643201828003
+    },
+    "fog+blur": {
+      "forward_mean_dist": 0.004646086599677801,
+      "reverse_mean_dist": 0.004650890827178955,
+      "order_matters": false,
+      "relative_diff": 0.0010340374428778887
+    },
+    "night+noise": {
+      "forward_mean_dist": 0.0017724037170410156,
+      "reverse_mean_dist": 0.0019042491912841797,
+      "order_matters": true,
+      "relative_diff": 0.07438794523477554
+    },
+    "night+blur": {
+      "forward_mean_dist": 0.006292545702308416,
+      "reverse_mean_dist": 0.0063359616324305534,
+      "order_matters": false,
+      "relative_diff": 0.006899581290781498
+    },
+    "noise+blur": {
+      "forward_mean_dist": 0.004273831844329834,
+      "reverse_mean_dist": 9.315014176536351e-05,
+      "order_matters": true,
+      "relative_diff": 0.978204607963562
+    }
+  },
+  "mixed_auroc": {
+    "fog+night": 1.0,
+    "fog+noise": 1.0,
+    "fog+blur": 1.0,
+    "night+noise": 1.0,
+    "night+blur": 1.0,
+    "noise+blur": 1.0
+  }
+}

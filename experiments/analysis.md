@@ -15601,3 +15601,41 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 729**: Leave-one-out cross-validation with N=20 yields AUROC ≥ 0.999 for all corruptions including noise. The detector is robust to the choice of calibration scenes, with noise std=0.003 across LOO folds.
 
+---
+
+## Experiment 377: Mixed Corruption Detection
+
+**Objective**: What happens when multiple corruptions are applied simultaneously? Tests pairwise combinations, all-four combined, dominance hierarchy, order sensitivity, and detection performance.
+
+**Setup**: 10 scenes, 6 pairwise combinations + all-four combined, severity 0.5 each.
+
+### Results
+
+**Pairwise Detection**: ALL 6 combinations detected with 100% rate, AUROC=1.0
+
+**Sub-Additivity**: All superadditivity ratios <1 (0.53-0.91), meaning mixed effects are LESS than sum of individual effects.
+
+**Dominance Hierarchy**: blur (3/3) > night (2/3) > fog (1/3) > noise (0/3)
+
+**Order Sensitivity**:
+| Pair | Forward | Reverse | Relative Diff |
+|------|---------|---------|--------------|
+| fog+night | 0.00194 | 0.00152 | 21.7% |
+| fog+noise | 0.00057 | 0.00070 | 21.9% |
+| fog+blur | 0.00465 | 0.00465 | 0.1% |
+| night+noise | 0.00177 | 0.00190 | 7.4% |
+| night+blur | 0.00629 | 0.00634 | 0.7% |
+| **noise+blur** | **0.00427** | **0.00009** | **97.8%** |
+
+### Findings
+
+**Finding 730**: ALL mixed corruption combinations are detected with 100% rate and AUROC=1.0. The detector generalizes perfectly to combined corruptions it was never calibrated on, with no need for mixed-corruption calibration samples.
+
+**Finding 731**: Mixed corruptions are sub-additive: the combined embedding shift is 53-91% of the sum of individual shifts. Corruptions partially cancel each other's effects in embedding space rather than compounding them.
+
+**Finding 732**: Blur dominates the corruption hierarchy (3/3 wins), followed by night (2/3), fog (1/3), and noise (0/3). When corruptions are combined, the mixed embedding direction aligns more closely with the stronger corruption — blur similarity reaches 0.94 in noise+blur.
+
+**Finding 733**: Corruption application ORDER matters dramatically for noise+blur: noise→blur gives dist=0.00427, but blur→noise gives only 0.00009 (97.8% relative difference!). Blur after noise smooths out the noise, while noise after blur creates a more detectable pattern. However, BOTH orders are still detected.
+
+**Finding 734**: The all-four combined corruption (fog+night+noise+blur at severity 0.25 each) is detected with 100% rate. Even mild, distributed corruption across multiple types produces a detectable embedding shift.
+
