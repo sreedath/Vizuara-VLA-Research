@@ -6971,3 +6971,53 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 - **Blur is the most dangerous calibration corruption**: Even blur_1 is fine (1.0/1.0), but blur_2 breaks detection
 
 **Finding**: The detector tolerates mild calibration imperfections (noise σ≤10, fog α≤0.15, blur r≤1). Blur r=2 is the first corruption level that meaningfully degrades detection. This is reassuring for real deployments where calibration images may have minor quality issues.
+
+---
+
+## Finding 163: Adaptive Threshold via Running Statistics (Experiment 169)
+
+**Objective**: Compare static vs. adaptive (EMA-based) thresholds in a temporal simulation with gradual fog increase → sudden night → recovery.
+
+**Scenario**: 30-frame sequence: 10 clean → 10 gradually increasing fog (0.05→0.50) → 5 night → 5 clean recovery.
+
+**Key Results**:
+- **Both static and adaptive achieve identical performance**: P=1.000, R=0.900, F1=0.947
+- **Zero false positives**: All 10 clean frames + 5 clean_after recovery frames correctly classified as ID
+- **Fog_0.30 missed by both**: Distance 0.1263 just below threshold — this is the boundary of detectability
+- **Fog_0.35+ correctly flagged**: Distance 0.1322 crosses the 3σ threshold
+- **Night produces massive signal**: L32=0.3913, ~3× the threshold — trivially detected
+- **Immediate recovery**: Clean frames after night all return to OK (L32=0.1175) with zero false alarms
+- **Gradual fog distances**: Fog_0.05=0.1155, fog_0.10=0.1151, fog_0.15=0.1176, fog_0.20=0.1225, fog_0.25=0.1226
+- **The adaptive threshold tracks the static threshold closely** because the EMA only updates during non-flagged frames (safety constraint)
+
+**Finding**: The static threshold already handles the gradual-fog-to-night scenario well: zero false alarms, 90% recall, and immediate recovery. The adaptive threshold provides no additional benefit in this scenario because (1) the static threshold is already well-calibrated and (2) the adaptive threshold wisely freezes during OOD periods. The key practical insight is that fog below 0.30 is undetectable at the 3σ level — this defines the resolution limit of the detector.
+
+
+---
+
+## Finding 164: Outlier-Robust Calibration (Experiment 170)
+
+**Objective**: Compare centroid estimators (mean, geometric median, trimmed mean, medoid) under clean and contaminated calibration sets.
+
+**Setup**: 8 clean calibration images + 0/1/2 OOD outliers (fog_0.5, night). 5 estimators × 3 contamination levels × 2 layers.
+
+**Key Results (AUROC)**:
+| Estimator | Clean L3 | Clean L32 | +1 outlier L3 | +1 outlier L32 | +2 outliers L3 | +2 outliers L32 |
+|-----------|----------|-----------|---------------|----------------|----------------|-----------------|
+| Mean | 1.000 | 1.000 | 1.000 | 0.969 | 1.000 | 0.969 |
+| Geo median | 1.000 | 0.988 | 1.000 | 0.941 | 1.000 | 0.949 |
+| Trimmed 20% | 0.961 | 0.930 | 1.000 | 0.914 | 1.000 | 0.957 |
+| Trimmed 30% | 0.977 | 0.906 | 0.961 | 0.906 | 1.000 | 0.914 |
+| Medoid | 0.871 | 0.824 | 0.871 | 0.887 | 0.863 | 0.887 |
+
+**Surprising Finding**: The simple **mean is the best estimator overall**, even under contamination.
+- Mean achieves AUROC=1.0 at L3 across all contamination levels
+- Mean maintains highest L32 AUROC (0.969) under contamination
+- Geometric median is second-best but slightly worse on clean data
+- Trimmed means hurt more than help — they over-trim in small samples
+- Medoid is clearly worst (0.82-0.89) — too sensitive to which single point is chosen
+
+**Why Mean Wins**: With n=8 calibration samples, adding 1-2 outliers shifts the mean slightly toward OOD, but this actually tightens the ID cluster boundary in the correct direction. The mean is also the maximum likelihood estimator under Gaussian assumptions, which appears to hold approximately for VLA embeddings.
+
+**Finding**: Simple arithmetic mean is the recommended centroid estimator for VLA OOD detection. Robust estimators provide no advantage and can degrade performance in small-sample regimes. This simplifies deployment — no need for complex centroid estimation.
+

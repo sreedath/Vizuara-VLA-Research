@@ -3164,4 +3164,52 @@ Real deployments may have imperfect calibration images. We test detection robust
 \label{fig:cal_noise}
 \end{figure}
 
+\subsection{Adaptive Threshold and Temporal Dynamics}
+
+Real autonomous driving scenarios involve continuous temporal streams where environmental conditions change gradually. We simulate a 30-frame sequence: 10 clean frames $\rightarrow$ 10 gradually increasing fog ($\alpha = 0.05$ to $0.50$) $\rightarrow$ 5 night frames $\rightarrow$ 5 clean recovery frames. We compare a static threshold (calibrated once) against an adaptive threshold using exponential moving average (EMA) of recent distances.
+
+\textbf{Finding 281}: Both static and adaptive thresholds achieve \textbf{identical performance}: precision = 1.000, recall = 0.900, F1 = 0.947. The adaptive threshold provides no additional benefit because the static threshold is already well-calibrated and the adaptive threshold wisely freezes updates during detected OOD periods.
+
+\textbf{Finding 282}: The detector exhibits \textbf{zero false alarms during recovery}: after 5 frames of night driving ($d_{L32} = 0.3913$), the detector immediately returns to non-flagged status on clean frames ($d_{L32} = 0.1175$). There is no hysteresis or recovery delay.
+
+\textbf{Finding 283}: Fog below $\alpha = 0.30$ ($d_{L32} = 0.1263$) is \textbf{undetectable at the $3\sigma$ level}, defining the resolution limit of the cosine distance detector. The transition to detection occurs sharply at fog $\alpha = 0.35$ ($d_{L32} = 0.1322$). This suggests a phase-transition-like behavior in the embedding response to corruption intensity.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig161_adaptive_threshold_trace.png}
+\caption{\textbf{Static vs.\ adaptive threshold on temporal sequence.} Frame-by-frame L32 cosine distance through clean $\rightarrow$ fog $\rightarrow$ night $\rightarrow$ clean phases. Red triangles mark OOD detections. Both methods achieve identical results with zero false alarms.}
+\label{fig:adaptive_threshold}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig162_condition_phase_trajectory.png}
+\caption{\textbf{Dual-layer distance trajectory through condition phases.} L3 and L32 distances trace the environmental shift from clean through fog to night and back. Night produces $3\times$ the fog distance, enabling trivial detection.}
+\label{fig:condition_trajectory}
+\end{figure}
+
+\subsection{Robustness of Centroid Estimation}
+
+Calibration data may contain outliers (mislabeled or corrupted images). We compare five centroid estimators---arithmetic mean, geometric median (Weiszfeld's algorithm), 20\% and 30\% trimmed means, and medoid---under three contamination levels (0, 1, or 2 OOD outliers mixed into $n=8$ calibration images).
+
+\textbf{Finding 284}: The simple \textbf{arithmetic mean is the best centroid estimator}, achieving AUROC = 1.000 at L3 across all contamination levels and maintaining the highest L32 AUROC (0.969) even with 2 outliers. Robust estimators provide no advantage.
+
+\textbf{Finding 285}: The \textbf{medoid is the worst estimator} (AUROC 0.82--0.89), because selecting a single data point as the center discards all averaging benefits. Trimmed means also underperform due to over-trimming in small-sample regimes.
+
+\textbf{Finding 286}: Contaminating calibration with 1--2 OOD samples causes only a \textbf{3\% L32 AUROC drop} (1.000 $\rightarrow$ 0.969) for the mean estimator while L3 remains at 1.000. The detector is inherently robust to mild calibration contamination without requiring special robust statistics.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig163_robust_calibration.png}
+\caption{\textbf{Centroid estimator comparison under calibration contamination.} AUROC by estimator and contamination level at L3 (left) and L32 (right). Simple mean dominates across all conditions.}
+\label{fig:robust_calibration}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig164_robust_cal_heatmap.png}
+\caption{\textbf{AUROC heatmap across estimators and contamination levels.} Mean (top row) consistently achieves the highest values, while medoid (bottom) is uniformly worst.}
+\label{fig:robust_cal_heatmap}
+\end{figure}
+
 \end{document}
