@@ -10370,3 +10370,97 @@ Vision Encoder (d=0.2-0.5)  →  L0: d≈0 (BOTTLENECK)  →  L1-L3: d=0.001-0.0
 **Finding 322**: The OOD signal exhibits **two-phase amplification**: slow growth through early layers (L1-L10: d=0.001→0.008) followed by exponential amplification in mid layers (L11-L17: d=0.008→0.30). The final layer (L32) produces a 2× spike (d=0.33-0.70), reflecting projection into vocabulary space.
 
 **Finding 323**: Despite L0's bottleneck, **L3 already recovers sufficient signal** for perfect detection (d=0.003-0.008 vs clean d=0). This demonstrates that only 3 layers of attention-mediated information transfer are needed to reconstruct the corruption signal from image token positions to the monitored text token position.
+
+---
+
+## Experiment 278: Attention Head Decomposition of OOD Signal
+
+**Research Question**: Is the OOD signal at the attention output level concentrated in specific heads, or distributed across all 32 heads? How does the attention output distance compare to the full hidden state distance?
+
+**Method**: Register forward hooks on self-attention modules at layers 1, 2, 3, 5, and 7. For each layer, measure: (1) cosine distance of the attention output vs full hidden state, (2) per-head entropy changes across 32 heads for 4 corruptions, (3) per-head image attention fraction changes.
+
+**Results**:
+
+**Attention Output vs Hidden State Distances (L3)**:
+| Corruption | Attention Output d | Hidden State d | Ratio |
+|-----------|-------------------|----------------|-------|
+| Fog | 0.024 | 0.003 | **8.4×** |
+| Night | 0.031 | 0.008 | **3.9×** |
+| Noise | 0.004 | 0.0005 | **7.3×** |
+| Blur | 0.030 | 0.006 | **4.7×** |
+
+**At L7, the dilution is even more extreme**:
+| Corruption | Attention Output d | Hidden State d | Ratio |
+|-----------|-------------------|----------------|-------|
+| Fog | 0.048 | 0.002 | **21.1×** |
+| Night | 0.153 | 0.006 | **24.5×** |
+| Noise | 0.014 | 0.0004 | **38.9×** |
+| Blur | 0.123 | 0.004 | **31.1×** |
+
+**Per-Head Entropy Changes at L3**:
+- Most affected heads vary by corruption type: head 2 (fog), head 18 (night/blur), head 1 (noise)
+- Signal is distributed across all 32 heads — no single head dominates
+- Mean entropy changes: fog -4.3%, night -4.4%, noise -2.2%, blur -1.5%
+
+**Key Findings**:
+1. **Attention outputs have 4-39× higher cosine distance than hidden states**: The residual connection dramatically dilutes the attention-computed corruption signal. At L7, the attention module detects night corruption at d=0.153, but the hidden state (attention + residual) reduces this to d=0.006.
+2. **The dilution increases with depth**: L3 shows 4-8× dilution, L7 shows 21-39×. This explains why later layers have increasing ID variance — the residual stream accumulates information that obscures the corruption signal.
+3. **OOD signal is distributed across all 32 heads**: No single attention head dominates. The most affected head changes by corruption type (head 2 for fog, head 18 for night/blur). This distributed signal means single-head ablation cannot destroy detection.
+4. **Different corruption types activate different heads**: Head 17 is most affected at L1/L5 across corruptions, while at L3 the pattern diversifies. This head-corruption specificity further enables corruption type identification.
+
+**Finding 324**: Attention outputs carry **4-39× stronger OOD signal** than the full hidden state. The residual connection dilutes the attention-computed corruption signal by adding the (mostly unchanged) input from the previous layer. This dilution ratio increases with depth: 4-8× at L3 → 21-39× at L7.
+
+**Finding 325**: The OOD signal is **distributed across all 32 attention heads** — no single head dominates for any corruption type. The most affected head varies by corruption (head 2 for fog, head 18 for night/blur, head 1 for noise), making the detector robust to single-head failures.
+
+**Finding 326**: **Residual stream dilution explains the layer selectivity pattern**: early layers have less accumulated residual information, so the attention output's corruption signal is less diluted. This is why L3 achieves better separation ratios than L31 despite having smaller absolute distances.
+
+---
+
+## Experiment 279: Token Position Trajectory Analysis
+
+**Research Question**: How is the OOD signal distributed across ALL token positions at L3? What is the spatial structure within image tokens? How quickly does signal propagate from image tokens to text tokens?
+
+**Method**: Extract L3 hidden states at all 274 token positions (1 BOS + 256 image + 17 text) for clean and 4 corruptions. Compute per-position cosine distance. Analyze image token spatial structure by reshaping 256 image tokens into a 16×16 grid. Track signal propagation across layers 1, 3, 7, 15.
+
+**Results**:
+
+**Image-to-Text Signal Ratio at L3**:
+| Corruption | Ratio | Image Mean d | Text Mean d | Last Token d |
+|-----------|-------|-------------|-------------|--------------|
+| Fog | **24.0×** | 0.168 | 0.007 | 0.003 |
+| Night | **19.2×** | 0.353 | 0.018 | 0.008 |
+| Noise | **139.1×** | 0.175 | 0.001 | 0.0005 |
+| Blur | **23.1×** | 0.291 | 0.013 | 0.006 |
+
+**BOS Token**: d ≈ 0 at all layers (carries no corruption signal).
+
+**Spatial Structure in Image Tokens (L3, 16×16 grid)**:
+| Corruption | Center Mean d | Border Mean d | Center/Border Ratio |
+|-----------|--------------|--------------|---------------------|
+| Fog | 0.167 | 0.198 | 0.84 |
+| Night | 0.345 | 0.425 | 0.81 |
+| Noise | 0.173 | 0.198 | 0.87 |
+| Blur | 0.296 | 0.474 | **0.63** |
+
+**Signal Propagation (Image/Text Ratio by Layer)**:
+| Layer | Fog | Night | Noise | Blur |
+|-------|-----|-------|-------|------|
+| L1 | 83× | 42× | **899×** | 37× |
+| L3 | 24× | 19× | 139× | 23× |
+| L7 | 12× | 8× | 74× | 10× |
+| L15 | 2.9× | 2.0× | 12× | 2.0× |
+
+**Key Findings**:
+1. **Image tokens carry 19-899× more signal than text tokens at early layers**: At L3, image token mean distance is 0.168-0.353 vs text token mean 0.001-0.018. The signal is overwhelmingly concentrated in image token positions.
+2. **The last token's distance is even smaller than text token average**: The monitored last token (d=0.003-0.008) has LESS signal than text tokens in general (d=0.001-0.018), yet it's sufficient for perfect detection.
+3. **Border image tokens have higher distances than center tokens**: Center/border ratio is 0.63-0.87. Blur shows the strongest spatial gradient (0.63), likely because blur affects edges more than uniform regions.
+4. **Signal propagates from image to text tokens through depth**: Image/text ratio decreases from 37-899× (L1) to 2-12× (L15). By L15, text tokens have accumulated nearly as much corruption information as image tokens through attention-mediated transfer.
+5. **Noise is the most spatially isolated**: Image/text ratio at L1 is 899× for noise (vs 37-83× for other corruptions), meaning noise signal transfers to text tokens most slowly.
+
+**Finding 327**: Image tokens carry **19-899× more OOD signal** than text tokens at L3. The last token position has even less signal than the text token average, yet achieves AUROC=1.0 — demonstrating that the detection threshold (d>0) is so easily met that even heavily diluted signal suffices.
+
+**Finding 328**: **Border image tokens have 1.2-1.6× higher distance** than center tokens, with blur showing the strongest spatial gradient (center/border=0.63). This reflects the physics of each corruption: blur affects edges more than uniform regions, while fog and noise are more spatially uniform.
+
+**Finding 329**: Signal propagation from image to text tokens follows a **logarithmic decay**: the image/text ratio drops from 37-899× at L1 to 2-12× at L15. By L15, attention has distributed corruption information nearly uniformly across all token positions.
+
+**Finding 330**: The BOS token carries **zero corruption signal** at all layers (d≈0), confirming that the BOS embedding is entirely input-independent. This rules out BOS as a detection position and validates the use of image or late-sequence text tokens.

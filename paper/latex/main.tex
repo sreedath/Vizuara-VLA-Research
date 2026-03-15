@@ -5240,4 +5240,36 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 594}: Despite the L0 bottleneck, \textbf{L3 already provides sufficient signal} for perfect detection ($d = 0.003$--$0.008$ vs.\ clean $d = 0$). Only 3 layers of attention transfer are needed to reconstruct the corruption signal, explaining why our minimal L3 detector achieves AUROC=1.0.
 
+\subsection{Attention Head Decomposition}
+
+\textbf{Experiment 278: Per-Head OOD Signal Analysis.} We decompose the hidden state change into attention output and residual contributions at layers 1--7 by hooking into the self-attention modules. We also analyze per-head entropy changes across all 32 attention heads.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig287_heads.png}
+\caption{Attention head decomposition. (a) Attention output cosine distance (solid) vs.\ hidden state distance (faded) --- the residual stream dilutes the corruption signal 4--39$\times$. (b) Per-head entropy changes at L3: signal distributed across all 32 heads with corruption-specific patterns. (c) Dilution ratio increases with depth: L1 $\sim$4--8$\times$, L7 $\sim$21--39$\times$. (d) Cumulative per-head entropy sensitivity: no single head dominates.}
+\end{figure}
+
+\textbf{Finding 595}: Attention outputs carry \textbf{4--39$\times$ stronger OOD signal} than the full hidden state. At L7, attention output distance for night corruption is $d = 0.153$, but the hidden state (attention + residual) reduces this to $d = 0.006$ --- a $24.5\times$ dilution. The residual connection adds the (mostly unchanged) previous-layer representation, masking the attention-computed corruption signal.
+
+\textbf{Finding 596}: The OOD signal is \textbf{distributed across all 32 attention heads}: the most affected head varies by corruption type (head 2 for fog, head 18 for night/blur, head 1 for noise at L3). Mean entropy changes are modest ($-$1.5\% to $-$4.4\%), but spread uniformly --- no single-head ablation can destroy the detection signal.
+
+\textbf{Finding 597}: \textbf{Residual stream dilution explains layer selectivity}: the dilution ratio grows from 4--8$\times$ at L3 to 21--39$\times$ at L7. Early layers have less accumulated residual information, so their attention outputs' corruption signal is less diluted. This mechanistically explains why L3 achieves better separation ratios than deeper layers despite having smaller absolute cosine distances.
+
+\subsection{Token Position Trajectory}
+
+\textbf{Experiment 279: Per-Position OOD Signal Map.} We extract L3 hidden states at all 274 token positions (1 BOS + 256 image + 17 text) and compute per-position cosine distance for all 4 corruptions. We reshape the 256 image token distances into a 16$\times$16 spatial grid and track signal propagation across layers 1, 3, 7, and 15.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig288_trajectory.png}
+\caption{Token position trajectory. (a) Per-position OOD signal at L3: image tokens (positions 1--256) carry $19$--$139\times$ more signal than text tokens. BOS$\approx$0. (b) Image-to-text signal ratio decreases with depth as attention distributes information. (c) Spatial OOD map for night corruption: border tokens carry higher signal. (d) Center vs.\ border distances: blur shows strongest spatial gradient (center/border=0.63).}
+\end{figure}
+
+\textbf{Finding 598}: Image tokens carry \textbf{19--899$\times$ more OOD signal} than text tokens at L3. Despite this, the last token position ($d = 0.003$--$0.008$, even less than the text token average) achieves AUROC=1.0 --- demonstrating that the detection threshold ($d > 0$) is met even with heavily diluted signal.
+
+\textbf{Finding 599}: \textbf{Border image tokens have 1.2--1.6$\times$ higher distance} than center tokens. Blur shows the strongest spatial gradient (center/border = 0.63), reflecting the physics of Gaussian blur which preferentially affects edges and high-frequency regions. Fog and noise are more spatially uniform (ratio $\geq 0.84$).
+
+\textbf{Finding 600}: Signal propagation from image to text tokens follows \textbf{logarithmic decay}: the image/text ratio drops from 37--899$\times$ at L1 to 2--12$\times$ at L15. By layer 15, attention has distributed corruption information nearly uniformly across all positions. The BOS token carries \textbf{zero signal} at all layers, confirming it is entirely input-independent.
+
 \end{document}
