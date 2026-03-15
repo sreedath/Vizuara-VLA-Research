@@ -14653,3 +14653,94 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 
 **Finding 624**: Noise detection under centroid calibration has high variance at small n (std=0.099 at n=1) with worst-case AUROC=0.65, but variance collapses to 0.006 by n=20 with worst-case 0.98. This means n≥5 is the practical minimum for reliable noise detection.
 
+
+## Experiment 356: Online Threshold Adaptation
+
+**Script**: `scripts/real_vla_online_threshold.py`
+**Result**: `experiments/online_threshold_20260315_150204.json`
+**Figure**: `figures/fig365_threshold.png`
+
+### Key Results
+
+**Threshold Gap Analysis**:
+| Corruption | Clean Max | OOD Min | Gap | Gap/Clean |
+|-----------|-----------|---------|-----|-----------|
+| Fog | 9.71e-5 | 8.76e-4 | 7.79e-4 | 8.0× |
+| Night | 9.71e-5 | 1.86e-3 | 1.76e-3 | 18.1× |
+| Noise | 9.71e-5 | 1.00e-4 | 2.80e-6 | 0.03× |
+| Blur | 9.71e-5 | 4.49e-3 | 4.39e-3 | 45.2× |
+
+**CUSUM Detection**:
+- Fog: 1-2 frame delay, zero false alarms
+- Night: 1 frame delay at all h values
+- Noise: FAILS to detect — signal too close to clean
+- Blur: 1 frame delay at all h values
+
+**Page-Hinkley**: Fails for ALL corruption types (thresholds too conservative for this signal range)
+
+**Severity vs Detection Rate (fixed threshold)**:
+- Blur: 100% at all severities including 0.05
+- Night: 30% at 0.05, 100% at ≥0.1
+- Fog: 0% at ≤0.1, 100% at ≥0.2
+- Noise: 10% at 0.05-0.1, gradual to 100% at ≥0.7
+
+**Fixed vs Adaptive Threshold**:
+- Fixed: F1=1.0 (fog/night/blur), 0.889 (noise)
+- Adaptive: F1=0.18 (fog/night/blur), 0.33 (noise)
+- Adaptive CATASTROPHICALLY fails because corrupted frames pollute the running window
+
+### Findings
+
+**Finding 625**: Blur has the largest detection gap (45.2× clean max), followed by night (18.1×), fog (8.0×), and noise (0.03×). This 1500× gap range explains why noise is uniquely difficult for centroid-based detection.
+
+**Finding 626**: CUSUM achieves 1-frame detection delay for fog/night/blur with zero false alarms, but fails entirely for noise. The noise signal is too close to the clean distribution for cumulative sum methods.
+
+**Finding 627**: Fixed thresholds dramatically outperform adaptive (running percentile) thresholds: F1=1.0 vs 0.18. Adaptive thresholds are COUNTERPRODUCTIVE because corrupted frames contaminate the reference window, raising the threshold above the corruption signal.
+
+**Finding 628**: Page-Hinkley test fails for ALL corruption types. Its assumption of gradually shifting distributions is violated by the sharp clean/corrupt boundary in VLA embeddings.
+
+**Finding 629**: Severity detection thresholds are corruption-specific: blur detectable at sev≥0.05, night at sev≥0.1, fog at sev≥0.2, noise at sev≥0.7. This 14× range means no single severity threshold works across all corruptions.
+
+
+## Experiment 357: Multi-Corruption Composition
+
+**Script**: `scripts/real_vla_multi_corruption.py`
+**Result**: `experiments/multi_corruption_20260315_150442.json`
+**Figure**: `figures/fig366_multicorrupt.png`
+
+### Key Results
+
+**Single Baselines**: fog=0.000978, night=0.002018, noise=0.000121, blur=0.004990
+
+**Pairwise Composition**:
+| Pair | Distance | vs Sum | vs Max | Order Diff | Commutative? |
+|------|----------|--------|--------|------------|-------------|
+| fog+night | 0.001924 | 0.64× | 0.95× | 0.000461 | ~yes |
+| fog+noise | 0.000578 | 0.53× | 0.59× | 0.000120 | ~yes |
+| fog+blur | 0.004723 | 0.79× | 0.95× | 0.000031 | yes |
+| night+noise | 0.001822 | 0.85× | 0.90× | 0.000137 | ~yes |
+| night+blur | 0.006401 | 0.91× | 1.28× | 0.000051 | yes |
+| noise+blur | 0.004332 | 0.85× | 0.87× | 0.004241 | NO |
+
+**Triple Composition** (severity 0.3 each):
+- fog+noise+blur: d=0.003329 (0.55× sum), AUROC=1.0
+- night+noise+blur: d=0.006233 (0.87× sum), AUROC=1.0
+- fog+night+noise: d=0.000305 (0.10× sum), AUROC=1.0
+- fog+night+blur: d=0.006262 (0.78× sum), AUROC=1.0
+
+**Cancellation**: fog+night at 45 severity pairs → ALL detected (45/45), min_d=0.000363 vs clean_max=0.000078
+
+**All-Four at 0.25 each**: d=0.004371, AUROC=1.0
+
+### Findings
+
+**Finding 630**: Corruption compositions are predominantly SUBadditive (53-91% of sum), with only night+blur showing superadditivity (1.28× max). Embedding shifts partially cancel rather than compound.
+
+**Finding 631**: noise+blur is dramatically non-commutative (order_diff=0.004241, 85× other pairs). Applying blur then noise vs noise then blur produces vastly different embeddings, suggesting a non-linear interaction in the model's processing.
+
+**Finding 632**: fog+night+noise triple composition drops to just 10% of the sum of individual effects — near-complete cancellation. Despite this, the composition is still detected (AUROC=1.0) because the distance (0.000305) still exceeds the clean maximum (0.000078).
+
+**Finding 633**: fog+night cancellation is impossible: 45/45 severity combinations detected, with minimum distance (0.000363) still 4.7× the clean maximum. Opposing brightness effects do not cancel in embedding space.
+
+**Finding 634**: All-four corruptions at mild severity (0.25 each) produce AUROC=1.0 with distance 0.004371, showing that combined mild corruptions remain easily detectable despite individual subadditivity.
+

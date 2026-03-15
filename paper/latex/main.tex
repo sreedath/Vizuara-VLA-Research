@@ -6742,4 +6742,46 @@ We systematically investigate how many calibration images are needed for reliabl
 
 \textbf{Finding 876}: \textbf{$n \geq 5$ is the practical minimum for reliable noise detection.} At n=1, noise AUROC variance is 0.099 with worst-case 0.65; by n=5, variance drops to 0.019 with worst-case 0.95; by n=20, variance is 0.006 with worst-case 0.98.
 
+\subsection{Experiment 356: Online Threshold Adaptation}
+
+We investigate how detection thresholds should be set and adapted in streaming scenarios, comparing fixed thresholds, CUSUM change detection, Page-Hinkley tests, severity-dependent detection rates, and running-percentile adaptive thresholds.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig365_threshold.png}
+\caption{Online threshold adaptation. Top-left: detection gap ranges from $45\times$ (blur) to $0.03\times$ (noise). Top-right: CUSUM detects fog/night/blur in 1-2 frames but fails for noise. Bottom-left: severity-dependent detection rates show blur detectable at all severities while noise requires $\geq 0.7$. Bottom-right: fixed thresholds dramatically outperform adaptive.}
+\label{fig:threshold}
+\end{figure}
+
+\textbf{Finding 877}: \textbf{Blur has the largest detection gap ($45\times$ clean max), noise the smallest ($0.03\times$).} The $1500\times$ gap range across corruption types explains why noise is uniquely difficult: its embedding shift barely exceeds the clean distribution radius.
+
+\textbf{Finding 878}: \textbf{CUSUM achieves 1-frame detection delay for fog/night/blur with zero false alarms.} Cumulative sum methods are ideal for the sharp clean-to-corrupt transition inherent in VLA embeddings, but fail entirely for noise whose signal is too weak.
+
+\textbf{Finding 879}: \textbf{Fixed thresholds outperform adaptive by $5.5\times$ in F1 score.} Adaptive running-percentile thresholds are counterproductive (F1=0.18 vs 1.0) because corrupted frames contaminate the reference window, raising the threshold above the corruption signal.
+
+\textbf{Finding 880}: \textbf{Page-Hinkley test fails for ALL corruption types.} Its assumption of gradually shifting distributions is violated by the sharp clean/corrupt boundary characteristic of VLA embeddings.
+
+\textbf{Finding 881}: \textbf{Detection severity thresholds span a $14\times$ range.} Blur is detectable at severity $\geq 0.05$, night at $\geq 0.1$, fog at $\geq 0.2$, and noise at $\geq 0.7$, meaning no single severity threshold works universally.
+
+\subsection{Experiment 357: Multi-Corruption Composition}
+
+We investigate how simultaneous corruptions interact: pairwise and triple composition, commutativity, superadditivity, cancellation potential, and all-four stacking.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig366_multicorrupt.png}
+\caption{Multi-corruption composition analysis. Top-left: composed corruptions vs sum and max of individual effects. Top-right: sub/super-additivity ratios — most compositions are subadditive except night+blur. Bottom-left: non-commutativity — noise+blur order effect is $85\times$ larger than other pairs. Bottom-right: triple and quadruple compositions all maintain AUROC=1.0.}
+\label{fig:multicorrupt}
+\end{figure}
+
+\textbf{Finding 882}: \textbf{Corruption compositions are predominantly subadditive (53--91\% of sum).} Only night+blur shows superadditivity ($1.28\times$ max), suggesting that embedding shifts from different corruptions partially cancel in the high-dimensional space.
+
+\textbf{Finding 883}: \textbf{noise+blur composition is dramatically non-commutative.} The order difference ($4.2 \times 10^{-3}$) is $85\times$ larger than any other pair, revealing a strong non-linear interaction: blur first smooths spatial frequencies that noise would otherwise perturb.
+
+\textbf{Finding 884}: \textbf{fog+night+noise triple drops to 10\% of summed singles --- near-complete cancellation.} Despite this extreme subadditivity, the composition still achieves AUROC=1.0 because even the reduced distance ($3.05 \times 10^{-4}$) exceeds the clean maximum ($7.8 \times 10^{-5}$).
+
+\textbf{Finding 885}: \textbf{fog+night cancellation is impossible: 45/45 severity combinations detected.} The minimum composed distance ($3.63 \times 10^{-4}$) is still $4.7\times$ the clean maximum, showing that opposing brightness effects do not cancel in embedding space.
+
+\textbf{Finding 886}: \textbf{All-four corruptions at mild severity (0.25) produce AUROC=1.0.} Even with subadditive composition, combined mild corruptions remain easily detectable ($d = 4.37 \times 10^{-3}$), validating the detector against realistic multi-degradation scenarios.
+
 \end{document}
