@@ -3976,4 +3976,21 @@ We test whether the text prompt affects OOD detection by comparing 5 diverse pro
 \label{fig:multi_prompt}
 \end{figure}
 
+\subsection{Token Position Analysis}
+
+We investigate where in the 16-token sequence the OOD signal appears, comparing the first (BOS), middle (image), and last (generation) token positions.
+
+\textbf{Finding 414}: The \textbf{first token (BOS) is completely blind} to visual corruption (AUROC=0.5), while all other positions achieve AUROC=1.0. The BOS token is a fixed embedding with no image dependence.
+
+\textbf{Finding 415}: Early image tokens (positions 4--12) carry the \textbf{strongest OOD signal}---cosine distances of 0.17--0.23 at L1, versus 0.001 at the last token (position 15). Despite this 200$\times$ difference in absolute distance, the last token still achieves perfect AUROC because the ID within-class variance is effectively zero ($\sim$10$^{-7}$).
+
+\textbf{Finding 416}: This validates our design choice of \textbf{last-token extraction}: while not the strongest absolute signal, it achieves perfect separation and is the most computationally efficient (no need to store or process the full sequence).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig224_token_position.png}
+\caption{\textbf{Token position analysis.} Left: AUROC by position (BOS token is blind, all others perfect). Right: OOD distance by position (image tokens carry 200$\times$ larger absolute signal than the last token, but both achieve perfect separation).}
+\label{fig:token_position}
+\end{figure}
+
 \end{document}

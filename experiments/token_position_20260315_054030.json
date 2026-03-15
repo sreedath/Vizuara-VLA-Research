@@ -1,0 +1,169 @@
+{
+  "experiment": "token_position_analysis",
+  "experiment_number": 212,
+  "timestamp": "20260315_054030",
+  "seq_length": 16,
+  "positions": {
+    "first": 0,
+    "quarter": 4,
+    "middle": 8,
+    "three_quarter": 12,
+    "last": 15
+  },
+  "n_cal": 10,
+  "n_test": 8,
+  "layers": [
+    1,
+    3
+  ],
+  "results": {
+    "L1": {
+      "first": {
+        "auroc": 0.5,
+        "per_corruption": {
+          "fog": 0.5,
+          "night": 0.5,
+          "blur": 0.5,
+          "noise": 0.5
+        },
+        "id_mean": 6e-08,
+        "ood_mean": 0.0,
+        "separation": 0.9983
+      },
+      "quarter": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 1.2e-07,
+        "ood_mean": 0.231725,
+        "separation": 1942224.1037
+      },
+      "middle": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": -1.2e-07,
+        "ood_mean": 0.222551,
+        "separation": 0
+      },
+      "three_quarter": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 6e-08,
+        "ood_mean": 0.206769,
+        "separation": 3463196.0961
+      },
+      "last": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": -1.2e-07,
+        "ood_mean": 0.001346,
+        "separation": 0
+      },
+      "mean_all": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 1.2e-07,
+        "ood_mean": 0.110775,
+        "separation": 928471.423
+      }
+    },
+    "L3": {
+      "first": {
+        "auroc": 0.5,
+        "per_corruption": {
+          "fog": 0.5,
+          "night": 0.5,
+          "blur": 0.5,
+          "noise": 0.5
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.0,
+        "separation": 0
+      },
+      "quarter": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.193178,
+        "separation": 0
+      },
+      "middle": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.18755,
+        "separation": 0
+      },
+      "three_quarter": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.170278,
+        "separation": 0
+      },
+      "last": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.002358,
+        "separation": 0
+      },
+      "mean_all": {
+        "auroc": 1.0,
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0
+        },
+        "id_mean": 0.0,
+        "ood_mean": 0.003598,
+        "separation": 0
+      }
+    }
+  }
+}

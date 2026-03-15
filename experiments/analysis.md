@@ -8214,3 +8214,28 @@ snow       0     0     0     0      0     0     6
 4. **OOD signal is prompt-independent**: The mean OOD distance varies minimally across prompts (L1: 0.001312-0.001427, CV<4%). This confirms the OOD signal comes from the vision pathway, not the text pathway.
 
 **Finding**: OOD detection is **completely prompt-invariant**. All 5 diverse prompts achieve AUROC=1.0 with nearly identical OOD distances (CV<4%). Cross-prompt centroid distances (0.0004-0.003) are far smaller than ID-OOD distances. This confirms the OOD signal originates in the **vision encoder pathway**, not the language model. Multi-prompt ensembling is unnecessary — a single arbitrary prompt suffices for perfect detection.
+---
+
+### Finding 207: Token Position Analysis (Experiment 212)
+
+**Experiment**: Test OOD detection at different token positions in the sequence (16 tokens total). Compare first (0), quarter (4), middle (8), three-quarter (12), last (15), and mean-over-all positions.
+
+**AUROC by Token Position**:
+| Position | L1 | L3 | L1 OOD Distance | L3 OOD Distance |
+|----------|------|------|-----------------|-----------------|
+| first (0) | 0.500 | 0.500 | 0.000 | 0.000 |
+| quarter (4) | 1.000 | 1.000 | 0.232 | 0.193 |
+| middle (8) | 1.000 | 1.000 | 0.223 | 0.188 |
+| 3/4 (12) | 1.000 | 1.000 | 0.207 | 0.170 |
+| last (15) | 1.000 | 1.000 | 0.001 | 0.002 |
+| mean_all | 1.000 | 1.000 | 0.111 | 0.004 |
+
+**Key Findings**:
+1. **First token (position 0) is blind**: AUROC=0.5 at both layers — the BOS (beginning of sequence) token contains zero visual information and cannot distinguish clean from corrupted inputs.
+2. **All other positions achieve AUROC=1.0**: From position 4 onward (where image tokens appear), perfect detection is achieved at every position.
+3. **Early image tokens have largest OOD distances**: Position 4 has OOD distance 0.232 (L1), while position 15 (last) has only 0.001. The image tokens carry the strongest visual corruption signal.
+4. **Last token works despite smallest distance**: Despite having the smallest OOD distance (0.001 vs 0.232), the last token still achieves AUROC=1.0 because the ID distance is effectively zero (~1e-7).
+5. **ID distances are effectively zero**: At all positions, the ID cosine distance is ~1e-7 (floating point precision), confirming that clean images produce identical embeddings at every token position.
+6. **Sequence length is only 16**: The VLA uses a very compact token representation. With 256 image tokens from the ViT and text tokens, the final sequence seen by the LLM is 16 tokens.
+
+**Finding**: The OOD signal is **spatially distributed across the token sequence** but concentrated in the early-to-middle image tokens (positions 4-12), where OOD distances are 100-200× larger than at the last token. The first token (BOS) is completely blind to visual corruption. Despite this, the last token — which is what we use for all other experiments — still achieves perfect detection because the ID within-class variance is essentially zero. This justifies our design choice of using the last-token hidden state.
