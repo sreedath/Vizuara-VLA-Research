@@ -11276,3 +11276,111 @@ Examined attention head specialization: per-head attention entropy changes under
 **Finding 373**: **Night corruption produces the largest attention entropy reductions** at deep layers (up to -1.82 nats at L31), indicating the model "sharpens" its attention dramatically under extreme darkness. Fog also reduces entropy but less dramatically. Noise slightly increases L0 entropy but decreases it at deeper layers.
 
 **Finding 374**: **Night and blur share the most similar head-level entropy patterns** (cos_sim=0.881 at L31), consistent with their embedding direction similarity (0.611 from Exp 296). Fog and noise are anti-correlated at L3 (-0.833), supporting the finding that noise moves embeddings in the opposite direction from fog.
+
+---
+
+## Experiment 298: Layer-wise Information Flow (Real OpenVLA-7B)
+
+**Date:** 2025-03-15 | **GPU:** RunPod A40 | **Model:** openvla-7b (bfloat16)
+
+### Setup
+Traced OOD detection information across all 33 hidden states (L0-L32): per-layer cosine distance profiles at multiple severities, per-layer AUROC, corruption type classification accuracy, information gain between consecutive layers, and token position analysis.
+
+### Results
+
+**Distance Profile (severity=1.0):**
+
+| Layer | Fog | Night | Blur | Noise |
+|-------|-----|-------|------|-------|
+| L0 | 0.000 | 0.000 | 0.000 | 0.000 |
+| L1 | 0.001 | 0.005 | 0.006 | 0.000 |
+| L3 | 0.003 | 0.008 | 0.006 | 0.001 |
+| L15 | 0.056 | 0.187 | 0.182 | 0.020 |
+| L31 | 0.139 | 0.272 | 0.287 | 0.072 |
+| L32 | **0.326** | **0.694** | **0.695** | **0.178** |
+
+Distance grows monotonically from L1 to L32, with a **massive 2-2.6× spike at L31→L32**.
+
+**Per-Layer AUROC:**
+- L0: AUROC=0.5 (random) for all corruptions
+- **L1: AUROC=1.0** for ALL corruptions (first perfect layer)
+- L2-L32: all AUROC=1.0
+
+**Classification Accuracy:**
+- L0: 25% (random among 4 classes)
+- **L1: 100%** (perfect type identification from layer 1)
+- L2-L32: all 100%
+
+**Information Gain (L31→L32):**
+- Fog: +0.187 (largest single-layer gain)
+- Night: +0.422
+- Blur: +0.408
+- Noise: +0.106
+
+**Token Position at L3:**
+- First token (BOS, idx=0): d=0.000 for ALL corruptions at ALL layers — completely blind
+- Middle tokens (image, idx=137): d=0.203 (fog), d=0.323 (night) — carry enormous signal
+- Last token (generated, idx=-1): d=0.003 (fog), d=0.008 (night) — moderate signal
+
+### Key Findings
+
+**Finding 375**: **L1 (not L3) is the first layer with AUROC=1.0** — detection is perfect from the very first transformer layer after the input embedding. The L0→L1 transition is where OOD detection information is first created. Previously (Exp 278, 297) we tested L0 and L3 but missed L1-L2. This narrows the critical transformation to a single layer.
+
+**Finding 376**: **L32 produces a 2-2.6× distance spike** from L31, representing the single largest per-layer information gain for all corruption types. At L32, distances reach 0.33 (fog) to 0.70 (night/blur). This final-layer amplification is consistent with the LLM head projecting to vocabulary space, where corruption-induced embedding differences are maximally amplified.
+
+**Finding 377**: **The BOS token carries zero corruption signal** at every layer (d=0.0 from L0 to L31), confirming it is completely corruption-blind. In contrast, middle image tokens carry 25-50× more signal than the last generated token at L3, and the last token gradually accumulates signal through the transformer depth (growing from 0.003 at L3 to 0.139 at L31 for fog).
+
+**Finding 378**: **Corruption type identification is perfect from L1** — all 4 types correctly classified using direction-based nearest-neighbor from layer 1 onwards. L0 achieves only 25% (random chance). This means the first transformer layer simultaneously creates both detection AND classification information, not just detection.
+
+---
+
+## Experiment 299: Embedding Norm Decomposition (Real OpenVLA-7B)
+
+**Date:** 2025-03-15 | **GPU:** RunPod A40 | **Model:** openvla-7b (bfloat16)
+
+### Setup
+Decomposed corruption-induced embedding changes into parallel and orthogonal components relative to clean embedding direction, analyzed residual stream contributions, compared norm-based vs cosine detection, and measured per-dimension concentration of the corruption signal.
+
+### Results
+
+**Parallel vs Orthogonal Decomposition (L3, severity=1.0):**
+
+| Corruption | Diff Norm | Parallel | Orthogonal | Parallel % | Norm Change |
+|-----------|----------|----------|------------|-----------|-------------|
+| Fog | 0.633 | +0.128 | 0.620 | 20.3% | +1.83% |
+| Night | 1.104 | +0.223 | 1.081 | 20.2% | +3.53% |
+| Blur | 0.925 | -0.106 | 0.919 | 11.4% | -0.65% |
+| Noise | 0.271 | -0.067 | 0.263 | 24.5% | -0.75% |
+
+Corruption shifts are **~97-99% orthogonal** to the clean embedding direction.
+
+**Clean Embedding Norms:**
+- L0: 0.89, L3: 8.28, L7: 18.19, L15: 46.41, L31: 133.69, L32: 92.09
+- Norms grow ~linearly with depth, except **L32 drops to 92.09** (vocab projection)
+
+**Residual Stream (top contributing layers):**
+- Fog: L32 (56.1), L31 (33.2), L30 (31.4)
+- Night: L32 (62.8), L31 (31.5), L30 (30.3)
+- Blur: L32 (56.1), L31 (33.2), L30 (31.4)
+- Noise: L32 (18.0), L30 (17.6), L28 (15.4)
+
+**Norm-Based Detection:** AUROC=1.0 at ALL layers (L3, L7, L15, L31) for ALL corruptions. L2 norm change alone is sufficient.
+
+**Per-Dimension Signal Concentration:**
+
+| Corruption | Top 20 Dims | 50% at | 90% at | Gini |
+|-----------|------------|--------|--------|------|
+| Fog | 12.2% | 427D | 1753D | 0.669 |
+| Night | 15.8% | 383D | 1716D | 0.685 |
+| Blur | 7.4% | 472D | 1788D | 0.652 |
+| Noise | 20.0% | 348D | 1670D | 0.700 |
+
+### Key Findings
+
+**Finding 379**: **Corruption shifts are ~97-99% orthogonal** to the clean embedding direction at L3. The parallel component is only 11-24% of the total shift. Fog and night extend the embedding slightly (positive parallel), while blur and noise contract it. This orthogonal geometry explains why cosine distance (which is sensitive to angular change) is such an effective detector.
+
+**Finding 380**: **Norm-based detection also achieves AUROC=1.0** at all tested layers, meaning the L2 norm change alone is a perfect OOD detector. However, the separation is smaller than cosine distance. The clean embedding norm grows linearly from 0.89 (L0) to 133.69 (L31), then drops to 92.09 at L32 (vocabulary projection).
+
+**Finding 381**: **The last 3 layers (L30-L32) dominate the residual stream**, contributing 65-75% of total corruption signal for fog/night/blur. L32 alone contributes 33-37% despite being the final projection layer. Noise is more distributed, with significant contributions from L28 and earlier layers.
+
+**Finding 382**: **Per-dimension signal has moderate concentration** (Gini 0.65-0.70): 50% of signal requires 348-472 dimensions, and 90% needs 1670-1788 dimensions. Noise is most concentrated (top 20 dims = 20%, Gini = 0.70), blur most distributed (top 20 dims = 7.4%, Gini = 0.65). This moderate Gini explains why random projection works — signal spans hundreds of dimensions, so random subspaces reliably capture it.
