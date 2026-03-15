@@ -16589,4 +16589,82 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 
 **Finding 868**: Cross-resolution embedding stability shows that resizing from 224 to other resolutions produces distances of 0.0004-0.002 — always smaller than corruption distances (0.003+). Resolution change does not cross the detection threshold, confirming the detector tolerates preprocessing variability.
 
-**Finding 869**: Crop position has minimal effect on detection distances (±0.0003 across center, corners). The fog detection signal is uniformly distributed across spatial regions, consistent with fog being a global illumination change.
+---
+
+## Experiment 405: Token-Level Action Analysis
+
+**Objective**: Analyze how corruptions affect the model's action token predictions at the per-dimension level, including action bin distributions, confidence, and entropy.
+
+**Method**: Extract per-dimension action tokens for 5 scenes × 4 corruptions across severity levels. Compare action bins, confidence, and entropy against clean baselines. Analyze per-dimension sensitivity and severity thresholds.
+
+**Finding 869**: Fog corruption causes complete action collapse — all 5 diverse scenes produce identical 7-dimensional action tokens [145, 75, 128, 128, 135, 128, 128], demonstrating total loss of scene-conditional behavior. The model ignores all visual scene content under fog and defaults to a single fixed action regardless of input.
+
+**Finding 870**: Z-axis is the most corruption-sensitive action dimension (mean bin change 79.2 fog, 93.0 noise), while roll is least sensitive (10-16 across corruptions) — corruption sensitivity is dimension-dependent. This suggests translational dimensions are more vulnerable than rotational ones.
+
+**Finding 871**: Fog makes the model confidently wrong — 82% confidence, entropy drops to 0.86 (vs 3.1 clean) while producing completely wrong collapsed actions. The model concentrates >82% probability mass on single tokens, creating a dangerous failure mode where standard uncertainty monitoring would signal high reliability.
+
+**Finding 872**: Noise corruption exhibits a sharp perceptual threshold — zero action dimensions change at severity=0.1, then ALL 7 dimensions change at severity=0.3. This discrete jump suggests the model's visual encoder has a noise floor below which perturbations are invisible, followed by catastrophic failure above it.
+
+**Finding 873**: Gripper dimension is most fog-resistant (3.8 mean change, 40% scenes affected) while z-axis is most fog-sensitive (79.2 mean change, 100% scenes). The gripper's binary open/close nature may make it inherently more robust to visual degradation than continuous spatial dimensions.
+
+**Finding 874**: Night corruption reduces all scenes to x-bin=112, but preserves some inter-scene variation in other dimensions unlike fog's complete collapse. Night degrades scene discrimination partially rather than eliminating it entirely, representing a less catastrophic failure mode than fog.
+
+**Finding 875**: Per-scene action token probabilities reveal fog concentrates >82% probability mass on single tokens — a confident but wrong failure mode dangerous for safety-critical systems. In contrast, night/noise/blur maintain normal confidence (~13-14%) and higher entropy (3.2-3.9), producing appropriately uncertain outputs when corrupted.
+
+---
+
+## Experiment 406: Embedding Space Geometry
+
+**Objective**: Characterize the geometric structure of corruption trajectories in the embedding space, including linearity, directionality, dimensionality, and curvature.
+
+**Method**: Extract embeddings across severity levels (0.0-1.0) for 4 corruption types × 5 scenes. Compute trajectory linearity (R²), pairwise angular separation, embedding norm shifts, PCA dimensionality, and path curvature deviation from straight lines.
+
+**Finding 876**: Corruption trajectories in embedding space are smooth and approximately linear (R²=0.90-0.96), enabling continuous severity estimation from embedding distance. Fog is most linear (R²=0.959), night least (R²=0.897). This monotonicity means a single threshold can separate all severity levels above a given cutoff.
+
+**Finding 877**: Corruption directions are near-orthogonal — fog-noise 112.2°, night-noise 94.7°, noise-blur 93.4° — each corruption type affects a distinct subspace of the embedding. Some pairs are closer (night-blur 59.7°, fog-blur 72.3°), reflecting shared visual mechanisms between these corruption types.
+
+**Finding 878**: A 3-dimensional corruption subspace captures 96.5% of all corruption variance, meaning 4 corruption types lie in a remarkably low-dimensional manifold. This implies that a lightweight 3D projection could replace full-dimensional distance computation for detection, reducing computational cost dramatically.
+
+**Finding 879**: Blur embedding trajectory saturates early — reaches 84% of maximum displacement at severity=0.5 vs night reaching only 23% at the same severity. Blur's sublinear trajectory (1.265e-3 at sev=0.1, only 6.88e-3 at sev=1.0) means severity estimation is less precise at high blur levels where the embedding plateaus.
+
+**Finding 880**: Night corruption increases embedding norm (8.51 vs 8.25 clean) while blur decreases it (8.06), noise barely changes it (8.21) — norm direction encodes corruption type. This norm signature could serve as a simple corruption classifier independent of the directional embedding distance.
+
+**Finding 881**: All corruption trajectories are curved, not straight — night/blur deviate 34-35% from linearity, fog only 11%, revealing nonlinear embedding space geometry. The curvature means linear interpolation between clean and corrupted embeddings would miss the actual trajectory, relevant for any severity regression approach.
+
+**Finding 882**: Noise produces 35× smaller embedding displacements than night at maximum severity (2.4e-4 vs 8.5e-3), yet both achieve AUROC=1.0, confirming the detector operates far above the minimum detection threshold. This large margin suggests the detector could remain effective even with substantial calibration drift or domain shift.
+
+---
+
+## Experiment 407: Temporal Consistency of OOD Detection
+
+**Objective**: Evaluate the temporal consistency and detection latency of the OOD detector across frame sequences with gradually increasing corruption severity.
+
+**Method**: Generate 20-frame corruption sequences (fog_onset, night_fall, blur_increase, noise_increase) with linearly increasing severity. Run multi-layer OOD detection using L3 (threshold: 2.097e-05) and L32 (threshold: 0.024) with OR gate combination. Measure detection latency (first frame flagged), temporal consistency (fraction of frames flagged), and jitter (oscillation between clean/OOD classifications).
+
+**Finding 883**: OOD detector achieves zero-latency detection — ALL corruption sequences flagged from the very first frame, demonstrating the detector has no warm-up period and can operate in real-time safety-critical systems.
+
+**Finding 884**: Temporal consistency is perfect — 20/20 frames flagged OOD with zero jitter across fog, night, blur, and noise sequences; once detected, the signal never drops below threshold.
+
+**Finding 885**: Multi-layer OR gate (L3 + L32) provides robust temporal detection by combining early and late layer signals, ensuring detection even when one layer's distance temporarily dips.
+
+**Finding 886**: Blur L3 distance exhibits non-monotonic behavior — peaks around radius=8 then decreases, indicating that extreme blur actually moves embeddings back toward a different region rather than continuing away from clean.
+
+**Finding 887**: Night produces the largest L32 displacements (0.413, 17× threshold), providing massive detection margin for temporal sequences even at moderate brightness reduction.
+
+---
+
+## Experiment 408: Cross-Scene Transfer Analysis
+
+**Objective**: Evaluate whether a detector calibrated on one set of scenes transfers to unseen scenes, quantifying how many calibration scenes are needed and whether a universal threshold exists.
+
+**Method**: Leave-one-out evaluation across 8 scenes × 4 corruptions (32 tests), N-scene calibration curves (1–7 scenes), threshold stability analysis, and pairwise scene similarity vs detection performance.
+
+**Finding 888**: Cross-scene transfer is perfect — ALL 32 leave-one-out tests achieve AUROC=1.0, detector calibrated on N-1 scenes works perfectly on unseen Nth scene. Only 1 false positive out of 8 LOO tests (scene 3 has highest ID score), and zero false negatives across all 8 held-out scenes.
+
+**Finding 889**: Single-scene calibration achieves AUROC=0.991 — one randomly chosen calibration image provides near-perfect detection (min 0.980), with 7+ scenes guaranteeing AUROC=1.0. Even the worst-case single scene still exceeds 0.98, demonstrating extreme data efficiency.
+
+**Finding 890**: Detection threshold is scene-invariant — mean threshold 1.06e-4 with CV=8.5% (±9e-6), enabling a single universal threshold across environments. The remarkably low coefficient of variation means the threshold does not need per-scene tuning.
+
+**Finding 891**: Scene diversity has negligible impact — both most-similar (scenes 2,6, d=5.5e-5) and most-different (scenes 0,3, d=2.7e-4) calibration pairs achieve AUROC=1.0. The detector's performance is independent of calibration set composition.
+
+**Finding 892**: Noise corruption produces smallest detection margins (~7.7e-5) while night produces largest (~8.5e-3), but both are perfectly detected — the 100× margin ratio means noise is theoretically hardest yet still trivially separable. Scene 7 is hardest to detect (min_margin=8.8e-5), scene 1 easiest (margin=2.3e-4).

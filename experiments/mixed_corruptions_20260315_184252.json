@@ -1,0 +1,197 @@
+{
+  "pairwise_equal": {
+    "fog+night": {
+      "auroc": 1.0,
+      "mean_dist": 0.009039391573101786,
+      "individual_dists": {
+        "fog": 0.0030239892142145397,
+        "night": 0.008392175991722196
+      },
+      "ratio_to_max_individual": 1.0771213070386019,
+      "superposition_error": 0.5533897876739502,
+      "is_superadditive": false
+    },
+    "fog+noise": {
+      "auroc": 1.0,
+      "mean_dist": 0.0015564920362268753,
+      "individual_dists": {
+        "fog": 0.0030239892142145397,
+        "noise": 0.0002109593930713638
+      },
+      "ratio_to_max_individual": 0.5147148107904754,
+      "superposition_error": 0.5869233012199402,
+      "is_superadditive": false
+    },
+    "fog+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.005727571155340438,
+      "individual_dists": {
+        "fog": 0.0030239892142145397,
+        "blur": 0.006827851838635724
+      },
+      "ratio_to_max_individual": 0.8388540481986889,
+      "superposition_error": 0.9363894462585449,
+      "is_superadditive": false
+    },
+    "night+noise": {
+      "auroc": 1.0,
+      "mean_dist": 0.0036871591821425963,
+      "individual_dists": {
+        "night": 0.008392175991722196,
+        "noise": 0.0002109593930713638
+      },
+      "ratio_to_max_individual": 0.4393567515480497,
+      "superposition_error": 1.2180501222610474,
+      "is_superadditive": false
+    },
+    "night+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.009750347964241568,
+      "individual_dists": {
+        "night": 0.008392175991722196,
+        "blur": 0.006827851838635724
+      },
+      "ratio_to_max_individual": 1.1618378801706535,
+      "superposition_error": 0.7701143026351929,
+      "is_superadditive": false
+    },
+    "noise+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.006896720564651538,
+      "individual_dists": {
+        "noise": 0.0002109593930713638,
+        "blur": 0.006827851838635724
+      },
+      "ratio_to_max_individual": 1.0100864411887378,
+      "superposition_error": 0.28959885239601135,
+      "is_superadditive": false
+    }
+  },
+  "dominant_minor": {
+    "fog(1.0)+night(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.002041121468039009,
+      "dominant_only_dist": 0.0030239892142145397,
+      "amplification_ratio": 0.674976437893538
+    },
+    "fog(1.0)+noise(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.0027068822835871753,
+      "dominant_only_dist": 0.0030239892142145397,
+      "amplification_ratio": 0.8951362229941913
+    },
+    "fog(1.0)+blur(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.0053007070044083,
+      "dominant_only_dist": 0.0030239892142145397,
+      "amplification_ratio": 1.7528855524655442
+    },
+    "night(1.0)+fog(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.006329671464086273,
+      "dominant_only_dist": 0.008392175991722196,
+      "amplification_ratio": 0.7542348337701308
+    },
+    "night(1.0)+noise(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.005618261011822101,
+      "dominant_only_dist": 0.008392175991722196,
+      "amplification_ratio": 0.6694641553470512
+    },
+    "night(1.0)+blur(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.009703545103532352,
+      "dominant_only_dist": 0.008392175991722196,
+      "amplification_ratio": 1.1562609164897941
+    },
+    "noise(1.0)+fog(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.0002694530463400069,
+      "dominant_only_dist": 0.0002109593930713638,
+      "amplification_ratio": 1.2772744669816893
+    },
+    "noise(1.0)+night(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.0006881089289527464,
+      "dominant_only_dist": 0.0002109593930713638,
+      "amplification_ratio": 3.2618074925915788
+    },
+    "noise(1.0)+blur(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.004303805264607963,
+      "dominant_only_dist": 0.0002109593930713638,
+      "amplification_ratio": 20.40110753993335
+    },
+    "blur(1.0)+fog(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.005661797870327012,
+      "dominant_only_dist": 0.006827851838635724,
+      "amplification_ratio": 0.8292209620439419
+    },
+    "blur(1.0)+night(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.009108044337288845,
+      "dominant_only_dist": 0.006827851838635724,
+      "amplification_ratio": 1.3339545954630334
+    },
+    "blur(1.0)+noise(0.3)": {
+      "auroc": 1.0,
+      "mean_dist": 0.0009909965631820228,
+      "dominant_only_dist": 0.006827851838635724,
+      "amplification_ratio": 0.1451403144945855
+    }
+  },
+  "triple_combinations": {
+    "fog+night+noise": {
+      "auroc": 1.0,
+      "mean_dist": 0.003562603606673509,
+      "max_individual_dist": 0.008392175991722196,
+      "amplification": 0.4245148826940188
+    },
+    "fog+night+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.009565236640055996,
+      "max_individual_dist": 0.008392175991722196,
+      "amplification": 1.1397802726600197
+    },
+    "fog+noise+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.005721575865945705,
+      "max_individual_dist": 0.006827851838635724,
+      "amplification": 0.8379759844186859
+    },
+    "night+noise+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.00887844873293615,
+      "max_individual_dist": 0.008392175991722196,
+      "amplification": 1.0579435824145729
+    }
+  },
+  "all_four": {
+    "auroc": 1.0,
+    "mean_dist": 0.00869817319661983,
+    "std_dist": 8.687973280852523e-05
+  },
+  "order_sensitivity": {
+    "fog_night": {
+      "order1_dist": 0.009039391573101786,
+      "order2_dist": 0.005717582890404071,
+      "order_difference": 0.003321808682697714,
+      "embedding_distance_between_orders": 0.00469866911490846
+    },
+    "fog_blur": {
+      "order1_dist": 0.005727571155340438,
+      "order2_dist": 0.005779482436235073,
+      "order_difference": 5.191128089463478e-05,
+      "embedding_distance_between_orders": 8.582048231609019e-05
+    },
+    "noise_night": {
+      "order1_dist": 0.008340711280012968,
+      "order2_dist": 0.0036871591821425963,
+      "order_difference": 0.0046535520978703716,
+      "embedding_distance_between_orders": 0.0058281488694972294
+    }
+  },
+  "n_scenes": 5,
+  "n_corruptions": 4
+}

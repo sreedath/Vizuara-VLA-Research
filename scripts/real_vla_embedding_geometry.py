@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Experiment 383: Embedding Space Geometry Under Corruption
+"""Experiment 406: Embedding Space Geometry Deep Dive
 
-What is the geometric structure of the embedding manifold?
-1. Principal angles between clean and corruption subspaces
-2. Corruption-specific direction vectors (mean shift directions)
-3. Orthogonality of corruption shift directions
-4. Projection analysis: how much of corruption shift is shared vs unique
-5. Residual analysis: what remains after removing the main corruption direction
+Detailed analysis of the geometric structure of the embedding space,
+including curvature, manifold properties, and corruption trajectories.
+
+Tests:
+1. Corruption trajectories in embedding space (interpolation)
+2. Angular separation between corruption directions
+3. Embedding norm analysis (clean vs corrupt)
+4. Projection onto principal corruption subspace
+5. Nearest-neighbor structure in high dimensions
 """
 
 import json, time, os, sys
@@ -21,6 +24,13 @@ def extract_hidden(model, processor, image, prompt, layer=3):
         fwd = model(**inputs, output_hidden_states=True)
     return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
 
+def cosine_dist(a, b):
+    a, b = np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64)
+    na, nb = np.linalg.norm(a), np.linalg.norm(b)
+    if na < 1e-12 or nb < 1e-12:
+        return 1.0
+    return 1.0 - np.dot(a, b) / (na * nb)
+
 def apply_corruption(image, ctype, severity=1.0):
     arr = np.array(image).astype(np.float32) / 255.0
     if ctype == 'fog':
@@ -34,13 +44,6 @@ def apply_corruption(image, ctype, severity=1.0):
         return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
     return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
-def cosine_sim(a, b):
-    dot = np.dot(a, b)
-    na, nb = np.linalg.norm(a), np.linalg.norm(b)
-    if na < 1e-10 or nb < 1e-10:
-        return 0.0
-    return dot / (na * nb)
-
 def main():
     print("Loading model...")
     model = AutoModelForVision2Seq.from_pretrained(
@@ -50,202 +53,212 @@ def main():
     model.eval()
 
     prompt = "In: What action should the robot take to pick up the object?\nOut:"
+    corruptions = ['fog', 'night', 'noise', 'blur']
+
+    scenes = []
+    for seed in [42, 123, 456, 789, 999]:
+        scenes.append(Image.fromarray(
+            np.random.RandomState(seed).randint(0, 255, (224, 224, 3), dtype=np.uint8)))
+
+    # Collect embeddings at multiple severities
+    print("Extracting embeddings...")
+    severities = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    embeddings = {}  # (scene, corruption, severity) -> embedding
+
+    for si, scene in enumerate(scenes):
+        print(f"  Scene {si+1}/5")
+        # Clean
+        emb = extract_hidden(model, processor, scene, prompt)
+        embeddings[(si, 'clean', 0.0)] = emb
+
+        for c in corruptions:
+            for sev in severities[1:]:  # skip 0.0, already have clean
+                corrupted = apply_corruption(scene, c, sev)
+                emb = extract_hidden(model, processor, corrupted, prompt)
+                embeddings[(si, c, sev)] = emb
+
     results = {}
-    ctypes = ['fog', 'night', 'noise', 'blur']
 
-    print("Generating images...")
-    seeds = list(range(0, 1500, 100))[:15]
-    images = {}
-    clean_embs = {}
-    for seed in seeds:
-        rng = np.random.RandomState(seed)
-        px = rng.randint(50, 200, (224, 224, 3), dtype=np.uint8)
-        images[seed] = Image.fromarray(px)
-        clean_embs[seed] = extract_hidden(model, processor, images[seed], prompt)
+    # === Test 1: Corruption trajectories ===
+    print("\n=== Corruption Trajectories ===")
+    trajectories = {}
+    for c in corruptions:
+        traj_data = {"by_scene": {}}
+        all_dists = {str(s): [] for s in severities}
 
-    centroid = np.mean(list(clean_embs.values()), axis=0)
+        for si in range(len(scenes)):
+            clean = embeddings[(si, 'clean', 0.0)]
+            scene_dists = []
+            for sev in severities:
+                if sev == 0.0:
+                    d = 0.0
+                else:
+                    d = cosine_dist(clean, embeddings[(si, c, sev)])
+                scene_dists.append(d)
+                all_dists[str(sev)].append(d)
 
-    # Extract corruption embeddings
-    print("Extracting corruption embeddings...")
-    corrupt_embs = {ct: {} for ct in ctypes}
-    for ct in ctypes:
-        for seed in seeds[:10]:
-            corrupt_embs[ct][seed] = extract_hidden(
-                model, processor, apply_corruption(images[seed], ct, 0.5), prompt)
+            traj_data["by_scene"][str(si)] = [float(d) for d in scene_dists]
 
-    # ========== 1. Corruption Shift Directions ==========
-    print("\n=== Corruption Shift Directions ===")
+        # Mean trajectory
+        mean_traj = [np.mean(all_dists[str(s)]) for s in severities]
+        traj_data["mean_trajectory"] = [float(d) for d in mean_traj]
 
-    shift_dirs = {}
-    for ct in ctypes:
-        shifts = [corrupt_embs[ct][s] - clean_embs[s] for s in seeds[:10]]
-        mean_shift = np.mean(shifts, axis=0)
-        mean_shift_norm = mean_shift / max(np.linalg.norm(mean_shift), 1e-10)
-        shift_dirs[ct] = mean_shift_norm
+        # Linearity: R² of distance vs severity
+        if len(mean_traj) > 2:
+            x = np.array(severities)
+            y = np.array(mean_traj)
+            slope, intercept = np.polyfit(x, y, 1)
+            y_pred = slope * x + intercept
+            ss_res = np.sum((y - y_pred) ** 2)
+            ss_tot = np.sum((y - y.mean()) ** 2)
+            r_squared = 1 - ss_res / ss_tot if ss_tot > 0 else 0
+            traj_data["linearity_r2"] = float(r_squared)
+        else:
+            traj_data["linearity_r2"] = 0.0
 
-        # How consistent are individual shifts with mean direction?
-        consistencies = [cosine_sim(s, mean_shift) for s in shifts]
-        results[f'{ct}_shift_consistency'] = {
-            'mean': float(np.mean(consistencies)),
-            'min': float(np.min(consistencies)),
-            'max': float(np.max(consistencies)),
-            'shift_magnitude': float(np.linalg.norm(mean_shift)),
+        trajectories[c] = traj_data
+        traj_str = " → ".join(f"{d:.6f}" for d in mean_traj[::2])
+        print(f"  {c}: {traj_str} (R²={traj_data['linearity_r2']:.4f})")
+
+    results["trajectories"] = trajectories
+
+    # === Test 2: Angular separation between corruption directions ===
+    print("\n=== Corruption Direction Angles ===")
+    angles = {}
+    for si in range(len(scenes)):
+        clean = embeddings[(si, 'clean', 0.0)]
+        # Direction vectors (corruption - clean)
+        directions = {}
+        for c in corruptions:
+            corrupt = embeddings[(si, c, 1.0)]
+            direction = corrupt - clean
+            norm = np.linalg.norm(direction)
+            if norm > 1e-12:
+                directions[c] = direction / norm
+            else:
+                directions[c] = direction
+
+        # Pairwise angles
+        for i, c1 in enumerate(corruptions):
+            for j, c2 in enumerate(corruptions):
+                if i >= j:
+                    continue
+                cos_angle = np.dot(directions[c1], directions[c2])
+                angle_deg = np.degrees(np.arccos(np.clip(cos_angle, -1, 1)))
+                key = f"{c1}_vs_{c2}"
+                if key not in angles:
+                    angles[key] = []
+                angles[key].append(float(angle_deg))
+
+    angle_means = {k: float(np.mean(v)) for k, v in angles.items()}
+    results["corruption_angles"] = angle_means
+    for k, v in angle_means.items():
+        print(f"  {k}: {v:.1f}°")
+
+    # === Test 3: Embedding norm analysis ===
+    print("\n=== Embedding Norm Analysis ===")
+    norm_data = {}
+    for condition in ['clean'] + corruptions:
+        norms = []
+        for si in range(len(scenes)):
+            if condition == 'clean':
+                emb = embeddings[(si, 'clean', 0.0)]
+            else:
+                emb = embeddings[(si, condition, 1.0)]
+            norms.append(float(np.linalg.norm(emb)))
+
+        norm_data[condition] = {
+            "mean": float(np.mean(norms)),
+            "std": float(np.std(norms)),
+            "min": float(min(norms)),
+            "max": float(max(norms))
         }
-        print(f"  {ct}: consistency={np.mean(consistencies):.4f}, "
-              f"magnitude={np.linalg.norm(mean_shift):.6f}")
+        print(f"  {condition}: mean={np.mean(norms):.2f}, std={np.std(norms):.4f}")
 
-    # ========== 2. Orthogonality of Shift Directions ==========
-    print("\n=== Shift Direction Orthogonality ===")
+    results["norms"] = norm_data
 
-    ortho = {}
-    for i, ct1 in enumerate(ctypes):
-        for j, ct2 in enumerate(ctypes):
-            if j > i:
-                sim = cosine_sim(shift_dirs[ct1], shift_dirs[ct2])
-                key = f"{ct1}_vs_{ct2}"
-                ortho[key] = float(sim)
-                print(f"  {ct1} vs {ct2}: cos_sim={sim:.4f}")
+    # === Test 4: Principal corruption subspace ===
+    print("\n=== Principal Corruption Subspace ===")
+    # Compute displacement vectors for all corruptions
+    displacements = []
+    for c in corruptions:
+        for si in range(len(scenes)):
+            clean = embeddings[(si, 'clean', 0.0)]
+            corrupt = embeddings[(si, c, 1.0)]
+            displacements.append(corrupt - clean)
 
-    results['shift_orthogonality'] = ortho
+    displacements = np.array(displacements)
+    # PCA on displacements
+    centered = displacements - displacements.mean(axis=0)
+    cov = np.cov(centered.T)
+    eigvals, eigvecs = np.linalg.eigh(cov)
+    idx = np.argsort(eigvals)[::-1]
+    eigvals = eigvals[idx]
+    eigvecs = eigvecs[:, idx]
 
-    # ========== 3. Principal Component Analysis ==========
-    print("\n=== PCA of Shift Space ===")
+    total_var = eigvals.sum()
+    cum_var = np.cumsum(eigvals) / total_var
 
-    all_shifts = []
-    shift_labels = []
-    for ct in ctypes:
-        for seed in seeds[:10]:
-            shift = corrupt_embs[ct][seed] - clean_embs[seed]
-            all_shifts.append(shift)
-            shift_labels.append(ct)
-
-    all_shifts = np.array(all_shifts)
-    # Center
-    all_shifts_centered = all_shifts - np.mean(all_shifts, axis=0)
-
-    # SVD
-    U, S, Vt = np.linalg.svd(all_shifts_centered, full_matrices=False)
-    total_var = np.sum(S**2)
-    explained = (S**2) / max(total_var, 1e-10)
-    cumulative = np.cumsum(explained)
-
-    pca_results = {
-        'explained_variance': explained[:20].tolist(),
-        'cumulative_variance': cumulative[:20].tolist(),
-        'n_components_90pct': int(np.searchsorted(cumulative, 0.9) + 1),
-        'n_components_95pct': int(np.searchsorted(cumulative, 0.95) + 1),
-        'n_components_99pct': int(np.searchsorted(cumulative, 0.99) + 1),
-        'top1_variance': float(explained[0]),
-        'top3_variance': float(cumulative[2]),
+    subspace_data = {
+        "top_eigenvalues": [float(e) for e in eigvals[:10]],
+        "variance_explained_1d": float(cum_var[0]),
+        "variance_explained_2d": float(cum_var[1]),
+        "variance_explained_3d": float(cum_var[2]),
+        "variance_explained_5d": float(cum_var[4]) if len(cum_var) > 4 else 1.0,
     }
-    results['pca'] = pca_results
-    print(f"  90% variance: {pca_results['n_components_90pct']} components")
-    print(f"  95% variance: {pca_results['n_components_95pct']} components")
-    print(f"  Top-1: {explained[0]:.4f}, Top-3: {cumulative[2]:.4f}")
+    results["corruption_subspace"] = subspace_data
+    print(f"  1D: {cum_var[0]*100:.1f}%, 2D: {cum_var[1]*100:.1f}%, 3D: {cum_var[2]*100:.1f}%")
 
-    # ========== 4. Projection Analysis ==========
-    print("\n=== Projection Analysis ===")
+    # === Test 5: Trajectory curvature ===
+    print("\n=== Trajectory Curvature ===")
+    curvature_data = {}
+    for c in corruptions:
+        for si in range(len(scenes)):
+            clean = embeddings[(si, 'clean', 0.0)]
+            full_corrupt = embeddings[(si, c, 1.0)]
 
-    # Project each corruption's shifts onto other corruption directions
-    projection = {}
-    for ct in ctypes:
-        shifts = [corrupt_embs[ct][s] - clean_embs[s] for s in seeds[:10]]
-        mean_shift = np.mean(shifts, axis=0)
-        shift_norm = np.linalg.norm(mean_shift)
+            # Expected positions along straight line
+            actual_dists = []
+            expected_dists = []
+            deviations = []
 
-        proj = {}
-        for ct2 in ctypes:
-            # How much of ct's shift lies along ct2's direction?
-            proj_amount = np.dot(mean_shift, shift_dirs[ct2])
-            proj[ct2] = {
-                'projection': float(proj_amount),
-                'fraction': float(abs(proj_amount) / max(shift_norm, 1e-10)),
+            full_direction = full_corrupt - clean
+            full_norm = np.linalg.norm(full_direction)
+
+            for sev in severities[1:]:
+                actual = embeddings[(si, c, sev)]
+                expected = clean + sev * full_direction
+
+                actual_dist = np.linalg.norm(actual - clean)
+                expected_dist = sev * full_norm
+                deviation = np.linalg.norm(actual - expected)
+
+                actual_dists.append(actual_dist)
+                expected_dists.append(expected_dist)
+                deviations.append(deviation)
+
+            mean_dev = np.mean(deviations)
+            key = f"scene{si}"
+            if c not in curvature_data:
+                curvature_data[c] = {}
+            curvature_data[c][key] = {
+                "mean_deviation": float(mean_dev),
+                "relative_deviation": float(mean_dev / max(full_norm, 1e-12))
             }
 
-        projection[ct] = proj
+        mean_rel_dev = np.mean([curvature_data[c][f"scene{si}"]["relative_deviation"]
+                                for si in range(len(scenes))])
+        curvature_data[c]["mean_relative_deviation"] = float(mean_rel_dev)
+        print(f"  {c}: mean relative deviation = {mean_rel_dev:.4f} "
+              f"({'LINEAR' if mean_rel_dev < 0.1 else 'CURVED'})")
 
-    results['projection'] = projection
-
-    for ct in ctypes:
-        self_frac = projection[ct][ct]['fraction']
-        other_fracs = [projection[ct][ct2]['fraction'] for ct2 in ctypes if ct2 != ct]
-        print(f"  {ct}: self={self_frac:.4f}, others={[f'{f:.4f}' for f in other_fracs]}")
-
-    # ========== 5. Residual After Main Direction ==========
-    print("\n=== Residual Analysis ===")
-
-    residual = {}
-    for ct in ctypes:
-        shifts = [corrupt_embs[ct][s] - clean_embs[s] for s in seeds[:10]]
-        mean_shift = np.mean(shifts, axis=0)
-
-        # Remove projection onto own direction
-        proj_on_self = np.dot(mean_shift, shift_dirs[ct]) * shift_dirs[ct]
-        residual_vec = mean_shift - proj_on_self
-        residual_mag = np.linalg.norm(residual_vec) / max(np.linalg.norm(mean_shift), 1e-10)
-
-        # Remove projection onto ALL corruption directions
-        remaining = mean_shift.copy()
-        for ct2 in ctypes:
-            proj = np.dot(remaining, shift_dirs[ct2]) * shift_dirs[ct2]
-            remaining = remaining - proj
-
-        unexplained = np.linalg.norm(remaining) / max(np.linalg.norm(mean_shift), 1e-10)
-
-        residual[ct] = {
-            'residual_after_self': float(residual_mag),
-            'residual_after_all': float(unexplained),
-        }
-        print(f"  {ct}: after_self={residual_mag:.4f}, after_all={unexplained:.4f}")
-
-    results['residual'] = residual
-
-    # ========== 6. Severity Scaling of Directions ==========
-    print("\n=== Severity Scaling ===")
-
-    severity_scaling = {}
-    for ct in ctypes:
-        sevs = [0.1, 0.3, 0.5, 0.7, 1.0]
-        dir_sims = []
-        magnitudes = []
-        for sev in sevs:
-            shifts = []
-            for seed in seeds[:5]:
-                emb = extract_hidden(model, processor,
-                    apply_corruption(images[seed], ct, sev), prompt)
-                shifts.append(emb - clean_embs[seed])
-            mean_s = np.mean(shifts, axis=0)
-            sim = cosine_sim(mean_s, shift_dirs[ct])
-            dir_sims.append(float(sim))
-            magnitudes.append(float(np.linalg.norm(mean_s)))
-
-        severity_scaling[ct] = {
-            'severities': sevs,
-            'direction_similarity': dir_sims,
-            'magnitudes': magnitudes,
-            'direction_stable': bool(min(dir_sims) > 0.9),
-        }
-        print(f"  {ct}: dir_sims={[f'{s:.3f}' for s in dir_sims]}, "
-              f"stable={min(dir_sims) > 0.9}")
-
-    results['severity_scaling'] = severity_scaling
+    results["curvature"] = curvature_data
 
     # Save
-    ts = time.strftime("%Y%m%d_%H%M%S")
-    out_path = f"experiments/embedding_geometry_{ts}.json"
-    def convert(obj):
-        if isinstance(obj, (np.floating, np.float32, np.float64)): return float(obj)
-        if isinstance(obj, (np.integer, np.int32, np.int64)): return int(obj)
-        if isinstance(obj, np.ndarray): return obj.tolist()
-        if isinstance(obj, np.bool_): return bool(obj)
-        return obj
-    def recursive_convert(d):
-        if isinstance(d, dict): return {k: recursive_convert(v) for k, v in d.items()}
-        if isinstance(d, list): return [recursive_convert(x) for x in d]
-        return convert(d)
-    results = recursive_convert(results)
+    out_path = "/workspace/Vizuara-VLA-Research/experiments/embedding_geometry_" + \
+               time.strftime("%Y%m%d_%H%M%S") + ".json"
     with open(out_path, 'w') as f:
-        json.dump(results, f, indent=2, default=convert)
+        json.dump(results, f, indent=2)
     print(f"\nResults saved to {out_path}")
 
 if __name__ == "__main__":
