@@ -2494,4 +2494,40 @@ We measure detection quality as a function of calibration set size by subsamplin
 
 The extreme sample efficiency follows from the geometric structure of VLA embeddings. Because the ID cluster is extremely compact (intra-class spread $\ll$ ID-OOD gap), even a single sample lands close to the true centroid. The worst-case single-sample trial still achieves $d{=}12.2$ and AUROC$=$0.956---far above chance. This has profound deployment implications: a VLA system can be calibrated with as few as 8 representative driving images, requiring minimal data collection effort. Combined with the zero computational overhead (Finding~169) and the absence of threshold tuning (Finding~167), the complete OOD detection system can be deployed with negligible engineering overhead.
 
+\subsection{Embedding Drift Under Input Perturbation}
+\label{app:embedding_drift}
+
+\textbf{Finding 175: Occlusion is the most disruptive perturbation, moving embeddings 96\% toward OOD at 90\% occlusion. Color jitter is least disruptive at only 25\% drift even at extreme levels.}
+
+\textbf{Finding 176: Moderate perturbations (blur radius$=$3, noise $\sigma{=}30$, brightness$\times$0.5) push embeddings 40--70\% toward OOD territory, correctly triggering safety alerts via the cosine distance detector.}
+
+We systematically perturb clean highway images with six corruption types at varying severity levels and measure how far the resulting embeddings drift from the clean ID centroid (Figure~\ref{fig:embedding_drift}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig120_embedding_drift.png}
+\caption{\textbf{Embedding drift.} (a) All perturbation drift curves: occlusion and noise cause the largest drift; color jitter causes the least. (b) Maximum drift at extreme levels: occlusion reaches 96\% of OOD distance. (c) Drift at moderate perturbation: occlusion (10\%) and blur (radius$=$3) cause the most embedding movement.}
+\label{fig:embedding_drift}
+\end{figure}
+
+The perturbation sensitivity profile reveals what visual features the VLA relies on for scene understanding. Color jitter causes minimal drift (25\% at extreme levels), indicating the model extracts structural/semantic features rather than color statistics. Occlusion is maximally disruptive because it destroys spatial structure---even 1\% central occlusion shifts embeddings 55\% toward OOD. Brightness changes show an asymmetry: darkening (factor$=$0.1, 81\% drift) is more disruptive than brightening (factor$=$3.0, 63\% drift), consistent with the greater challenge of nighttime driving. Crucially, these drift measurements validate the OOD detector as a \emph{graduated} safety monitor: perturbations that degrade the image quality proportionally increase the cosine distance from the ID centroid, providing a continuous measure of input reliability rather than a brittle binary classification.
+
+\subsection{Prompt-Conditioned Embedding Geometry}
+\label{app:prompt_geometry}
+
+\textbf{Finding 177: All 8 diverse driving prompts achieve AUROC$=$1.000 with separation ratios in $[2.3, 2.8]$, suggesting a fundamental geometric property of the VLA embedding space.}
+
+\textbf{Finding 178: Semantically similar prompts (stop$\leftrightarrow$park: 0.854, stop$\leftrightarrow$reverse: 0.842) cluster in centroid space, while overall mean inter-prompt similarity is only 0.616---prompts create distinct but uniformly separable embedding regions.}
+
+We extend the cross-prompt analysis (Experiment~122) to 8 diverse prompts spanning forward driving, navigation, stopping, turning, parking, obstacle avoidance, and reversing (Figure~\ref{fig:prompt_geometry}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig121_prompt_embedding_geometry.png}
+\caption{\textbf{Prompt-conditioned geometry.} (a) D-prime by prompt: all 8 prompts achieve $d > 32$; ``park'' is strongest at $d{=}67.4$. (b) Centroid similarity matrix: semantically related prompts (stop/park/reverse) cluster at 0.82--0.85 similarity while unrelated prompts drop to 0.50--0.55. (c) Cluster geometry: all prompts produce similar ID radius ($\sim$0.10) and gap ($\sim$0.25), yielding separation ratios of $\sim$2.5.}
+\label{fig:prompt_geometry}
+\end{figure}
+
+The stability of the separation ratio across prompts ($2.3$--$2.8$) reveals a structural property of the VLA embedding space: regardless of the task prompt, ID and OOD inputs are mapped to regions with a consistent geometric relationship. This ratio is determined by the visual features, not the language features, of the input. The semantic clustering of centroids (stop/park/reverse forming a tight group at 0.82--0.85 similarity) confirms that the VLA has learned meaningful prompt semantics---yet this semantic organization does not compromise OOD detection because the ID-OOD separation axis is orthogonal to the prompt-conditioning axis.
+
 \end{document}

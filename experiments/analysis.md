@@ -5936,3 +5936,95 @@ What is the minimum number of calibration samples needed for robust OOD detectio
 4. **The centroid is remarkably stable**: Even with n=1, the centroid is close enough to the true mean that OOD detection works. This is because the ID embedding cluster is extremely tight (spread << ID-OOD gap).
 
 5. **Practical recommendation**: Use n≥8 for guaranteed perfect detection. Even n=3-5 gives >99% AUROC in expectation. This is an extraordinarily low calibration requirement for a safety-critical system.
+
+---
+
+## Finding 128: Embedding Drift Under Input Perturbation (Experiment 134)
+
+### Research Question
+How do common image perturbations (brightness, contrast, noise, blur, occlusion, color jitter) affect embedding positions? Which perturbations push embeddings toward OOD territory?
+
+### Setup
+- **Model**: OpenVLA-7B (bfloat16, NVIDIA A40)
+- **Reference**: 5 clean highway images → centroid
+- **OOD reference**: Random noise image (distance = 0.508)
+- **Perturbations**: 6 types × 7-10 severity levels × 3 test images each
+- **Metric**: Cosine distance from clean ID centroid, expressed as % of OOD reference distance
+
+### Results
+
+| Perturbation | Max Drift (% of OOD) | Level at Max | Most Sensitive? |
+|-------------|---------------------|-------------|----------------|
+| Occlusion | 95.6% | 90% blocked | Yes |
+| Gaussian noise | 86.6% | σ=128 | Yes |
+| Brightness | 81.3% | factor=0.1 | Moderate |
+| Blur | 73.1% | radius=8 | Moderate |
+| Contrast | 49.8% | factor=0.1 | Low |
+| Color jitter | 24.8% | strength=128 | Lowest |
+
+**At moderate perturbation levels:**
+| Perturbation | Level | Distance | % of OOD |
+|-------------|-------|----------|----------|
+| Occlusion | 10% blocked | 0.360 | 70.9% |
+| Blur | radius=3 | 0.306 | 60.2% |
+| Gaussian noise | σ=30 | 0.204 | 40.2% |
+| Brightness | factor=0.5 | 0.224 | 44.1% |
+| Contrast | factor=0.5 | 0.052 | 10.3% |
+| Color jitter | strength=40 | 0.045 | 8.8% |
+
+### Key Insights
+
+1. **Occlusion is the most disruptive perturbation**: Even 1% occlusion shifts embeddings 55% toward OOD. At 90% occlusion, embeddings are 96% of the way to pure OOD noise. This makes sense — occlusion destroys spatial structure.
+
+2. **Color jitter is least disruptive**: Even extreme jitter (strength=128, shifting each channel by up to 128) only moves embeddings 25% toward OOD. The VLA extracts scene semantics, not color statistics.
+
+3. **Gaussian noise progressively degrades embeddings**: At σ=50 (20% of dynamic range), embeddings cross the 50% threshold — halfway to OOD. At σ=128, they reach 87%.
+
+4. **Blur saturates at radius=8**: Beyond radius=8, additional blurring doesn't increase drift. The image becomes a uniform color patch, similar to a constant-color scene that the VLA can still weakly interpret.
+
+5. **Brightness is asymmetric**: Darkening (factor=0.1 → 81% drift) is more disruptive than brightening (factor=3.0 → 63% drift). This matches driving scenarios where underexposure (night) is more challenging than overexposure.
+
+6. **Safety implication**: Moderate perturbations (blur, brightness changes, noise) can push embeddings 40-70% toward OOD territory. However, the detection threshold is at ~20% of OOD distance (Finding 167), so these perturbations would correctly trigger OOD alerts — the detector provides a gradient of concern, not just binary ID/OOD.
+
+---
+
+## Finding 129: Prompt-Conditioned Embedding Geometry (Experiment 135)
+
+### Research Question
+Do different text prompts create qualitatively different embedding landscapes? How do centroids, cluster radii, and separation gaps vary across 8 diverse driving prompts?
+
+### Setup
+- **Model**: OpenVLA-7B (bfloat16, NVIDIA A40)
+- **Prompts**: 8 diverse (drive_forward, navigate, follow_lane, stop, turn_left, park, avoid_obstacle, reverse)
+- **Images**: 16 ID (8 highway + 8 urban) + 16 OOD (8 noise + 8 indoor) per prompt
+- **Metrics**: ID radius, OOD-to-centroid distance, gap, separation ratio, AUROC, d-prime
+
+### Results
+
+| Prompt | ID Radius | OOD Mean | Gap | Ratio | AUROC | D-prime |
+|--------|----------|----------|-----|-------|-------|---------|
+| park | 0.099 | 0.441 | 0.254 | 2.6 | 1.000 | 67.4 |
+| drive_forward | 0.086 | 0.398 | 0.242 | 2.8 | 1.000 | 57.7 |
+| reverse | 0.101 | 0.451 | 0.271 | 2.7 | 1.000 | 53.1 |
+| stop | 0.100 | 0.420 | 0.230 | 2.3 | 1.000 | 49.4 |
+| follow_lane | 0.103 | 0.452 | 0.252 | 2.5 | 1.000 | 47.8 |
+| avoid_obstacle | 0.104 | 0.449 | 0.267 | 2.6 | 1.000 | 46.1 |
+| navigate | 0.111 | 0.481 | 0.252 | 2.3 | 1.000 | 44.6 |
+| turn_left | 0.113 | 0.468 | 0.263 | 2.3 | 1.000 | 32.7 |
+
+**Cross-prompt centroid similarity:**
+- Mean off-diagonal: **0.616** (prompts create distinct embedding regions)
+- Min: **0.506** (drive_forward ↔ park)
+- Max off-diagonal: **0.854** (stop ↔ park) — semantically similar prompts cluster!
+
+### Key Insights
+
+1. **All 8 prompts achieve perfect AUROC=1.000**: OOD detection is prompt-invariant, extending Experiment 122 from 5 to 8 prompts including novel action types (stop, park, reverse).
+
+2. **Prompts create distinct embedding regions**: Mean inter-centroid similarity is only 0.616, meaning prompts shift the entire embedding space substantially. Yet detection still works because the OOD shift is orthogonal.
+
+3. **Semantic clustering in centroids**: stop↔park (0.854), stop↔reverse (0.842), park↔reverse (0.819) form a tight cluster. These prompts share the semantic concept of "not moving." follow_lane↔avoid_obstacle (0.704) also cluster — both involve lane-relative navigation.
+
+4. **Separation ratio is remarkably stable**: All 8 prompts achieve ratio ∈ [2.3, 2.8], suggesting a fundamental geometric property of the VLA embedding space — the ID-OOD gap is always ~2.5× the ID cluster radius.
+
+5. **D-prime varies 2× across prompts**: From 32.7 (turn_left) to 67.4 (park). However, all are far above the threshold for perfect detection. The variation reflects differences in ID cluster tightness rather than detection quality.

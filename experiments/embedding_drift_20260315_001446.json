@@ -1,0 +1,346 @@
+{
+  "experiment": "embedding_drift",
+  "experiment_number": 134,
+  "timestamp": "20260315_001446",
+  "n_ref": 5,
+  "n_images_per_level": 3,
+  "ood_reference_distance": 0.5082111358642578,
+  "results": {
+    "brightness": {
+      "label": "Brightness factor",
+      "data": [
+        {
+          "level": 0.1,
+          "mean_distance": 0.4132542014122009,
+          "std_distance": 0.0008537404499779064,
+          "fraction_of_ood": 0.8131545577202391
+        },
+        {
+          "level": 0.3,
+          "mean_distance": 0.3136572043100993,
+          "std_distance": 0.001662278801208878,
+          "fraction_of_ood": 0.6171789285504293
+        },
+        {
+          "level": 0.5,
+          "mean_distance": 0.2243167757987976,
+          "std_distance": 0.0015495371534014273,
+          "fraction_of_ood": 0.4413850070745246
+        },
+        {
+          "level": 0.7,
+          "mean_distance": 0.09599496920903523,
+          "std_distance": 0.013055522825928123,
+          "fraction_of_ood": 0.18888796886708775
+        },
+        {
+          "level": 0.9,
+          "mean_distance": 0.034302989641825356,
+          "std_distance": 0.005093890622386201,
+          "fraction_of_ood": 0.06749751672302516
+        },
+        {
+          "level": 1.0,
+          "mean_distance": 0.024682084719340008,
+          "std_distance": 0.0024552325347525186,
+          "fraction_of_ood": 0.04856659560866557
+        },
+        {
+          "level": 1.2,
+          "mean_distance": 0.05791264772415161,
+          "std_distance": 0.004138436714138751,
+          "fraction_of_ood": 0.11395391331924684
+        },
+        {
+          "level": 1.5,
+          "mean_distance": 0.14702433347702026,
+          "std_distance": 0.006153877573015716,
+          "fraction_of_ood": 0.2892977408434635
+        },
+        {
+          "level": 2.0,
+          "mean_distance": 0.2427304188410441,
+          "std_distance": 0.003651591125675707,
+          "fraction_of_ood": 0.47761727697733275
+        },
+        {
+          "level": 3.0,
+          "mean_distance": 0.3225785493850708,
+          "std_distance": 0.008725039638430429,
+          "fraction_of_ood": 0.6347333354600693
+        }
+      ]
+    },
+    "contrast": {
+      "label": "Contrast factor",
+      "data": [
+        {
+          "level": 0.1,
+          "mean_distance": 0.25286797682444256,
+          "std_distance": 0.00345328215499539,
+          "fraction_of_ood": 0.49756480915046913
+        },
+        {
+          "level": 0.3,
+          "mean_distance": 0.09112316370010376,
+          "std_distance": 0.0019563304436343827,
+          "fraction_of_ood": 0.17930178476931796
+        },
+        {
+          "level": 0.5,
+          "mean_distance": 0.052370031674702965,
+          "std_distance": 0.002228089101034968,
+          "fraction_of_ood": 0.1030477846292036
+        },
+        {
+          "level": 0.7,
+          "mean_distance": 0.037034829457600914,
+          "std_distance": 0.0022712149315051145,
+          "fraction_of_ood": 0.07287292002096712
+        },
+        {
+          "level": 0.9,
+          "mean_distance": 0.023336609204610188,
+          "std_distance": 0.0008419886135885988,
+          "fraction_of_ood": 0.045919122108420994
+        },
+        {
+          "level": 1.0,
+          "mean_distance": 0.024682084719340008,
+          "std_distance": 0.0024552325347525186,
+          "fraction_of_ood": 0.04856659560866557
+        },
+        {
+          "level": 1.2,
+          "mean_distance": 0.027799665927886963,
+          "std_distance": 0.0031365807232139383,
+          "fraction_of_ood": 0.054701016892538534
+        },
+        {
+          "level": 1.5,
+          "mean_distance": 0.040276288986206055,
+          "std_distance": 0.005700512060371932,
+          "fraction_of_ood": 0.07925109495625804
+        },
+        {
+          "level": 2.0,
+          "mean_distance": 0.07752744356791179,
+          "std_distance": 0.0017627119567836344,
+          "fraction_of_ood": 0.1525496749221552
+        },
+        {
+          "level": 3.0,
+          "mean_distance": 0.10937849680582683,
+          "std_distance": 0.004324107827868618,
+          "fraction_of_ood": 0.21522255040676955
+        }
+      ]
+    },
+    "gaussian_noise": {
+      "label": "Noise std",
+      "data": [
+        {
+          "level": 5,
+          "mean_distance": 0.03813209136327108,
+          "std_distance": 0.009526629647250212,
+          "fraction_of_ood": 0.07503198704692705
+        },
+        {
+          "level": 10,
+          "mean_distance": 0.06563274065653484,
+          "std_distance": 0.006682147882641415,
+          "fraction_of_ood": 0.12914463305673257
+        },
+        {
+          "level": 20,
+          "mean_distance": 0.1427318255106608,
+          "std_distance": 0.004112094371450117,
+          "fraction_of_ood": 0.2808514324817632
+        },
+        {
+          "level": 30,
+          "mean_distance": 0.20405308405558267,
+          "std_distance": 0.0013442028224743081,
+          "fraction_of_ood": 0.4015124220144693
+        },
+        {
+          "level": 50,
+          "mean_distance": 0.26856770118077594,
+          "std_distance": 0.001034528511512362,
+          "fraction_of_ood": 0.5284569389138885
+        },
+        {
+          "level": 75,
+          "mean_distance": 0.3391783833503723,
+          "std_distance": 0.0013836240565290906,
+          "fraction_of_ood": 0.6673965984109529
+        },
+        {
+          "level": 100,
+          "mean_distance": 0.3896841009457906,
+          "std_distance": 0.0012045197638914746,
+          "fraction_of_ood": 0.7667759980959458
+        },
+        {
+          "level": 128,
+          "mean_distance": 0.44017380475997925,
+          "std_distance": 0.0009358932672649843,
+          "fraction_of_ood": 0.8661238876858236
+        }
+      ]
+    },
+    "blur": {
+      "label": "Blur radius",
+      "data": [
+        {
+          "level": 1,
+          "mean_distance": 0.10202636321385701,
+          "std_distance": 0.009563234533459884,
+          "fraction_of_ood": 0.20075585915753733
+        },
+        {
+          "level": 2,
+          "mean_distance": 0.2364033261934916,
+          "std_distance": 0.00398936987016064,
+          "fraction_of_ood": 0.4651675445707559
+        },
+        {
+          "level": 3,
+          "mean_distance": 0.30606983105341595,
+          "std_distance": 0.0030266428776155943,
+          "fraction_of_ood": 0.6022493594771733
+        },
+        {
+          "level": 5,
+          "mean_distance": 0.3618821899096171,
+          "std_distance": 0.0013125598363131303,
+          "fraction_of_ood": 0.7120705635349854
+        },
+        {
+          "level": 8,
+          "mean_distance": 0.37165993452072144,
+          "std_distance": 0.003955416229520621,
+          "fraction_of_ood": 0.7313100959283014
+        },
+        {
+          "level": 12,
+          "mean_distance": 0.3147132396697998,
+          "std_distance": 0.004049697228690605,
+          "fraction_of_ood": 0.6192568746739526
+        },
+        {
+          "level": 20,
+          "mean_distance": 0.3079444964726766,
+          "std_distance": 0.0033589695778439154,
+          "fraction_of_ood": 0.6059381126094174
+        }
+      ]
+    },
+    "occlusion": {
+      "label": "Occlusion fraction",
+      "data": [
+        {
+          "level": 0.01,
+          "mean_distance": 0.2799454927444458,
+          "std_distance": 0.006502664064919559,
+          "fraction_of_ood": 0.5508448614931938
+        },
+        {
+          "level": 0.05,
+          "mean_distance": 0.27294989426930744,
+          "std_distance": 0.0076554593026137005,
+          "fraction_of_ood": 0.5370797194459977
+        },
+        {
+          "level": 0.1,
+          "mean_distance": 0.360238254070282,
+          "std_distance": 0.007172511643409061,
+          "fraction_of_ood": 0.7088358137955106
+        },
+        {
+          "level": 0.2,
+          "mean_distance": 0.3720875183741252,
+          "std_distance": 0.009671950405959476,
+          "fraction_of_ood": 0.7321514467434044
+        },
+        {
+          "level": 0.3,
+          "mean_distance": 0.3315690755844116,
+          "std_distance": 0.012169972501691495,
+          "fraction_of_ood": 0.6524238691081595
+        },
+        {
+          "level": 0.5,
+          "mean_distance": 0.36690302689870197,
+          "std_distance": 0.0007827836952193678,
+          "fraction_of_ood": 0.7219499948082622
+        },
+        {
+          "level": 0.7,
+          "mean_distance": 0.44099950790405273,
+          "std_distance": 0.006780805450136919,
+          "fraction_of_ood": 0.8677486123047938
+        },
+        {
+          "level": 0.9,
+          "mean_distance": 0.48581894238789874,
+          "std_distance": 0.0028966468115503,
+          "fraction_of_ood": 0.9559391916151558
+        }
+      ]
+    },
+    "color_jitter": {
+      "label": "Jitter strength",
+      "data": [
+        {
+          "level": 5,
+          "mean_distance": 0.026567518711090088,
+          "std_distance": 0.001054860651536926,
+          "fraction_of_ood": 0.05227653791157032
+        },
+        {
+          "level": 10,
+          "mean_distance": 0.028587162494659424,
+          "std_distance": 0.002081585524727691,
+          "fraction_of_ood": 0.05625056295951571
+        },
+        {
+          "level": 20,
+          "mean_distance": 0.03266312678654989,
+          "std_distance": 0.0015888489162777571,
+          "fraction_of_ood": 0.06427078133776695
+        },
+        {
+          "level": 40,
+          "mean_distance": 0.04465289910634359,
+          "std_distance": 0.00242731733900108,
+          "fraction_of_ood": 0.08786288995892898
+        },
+        {
+          "level": 60,
+          "mean_distance": 0.06272848447163899,
+          "std_distance": 0.002857980133420464,
+          "fraction_of_ood": 0.1234299684617569
+        },
+        {
+          "level": 80,
+          "mean_distance": 0.08322026332219441,
+          "std_distance": 0.0025468720944674035,
+          "fraction_of_ood": 0.1637513573579434
+        },
+        {
+          "level": 100,
+          "mean_distance": 0.10174312194188435,
+          "std_distance": 0.002600342372737987,
+          "fraction_of_ood": 0.2001985292369897
+        },
+        {
+          "level": 128,
+          "mean_distance": 0.12623526652654013,
+          "std_distance": 0.003726230012096936,
+          "fraction_of_ood": 0.24839138227828467
+        }
+      ]
+    }
+  }
+}
