@@ -14559,3 +14559,44 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 **Finding 614**: **The clean diameter (0.000229) is 3.08× the minimum noise corruption distance — noise falls WITHIN the clean region for per-centroid detection.** This is the geometric explanation for why noise has the smallest detection margin. All other corruptions have diameter ratios < 1 (cleanly separated).
 
 **Finding 615**: **Fog and blur directions are closest at 62.3°; most corruption pairs are near-orthogonal (80-115°).** This angular structure enables the 100% multiclass classification accuracy — the corruptions are geometrically well-separated in direction space.
+
+---
+
+## Experiment 354: Structured Scene Robustness
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_structured_scenes.py`
+**Status**: Complete
+
+### Setup
+- 6 scene types: gradient (sky-ground), checkerboard, urban grid, color patches, natural texture, random pixels
+- 5 scenes per type, 4 corruption types at severity 0.5
+- Per-scene-type AUROC and distance analysis
+- Cross-scene-type sensitivity comparison
+
+### Results
+
+#### Summary
+- **ALL 6 scene types: AUROC = 1.0 for ALL 4 corruption types**
+- Detection is completely scene-type invariant
+
+#### Distance Variation Across Scene Types
+- **Noise**: 40.3× variation (natural_texture: 0.00454, random_pixels: 0.000113)
+- **Night**: 11.9× variation (natural_texture: 0.00298, color_patches: 0.000250)
+- **Fog**: 3.6× variation (natural_texture: 0.00272, gradient: 0.000756)
+- **Blur**: 2.5× variation (urban_grid: 0.00780, gradient: 0.003107)
+
+#### Scene Type Rankings
+- **Natural texture**: highest distances for fog, night, noise (most sensitive)
+- **Gradient/random_pixels**: generally lowest distances
+- **Urban grid**: highest for blur (sharp edges amplify blur detection)
+
+### Key Findings
+
+**Finding 616**: **All 6 structured scene types achieve AUROC=1.0 for all 4 corruptions — detection generalizes beyond random pixel noise.** Gradient backgrounds, checkerboards, urban grids, color patches, and natural textures all yield perfect detection, confirming the method works on scene structures resembling real-world inputs.
+
+**Finding 617**: **Noise detection distance varies 40× across scene types while maintaining AUROC=1.0.** Natural textures produce 40× higher noise distances than random pixels (0.00454 vs 0.000113). Despite this massive variation in distance magnitude, every scene type still achieves perfect separation.
+
+**Finding 618**: **Natural textures produce the highest detection distances for 3/4 corruption types — spatially correlated images amplify the OOD signal.** Upscaled coarse noise (approximating natural textures) consistently yields the strongest detection signal, suggesting real-world images will be even more detectable than our random-pixel baseline.
+
+**Finding 619**: **Urban grid patterns maximize blur detection (d=0.0078) — sharp high-frequency content makes blur corruption most visible.** This is physically intuitive: blurring sharp edges destroys more information than blurring already-smooth content, and the embedding captures this.

@@ -6700,4 +6700,25 @@ We analyze the geometric structure of the embedding space: metric properties, no
 
 \textbf{Finding 867}: \textbf{Corruption directions are near-orthogonal (80--115°) except fog$\leftrightarrow$blur at 62°.} This angular separation enables perfect multiclass classification and validates PCA-based compression.
 
+%% ============================================================
+\subsection{Experiment 354: Structured Scene Robustness}
+\label{sec:exp354}
+
+We test detection on 6 scene types beyond random pixels: gradients, checkerboards, urban grids, color patches, and natural textures.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig363_scenes.png}
+\caption{\textbf{Experiment 354}: Structured scene robustness. Top-left: all 6 scene types AUROC=1.0. Top-right: distance heatmap showing natural texture is most sensitive. Bottom-left: noise has $40\times$ distance variation across scenes. Bottom-right: severity curves for gradient vs random pixels.}
+\label{fig:exp354}
+\end{figure}
+
+\textbf{Finding 868}: \textbf{All 6 scene types achieve AUROC=1.0 --- detection generalizes to structured images.} Gradients, checkerboards, urban grids, color patches, and natural textures all yield perfect detection, validating the method beyond random pixel noise.
+
+\textbf{Finding 869}: \textbf{Noise distance varies $40\times$ across scene types while AUROC remains 1.0.} Natural textures amplify the noise signal from $1.1 \times 10^{-4}$ (random) to $4.5 \times 10^{-3}$, but separation is perfect regardless.
+
+\textbf{Finding 870}: \textbf{Natural textures produce the highest detection distances for 3/4 types.} Spatially correlated images amplify the OOD signal, suggesting real-world images will be even more detectable than random-pixel baselines.
+
+\textbf{Finding 871}: \textbf{Urban grids maximize blur detection ($d=0.0078$) --- sharp edges amplify blur sensitivity.} High-frequency content makes blur destruction most visible to the model, a physically intuitive result.
+
 \end{document}
