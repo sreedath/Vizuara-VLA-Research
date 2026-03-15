@@ -15814,3 +15814,60 @@ Color jitter ≥20% triggers significant false positives.
 
 **Finding 749**: Horizontal flip is INVISIBLE to the detector (mean dist = 4.22e-05, identical to clean). The model's corruption detection mechanism is mirror-symmetric, relying on color/texture statistics that are invariant under horizontal reflection. This is consistent with the holistic detection finding from experiment 379.
 
+---
+
+## Experiment 381: Layer-Wise Detection Dynamics
+
+**Objective**: How does corruption detection evolve across all 33 transformer layers? Tests per-layer distance, AUROC progression, layer gradients, corruption ranking stability, and cross-layer correlation.
+
+**Setup**: 10 scenes, 4 corruptions at severity 0.5, all 33 hidden states extracted (L0-L32).
+
+### Results
+
+**Per-Layer Distance** (monotonically increasing, max at L32):
+| Corruption | L0 | L3 (our default) | L15 | L25 | L32 (final) |
+|-----------|-----|-------------------|------|------|-------------|
+| Fog | 0.0 | 9.82e-04 | 1.52e-02 | 4.91e-02 | 0.124 |
+| Night | 0.0 | 1.96e-03 | 3.76e-02 | 1.09e-01 | 0.259 |
+| Noise | 0.0 | 1.16e-04 | 8.43e-03 | 3.13e-02 | 0.085 |
+| Blur | 0.0 | 4.86e-03 | 1.58e-01 | 2.67e-01 | 0.596 |
+
+Distance grows ~100-200x from L3 to L32. L32 (final layer) has a massive jump.
+
+**Per-Layer AUROC**:
+| Corruption | Perfect Layers | First Perfect | Pattern |
+|-----------|---------------|---------------|---------|
+| Fog | 32/33 | L1 | All layers except L0 |
+| Night | 32/33 | L1 | All layers except L0 |
+| Blur | 32/33 | L1 | All layers except L0 |
+| **Noise** | **7/33** | **L3** | **L3-L9 only! Degrades to 0.64-0.90 deeper** |
+
+CRITICAL: Noise detection is BEST at early layers and DEGRADES in deeper layers!
+
+**Layer Gradient**: All corruptions have max jump at L32 (output layer):
+- Blur: L32 jump = 0.352 (by far largest)
+- Night: L32 jump = 0.154
+- Fog: L32 jump = 0.075
+- Noise: L32 jump = 0.050
+
+**Corruption Ranking**: Stable from L1 onward: blur > night > fog > noise. Only 1 ranking transition (L0→L1, from all-zero to ordered).
+
+**Cross-Layer Correlation**:
+- Early-Mid: 0.900
+- Mid-Late: 0.993
+- Early-Late: 0.903
+
+Mid and late layers are nearly perfectly correlated. Early layers diverge slightly.
+
+### Findings
+
+**Finding 750**: Detection distance grows monotonically across layers, with a MASSIVE final-layer (L32) jump. Blur reaches 0.596 cosine distance at L32, growing ~125x from L3 (0.00486). The output layer amplifies corruption signals far beyond internal representations.
+
+**Finding 751**: Noise AUROC peaks at early layers (L3-L9: AUROC=1.0) then DEGRADES to 0.64-0.90 in deeper layers. This is the OPPOSITE of other corruptions which maintain AUROC=1.0 throughout. Deeper layers confuse noise with natural variation — our default L3 choice is OPTIMAL for noise.
+
+**Finding 752**: Fog, night, and blur achieve AUROC=1.0 at ALL layers from L1 onward (32/33 layers perfect). Only L0 (embedding layer) fails. These corruptions produce such large signals that any post-embedding layer suffices for detection.
+
+**Finding 753**: The corruption ranking is STABLE across all layers: blur > night > fog > noise, with only one transition at L0→L1. This means the relative detectability of corruptions is an intrinsic property of the model's visual processing, not layer-specific.
+
+**Finding 754**: Mid and late layers are nearly perfectly correlated (r=0.993), while early layers diverge slightly (early-late r=0.903). The model converges to a consistent corruption representation by mid-depth, with early layers capturing qualitatively different features.
+

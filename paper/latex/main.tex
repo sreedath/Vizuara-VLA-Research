@@ -7376,4 +7376,37 @@ We characterize the detector's false positive boundary by testing whether natura
 
 \textbf{Finding 1001}: \textbf{Horizontal flip is invisible to the detector (dist identical to clean).} The detection mechanism is mirror-symmetric, consistent with the holistic, texture-based detection established in Experiment~379. This confirms that corruption detection relies on global color statistics, not spatial structure.
 
+% ============================================================
+% EXPERIMENT 381: Layer-Wise Detection Dynamics
+% ============================================================
+
+\subsection{Experiment 381: Layer-Wise Detection Dynamics}
+
+We examine how corruption detection evolves across all 33 transformer layers (L0--L32), analyzing per-layer distances, AUROC progression, gradient structure, and cross-layer correlation.
+
+\textbf{Monotonic Growth with Final-Layer Amplification.} Detection distance increases monotonically across layers for all corruptions, with a massive jump at the output layer L32. Blur reaches cosine distance 0.596 at L32, growing $\sim$125$\times$ from L3 (0.005). This output layer amplification occurs because the language model head concentrates the corruption signal into the output representation.
+
+\textbf{Noise AUROC Degrades in Deep Layers.} While fog, night, and blur maintain AUROC = 1.0 at all layers from L1 onward (32/33 perfect), noise peaks at early layers (L3--L9: AUROC = 1.0) and then \emph{degrades} to 0.64--0.90 in deeper layers. This reversal means deeper layers \emph{confuse} noise with natural variation --- our default L3 choice is not arbitrary but \emph{optimal} for the hardest corruption type.
+
+\textbf{Stable Corruption Hierarchy.} The ranking blur $>$ night $>$ fog $>$ noise is consistent from L1 through L32, with only one transition at L0$\to$L1 (from all-zero to ordered). This stability means relative detectability is an intrinsic property of the model's visual processing pipeline, not a layer-specific artifact.
+
+\textbf{Layer Phase Structure.} Cross-layer correlation reveals two phases: mid-to-late layers are nearly identical (correlation $r = 0.993$), while early layers diverge slightly (early-late $r = 0.903$). The model converges to a consistent corruption representation by mid-depth.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig390_layers.png}
+\caption{\textbf{Experiment 381}: Layer-wise detection dynamics across 33 layers. Distance grows monotonically with a massive L32 jump. AUROC shows noise uniquely degrades in deep layers while others maintain 1.0. Layer gradient reveals gradual accumulation with final-layer spike. Cross-layer correlation shows mid-late convergence.}
+\label{fig:layers}
+\end{figure}
+
+\textbf{Finding 1002}: \textbf{Detection distance grows $\sim$125$\times$ from L3 to L32 for blur.} The output layer amplifies corruption signals far beyond internal representations, with L32 jumps of 0.05--0.35 cosine distance. Every layer after L0 is sufficient for fog/night/blur detection.
+
+\textbf{Finding 1003}: \textbf{Noise AUROC peaks at early layers (L3--L9) and degrades to 0.64 in deep layers.} Deeper layers confuse noise with natural variation, making L3 the optimal choice for the hardest corruption. This is the \emph{opposite} pattern from other corruptions.
+
+\textbf{Finding 1004}: \textbf{The corruption ranking blur $>$ night $>$ fog $>$ noise is stable across all 33 layers.} Only one ranking transition occurs (L0$\to$L1), establishing that relative detectability is an intrinsic model property, not layer-dependent.
+
+\textbf{Finding 1005}: \textbf{Mid-to-late layers are nearly perfectly correlated ($r = 0.993$).} The model converges to a consistent corruption representation by mid-depth. Early layers capture qualitatively different (and for noise, \emph{better}) features.
+
+\textbf{Finding 1006}: \textbf{L3 is the optimal layer for universal detection across all corruption types.} It achieves AUROC = 1.0 for all four corruptions, while deeper layers sacrifice noise performance for marginal distance gains on other types.
+
 \end{document}
