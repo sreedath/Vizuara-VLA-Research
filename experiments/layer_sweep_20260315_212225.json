@@ -1,0 +1,1739 @@
+{
+  "experiment": "layer_sweep",
+  "experiment_number": 450,
+  "timestamp": "20260315_212225",
+  "config": {
+    "seeds": [
+      42,
+      123,
+      456,
+      789,
+      1000,
+      2000,
+      3000,
+      4000
+    ],
+    "corruptions": [
+      "fog",
+      "night",
+      "noise",
+      "blur"
+    ],
+    "severity_main": 1.0,
+    "severity_low": 0.1,
+    "n_layers": 33,
+    "prompt": "In: What action should the robot take to pick up the object?\nOut:"
+  },
+  "analysis_1_per_layer_auroc": {
+    "0": {
+      "layer": 0,
+      "overall_auroc": 0.0,
+      "per_corruption_auroc": {
+        "fog": 0.0,
+        "night": 0.0,
+        "noise": 0.0,
+        "blur": 0.0
+      }
+    },
+    "1": {
+      "layer": 1,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "2": {
+      "layer": 2,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "3": {
+      "layer": 3,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "4": {
+      "layer": 4,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "5": {
+      "layer": 5,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "6": {
+      "layer": 6,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "7": {
+      "layer": 7,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "8": {
+      "layer": 8,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "9": {
+      "layer": 9,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "10": {
+      "layer": 10,
+      "overall_auroc": 0.953125,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.8125,
+        "blur": 1.0
+      }
+    },
+    "11": {
+      "layer": 11,
+      "overall_auroc": 0.96875,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.875,
+        "blur": 1.0
+      }
+    },
+    "12": {
+      "layer": 12,
+      "overall_auroc": 0.95703125,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.828125,
+        "blur": 1.0
+      }
+    },
+    "13": {
+      "layer": 13,
+      "overall_auroc": 0.9453125,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.78125,
+        "blur": 1.0
+      }
+    },
+    "14": {
+      "layer": 14,
+      "overall_auroc": 0.9375,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.75,
+        "blur": 1.0
+      }
+    },
+    "15": {
+      "layer": 15,
+      "overall_auroc": 0.984375,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.9375,
+        "blur": 1.0
+      }
+    },
+    "16": {
+      "layer": 16,
+      "overall_auroc": 0.98828125,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.953125,
+        "blur": 1.0
+      }
+    },
+    "17": {
+      "layer": 17,
+      "overall_auroc": 0.98046875,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.921875,
+        "blur": 1.0
+      }
+    },
+    "18": {
+      "layer": 18,
+      "overall_auroc": 0.98046875,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.921875,
+        "blur": 1.0
+      }
+    },
+    "19": {
+      "layer": 19,
+      "overall_auroc": 0.984375,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.9375,
+        "blur": 1.0
+      }
+    },
+    "20": {
+      "layer": 20,
+      "overall_auroc": 0.984375,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.9375,
+        "blur": 1.0
+      }
+    },
+    "21": {
+      "layer": 21,
+      "overall_auroc": 0.984375,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.9375,
+        "blur": 1.0
+      }
+    },
+    "22": {
+      "layer": 22,
+      "overall_auroc": 0.98828125,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.953125,
+        "blur": 1.0
+      }
+    },
+    "23": {
+      "layer": 23,
+      "overall_auroc": 0.99609375,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.984375,
+        "blur": 1.0
+      }
+    },
+    "24": {
+      "layer": 24,
+      "overall_auroc": 0.99609375,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.984375,
+        "blur": 1.0
+      }
+    },
+    "25": {
+      "layer": 25,
+      "overall_auroc": 0.9921875,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.96875,
+        "blur": 1.0
+      }
+    },
+    "26": {
+      "layer": 26,
+      "overall_auroc": 0.9921875,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.96875,
+        "blur": 1.0
+      }
+    },
+    "27": {
+      "layer": 27,
+      "overall_auroc": 0.99609375,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.984375,
+        "blur": 1.0
+      }
+    },
+    "28": {
+      "layer": 28,
+      "overall_auroc": 0.99609375,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.984375,
+        "blur": 1.0
+      }
+    },
+    "29": {
+      "layer": 29,
+      "overall_auroc": 0.9921875,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.96875,
+        "blur": 1.0
+      }
+    },
+    "30": {
+      "layer": 30,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "31": {
+      "layer": 31,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "32": {
+      "layer": 32,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    }
+  },
+  "analysis_2_separation_ratio": {
+    "0": {
+      "layer": 0,
+      "separation_ratio": 0.0
+    },
+    "1": {
+      "layer": 1,
+      "separation_ratio": 256.91981835409314
+    },
+    "2": {
+      "layer": 2,
+      "separation_ratio": 88.55960070606571
+    },
+    "3": {
+      "layer": 3,
+      "separation_ratio": 85.11566627977739
+    },
+    "4": {
+      "layer": 4,
+      "separation_ratio": 76.83228636320962
+    },
+    "5": {
+      "layer": 5,
+      "separation_ratio": 73.8848107518989
+    },
+    "6": {
+      "layer": 6,
+      "separation_ratio": 70.4002965603323
+    },
+    "7": {
+      "layer": 7,
+      "separation_ratio": 81.00517570217345
+    },
+    "8": {
+      "layer": 8,
+      "separation_ratio": 52.17951690412656
+    },
+    "9": {
+      "layer": 9,
+      "separation_ratio": 42.00160431141837
+    },
+    "10": {
+      "layer": 10,
+      "separation_ratio": 24.07281012259199
+    },
+    "11": {
+      "layer": 11,
+      "separation_ratio": 29.707790195665215
+    },
+    "12": {
+      "layer": 12,
+      "separation_ratio": 27.06694552780602
+    },
+    "13": {
+      "layer": 13,
+      "separation_ratio": 20.844242739257258
+    },
+    "14": {
+      "layer": 14,
+      "separation_ratio": 18.101566540665225
+    },
+    "15": {
+      "layer": 15,
+      "separation_ratio": 14.47975618542278
+    },
+    "16": {
+      "layer": 16,
+      "separation_ratio": 14.123162297983544
+    },
+    "17": {
+      "layer": 17,
+      "separation_ratio": 13.450818546818653
+    },
+    "18": {
+      "layer": 18,
+      "separation_ratio": 13.488392554743491
+    },
+    "19": {
+      "layer": 19,
+      "separation_ratio": 13.079926108665045
+    },
+    "20": {
+      "layer": 20,
+      "separation_ratio": 12.73184862388371
+    },
+    "21": {
+      "layer": 21,
+      "separation_ratio": 11.318205938064992
+    },
+    "22": {
+      "layer": 22,
+      "separation_ratio": 10.33757989576331
+    },
+    "23": {
+      "layer": 23,
+      "separation_ratio": 8.87107938261342
+    },
+    "24": {
+      "layer": 24,
+      "separation_ratio": 8.158473355969685
+    },
+    "25": {
+      "layer": 25,
+      "separation_ratio": 7.606101661889073
+    },
+    "26": {
+      "layer": 26,
+      "separation_ratio": 7.099850773000756
+    },
+    "27": {
+      "layer": 27,
+      "separation_ratio": 6.50665256994097
+    },
+    "28": {
+      "layer": 28,
+      "separation_ratio": 6.301286666010195
+    },
+    "29": {
+      "layer": 29,
+      "separation_ratio": 6.004372120614702
+    },
+    "30": {
+      "layer": 30,
+      "separation_ratio": 5.839670333927128
+    },
+    "31": {
+      "layer": 31,
+      "separation_ratio": 5.767935814132193
+    },
+    "32": {
+      "layer": 32,
+      "separation_ratio": 5.754091728667223
+    }
+  },
+  "analysis_3_multi_layer_fusion": {
+    "L0+L3": {
+      "layers": [
+        0,
+        3
+      ],
+      "dim": 8192,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "L3+L15": {
+      "layers": [
+        3,
+        15
+      ],
+      "dim": 8192,
+      "overall_auroc": 0.984375,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.9375,
+        "blur": 1.0
+      }
+    },
+    "L3+L31": {
+      "layers": [
+        3,
+        31
+      ],
+      "dim": 8192,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "L0+L15+L31": {
+      "layers": [
+        0,
+        15,
+        31
+      ],
+      "dim": 12288,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "best+second_best (L1+L2)": {
+      "layers": [
+        1,
+        2
+      ],
+      "dim": 8192,
+      "overall_auroc": 1.0,
+      "per_corruption_auroc": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    }
+  },
+  "analysis_4_corruption_sensitivity": {
+    "per_layer": {
+      "0": {
+        "layer": 0,
+        "corruption_ranking": [
+          [
+            "fog",
+            0.0
+          ],
+          [
+            "night",
+            0.0
+          ],
+          [
+            "noise",
+            0.0
+          ],
+          [
+            "blur",
+            0.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "1": {
+        "layer": 1,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "2": {
+        "layer": 2,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "3": {
+        "layer": 3,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "4": {
+        "layer": 4,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "5": {
+        "layer": 5,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "6": {
+        "layer": 6,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "7": {
+        "layer": 7,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "8": {
+        "layer": 8,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "9": {
+        "layer": 9,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "10": {
+        "layer": 10,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.8125
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "11": {
+        "layer": 11,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.875
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "12": {
+        "layer": 12,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.828125
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "13": {
+        "layer": 13,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.78125
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "14": {
+        "layer": 14,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.75
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "15": {
+        "layer": 15,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.9375
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "16": {
+        "layer": 16,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.953125
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "17": {
+        "layer": 17,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.921875
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "18": {
+        "layer": 18,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.921875
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "19": {
+        "layer": 19,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.9375
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "20": {
+        "layer": 20,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.9375
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "21": {
+        "layer": 21,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.9375
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "22": {
+        "layer": 22,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.953125
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "23": {
+        "layer": 23,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.984375
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "24": {
+        "layer": 24,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.984375
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "25": {
+        "layer": 25,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.96875
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "26": {
+        "layer": 26,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.96875
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "27": {
+        "layer": 27,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.984375
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "28": {
+        "layer": 28,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.984375
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "29": {
+        "layer": 29,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ],
+          [
+            "noise",
+            0.96875
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "noise"
+      },
+      "30": {
+        "layer": 30,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "31": {
+        "layer": 31,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      },
+      "32": {
+        "layer": 32,
+        "corruption_ranking": [
+          [
+            "fog",
+            1.0
+          ],
+          [
+            "night",
+            1.0
+          ],
+          [
+            "noise",
+            1.0
+          ],
+          [
+            "blur",
+            1.0
+          ]
+        ],
+        "easiest": "fog",
+        "hardest": "blur"
+      }
+    },
+    "best_layer_per_corruption": {
+      "fog": {
+        "best_layer": 1,
+        "auroc": 1.0
+      },
+      "night": {
+        "best_layer": 1,
+        "auroc": 1.0
+      },
+      "noise": {
+        "best_layer": 1,
+        "auroc": 1.0
+      },
+      "blur": {
+        "best_layer": 1,
+        "auroc": 1.0
+      }
+    }
+  },
+  "analysis_5_low_severity": {
+    "0": {
+      "layer": 0,
+      "overall_auroc": 0.0,
+      "per_corruption_auroc": {
+        "fog": 0.0,
+        "night": 0.0,
+        "noise": 0.0,
+        "blur": 0.0
+      }
+    },
+    "1": {
+      "layer": 1,
+      "overall_auroc": 0.8515625,
+      "per_corruption_auroc": {
+        "fog": 0.890625,
+        "night": 1.0,
+        "noise": 0.515625,
+        "blur": 1.0
+      }
+    },
+    "2": {
+      "layer": 2,
+      "overall_auroc": 0.80859375,
+      "per_corruption_auroc": {
+        "fog": 0.78125,
+        "night": 0.984375,
+        "noise": 0.46875,
+        "blur": 1.0
+      }
+    },
+    "3": {
+      "layer": 3,
+      "overall_auroc": 0.83203125,
+      "per_corruption_auroc": {
+        "fog": 0.84375,
+        "night": 0.984375,
+        "noise": 0.5,
+        "blur": 1.0
+      }
+    },
+    "4": {
+      "layer": 4,
+      "overall_auroc": 0.8515625,
+      "per_corruption_auroc": {
+        "fog": 0.859375,
+        "night": 1.0,
+        "noise": 0.546875,
+        "blur": 1.0
+      }
+    },
+    "5": {
+      "layer": 5,
+      "overall_auroc": 0.8984375,
+      "per_corruption_auroc": {
+        "fog": 0.96875,
+        "night": 1.0,
+        "noise": 0.625,
+        "blur": 1.0
+      }
+    },
+    "6": {
+      "layer": 6,
+      "overall_auroc": 0.8828125,
+      "per_corruption_auroc": {
+        "fog": 0.9375,
+        "night": 1.0,
+        "noise": 0.609375,
+        "blur": 1.0
+      }
+    },
+    "7": {
+      "layer": 7,
+      "overall_auroc": 0.84765625,
+      "per_corruption_auroc": {
+        "fog": 0.84375,
+        "night": 1.0,
+        "noise": 0.546875,
+        "blur": 1.0
+      }
+    },
+    "8": {
+      "layer": 8,
+      "overall_auroc": 0.83203125,
+      "per_corruption_auroc": {
+        "fog": 0.78125,
+        "night": 1.0,
+        "noise": 0.546875,
+        "blur": 1.0
+      }
+    },
+    "9": {
+      "layer": 9,
+      "overall_auroc": 0.83984375,
+      "per_corruption_auroc": {
+        "fog": 0.796875,
+        "night": 1.0,
+        "noise": 0.5625,
+        "blur": 1.0
+      }
+    },
+    "10": {
+      "layer": 10,
+      "overall_auroc": 0.77734375,
+      "per_corruption_auroc": {
+        "fog": 0.65625,
+        "night": 0.828125,
+        "noise": 0.625,
+        "blur": 1.0
+      }
+    },
+    "11": {
+      "layer": 11,
+      "overall_auroc": 0.78125,
+      "per_corruption_auroc": {
+        "fog": 0.640625,
+        "night": 0.84375,
+        "noise": 0.640625,
+        "blur": 1.0
+      }
+    },
+    "12": {
+      "layer": 12,
+      "overall_auroc": 0.73828125,
+      "per_corruption_auroc": {
+        "fog": 0.59375,
+        "night": 0.8125,
+        "noise": 0.546875,
+        "blur": 1.0
+      }
+    },
+    "13": {
+      "layer": 13,
+      "overall_auroc": 0.73046875,
+      "per_corruption_auroc": {
+        "fog": 0.53125,
+        "night": 0.765625,
+        "noise": 0.625,
+        "blur": 1.0
+      }
+    },
+    "14": {
+      "layer": 14,
+      "overall_auroc": 0.6796875,
+      "per_corruption_auroc": {
+        "fog": 0.515625,
+        "night": 0.59375,
+        "noise": 0.609375,
+        "blur": 1.0
+      }
+    },
+    "15": {
+      "layer": 15,
+      "overall_auroc": 0.71875,
+      "per_corruption_auroc": {
+        "fog": 0.484375,
+        "night": 0.6875,
+        "noise": 0.703125,
+        "blur": 1.0
+      }
+    },
+    "16": {
+      "layer": 16,
+      "overall_auroc": 0.7265625,
+      "per_corruption_auroc": {
+        "fog": 0.484375,
+        "night": 0.71875,
+        "noise": 0.703125,
+        "blur": 1.0
+      }
+    },
+    "17": {
+      "layer": 17,
+      "overall_auroc": 0.68359375,
+      "per_corruption_auroc": {
+        "fog": 0.421875,
+        "night": 0.6875,
+        "noise": 0.625,
+        "blur": 1.0
+      }
+    },
+    "18": {
+      "layer": 18,
+      "overall_auroc": 0.70703125,
+      "per_corruption_auroc": {
+        "fog": 0.484375,
+        "night": 0.703125,
+        "noise": 0.640625,
+        "blur": 1.0
+      }
+    },
+    "19": {
+      "layer": 19,
+      "overall_auroc": 0.71484375,
+      "per_corruption_auroc": {
+        "fog": 0.46875,
+        "night": 0.71875,
+        "noise": 0.671875,
+        "blur": 1.0
+      }
+    },
+    "20": {
+      "layer": 20,
+      "overall_auroc": 0.7265625,
+      "per_corruption_auroc": {
+        "fog": 0.515625,
+        "night": 0.703125,
+        "noise": 0.6875,
+        "blur": 1.0
+      }
+    },
+    "21": {
+      "layer": 21,
+      "overall_auroc": 0.71875,
+      "per_corruption_auroc": {
+        "fog": 0.53125,
+        "night": 0.703125,
+        "noise": 0.640625,
+        "blur": 1.0
+      }
+    },
+    "22": {
+      "layer": 22,
+      "overall_auroc": 0.72265625,
+      "per_corruption_auroc": {
+        "fog": 0.5,
+        "night": 0.703125,
+        "noise": 0.6875,
+        "blur": 1.0
+      }
+    },
+    "23": {
+      "layer": 23,
+      "overall_auroc": 0.7578125,
+      "per_corruption_auroc": {
+        "fog": 0.546875,
+        "night": 0.765625,
+        "noise": 0.71875,
+        "blur": 1.0
+      }
+    },
+    "24": {
+      "layer": 24,
+      "overall_auroc": 0.76953125,
+      "per_corruption_auroc": {
+        "fog": 0.59375,
+        "night": 0.734375,
+        "noise": 0.75,
+        "blur": 1.0
+      }
+    },
+    "25": {
+      "layer": 25,
+      "overall_auroc": 0.77734375,
+      "per_corruption_auroc": {
+        "fog": 0.625,
+        "night": 0.703125,
+        "noise": 0.78125,
+        "blur": 1.0
+      }
+    },
+    "26": {
+      "layer": 26,
+      "overall_auroc": 0.78515625,
+      "per_corruption_auroc": {
+        "fog": 0.625,
+        "night": 0.75,
+        "noise": 0.765625,
+        "blur": 1.0
+      }
+    },
+    "27": {
+      "layer": 27,
+      "overall_auroc": 0.75,
+      "per_corruption_auroc": {
+        "fog": 0.609375,
+        "night": 0.703125,
+        "noise": 0.6875,
+        "blur": 1.0
+      }
+    },
+    "28": {
+      "layer": 28,
+      "overall_auroc": 0.75390625,
+      "per_corruption_auroc": {
+        "fog": 0.609375,
+        "night": 0.703125,
+        "noise": 0.703125,
+        "blur": 1.0
+      }
+    },
+    "29": {
+      "layer": 29,
+      "overall_auroc": 0.73828125,
+      "per_corruption_auroc": {
+        "fog": 0.59375,
+        "night": 0.671875,
+        "noise": 0.6875,
+        "blur": 1.0
+      }
+    },
+    "30": {
+      "layer": 30,
+      "overall_auroc": 0.74609375,
+      "per_corruption_auroc": {
+        "fog": 0.640625,
+        "night": 0.65625,
+        "noise": 0.6875,
+        "blur": 1.0
+      }
+    },
+    "31": {
+      "layer": 31,
+      "overall_auroc": 0.7265625,
+      "per_corruption_auroc": {
+        "fog": 0.59375,
+        "night": 0.65625,
+        "noise": 0.65625,
+        "blur": 1.0
+      }
+    },
+    "32": {
+      "layer": 32,
+      "overall_auroc": 0.78515625,
+      "per_corruption_auroc": {
+        "fog": 0.59375,
+        "night": 0.8125,
+        "noise": 0.734375,
+        "blur": 1.0
+      }
+    }
+  },
+  "summary": {
+    "top5_layers_main": [
+      {
+        "layer": 1,
+        "overall_auroc": 1.0,
+        "separation_ratio": 256.91981835409314
+      },
+      {
+        "layer": 2,
+        "overall_auroc": 1.0,
+        "separation_ratio": 88.55960070606571
+      },
+      {
+        "layer": 3,
+        "overall_auroc": 1.0,
+        "separation_ratio": 85.11566627977739
+      },
+      {
+        "layer": 4,
+        "overall_auroc": 1.0,
+        "separation_ratio": 76.83228636320962
+      },
+      {
+        "layer": 5,
+        "overall_auroc": 1.0,
+        "separation_ratio": 73.8848107518989
+      }
+    ],
+    "top_fusion_combos": [
+      {
+        "name": "L0+L3",
+        "layers": [
+          0,
+          3
+        ],
+        "overall_auroc": 1.0
+      },
+      {
+        "name": "L3+L31",
+        "layers": [
+          3,
+          31
+        ],
+        "overall_auroc": 1.0
+      },
+      {
+        "name": "L0+L15+L31",
+        "layers": [
+          0,
+          15,
+          31
+        ],
+        "overall_auroc": 1.0
+      }
+    ],
+    "best_layer_low_severity": {
+      "layer": 5,
+      "overall_auroc": 0.8984375
+    }
+  }
+}

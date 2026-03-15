@@ -18453,3 +18453,224 @@ This experiment provides the key mechanistic insight linking our detection metho
 - Night corruption shows an additional secondary effect at deep layers (layer 31): attention entropy reduction, causing the model to narrow its focus. This may contribute to the action entropy increase (uncertainty explosion) observed in Experiment 444.
 
 This mechanistic understanding validates the design choice of using last-layer hidden states for OOD detection: they capture the cumulative effect of all layers' processing of the (corrupted) visual input, integrated over the stable attention patterns that route information through the network.
+
+## Experiment 450: Layer Sweep Analysis
+
+**Date:** 2026-03-15
+**Results file:** `experiments/layer_sweep_20260315_212225.json`
+**Figure:** `figures/fig459_layer_sweep.png`
+**Objective:** Systematically evaluate OOD detection AUROC across all 33 layers (0–32) of OpenVLA-7B's LLM backbone to identify the optimal extraction layer and characterize how the detection signal builds through the network.
+
+### Setup
+
+- Model: OpenVLA-7B (BF16, NVIDIA A40)
+- Layers: 0 (raw embedding) through 32 (last LLM layer)
+- Corruption types: noise, fog, night, blur at severity 1.0 and 0.1
+- Metric: AUROC (per-type and aggregate), separation ratio (OOD distance / ID std)
+- Multi-layer fusion: concatenation of subsets of layers
+
+### Per-Layer AUROC (Severity 1.0)
+
+| Layer Range | AUROC | Notes |
+|:-----------|:-----:|:------|
+| Layer 0 (embedding) | **0.0** | Zero detection power |
+| Layers 1–9 | **1.0** | Perfect detection across all types |
+| Layer 10 | ~1.0 | Still perfect |
+| Layer 14 | ~0.75 | NOISE drops to 0.75; fog/night/blur remain 1.0 |
+| Layers 10–29 | 0.75–1.0 | Degraded NOISE detection in middle layers |
+| Layers 30–32 | **1.0** | Recovery to perfect detection |
+
+### Separation Ratio (OOD Distance / ID Std)
+
+| Layer | Separation Ratio |
+|:------|:---------------:|
+| Layer 1 | **256.9×** (highest) |
+| Layer 3 | 85.1× |
+| Layer 16 | ~30–50× |
+| Layer 32 | ~60–80× |
+
+Layer 1 has the highest raw separation ratio (256.9×), substantially better than the commonly-used Layer 3 (85.1×).
+
+### Low Severity Results (Severity 0.1)
+
+| Layer | AUROC (sev=0.1) |
+|:------|:---------------:|
+| Layer 5 | **0.898** (best) |
+| Layer 3 | 0.832 |
+| Layer 1 | ~0.75 |
+| Layer 32 | ~0.82 |
+
+At low severity, middle-early layers (L4–L8) outperform both very early (L1) and late (L32) layers.
+
+### Multi-Layer Fusion
+
+Multi-layer fusion (concatenating L3 + L16 + L32, or L1 + L8 + L32) achieves AUROC = 1.0 at severity 1.0 — identical to single-layer performance. No benefit from concatenation at full severity. Fusion may help at low severity (not fully characterized).
+
+### Key Findings
+
+1. **Layer 0 (raw embedding) has ZERO detection power (AUROC=0.0)** — the raw token embedding space contains no OOD signal; the LLM backbone is required to create geometrically separated representations.
+
+2. **Layers 1–9 ALL achieve perfect AUROC=1.0 at severity 1.0** — the OOD signal is present from the very first LLM layer onward.
+
+3. **Middle layers 10–29 show degraded NOISE detection** — NOISE AUROC drops to 0.75 at L14, though fog/night/blur remain perfect throughout. This indicates noise-type OOD is harder to detect in intermediate representations.
+
+4. **Layers 30–32 recover to AUROC=1.0** — the final layers re-concentrate and amplify the detection signal.
+
+5. **Layer 1 has the highest separation ratio (256.9×)** — despite not being the commonly-chosen layer, L1 provides the most extreme ID/OOD separation.
+
+6. **At low severity (0.1): Layer 5 is best (AUROC=0.898)** — mid-early layers provide better detection for mild corruptions.
+
+7. **Multi-layer fusion adds no benefit at full severity** — a single well-chosen layer (L1–L9 or L30–L32) is sufficient.
+
+### KEY INSIGHT
+
+Detection is robust across a wide range of layers (1–9, 30–32), not limited to any single layer. This validates the practical flexibility of the method: practitioners can extract from any layer in the L1–L9 or L30–L32 range without sacrificing detection quality.
+
+---
+
+## Experiment 451: Online Calibration Adaptation
+
+**Date:** 2026-03-15
+**Results file:** `experiments/exp451_online_calibration_adaptation_20260315_212759.json`
+**Figure:** `figures/fig460_online_adaptation.png`
+**Objective:** Determine the minimum calibration requirement for deployment and evaluate whether online adaptation (EMA centroid updating) provides any benefit over static calibration.
+
+### Setup
+
+- Model: OpenVLA-7B (BF16, NVIDIA A40)
+- Calibration scenes: N = 1 to 15 clean driving scenes
+- Random seeds: 15 independent seeds per N value
+- Update strategies: Running mean vs. EMA (α = 0.1, 0.3, 0.9)
+- Distribution shift: Simulated progressive brightness reduction (proxy for environmental drift)
+
+### Cold Start Results (Static Centroid)
+
+| N (cal scenes) | AUROC | FPR | TPR |
+|:--------------:|:-----:|:---:|:---:|
+| N = 1 | **1.0** | 1.0* | 1.0 |
+| N = 2 | **1.0** | 0.0 | 1.0 |
+| N = 3–15 | **1.0** | 0.0 | 1.0 |
+
+*N=1 is degenerate: a single calibration sample creates a centroid with std=0, causing threshold collapse (FPR=1.0 — all samples flagged). N≥2 gives proper threshold with FPR=0, TPR=1.0.
+
+All 15 random seeds achieve AUROC=1.0 from N=1, confirming the detection is seed-invariant.
+
+### Online Adaptation: EMA vs. Running Mean
+
+| Strategy | AUROC | Notes |
+|:---------|:-----:|:------|
+| Static centroid (N=2) | **1.0** | Baseline |
+| Running mean update | **1.0** | Identical to static |
+| EMA (α=0.1) | **1.0** | Identical |
+| EMA (α=0.3) | **1.0** | Identical |
+| EMA (α=0.9) | **1.0** | Identical |
+
+Online adaptation is unnecessary — detection is already perfect from N=2 with a static centroid.
+
+### Distribution Shift Results
+
+Simulated progressive brightness drift (representing long deployment periods or changing lighting conditions):
+
+- Centroid tracking (updating centroid with new clean frames) maintains AUROC=1.0 under all tested drift levels
+- Static centroid degrades gracefully: still >0.9 AUROC at moderate drift
+- Distribution shift alone does not require online adaptation if initial calibration was diverse
+
+### Key Findings
+
+1. **Cold Start: AUROC=1.0 from just 1 calibration scene** — all 15 tested random seeds achieve perfect detection with a single calibration image (though N=1 has degenerate FPR).
+
+2. **Online Adaptation is unnecessary** — detection is already perfect from N=2 with a static centroid; EMA and running mean add zero benefit.
+
+3. **EMA vs. Running Mean: Identical performance** — no algorithmic difference matters when detection is already perfect.
+
+4. **Threshold stabilization: N=2 is the minimum** — N=1 produces std=0 causing FPR=1.0 (degenerate threshold); N≥2 gives FPR=0, TPR=1.0.
+
+5. **Distribution shift: Centroid tracking maintains detection** — for long-running deployments with environmental drift, updating the centroid with newly-verified clean frames is sufficient.
+
+### PRACTICAL IMPLICATION
+
+**Deploy with just 2 calibration scenes (for valid threshold), no online learning needed.** The system requires:
+- 2 clean forward passes during initialization
+- Storage of a 4096-dimensional centroid vector (~16 KB)
+- No ongoing updates or adaptation mechanisms
+
+This makes deployment maximally simple: run the model on 2 known-good frames, store the average hidden state, and compute cosine distance from then on.
+
+---
+
+## Experiment 452: Computational Cost Profile
+
+**Date:** 2026-03-15
+**Results file:** `experiments/computational_profile_20260315_212854.json`
+**Figure:** `figures/fig461_computational.png`
+**Objective:** Provide a detailed, accurate timing breakdown of the full OOD detection pipeline, clarifying the nuanced overhead from hidden state extraction vs. the detection computation itself.
+
+### Setup
+
+- GPU: NVIDIA A40 (48 GB VRAM)
+- Model: OpenVLA-7B (BF16, ~15.1 GB loaded)
+- Batch sizes: 1, 2, 4
+- Timing: 50 timed runs per configuration after 5 warmup passes
+- Profiling: GPU-synchronized timing via `torch.cuda.synchronize()`
+
+### Forward Pass Timing
+
+| Configuration | Latency (ms) | Notes |
+|:-------------|:------------:|:------|
+| Without hidden states | **123.4 ms** | Baseline inference |
+| With hidden states | **129.4 ms** | OOD-enabled inference |
+| Overhead from hidden states | **5.95 ms (4.82%)** | From returning intermediate activations |
+
+### Post-Forward Detection Overhead
+
+| Step | Time |
+|:-----|:----:|
+| Embedding extraction (tensor slice) | **6.7 μs** |
+| Cosine distance (numpy dot product) | **7.6 μs** |
+| Threshold comparison | **0.3 μs** |
+| **Total detection computation** | **~14.6 μs (0.01%)** |
+
+### Memory Overhead
+
+| Component | Memory |
+|:----------|:------:|
+| Storing all layer hidden states | 248 MB |
+| Single centroid vector (4096D) | ~16 KB |
+
+### Batch Scaling
+
+| Batch Size | Per-Sample Cost |
+|:----------:|:---------------:|
+| BS=1 | 84 ms |
+| BS=4 | 51 ms |
+
+Per-sample cost drops significantly with larger batch sizes.
+
+### KEY CLAIM REFINEMENT
+
+The "zero overhead" claim from earlier experiments requires nuancing:
+
+- **The forward pass has ~5% overhead** from `output_hidden_states=True` — this is because PyTorch must store/return intermediate layer activations that would otherwise be freed during the forward pass.
+- **The actual detection computation adds only 14.6 μs** (0.01% of total pipeline) — the cosine distance calculation is negligible.
+- **In practice, the model already computes hidden states internally**; the overhead is purely from the Python-level storage and return of these tensors.
+
+The correct claim is: "The OOD detection algorithm itself adds 14.6 μs (negligible overhead), but enabling hidden state extraction adds ~5% to the forward pass latency."
+
+### Key Findings
+
+1. **Forward pass WITH hidden states: 129.4 ms (overhead: 5.95 ms, 4.82%)** — this is the true cost of enabling hidden state extraction, not zero.
+
+2. **Post-forward detection overhead: 14.6 μs** — embedding extraction (6.7 μs) + cosine distance (7.6 μs) + threshold (0.3 μs). This is genuinely negligible.
+
+3. **Memory overhead: 248 MB** for storing all layer hidden states during inference. If only the last layer is needed, this reduces to ~32 MB.
+
+4. **Batch scaling: per-sample cost drops from 84 ms (BS=1) to 51 ms (BS=4)** — batched inference provides 1.6× efficiency gain.
+
+5. **Real 10 Hz driving budget (100 ms)**: At BS=1, the 129.4 ms forward pass + 14.6 μs detection exceeds the 100 ms budget. At BS=4, the per-sample cost of 51 ms comfortably fits. Alternatively, the hidden state overhead can be eliminated by extracting only the last layer (reducing overhead from 4.82% to ~0.5%).
+
+### PRACTICAL DEPLOYMENT RECOMMENDATION
+
+For 10 Hz real-time driving:
+- Use BS≥2 for inference batching, OR
+- Enable extraction of only the final layer (not all layers) to reduce memory and overhead
+- The detection computation (14.6 μs) is negligible in all configurations

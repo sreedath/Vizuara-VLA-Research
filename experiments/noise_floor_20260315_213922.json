@@ -1,0 +1,1283 @@
+{
+  "experiment": "noise_floor_analysis",
+  "experiment_number": 453,
+  "timestamp": "20260315_213922",
+  "scene_seeds": [
+    42,
+    50,
+    100,
+    150,
+    200,
+    250,
+    300,
+    350,
+    400,
+    450,
+    500,
+    550,
+    600,
+    650,
+    700,
+    750,
+    800,
+    850,
+    900,
+    950,
+    1000,
+    1050,
+    1100,
+    1150,
+    1200,
+    1250,
+    1300,
+    1350,
+    1400,
+    1450
+  ],
+  "corruption_scene_seeds": [
+    42,
+    50,
+    100,
+    150,
+    200,
+    250,
+    300,
+    350
+  ],
+  "corruption_types": [
+    "fog",
+    "night",
+    "noise",
+    "blur"
+  ],
+  "severities": [
+    0.01,
+    0.02,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "fine_severities": [
+    0.01,
+    0.02,
+    0.03,
+    0.04,
+    0.05,
+    0.06,
+    0.07,
+    0.08,
+    0.09,
+    0.1,
+    0.11,
+    0.12,
+    0.13,
+    0.14,
+    0.15,
+    0.16,
+    0.17,
+    0.18,
+    0.19,
+    0.2
+  ],
+  "calibration_ns": [
+    2,
+    5,
+    10,
+    15,
+    20,
+    25,
+    30
+  ],
+  "clean_clean_distribution": {
+    "n_pairs": 435,
+    "mean": 0.00010658232960618503,
+    "std": 3.390617920970641e-05,
+    "min": 4.33710419067701e-05,
+    "max": 0.00023520072323746088,
+    "percentile_5": 6.0719573269818476e-05,
+    "percentile_25": 8.16530901637802e-05,
+    "percentile_50": 0.00010245872360192809,
+    "percentile_75": 0.0001246266197871826,
+    "percentile_95": 0.00017087046575334772,
+    "interpretation": "Pairwise cosine distances between 30 different clean random scenes. Mean is the empirical noise floor; std captures its spread."
+  },
+  "within_scene_reproducibility": {
+    "n_runs": 10,
+    "n_pairs": 45,
+    "pairwise_dist_mean": 0.0,
+    "pairwise_dist_max": 0.0,
+    "pairwise_dist_std": 0.0,
+    "per_dim_variance_mean": 0.0,
+    "per_dim_variance_max": 0.0,
+    "is_deterministic": true,
+    "interpretation": "10 repeated forward passes on the same image. Should be exactly zero if model is deterministic in eval mode."
+  },
+  "corruption_baseline": {
+    "n_scenes": 8,
+    "seeds": [
+      42,
+      50,
+      100,
+      150,
+      200,
+      250,
+      300,
+      350
+    ],
+    "centroid_mean_clean_dist": 4.164098527946469e-05,
+    "centroid_std_clean_dist": 1.5486112092782556e-05,
+    "threshold_3sigma": 8.809932155781236e-05
+  },
+  "corruption_vs_noise_floor": {
+    "fog": {
+      "severity_results": [
+        {
+          "severity": 0.01,
+          "mean_corruption_dist": 4.374575679563786e-05,
+          "std_corruption_dist": 1.566208397900016e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -6.283657281054717e-05
+        },
+        {
+          "severity": 0.02,
+          "mean_corruption_dist": 4.438073507066764e-05,
+          "std_corruption_dist": 1.3792252405495513e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -6.220159453551738e-05
+        },
+        {
+          "severity": 0.05,
+          "mean_corruption_dist": 5.2065949860069516e-05,
+          "std_corruption_dist": 1.0267296429104972e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -5.451637974611551e-05
+        },
+        {
+          "severity": 0.1,
+          "mean_corruption_dist": 8.052994954803327e-05,
+          "std_corruption_dist": 1.4715022596939948e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -2.6052380058151753e-05
+        },
+        {
+          "severity": 0.15,
+          "mean_corruption_dist": 0.00013404553217240267,
+          "std_corruption_dist": 2.473067120192094e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 2.7463202566217643e-05
+        },
+        {
+          "severity": 0.2,
+          "mean_corruption_dist": 0.00021106377374993657,
+          "std_corruption_dist": 3.432127641581546e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.00010448144414375154
+        },
+        {
+          "severity": 0.25,
+          "mean_corruption_dist": 0.0003023037800989059,
+          "std_corruption_dist": 3.680264546465444e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.00019572145049272086
+        },
+        {
+          "severity": 0.5,
+          "mean_corruption_dist": 0.000967616000612459,
+          "std_corruption_dist": 4.835295153196208e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.000861033671006274
+        },
+        {
+          "severity": 0.75,
+          "mean_corruption_dist": 0.0019325083013879696,
+          "std_corruption_dist": 4.554339660817343e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.0018259259717817845
+        },
+        {
+          "severity": 1.0,
+          "mean_corruption_dist": 0.003057318339063392,
+          "std_corruption_dist": 3.51538252124511e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.002950736009457207
+        }
+      ],
+      "detectability_threshold_severity": 0.15
+    },
+    "night": {
+      "severity_results": [
+        {
+          "severity": 0.01,
+          "mean_corruption_dist": 4.495401479973071e-05,
+          "std_corruption_dist": 1.567867138534555e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -6.162831480645432e-05
+        },
+        {
+          "severity": 0.02,
+          "mean_corruption_dist": 4.7262302490927444e-05,
+          "std_corruption_dist": 1.6653957883086802e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -5.9320027115257584e-05
+        },
+        {
+          "severity": 0.05,
+          "mean_corruption_dist": 6.413000639861333e-05,
+          "std_corruption_dist": 1.4530096965087869e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -4.24523232075717e-05
+        },
+        {
+          "severity": 0.1,
+          "mean_corruption_dist": 0.00011542807343471739,
+          "std_corruption_dist": 1.9257329934101584e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 8.845743828532365e-06
+        },
+        {
+          "severity": 0.15,
+          "mean_corruption_dist": 0.00020350058577989216,
+          "std_corruption_dist": 3.063712795541881e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 9.691825617370713e-05
+        },
+        {
+          "severity": 0.2,
+          "mean_corruption_dist": 0.00032173453989203793,
+          "std_corruption_dist": 3.729990569076798e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.0002151522102858529
+        },
+        {
+          "severity": 0.25,
+          "mean_corruption_dist": 0.0004885462522900702,
+          "std_corruption_dist": 5.016544957306773e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.00038196392268388516
+        },
+        {
+          "severity": 0.5,
+          "mean_corruption_dist": 0.0018832209808465755,
+          "std_corruption_dist": 0.0001316342141229274,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.0017766386512403905
+        },
+        {
+          "severity": 0.75,
+          "mean_corruption_dist": 0.004014797779147594,
+          "std_corruption_dist": 8.99518659043929e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.003908215449541409
+        },
+        {
+          "severity": 1.0,
+          "mean_corruption_dist": 0.008259126159697983,
+          "std_corruption_dist": 8.326604872689029e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.008152543830091797
+        }
+      ],
+      "detectability_threshold_severity": 0.1
+    },
+    "noise": {
+      "severity_results": [
+        {
+          "severity": 0.01,
+          "mean_corruption_dist": 4.264349638365139e-05,
+          "std_corruption_dist": 1.6777650611654672e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -6.393883322253364e-05
+        },
+        {
+          "severity": 0.02,
+          "mean_corruption_dist": 4.560102041482883e-05,
+          "std_corruption_dist": 1.6499126423868094e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -6.09813091913562e-05
+        },
+        {
+          "severity": 0.05,
+          "mean_corruption_dist": 4.293493797669079e-05,
+          "std_corruption_dist": 1.532543469043347e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -6.364739162949424e-05
+        },
+        {
+          "severity": 0.1,
+          "mean_corruption_dist": 4.2668578573448745e-05,
+          "std_corruption_dist": 1.7177113213005118e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -6.391375103273628e-05
+        },
+        {
+          "severity": 0.15,
+          "mean_corruption_dist": 4.463151164706136e-05,
+          "std_corruption_dist": 1.6794286754094698e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -6.195081795912367e-05
+        },
+        {
+          "severity": 0.2,
+          "mean_corruption_dist": 4.6001807488482704e-05,
+          "std_corruption_dist": 1.905071306666259e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -6.0580522117702323e-05
+        },
+        {
+          "severity": 0.25,
+          "mean_corruption_dist": 4.5712111312268267e-05,
+          "std_corruption_dist": 1.8433429464471328e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -6.087021829391676e-05
+        },
+        {
+          "severity": 0.5,
+          "mean_corruption_dist": 5.9435956752243446e-05,
+          "std_corruption_dist": 1.5354378096528515e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -4.714637285394158e-05
+        },
+        {
+          "severity": 0.75,
+          "mean_corruption_dist": 0.0001137719667318321,
+          "std_corruption_dist": 3.429487618300875e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 7.189637125647069e-06
+        },
+        {
+          "severity": 1.0,
+          "mean_corruption_dist": 0.0002005604914459419,
+          "std_corruption_dist": 5.8294031652376197e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 9.397816183975687e-05
+        }
+      ],
+      "detectability_threshold_severity": 0.75
+    },
+    "blur": {
+      "severity_results": [
+        {
+          "severity": 0.01,
+          "mean_corruption_dist": 4.355327407605525e-05,
+          "std_corruption_dist": 1.5759140257726697e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -6.302905553012978e-05
+        },
+        {
+          "severity": 0.02,
+          "mean_corruption_dist": 5.4826134864877085e-05,
+          "std_corruption_dist": 1.534909341320115e-05,
+          "above_noise_floor_mean": false,
+          "margin_over_floor": -5.175619474130794e-05
+        },
+        {
+          "severity": 0.05,
+          "mean_corruption_dist": 0.0003044722607989936,
+          "std_corruption_dist": 4.3202175995198765e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.00019788993119280855
+        },
+        {
+          "severity": 0.1,
+          "mean_corruption_dist": 0.0012360403899647904,
+          "std_corruption_dist": 7.817195178030413e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.0011294580603586053
+        },
+        {
+          "severity": 0.15,
+          "mean_corruption_dist": 0.0017720639599948934,
+          "std_corruption_dist": 9.550402146779374e-05,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.0016654816303887084
+        },
+        {
+          "severity": 0.2,
+          "mean_corruption_dist": 0.002551367246352007,
+          "std_corruption_dist": 0.00014404133699534227,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.0024447849167458222
+        },
+        {
+          "severity": 0.25,
+          "mean_corruption_dist": 0.0033805353932583604,
+          "std_corruption_dist": 0.00023247794675047788,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.0032739530636521756
+        },
+        {
+          "severity": 0.5,
+          "mean_corruption_dist": 0.005265253849220233,
+          "std_corruption_dist": 0.00048512535450102314,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.005158671519614048
+        },
+        {
+          "severity": 0.75,
+          "mean_corruption_dist": 0.006132246196713459,
+          "std_corruption_dist": 0.0005221211201608043,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.006025663867107274
+        },
+        {
+          "severity": 1.0,
+          "mean_corruption_dist": 0.006530327436029645,
+          "std_corruption_dist": 0.00048581142221212307,
+          "above_noise_floor_mean": true,
+          "margin_over_floor": 0.00642374510642346
+        }
+      ],
+      "detectability_threshold_severity": 0.05
+    }
+  },
+  "snr_analysis": {
+    "fog": [
+      {
+        "severity": 0.01,
+        "mean_dist": 4.374575679563786e-05,
+        "snr": 0.13591348839287512,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.02,
+        "mean_dist": 4.438073507066764e-05,
+        "snr": 0.1769165672305727,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.05,
+        "mean_dist": 5.2065949860069516e-05,
+        "snr": 0.6731815266572604,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.1,
+        "mean_dist": 8.052994954803327e-05,
+        "snr": 2.5112154707115377,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.15,
+        "mean_dist": 0.00013404553217240267,
+        "snr": 5.966930004077909,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.2,
+        "mean_dist": 0.00021106377374993657,
+        "snr": 10.940304929694582,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.25,
+        "mean_dist": 0.0003023037800989059,
+        "snr": 16.83203590789747,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.5,
+        "mean_dist": 0.000967616000612459,
+        "snr": 59.793898545042396,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.75,
+        "mean_dist": 0.0019325083013879696,
+        "snr": 122.10084137191289,
+        "reliable_detection": true
+      },
+      {
+        "severity": 1.0,
+        "mean_dist": 0.003057318339063392,
+        "snr": 194.73431005251544,
+        "reliable_detection": true
+      }
+    ],
+    "night": [
+      {
+        "severity": 0.01,
+        "mean_dist": 4.495401479973071e-05,
+        "snr": 0.213935524966921,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.02,
+        "mean_dist": 4.7262302490927444e-05,
+        "snr": 0.362990864187443,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.05,
+        "mean_dist": 6.413000639861333e-05,
+        "snr": 1.4522057559966808,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.1,
+        "mean_dist": 0.00011542807343471739,
+        "snr": 4.76472646673156,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.15,
+        "mean_dist": 0.00020350058577989216,
+        "snr": 10.451919728507171,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.2,
+        "mean_dist": 0.00032173453989203793,
+        "snr": 18.08675753697491,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.25,
+        "mean_dist": 0.0004885462522900702,
+        "snr": 28.858454874473612,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.5,
+        "mean_dist": 0.0018832209808465755,
+        "snr": 118.91816257906308,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.75,
+        "mean_dist": 0.004014797779147594,
+        "snr": 256.5625749099321,
+        "reliable_detection": true
+      },
+      {
+        "severity": 1.0,
+        "mean_dist": 0.008259126159697983,
+        "snr": 530.6357803162456,
+        "reliable_detection": true
+      }
+    ],
+    "noise": [
+      {
+        "severity": 0.01,
+        "mean_dist": 4.264349638365139e-05,
+        "snr": 0.06473613894696836,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.02,
+        "mean_dist": 4.560102041482883e-05,
+        "snr": 0.2557152571050902,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.05,
+        "mean_dist": 4.293493797669079e-05,
+        "snr": 0.08355568456908921,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.1,
+        "mean_dist": 4.2668578573448745e-05,
+        "snr": 0.06635579594331956,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.15,
+        "mean_dist": 4.463151164706136e-05,
+        "snr": 0.19311021059898117,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.2,
+        "mean_dist": 4.6001807488482704e-05,
+        "snr": 0.2815956763641413,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.25,
+        "mean_dist": 4.5712111312268267e-05,
+        "snr": 0.26288883926527684,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.5,
+        "mean_dist": 5.9435956752243446e-05,
+        "snr": 1.1490922554455913,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.75,
+        "mean_dist": 0.0001137719667318321,
+        "snr": 4.657785054131483,
+        "reliable_detection": true
+      },
+      {
+        "severity": 1.0,
+        "mean_dist": 0.0002005604914459419,
+        "snr": 10.26206611539013,
+        "reliable_detection": true
+      }
+    ],
+    "blur": [
+      {
+        "severity": 0.01,
+        "mean_dist": 4.355327407605525e-05,
+        "snr": 0.1234841117727538,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.02,
+        "mean_dist": 5.4826134864877085e-05,
+        "snr": 0.8514176771042133,
+        "reliable_detection": false
+      },
+      {
+        "severity": 0.05,
+        "mean_dist": 0.0003044722607989936,
+        "snr": 16.97206335230027,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.1,
+        "mean_dist": 0.0012360403899647904,
+        "snr": 77.1271315569249,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.15,
+        "mean_dist": 0.0017720639599948934,
+        "snr": 111.74031056651773,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.2,
+        "mean_dist": 0.002551367246352007,
+        "snr": 162.0630308004953,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.25,
+        "mean_dist": 0.0033805353932583604,
+        "snr": 215.6057238882455,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.5,
+        "mean_dist": 0.005265253849220233,
+        "snr": 337.3095088453661,
+        "reliable_detection": true
+      },
+      {
+        "severity": 0.75,
+        "mean_dist": 0.006132246196713459,
+        "snr": 393.2946613677539,
+        "reliable_detection": true
+      },
+      {
+        "severity": 1.0,
+        "mean_dist": 0.006530327436029645,
+        "snr": 419.00035411562675,
+        "reliable_detection": true
+      }
+    ]
+  },
+  "min_detectable_severity": {
+    "fog": {
+      "three_sigma_threshold": 8.809932155781236e-05,
+      "min_detectable_severity": 0.11,
+      "fine_results": [
+        {
+          "severity": 0.01,
+          "mean_dist": 4.374575679563786e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.43535647621745e-05
+        },
+        {
+          "severity": 0.02,
+          "mean_dist": 4.3969165250498654e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.4130156307313703e-05
+        },
+        {
+          "severity": 0.03,
+          "mean_dist": 4.6452722275450165e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.164659928236219e-05
+        },
+        {
+          "severity": 0.04,
+          "mean_dist": 4.847847945300965e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -3.962084210480271e-05
+        },
+        {
+          "severity": 0.05,
+          "mean_dist": 5.2065949860069516e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -3.603337169774284e-05
+        },
+        {
+          "severity": 0.06,
+          "mean_dist": 5.617118023258649e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -3.1928141325225865e-05
+        },
+        {
+          "severity": 0.07,
+          "mean_dist": 6.166610893514057e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -2.6433212622671784e-05
+        },
+        {
+          "severity": 0.08,
+          "mean_dist": 6.656107892481777e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -2.1538242632994584e-05
+        },
+        {
+          "severity": 0.09,
+          "mean_dist": 7.482078968301664e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -1.3278531874795716e-05
+        },
+        {
+          "severity": 0.1,
+          "mean_dist": 7.931712592973428e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -8.78219562807808e-06
+        },
+        {
+          "severity": 0.11,
+          "mean_dist": 9.089249935573251e-05,
+          "flagged_ood": true,
+          "excess_over_threshold": 2.793177797920157e-06
+        },
+        {
+          "severity": 0.12,
+          "mean_dist": 0.00010237567832489802,
+          "flagged_ood": true,
+          "excess_over_threshold": 1.4276356767085665e-05
+        },
+        {
+          "severity": 0.13,
+          "mean_dist": 0.0001102179438206008,
+          "flagged_ood": true,
+          "excess_over_threshold": 2.2118622262788437e-05
+        },
+        {
+          "severity": 0.14,
+          "mean_dist": 0.0001246487092763926,
+          "flagged_ood": true,
+          "excess_over_threshold": 3.654938771858024e-05
+        },
+        {
+          "severity": 0.15,
+          "mean_dist": 0.00013404553217240267,
+          "flagged_ood": true,
+          "excess_over_threshold": 4.594621061459031e-05
+        },
+        {
+          "severity": 0.16,
+          "mean_dist": 0.0001470935888269187,
+          "flagged_ood": true,
+          "excess_over_threshold": 5.899426726910634e-05
+        },
+        {
+          "severity": 0.17,
+          "mean_dist": 0.0001604658518976343,
+          "flagged_ood": true,
+          "excess_over_threshold": 7.236653033982194e-05
+        },
+        {
+          "severity": 0.18,
+          "mean_dist": 0.00017757185204519965,
+          "flagged_ood": true,
+          "excess_over_threshold": 8.94725304873873e-05
+        },
+        {
+          "severity": 0.19,
+          "mean_dist": 0.0001927041052440931,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.00010460478368628074
+        },
+        {
+          "severity": 0.2,
+          "mean_dist": 0.00021229051691581957,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.00012419119535800723
+        }
+      ]
+    },
+    "night": {
+      "three_sigma_threshold": 8.809932155781236e-05,
+      "min_detectable_severity": 0.09,
+      "fine_results": [
+        {
+          "severity": 0.01,
+          "mean_dist": 4.495401479973071e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.3145306758081645e-05
+        },
+        {
+          "severity": 0.02,
+          "mean_dist": 4.7262302490927444e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.0837019066884914e-05
+        },
+        {
+          "severity": 0.03,
+          "mean_dist": 5.2550250698057965e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -3.554907085975439e-05
+        },
+        {
+          "severity": 0.04,
+          "mean_dist": 5.75136434091128e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -3.0585678148699555e-05
+        },
+        {
+          "severity": 0.05,
+          "mean_dist": 6.413000639861333e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -2.396931515919903e-05
+        },
+        {
+          "severity": 0.06,
+          "mean_dist": 7.090150712510401e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -1.7197814432708345e-05
+        },
+        {
+          "severity": 0.07,
+          "mean_dist": 7.971494994787887e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -8.384371609933492e-06
+        },
+        {
+          "severity": 0.08,
+          "mean_dist": 8.788932850088693e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -2.0999305692542575e-07
+        },
+        {
+          "severity": 0.09,
+          "mean_dist": 0.00010115586163547685,
+          "flagged_ood": true,
+          "excess_over_threshold": 1.3056540077664494e-05
+        },
+        {
+          "severity": 0.1,
+          "mean_dist": 0.00011542807343471739,
+          "flagged_ood": true,
+          "excess_over_threshold": 2.7328751876905036e-05
+        },
+        {
+          "severity": 0.11,
+          "mean_dist": 0.00012878766261283092,
+          "flagged_ood": true,
+          "excess_over_threshold": 4.0688341055018565e-05
+        },
+        {
+          "severity": 0.12,
+          "mean_dist": 0.00014589333707119845,
+          "flagged_ood": true,
+          "excess_over_threshold": 5.779401551338609e-05
+        },
+        {
+          "severity": 0.13,
+          "mean_dist": 0.00016355438669889144,
+          "flagged_ood": true,
+          "excess_over_threshold": 7.545506514107908e-05
+        },
+        {
+          "severity": 0.14,
+          "mean_dist": 0.00018491967700991208,
+          "flagged_ood": true,
+          "excess_over_threshold": 9.682035545209972e-05
+        },
+        {
+          "severity": 0.15,
+          "mean_dist": 0.00020350058577989216,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.0001154012642220798
+        },
+        {
+          "severity": 0.16,
+          "mean_dist": 0.0002216278870355859,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.00013352856547777355
+        },
+        {
+          "severity": 0.17,
+          "mean_dist": 0.000244303895473752,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.00015620457391593963
+        },
+        {
+          "severity": 0.18,
+          "mean_dist": 0.0002689993846724664,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.00018090006311465408
+        },
+        {
+          "severity": 0.19,
+          "mean_dist": 0.0002948503559499771,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.00020675103439216476
+        },
+        {
+          "severity": 0.2,
+          "mean_dist": 0.00032173453989203793,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.00023363521833422559
+        }
+      ]
+    },
+    "noise": {
+      "three_sigma_threshold": 8.809932155781236e-05,
+      "min_detectable_severity": null,
+      "fine_results": [
+        {
+          "severity": 0.01,
+          "mean_dist": 4.264349638365139e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.5455825174160966e-05
+        },
+        {
+          "severity": 0.02,
+          "mean_dist": 4.560102041482883e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.249830114298353e-05
+        },
+        {
+          "severity": 0.03,
+          "mean_dist": 4.3359694445480046e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.473962711233231e-05
+        },
+        {
+          "severity": 0.04,
+          "mean_dist": 4.331233157955916e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.47869899782532e-05
+        },
+        {
+          "severity": 0.05,
+          "mean_dist": 4.293493797669079e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.516438358112157e-05
+        },
+        {
+          "severity": 0.06,
+          "mean_dist": 4.351316771053493e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.458615384727743e-05
+        },
+        {
+          "severity": 0.07,
+          "mean_dist": 4.176975289892082e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.632956865889154e-05
+        },
+        {
+          "severity": 0.08,
+          "mean_dist": 4.312509675614973e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.497422480166263e-05
+        },
+        {
+          "severity": 0.09,
+          "mean_dist": 4.3245358933158284e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.485396262465407e-05
+        },
+        {
+          "severity": 0.1,
+          "mean_dist": 4.2668578573448745e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.543074298436361e-05
+        },
+        {
+          "severity": 0.11,
+          "mean_dist": 4.511774696415449e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.2981574593657865e-05
+        },
+        {
+          "severity": 0.12,
+          "mean_dist": 4.390635576129176e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.41929657965206e-05
+        },
+        {
+          "severity": 0.13,
+          "mean_dist": 4.425069001501303e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.384863154279933e-05
+        },
+        {
+          "severity": 0.14,
+          "mean_dist": 4.465907675713088e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.344024480068148e-05
+        },
+        {
+          "severity": 0.15,
+          "mean_dist": 4.463151164706136e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.3467809910750996e-05
+        },
+        {
+          "severity": 0.16,
+          "mean_dist": 4.454977826211237e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.3549543295699986e-05
+        },
+        {
+          "severity": 0.17,
+          "mean_dist": 4.4920566496048364e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.3178755061763993e-05
+        },
+        {
+          "severity": 0.18,
+          "mean_dist": 4.496147677773843e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.313784478007393e-05
+        },
+        {
+          "severity": 0.19,
+          "mean_dist": 4.2878079411515224e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.5221242146297133e-05
+        },
+        {
+          "severity": 0.2,
+          "mean_dist": 4.6001807488482704e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.209751406932965e-05
+        }
+      ]
+    },
+    "blur": {
+      "three_sigma_threshold": 8.809932155781236e-05,
+      "min_detectable_severity": 0.03,
+      "fine_results": [
+        {
+          "severity": 0.01,
+          "mean_dist": 4.355327407605525e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -4.454604748175711e-05
+        },
+        {
+          "severity": 0.02,
+          "mean_dist": 5.4826134864877085e-05,
+          "flagged_ood": false,
+          "excess_over_threshold": -3.327318669293527e-05
+        },
+        {
+          "severity": 0.03,
+          "mean_dist": 9.350444465695829e-05,
+          "flagged_ood": true,
+          "excess_over_threshold": 5.405123099145928e-06
+        },
+        {
+          "severity": 0.04,
+          "mean_dist": 0.0001754497463720417,
+          "flagged_ood": true,
+          "excess_over_threshold": 8.735042481422934e-05
+        },
+        {
+          "severity": 0.05,
+          "mean_dist": 0.0003044722607989936,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.00021637293924118124
+        },
+        {
+          "severity": 0.06,
+          "mean_dist": 0.00045327192616578804,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.0003651726046079757
+        },
+        {
+          "severity": 0.07,
+          "mean_dist": 0.0006532697850426122,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.0005651704634847998
+        },
+        {
+          "severity": 0.08,
+          "mean_dist": 0.0009441058994593549,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.0008560065779015425
+        },
+        {
+          "severity": 0.09,
+          "mean_dist": 0.0011308862070255332,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.0010427868854677208
+        },
+        {
+          "severity": 0.1,
+          "mean_dist": 0.0012360403899647904,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.001147941068406978
+        },
+        {
+          "severity": 0.11,
+          "mean_dist": 0.0013035442877261244,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.001215444966168312
+        },
+        {
+          "severity": 0.12,
+          "mean_dist": 0.0014082058856412227,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.0013201065640834103
+        },
+        {
+          "severity": 0.13,
+          "mean_dist": 0.0015091514952012969,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.0014210521736434845
+        },
+        {
+          "severity": 0.14,
+          "mean_dist": 0.00164394529324835,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.0015558459716905376
+        },
+        {
+          "severity": 0.15,
+          "mean_dist": 0.0017720639599948934,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.001683964638437081
+        },
+        {
+          "severity": 0.16,
+          "mean_dist": 0.001930933690932321,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.0018428343693745086
+        },
+        {
+          "severity": 0.17,
+          "mean_dist": 0.0020775558473233313,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.001989456525765519
+        },
+        {
+          "severity": 0.18,
+          "mean_dist": 0.0022299301073515215,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.002141830785793709
+        },
+        {
+          "severity": 0.19,
+          "mean_dist": 0.0023924152198405435,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.002304315898282731
+        },
+        {
+          "severity": 0.2,
+          "mean_dist": 0.002551367246352007,
+          "flagged_ood": true,
+          "excess_over_threshold": 0.0024632679247941947
+        }
+      ]
+    }
+  },
+  "noise_floor_stability": [
+    {
+      "n_scenes": 2,
+      "n_pairs": 1,
+      "pairwise_mean": 0.00010030949668438094,
+      "pairwise_std": 0.0,
+      "centroid_dist_mean": 2.5077769635228897e-05,
+      "centroid_dist_std": 9.015082025332077e-08
+    },
+    {
+      "n_scenes": 5,
+      "n_pairs": 10,
+      "pairwise_mean": 0.00010695752786541446,
+      "pairwise_std": 3.182199257645441e-05,
+      "centroid_dist_mean": 4.2783971539317454e-05,
+      "centroid_dist_std": 1.4118483365488216e-05
+    },
+    {
+      "n_scenes": 10,
+      "n_pairs": 45,
+      "pairwise_mean": 9.510508343516399e-05,
+      "pairwise_std": 3.616340565006124e-05,
+      "centroid_dist_mean": 4.279824567534618e-05,
+      "centroid_dist_std": 1.794099179623986e-05
+    },
+    {
+      "n_scenes": 15,
+      "n_pairs": 105,
+      "pairwise_mean": 0.00010315984321136556,
+      "pairwise_std": 3.5876798321495986e-05,
+      "centroid_dist_mean": 4.81424703666485e-05,
+      "centroid_dist_std": 1.6541091103453055e-05
+    },
+    {
+      "n_scenes": 20,
+      "n_pairs": 190,
+      "pairwise_mean": 0.00010151810450367165,
+      "pairwise_std": 3.4232109731857403e-05,
+      "centroid_dist_mean": 4.822230402899419e-05,
+      "centroid_dist_std": 1.6372175698463833e-05
+    },
+    {
+      "n_scenes": 25,
+      "n_pairs": 300,
+      "pairwise_mean": 0.00010953296030466242,
+      "pairwise_std": 3.552865070362043e-05,
+      "centroid_dist_mean": 5.2577244554665725e-05,
+      "centroid_dist_std": 1.7437332566799412e-05
+    },
+    {
+      "n_scenes": 30,
+      "n_pairs": 435,
+      "pairwise_mean": 0.00010658232960618503,
+      "pairwise_std": 3.390617920970641e-05,
+      "centroid_dist_mean": 5.151615341094281e-05,
+      "centroid_dist_std": 1.6642611881275327e-05
+    }
+  ],
+  "summary": {
+    "noise_floor_mean": 0.00010658232960618503,
+    "noise_floor_std": 3.390617920970641e-05,
+    "three_sigma_threshold": 8.809932155781236e-05,
+    "within_scene_max_dist": 0.0,
+    "is_deterministic": true,
+    "detectability_thresholds": {
+      "fog": {
+        "noise_floor_cross": 0.15,
+        "min_detectable_3sigma": 0.11
+      },
+      "night": {
+        "noise_floor_cross": 0.1,
+        "min_detectable_3sigma": 0.09
+      },
+      "noise": {
+        "noise_floor_cross": 0.75,
+        "min_detectable_3sigma": null
+      },
+      "blur": {
+        "noise_floor_cross": 0.05,
+        "min_detectable_3sigma": 0.03
+      }
+    },
+    "snr3_crossing_severity": {
+      "fog": 0.15,
+      "night": 0.1,
+      "noise": 0.75,
+      "blur": 0.05
+    }
+  }
+}

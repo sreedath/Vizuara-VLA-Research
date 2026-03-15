@@ -1,0 +1,1493 @@
+{
+  "experiment": "Experiment 451: Online Calibration Adaptation",
+  "timestamp": "20260315_212759",
+  "cal_seeds": [
+    42,
+    123,
+    456,
+    789,
+    1000,
+    2000,
+    3000,
+    4000,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000,
+    10000,
+    11000
+  ],
+  "test_seeds": [
+    50000,
+    51000,
+    52000,
+    53000,
+    54000
+  ],
+  "corruption_types": [
+    "fog",
+    "night",
+    "noise",
+    "blur"
+  ],
+  "analysis_1_streaming_centroid": [
+    {
+      "n_cal_scenes": 1,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 2,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 3,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 4,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 5,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 6,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 7,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 8,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 9,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 10,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 11,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 12,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 13,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 14,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    {
+      "n_cal_scenes": 15,
+      "auroc_per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    }
+  ],
+  "analysis_2_ema_comparison": {
+    "running_mean": [
+      {
+        "n_cal_scenes": 1,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 2,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 3,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 4,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 5,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 6,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 7,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 8,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 9,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 10,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 11,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 12,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 13,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 14,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 15,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      }
+    ],
+    "ema_0.1": [
+      {
+        "n_cal_scenes": 1,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 2,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 3,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 4,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 5,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 6,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 7,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 8,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 9,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 10,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 11,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 12,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 13,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 14,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 15,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      }
+    ],
+    "ema_0.3": [
+      {
+        "n_cal_scenes": 1,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 2,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 3,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 4,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 5,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 6,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 7,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 8,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 9,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 10,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 11,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 12,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 13,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 14,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 15,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      }
+    ],
+    "ema_0.5": [
+      {
+        "n_cal_scenes": 1,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 2,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 3,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 4,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 5,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 6,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 7,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 8,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 9,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 10,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 11,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 12,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 13,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 14,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 15,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      }
+    ],
+    "ema_0.7": [
+      {
+        "n_cal_scenes": 1,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 2,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 3,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 4,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 5,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 6,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 7,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 8,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 9,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 10,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 11,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 12,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 13,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 14,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 15,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      }
+    ],
+    "ema_0.9": [
+      {
+        "n_cal_scenes": 1,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 2,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 3,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 4,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 5,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 6,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 7,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 8,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 9,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 10,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 11,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 12,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 13,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 14,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "n_cal_scenes": 15,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      }
+    ]
+  },
+  "analysis_3_threshold_adaptation": [
+    {
+      "n_cal_scenes": 1,
+      "threshold": -2.384185791015625e-07,
+      "fpr": 1.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 2,
+      "threshold": 2.1517276763916016e-05,
+      "fpr": 1.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 3,
+      "threshold": 5.7960791286486334e-05,
+      "fpr": 1.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 4,
+      "threshold": 0.0001297670560561021,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 5,
+      "threshold": 0.00011405047784023803,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 6,
+      "threshold": 0.00011986874514814753,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 7,
+      "threshold": 0.0001223228529932846,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 8,
+      "threshold": 0.0001239254879745703,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 9,
+      "threshold": 0.00012202931914021353,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 10,
+      "threshold": 0.00011867924082935823,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 11,
+      "threshold": 0.00011689223225021586,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 12,
+      "threshold": 0.00011387636084371331,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 13,
+      "threshold": 0.00011182728786814119,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 14,
+      "threshold": 0.00010960688225846852,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    },
+    {
+      "n_cal_scenes": 15,
+      "threshold": 0.00010677224956960287,
+      "fpr": 0.0,
+      "mean_tpr": 1.0
+    }
+  ],
+  "analysis_4_distribution_shift": {
+    "drift_seeds": [
+      42,
+      5000,
+      10000,
+      20000,
+      40000,
+      80000,
+      160000,
+      320000,
+      640000,
+      1280000
+    ],
+    "running_mean": [
+      {
+        "n": 1,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 2,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 3,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 4,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 5,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 6,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 7,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 8,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 9,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 10,
+        "mean_auroc": 1.0
+      }
+    ],
+    "ema_0.3": [
+      {
+        "n": 1,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 2,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 3,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 4,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 5,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 6,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 7,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 8,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 9,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 10,
+        "mean_auroc": 1.0
+      }
+    ],
+    "ema_0.7": [
+      {
+        "n": 1,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 2,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 3,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 4,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 5,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 6,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 7,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 8,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 9,
+        "mean_auroc": 1.0
+      },
+      {
+        "n": 10,
+        "mean_auroc": 1.0
+      }
+    ]
+  },
+  "analysis_5_cold_start": {
+    "per_seed": [
+      {
+        "cal_seed": 42,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 123,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 456,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 789,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 1000,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 2000,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 3000,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 4000,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 5000,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 6000,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 7000,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 8000,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 9000,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 10000,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      {
+        "cal_seed": 11000,
+        "auroc_per_type": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      }
+    ],
+    "summary": {
+      "mean": 1.0,
+      "std": 0.0,
+      "min": 1.0,
+      "max": 1.0,
+      "median": 1.0
+    }
+  }
+}
