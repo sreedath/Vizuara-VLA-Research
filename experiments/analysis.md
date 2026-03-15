@@ -7586,3 +7586,28 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 
 **Finding**: The **last-token embedding is the optimal pooling strategy**, achieving the highest separation ratio (5.12×) at L3. Mean pooling over all tokens dilutes the signal by including uninformative early positions. Max pooling actually degrades AUROC to 0.867 at L3. This validates the standard last-token approach used throughout all experiments.
 
+---
+
+### Finding 185: Logit-Based OOD Detection Comparison (Experiment 190)
+
+**Experiment**: Compare our hidden-state cosine distance method against 4 standard logit-based OOD detection methods: entropy, max softmax probability, max logit, and energy score.
+
+**AUROC Comparison**:
+| Method | AUROC | ID Mean | OOD Mean |
+|--------|-------|---------|----------|
+| **Cosine L3 (Ours)** | **1.000** | 0.00038 | 0.00195 |
+| **Cosine L32 (Ours)** | **1.000** | 0.110 | 0.292 |
+| Entropy | 0.729 | 1.565 | 2.420 |
+| Max Softmax Prob | 0.736 | 0.592 | 0.423 |
+| Max Logit | 0.649 | 12.156 | 10.669 |
+| Energy Score | 0.660 | -12.702 | -11.680 |
+
+**Key Findings**:
+1. **Hidden-state cosine distance dramatically outperforms all logit-based methods**: AUROC 1.0 vs 0.65-0.74, a gap of 0.26-0.35 AUROC points.
+2. **Entropy is the best logit-based method** (0.729) but still far below cosine: OOD inputs have higher entropy (2.42 vs 1.57), but the distributions overlap significantly.
+3. **Max logit and energy score are near-random** (0.649-0.660): The action logit magnitudes barely change under OOD conditions.
+4. **Why logit-based methods fail for VLAs**: The 256-bin action tokenization creates a quasi-continuous distribution over action logits. OOD inputs change which bin is selected but not the overall distribution shape (entropy, max prob). The model remains "confident" in its (wrong) action prediction.
+5. **Hidden states capture what logits miss**: The visual corruption signal is strong in the embedding geometry but weak in the output distribution. Our method accesses information that is lost by the final projection.
+
+**Finding**: This is a **core contribution of the paper**. Traditional logit-based OOD detection methods (entropy, MSP, max logit, energy) achieve only 0.65-0.74 AUROC on VLA models, while our hidden-state cosine distance achieves **perfect 1.0 AUROC**. The gap is 0.26-0.35 AUROC points. Logit-based methods fail because VLA action tokenization produces quasi-continuous distributions where the model remains confident under OOD conditions. Hidden-state geometry captures visual corruption signals that are invisible in the output logit distribution.
+

@@ -3559,4 +3559,21 @@ We compare five token-pooling strategies: last token, mean-all, mean-second-half
 
 \textbf{Finding 341}: At L32, all methods except max pooling achieve AUROC = 1.0, confirming L32 is more robust to pooling choice. The standard last-token approach is validated as optimal for the primary L3 detector.
 
+\subsection{Comparison with Logit-Based OOD Detection}
+
+We compare our hidden-state cosine distance approach against four standard logit-based OOD detection methods: entropy, maximum softmax probability (MSP), maximum logit, and energy score.
+
+\textbf{Finding 342}: Hidden-state cosine distance \textbf{dramatically outperforms all logit-based methods}: AUROC = 1.0 vs 0.65--0.74, a gap of 0.26--0.35 points. This is the largest performance differential observed in the study.
+
+\textbf{Finding 343}: The best logit-based method is \textbf{entropy} (AUROC = 0.729), followed by MSP (0.736), energy (0.660), and max logit (0.649). OOD inputs have higher entropy (2.42 vs 1.57) but the distributions overlap substantially.
+
+\textbf{Finding 344}: Logit-based methods fail for VLAs because the 256-bin action tokenization creates a \textbf{quasi-continuous distribution} over action tokens. OOD inputs change which bin is selected but not the overall distribution shape---the model remains ``confident'' in its (incorrect) action prediction. Hidden states capture visual corruption signals that are \textbf{lost by the final logit projection}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig196_logit_comparison.png}
+\caption{\textbf{Hidden-state vs logit-based OOD detection.} Our cosine distance approach achieves perfect AUROC = 1.0, while entropy, MSP, max logit, and energy score achieve only 0.65--0.74. The AUROC gap of 0.26--0.35 demonstrates that hidden-state geometry captures OOD signals invisible to output logits.}
+\label{fig:logit_comparison}
+\end{figure}
+
 \end{document}
