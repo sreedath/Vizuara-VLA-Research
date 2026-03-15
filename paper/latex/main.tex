@@ -7036,4 +7036,25 @@ We investigate the geometry of the input-to-embedding map by smoothly interpolat
 
 \textbf{Finding 946}: \textbf{Night is the only corruption with guaranteed monotonic severity response (3/3 seeds).} This monotonicity makes night the most predictable and reliable corruption to detect across all severity levels.
 
+\subsection{Experiment 370: Prompt Diversity and Detection Robustness}
+
+We test OOD detection across 20 diverse prompts --- ranging from short (``Robot action?'') to detailed task descriptions --- to characterize prompt invariance.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig379_prompt_div.png}
+\caption{Prompt diversity analysis. Top-left: all 20 prompts achieve AUROC=1.0 per-prompt. Top-right: universal detection (calibrate on P0, test on all) degrades to min=0.65. Bottom: per-corruption breakdown shows noise degrades most under cross-prompt transfer.}
+\label{fig:promptdiv}
+\end{figure}
+
+\textbf{Finding 947}: \textbf{Detection is perfectly prompt-invariant: all 20 prompts achieve AUROC=1.0.} This includes short prompts (22 chars), long prompts (67 chars), task-specific prompts, and generic prompts. The corruption signal dominates regardless of prompt choice.
+
+\textbf{Finding 948}: \textbf{Cross-prompt transfer degrades to min AUROC=0.650.} Calibrating on one prompt and testing on another drops detection from 1.0 to as low as 0.65, because different prompts shift the centroid location in embedding space.
+
+\textbf{Finding 949}: \textbf{Cross-prompt centroid distance (0.00746) is comparable to mild corruption shifts.} The detector confuses prompt differences with corruption, causing false negatives and reduced AUROC. This is a calibration mismatch, not a detection failure.
+
+\textbf{Finding 950}: \textbf{15/20 prompt pairs maintain AUROC$>$0.9 under cross-prompt transfer.} Only 5/20 pairs degrade below 0.9, suggesting that most prompts share sufficient embedding structure for detection to transfer.
+
+\textbf{Finding 951}: \textbf{Deployment requirement: calibration prompt must match deployment prompt.} This is trivially satisfiable since the prompt is a design choice, but failure to enforce it can degrade detection by up to 35\%.
+
 \end{document}

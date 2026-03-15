@@ -1,0 +1,513 @@
+{
+  "per_prompt": {
+    "prompt_0": {
+      "prompt": "In: What action should the robot take to pick up the object?...",
+      "prompt_length": 65,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_1": {
+      "prompt": "In: What action should the robot take to move forward?\nOut:",
+      "prompt_length": 59,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_2": {
+      "prompt": "In: What action should the robot take to turn left?\nOut:",
+      "prompt_length": 56,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_3": {
+      "prompt": "In: What action should the robot take to grasp the cup?\nOut:",
+      "prompt_length": 60,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_4": {
+      "prompt": "In: What action should the robot take to place the block?\nOu...",
+      "prompt_length": 62,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_5": {
+      "prompt": "In: What action should the robot take to push the button?\nOu...",
+      "prompt_length": 62,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_6": {
+      "prompt": "In: What action should the robot take to open the drawer?\nOu...",
+      "prompt_length": 62,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_7": {
+      "prompt": "In: What action should the robot take to close the gripper?\n...",
+      "prompt_length": 64,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_8": {
+      "prompt": "In: What action should the robot take to lift the box?\nOut:",
+      "prompt_length": 59,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_9": {
+      "prompt": "In: What action should the robot take to stack the plates?\nO...",
+      "prompt_length": 63,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_10": {
+      "prompt": "In: What action should the robot take?\nOut:",
+      "prompt_length": 43,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_11": {
+      "prompt": "In: Robot action?\nOut:",
+      "prompt_length": 22,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_12": {
+      "prompt": "In: Next action for the manipulator?\nOut:",
+      "prompt_length": 41,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_13": {
+      "prompt": "In: What should the robot do with the red object?\nOut:",
+      "prompt_length": 54,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_14": {
+      "prompt": "In: How should the arm move to reach the target?\nOut:",
+      "prompt_length": 53,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_15": {
+      "prompt": "In: Determine the next robot action.\nOut:",
+      "prompt_length": 41,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_16": {
+      "prompt": "In: Predict the action to complete the task.\nOut:",
+      "prompt_length": 49,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_17": {
+      "prompt": "In: What manipulation action is needed?\nOut:",
+      "prompt_length": 44,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_18": {
+      "prompt": "In: Output the 7-DOF action vector.\nOut:",
+      "prompt_length": 40,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    },
+    "prompt_19": {
+      "prompt": "In: What action should the robot take to navigate to the goa...",
+      "prompt_length": 67,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0
+    }
+  },
+  "centroid_stability": {
+    "mean_cross_dist": 0.007458661217242479,
+    "min_cross_dist": 0.0005051493644714355,
+    "max_cross_dist": 0.026150524616241455,
+    "std_cross_dist": 0.008077184669673443
+  },
+  "length_correlation": {
+    "correlation": NaN,
+    "min_length": 22,
+    "max_length": 67,
+    "per_prompt": {
+      "prompt_0": {
+        "length": 65,
+        "mean_auroc": 1.0
+      },
+      "prompt_1": {
+        "length": 59,
+        "mean_auroc": 1.0
+      },
+      "prompt_2": {
+        "length": 56,
+        "mean_auroc": 1.0
+      },
+      "prompt_3": {
+        "length": 60,
+        "mean_auroc": 1.0
+      },
+      "prompt_4": {
+        "length": 62,
+        "mean_auroc": 1.0
+      },
+      "prompt_5": {
+        "length": 62,
+        "mean_auroc": 1.0
+      },
+      "prompt_6": {
+        "length": 62,
+        "mean_auroc": 1.0
+      },
+      "prompt_7": {
+        "length": 64,
+        "mean_auroc": 1.0
+      },
+      "prompt_8": {
+        "length": 59,
+        "mean_auroc": 1.0
+      },
+      "prompt_9": {
+        "length": 63,
+        "mean_auroc": 1.0
+      },
+      "prompt_10": {
+        "length": 43,
+        "mean_auroc": 1.0
+      },
+      "prompt_11": {
+        "length": 22,
+        "mean_auroc": 1.0
+      },
+      "prompt_12": {
+        "length": 41,
+        "mean_auroc": 1.0
+      },
+      "prompt_13": {
+        "length": 54,
+        "mean_auroc": 1.0
+      },
+      "prompt_14": {
+        "length": 53,
+        "mean_auroc": 1.0
+      },
+      "prompt_15": {
+        "length": 41,
+        "mean_auroc": 1.0
+      },
+      "prompt_16": {
+        "length": 49,
+        "mean_auroc": 1.0
+      },
+      "prompt_17": {
+        "length": 44,
+        "mean_auroc": 1.0
+      },
+      "prompt_18": {
+        "length": 40,
+        "mean_auroc": 1.0
+      },
+      "prompt_19": {
+        "length": 67,
+        "mean_auroc": 1.0
+      }
+    }
+  },
+  "best_worst": {
+    "best_prompt": "prompt_19",
+    "best_auroc": 1.0,
+    "best_text": "In: What action should the robot take to navigate to the goa...",
+    "worst_prompt": "prompt_0",
+    "worst_auroc": 1.0,
+    "worst_text": "In: What action should the robot take to pick up the object?...",
+    "range": 0.0
+  },
+  "universal_prompt": {
+    "mean_auroc": 0.9125,
+    "min_auroc": 0.65,
+    "all_perfect": false,
+    "per_prompt": {
+      "prompt_0": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      "prompt_1": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.88,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.97
+      },
+      "prompt_2": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.76,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.94
+      },
+      "prompt_3": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      "prompt_4": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.96,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.99
+      },
+      "prompt_5": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 1.0
+      },
+      "prompt_6": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.92,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.98
+      },
+      "prompt_7": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.96,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.99
+      },
+      "prompt_8": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.96,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.99
+      },
+      "prompt_9": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.96,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.99
+      },
+      "prompt_10": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.92,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.98
+      },
+      "prompt_11": {
+        "per_corruption": {
+          "fog": 0.0,
+          "night": 1.0,
+          "noise": 0.84,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.71
+      },
+      "prompt_12": {
+        "per_corruption": {
+          "fog": 0.92,
+          "night": 1.0,
+          "noise": 0.92,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.96
+      },
+      "prompt_13": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.96,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.99
+      },
+      "prompt_14": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.8,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.95
+      },
+      "prompt_15": {
+        "per_corruption": {
+          "fog": 0.44,
+          "night": 0.44,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.72
+      },
+      "prompt_16": {
+        "per_corruption": {
+          "fog": 0.72,
+          "night": 0.0,
+          "noise": 0.88,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.65
+      },
+      "prompt_17": {
+        "per_corruption": {
+          "fog": 0.2,
+          "night": 1.0,
+          "noise": 0.92,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.78
+      },
+      "prompt_18": {
+        "per_corruption": {
+          "fog": 0.68,
+          "night": 0.04,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.68
+      },
+      "prompt_19": {
+        "per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.92,
+          "blur": 1.0
+        },
+        "mean_auroc": 0.98
+      }
+    }
+  }
+}

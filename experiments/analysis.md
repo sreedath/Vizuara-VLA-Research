@@ -15291,3 +15291,35 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 694**: The minimum crossing α is 0.050 across all corruptions, but the MEAN varies 3.7x (night 0.067 vs noise 0.250). A universal detector needs to be calibrated for the worst case (noise), not the average.
 
+
+## Experiment 370: Prompt Diversity and Detection Robustness
+
+**Script**: `scripts/real_vla_prompt_diversity.py`
+**Result**: `experiments/prompt_diversity_20260315_160302.json`
+**Figure**: `figures/fig379_prompt_div.png`
+
+### Key Results
+
+**Per-Prompt Detection**: ALL 20 prompts achieve AUROC=1.0 across all 4 corruptions (20/20 × 4/4 = 80/80 perfect).
+
+**Cross-Prompt Centroid Distance**: mean=0.00746, range=[0.000505, 0.026151]
+
+**Universal Detection (train on P0, test on all)**:
+- Mean AUROC: 0.913
+- Min AUROC: 0.650
+- 15/20 prompts above 0.9
+
+**Prompt Length Range**: 22-67 characters (no correlation with AUROC since all are 1.0)
+
+### Findings
+
+**Finding 695**: Detection is perfectly prompt-invariant: ALL 20 prompts (including short "Robot action?" and long task descriptions) achieve AUROC=1.0 across all 4 corruptions when calibrated per-prompt.
+
+**Finding 696**: Cross-prompt transfer degrades significantly: calibrating on one prompt and testing on another drops mean AUROC to 0.913 with minimum 0.650. Different prompts produce different embedding distributions.
+
+**Finding 697**: Cross-prompt centroid distance (mean=0.00746) is comparable to corruption distances for mild corruptions, explaining why cross-prompt calibration fails — the detector confuses prompt differences with corruption shifts.
+
+**Finding 698**: Universal detection works well for most prompt pairs (15/20 above 0.90) but fails for a few (5/20 below 0.90). The failing pairs are prompts with the most divergent centroids.
+
+**Finding 699**: For deployed systems, the calibration prompt MUST match the deployment prompt. This is a trivial requirement (since the prompt is a design choice, not a runtime variable) but failure to enforce it degrades detection by up to 35%.
+
