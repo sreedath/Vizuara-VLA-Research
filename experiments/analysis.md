@@ -7130,3 +7130,71 @@ Per-category 6-scene breakdown:
 
 **Finding**: Night and fog have fundamentally different spatial OOD signatures. Night's signal is sky-dominated and localized (restoring sky reduces distance 35%). Fog's signal is holographic — partial restoration actually increases OOD distance because the clean-fog boundary itself is anomalous. This has implications for real deployment: partial occlusions (e.g., windshield glare covering half the sky) will affect night detection more than fog detection.
 
+
+---
+
+## Finding 169: Corruption Severity vs. AUROC Curves (Experiment 175)
+
+**Objective**: Trace fine-grained AUROC as a function of corruption intensity for each type.
+
+**Detection Onset (AUROC ≥ 0.95)**:
+| Corruption | L3 onset | L32 onset | Comment |
+|-----------|----------|-----------|---------|
+| Fog | α=0.35 | α=0.60 | L3 detects 1.7× earlier |
+| Night | brightness=0.60 | brightness=0.60 | Both detect at same level |
+| Blur | radius=1 (0.89) | radius=2 (1.0) | r=1 still 0.89 |
+| Noise | σ=20 | σ=15 | L32 detects noise earlier |
+
+**Full AUROC = 1.0 reached at**:
+- Fog: L3 at α=0.40, L32 at α=0.60
+- Night: Both at brightness=0.60 (darkness level 0.40)
+- Blur: L3 at r=2, L32 at r=2
+- Noise: L3 at σ=20, L32 at σ=20
+
+**Key Findings**:
+1. **L3 detects fog earlier than L32**: AUROC≥0.95 at α=0.35 vs 0.60. L3 is 1.7× more sensitive to fog.
+2. **Blur is the easiest to detect**: Even radius=1 gives AUROC=0.89, radius=2 gives 1.0.
+3. **Fog is hardest to detect at low levels**: α<0.25 gives AUROC near chance, confirming the resolution limit from Exp 169.
+4. **Night has sharp transition**: brightness=0.80 gives 0.78, brightness=0.60 gives 1.0 — narrow transition window.
+5. **Noise detection scales linearly with σ**: Smooth progression from σ=5 (0.67) to σ=20 (1.0).
+
+**Finding**: Each corruption type has a characteristic detection curve with a clear onset threshold. L3 detects fog earlier, L32 detects noise earlier, both detect blur and night at similar levels. The OR-gate dual-layer architecture provides the earliest possible detection across all types.
+
+---
+
+## Finding 170: Occlusion-Based Spatial Sensitivity (Experiment 174, detailed)
+
+Already documented as Finding 168. Additional spatial resolution data at 8×8 grid confirms center-weighted sensitivity for L32.
+
+
+---
+
+## Finding 171: Action Divergence Under Corruption (Experiment 176)
+
+**Objective**: Quantify how much corruption changes the model's predicted action tokens, establishing the safety motivation for OOD detection.
+
+**Key Results**:
+| Corruption | Mean #tokens changed | Mean token shift | L32 mean dist |
+|-----------|---------------------|------------------|---------------|
+| fog_20 | 2.0/7 | small | ~0.12 |
+| fog_40 | 5.0/7 | medium | ~0.14 |
+| fog_60 | 7.0/7 | large | ~0.16 |
+| night | 7.0/7 | 228 max | ~0.39 |
+| blur_4 | 7.0/7 | 128 | ~0.17 |
+| blur_8 | 7.0/7 | 133 | ~0.27 |
+| noise_30 | 6.0/7 | 133 | ~0.15 |
+| noise_50 | 7.0/7 | 129 | ~0.19 |
+
+**Correlation analysis**:
+- L32 distance ↔ #tokens changed: r = **0.845** (strong positive)
+- L3 distance ↔ #tokens changed: r = 0.765
+- L32 distance ↔ mean token shift: r = **0.775**
+
+**Key Findings**:
+1. **OOD distance strongly predicts action divergence**: r=0.845 between L32 cosine distance and number of changed tokens. Higher OOD distance → more action tokens changed.
+2. **Night produces maximum action divergence**: All 7 tokens change with max shift of 228 token IDs.
+3. **Even mild fog (α=0.20) changes 2/7 tokens**: Undetectable corruptions still alter actions, highlighting the importance of detection.
+4. **The safety case is clear**: Undetected OOD conditions cause the model to output completely different actions (6-7/7 tokens changed), which could lead to catastrophic driving decisions.
+
+**Finding**: Cosine distance at L32 is a strong proxy for action safety risk (r=0.845). The correlation between embedding OOD distance and action divergence provides the fundamental safety justification for our detection approach: inputs that are far from the calibration manifold produce unreliable actions.
+

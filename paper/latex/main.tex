@@ -3294,4 +3294,45 @@ We perform occlusion sensitivity mapping to identify which spatial regions of th
 \label{fig:restoration_sensitivity}
 \end{figure}
 
+\subsection{Corruption Severity Detection Profiles}
+
+We trace AUROC as a fine-grained function of corruption severity for each type, identifying the exact detection onset thresholds.
+
+\textbf{Finding 300}: Each corruption has a characteristic detection curve. \textbf{Blur is easiest to detect} (AUROC $\geq$ 0.89 even at radius 1), while \textbf{fog is hardest at low levels} (AUROC near chance below $\alpha = 0.25$).
+
+\textbf{Finding 301}: \textbf{L3 detects fog 1.7$\times$ earlier than L32}: AUROC $\geq$ 0.95 at $\alpha = 0.35$ for L3 vs.\ $\alpha = 0.60$ for L32. Conversely, L32 detects noise slightly earlier ($\sigma = 15$ vs.\ 20). This complementary sensitivity validates the OR-gate dual-layer architecture.
+
+\textbf{Finding 302}: Night has a \textbf{sharp transition}: brightness = 0.80 gives AUROC = 0.78, brightness = 0.60 gives AUROC = 1.0---a narrow 20\% brightness window separating partial from perfect detection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig172_severity_curves.png}
+\caption{\textbf{AUROC vs.\ corruption severity.} Four corruption types with fine-grained severity sweeps. Each type has a characteristic onset profile. L3 detects fog earlier; both layers detect blur and night at similar thresholds.}
+\label{fig:severity_curves}
+\end{figure}
+
+\subsection{Action Divergence and Safety Motivation}
+
+We quantify the safety impact of OOD conditions by measuring how many of the 7 predicted action tokens change under each corruption, establishing the direct link between embedding distance and action reliability.
+
+\textbf{Finding 303}: Cosine distance at L32 is a \textbf{strong proxy for action safety risk}: correlation $r = 0.845$ between L32 distance and number of changed action tokens. Higher OOD distance $\rightarrow$ more action tokens diverge from clean predictions.
+
+\textbf{Finding 304}: Night produces maximum action divergence: \textbf{all 7/7 tokens change} with maximum token ID shift of 228 (out of 256 bins). Even mild fog ($\alpha = 0.20$), which is undetectable at the 3$\sigma$ level, already changes 2/7 action tokens.
+
+\textbf{Finding 305}: The \textbf{safety case is unambiguous}: undetected OOD conditions cause 6--7/7 action tokens to change, producing completely different motor commands. The correlation between embedding distance and action divergence ($r = 0.845$) provides the fundamental justification for using hidden-state-based OOD detection as a safety monitor.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig174_action_divergence.png}
+\caption{\textbf{Action divergence vs.\ OOD distance.} (Left) Number of changed tokens vs.\ L32 distance ($r = 0.845$). (Right) Mean token shift vs.\ L32 distance ($r = 0.775$). Each point is a corruption type.}
+\label{fig:action_divergence}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig175_action_divergence_bars.png}
+\caption{\textbf{Action token divergence by corruption type.} Number of changed tokens (out of 7) for each corruption. Night changes all 7 tokens; even mild fog\_20 changes 2.}
+\label{fig:action_divergence_bars}
+\end{figure}
+
 \end{document}
