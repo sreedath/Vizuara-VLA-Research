@@ -6718,3 +6718,41 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 4. **Practical risk is low**: High-frequency checkerboard patterns are unlikely in natural driving scenarios. Adversarial attacks requiring precise pixel-level control are impractical for physical-world deployment (camera noise, JPEG compression, sensor pipeline all destroy high-frequency patterns).
 
 5. **Defense recommendation**: If high-frequency robustness is needed, add a simple high-pass filter check as a preprocessing step (detect images with unusual high-frequency energy).
+
+---
+
+## Finding 149: Action Corruption Under OOD Inputs (Experiment 155)
+
+**Objective**: Measure how OOD visual corruptions change the model's actual action token outputs, quantifying the safety-relevant impact of distribution shift on control signals.
+
+**Method**: Generated 7-token action sequences for 6 test images under 12 corruption conditions using `model.generate()`. Compared corrupted action tokens to clean baselines via MAE, L2 shift, and token change rate.
+
+**Key Results**:
+- **Night driving changes 7/7 tokens**: Most disruptive corruption, L2=0.789, MAE=0.350 — every single action token differs from clean baseline
+- **Blur_4 has highest L2 shift**: L2=1.078, MAE=0.438 — moderate blur causes largest action deviation
+- **Gripper is most frequently affected dimension**: 8/12 corruptions most affect gripper (dim 6), likely because it's the least constrained action dimension for driving tasks
+- **Even mild fog changes 3.3/7 tokens**: fog_20 (lightest corruption) still alters ~47% of action tokens
+- **Non-monotonic severity**: fog_80 (L2=0.428) < fog_60 (L2=0.608); blur_16 (L2=0.394) < blur_8 (L2=0.602) — higher corruption doesn't always mean larger action shift
+- **All corruptions change majority of tokens**: Mean token changes range from 3.3 to 7.0 out of 7
+- **Clean action variance is substantial**: std across dimensions ranges 0.06-0.24, indicating inherent scene-dependent variation
+
+**Finding**: OOD corruptions cause large, unpredictable changes to action outputs. Night driving and moderate blur are most disruptive. The non-monotonic relationship between corruption severity and action error highlights that simple severity metrics don't predict safety impact — dedicated OOD detection is essential.
+
+---
+
+## Finding 150: Confidence Calibration — OOD Distance vs Logit Entropy (Experiment 156)
+
+**Objective**: Determine whether the model's own uncertainty (action token logit entropy) correlates with our external OOD detector (cosine distance), potentially enabling a complementary confidence signal.
+
+**Method**: For 19 corruption conditions × 6 test images, extracted both hidden state cosine distances (L3, L32) and next-token logit entropy (full vocabulary and action-token-only). Computed Pearson correlations.
+
+**Key Results**:
+- **Moderate correlation**: L32 distance vs action entropy r=0.604, L3 vs action entropy r=0.461
+- **Action entropy = full entropy**: r=1.000 — action token entropy perfectly tracks full vocabulary entropy
+- **Night driving has extreme entropy**: action_entropy=4.056 vs clean=1.565 (2.6× increase), top1_prob drops to 0.161
+- **Fog shows non-monotonic entropy**: fog_30 has lowest entropy (1.346, top1=0.689), meaning model becomes MORE confident under mild fog despite being OOD
+- **L32 correlates better than L3**: L32-vs-entropy r=0.604 vs L3-vs-entropy r=0.461
+- **Top-1 probability inversely correlated**: r=-0.516 with L32 distance — as OOD distance increases, model becomes less confident in its top action prediction
+- **Entropy is unreliable for mild corruptions**: fog_10-30 and noise_50 have LOWER entropy than clean (more confident despite corruption)
+
+**Critical Insight**: The model's internal entropy signal is moderately correlated with OOD distance but UNRELIABLE for mild corruptions where entropy paradoxically decreases. This makes entropy an unsafe standalone safety metric — our external cosine distance detector correctly identifies these cases while entropy misses them. Entropy should only supplement, never replace, embedding-based OOD detection.

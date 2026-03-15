@@ -1,339 +1,240 @@
-"""
-Confidence Calibration via Platt Scaling.
+#!/usr/bin/env python3
+"""Experiment 156: Confidence calibration — OOD distance vs logit entropy.
 
-Tests whether cosine distance scores can be transformed into calibrated
-probability estimates using Platt scaling (logistic regression), isotonic
-regression, and histogram binning. Evaluates ECE (expected calibration
-error) and reliability diagrams.
-
-Experiment 104 in the CalibDrive series.
+Measures whether the model's own token-level uncertainty (logit entropy)
+correlates with our external OOD detector distance. If yes, we can use
+entropy as a complementary or standalone confidence signal.
 """
-import os
-import json
-import datetime
+
+import json, os, sys, datetime
 import numpy as np
 import torch
-from PIL import Image
-from sklearn.metrics import roc_auc_score, brier_score_loss
-from sklearn.linear_model import LogisticRegression
-from sklearn.isotonic import IsotonicRegression
+from pathlib import Path
+from PIL import Image, ImageFilter
 
-RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
-os.makedirs(RESULTS_DIR, exist_ok=True)
+SCRIPT_DIR = Path(__file__).parent
+REPO_DIR = SCRIPT_DIR.parent
+EXPERIMENTS_DIR = REPO_DIR / "experiments"
+EXPERIMENTS_DIR.mkdir(exist_ok=True)
+RESULTS_DIR = str(EXPERIMENTS_DIR)
+
 SIZE = (256, 256)
-
+rng = np.random.RandomState(42)
 
 def create_highway(idx):
-    rng = np.random.default_rng(idx * 5001)
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]
-    img[SIZE[0]//2:] = [80, 80, 80]
+    img[:SIZE[0]//2] = [135, 206, 235]; img[SIZE[0]//2:] = [80, 80, 80]
     img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
 
 def create_urban(idx):
-    rng = np.random.default_rng(idx * 5002)
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]
-    img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+    img[:SIZE[0]//3] = [135, 206, 235]; img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]; img[SIZE[0]//2:] = [60, 60, 60]
+    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
 
-def create_noise(idx):
-    rng = np.random.default_rng(idx * 5003)
-    return rng.integers(0, 256, (*SIZE, 3), dtype=np.uint8)
-
-def create_indoor(idx):
-    rng = np.random.default_rng(idx * 5004)
+def create_rural(idx):
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:] = [200, 180, 160]
-    img[SIZE[0]//2:, :] = [100, 80, 60]
-    img[:SIZE[0]//3, SIZE[1]//3:2*SIZE[1]//3] = [150, 200, 255]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+    img[:SIZE[0]//3] = [100, 180, 255]; img[SIZE[0]//3:SIZE[0]*2//3] = [34, 139, 34]; img[SIZE[0]*2//3:] = [90, 90, 90]
+    return np.clip(img.astype(np.int16) + rng.randint(-8, 9, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
 
-def create_twilight_highway(idx):
-    rng = np.random.default_rng(idx * 5010)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [70, 50, 80]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [200, 200, 100]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+def apply_fog(a, alpha):
+    return np.clip(a*(1-alpha)+np.full_like(a,[200,200,210])*alpha, 0, 255).astype(np.uint8)
+def apply_night(a): return np.clip(a*0.15, 0, 255).astype(np.uint8)
+def apply_blur(a, r=8): return np.array(Image.fromarray(a).filter(ImageFilter.GaussianBlur(radius=r)))
+def apply_noise(a, s=50): return np.clip(a.astype(np.float32)+np.random.normal(0,s,a.shape), 0, 255).astype(np.uint8)
+def apply_occlusion(a):
+    o=a.copy(); h,w=o.shape[:2]; o[h//4:3*h//4, w//4:3*w//4]=128; return o
 
-def create_snow(idx):
-    rng = np.random.default_rng(idx * 5014)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [200, 200, 210]
-    img[SIZE[0]//2:] = [220, 220, 230]
-    img[SIZE[0]//2:, SIZE[1]//2-2:SIZE[1]//2+2] = [180, 180, 190]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+def cosine_distance(a, b):
+    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
 
-
-def extract_hidden(model, processor, image, prompt):
-    """Extract last hidden state."""
+def extract_hidden_and_logits(model, processor, image, prompt, layers):
+    """Extract hidden states AND next-token logits for entropy computation."""
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
     with torch.no_grad():
         fwd = model(**inputs, output_hidden_states=True)
-    if not hasattr(fwd, 'hidden_states') or not fwd.hidden_states:
-        return None
-    return fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
-
-
-def compute_ece(probs, labels, n_bins=10):
-    """Compute Expected Calibration Error."""
-    bin_boundaries = np.linspace(0, 1, n_bins + 1)
-    ece = 0.0
-    bin_data = []
-    for i in range(n_bins):
-        mask = (probs >= bin_boundaries[i]) & (probs < bin_boundaries[i + 1])
-        if i == n_bins - 1:
-            mask = (probs >= bin_boundaries[i]) & (probs <= bin_boundaries[i + 1])
-        if mask.sum() == 0:
-            bin_data.append({'bin_center': (bin_boundaries[i] + bin_boundaries[i+1]) / 2,
-                             'avg_confidence': 0, 'avg_accuracy': 0, 'count': 0})
-            continue
-        avg_conf = probs[mask].mean()
-        avg_acc = labels[mask].mean()
-        ece += mask.sum() / len(probs) * abs(avg_conf - avg_acc)
-        bin_data.append({
-            'bin_center': float((bin_boundaries[i] + bin_boundaries[i+1]) / 2),
-            'avg_confidence': float(avg_conf),
-            'avg_accuracy': float(avg_acc),
-            'count': int(mask.sum()),
-        })
-    return float(ece), bin_data
-
+    
+    hiddens = {l: fwd.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
+    
+    # Get logits for the last token position (next-token prediction)
+    logits = fwd.logits[0, -1, :].float().cpu()
+    
+    # Full vocabulary entropy
+    probs = torch.softmax(logits, dim=0)
+    full_entropy = float(-torch.sum(probs * torch.log(probs + 1e-10)))
+    
+    # Action token entropy (only over action token range 31744-31999)
+    action_logits = logits[31744:32000]
+    action_probs = torch.softmax(action_logits, dim=0)
+    action_entropy = float(-torch.sum(action_probs * torch.log(action_probs + 1e-10)))
+    
+    # Top-1 action token probability (confidence)
+    top1_prob = float(action_probs.max())
+    top1_token = int(action_probs.argmax()) + 31744
+    
+    # Top-5 action token probabilities
+    top5_vals, top5_idx = torch.topk(action_probs, 5)
+    top5_info = [(int(idx) + 31744, float(val)) for idx, val in zip(top5_idx, top5_vals)]
+    
+    return hiddens, {
+        "full_entropy": full_entropy,
+        "action_entropy": action_entropy,
+        "top1_prob": top1_prob,
+        "top1_token": top1_token,
+        "top5": top5_info,
+    }
 
 def main():
-    print("=" * 70, flush=True)
-    print("CONFIDENCE CALIBRATION VIA PLATT SCALING", flush=True)
-    print("=" * 70, flush=True)
+    print("=" * 60)
+    print("Experiment 156: Confidence Calibration (Distance vs Entropy)")
+    print("=" * 60, flush=True)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
     print("Loading OpenVLA-7B...", flush=True)
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
-        device_map="auto", trust_remote_code=True,
-    )
-    processor = AutoProcessor.from_pretrained(
-        "openvla/openvla-7b", trust_remote_code=True,
-    )
+        device_map="auto", trust_remote_code=True)
+    processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
-    print("Model loaded.", flush=True)
 
     prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
+    layers = [3, 32]
 
-    categories = {
-        'highway': (create_highway, 'ID'),
-        'urban': (create_urban, 'ID'),
-        'noise': (create_noise, 'OOD'),
-        'indoor': (create_indoor, 'OOD'),
-        'twilight': (create_twilight_highway, 'OOD'),
-        'snow': (create_snow, 'OOD'),
+    creators = [create_highway, create_urban, create_rural]
+    n_cal = 8
+    n_test = 6
+
+    # Calibration
+    print("\n--- Calibrating centroids ---", flush=True)
+    cal_arrs = [creators[i%3](i) for i in range(n_cal)]
+    centroids = {}
+    for l in layers:
+        cal_embs = []
+        for arr in cal_arrs:
+            h, _ = extract_hidden_and_logits(model, processor, Image.fromarray(arr), prompt, layers)
+            cal_embs.append(h[l])
+        centroids[l] = np.array(cal_embs).mean(axis=0)
+    print("  Centroids computed.", flush=True)
+
+    # Test images
+    test_arrs = [creators[(i+n_cal)%3](i+n_cal) for i in range(n_test)]
+
+    # Corruptions with varying severity
+    corruption_suite = {
+        "clean": lambda a: a,
+        "fog_10": lambda a: apply_fog(a, 0.1),
+        "fog_20": lambda a: apply_fog(a, 0.2),
+        "fog_30": lambda a: apply_fog(a, 0.3),
+        "fog_40": lambda a: apply_fog(a, 0.4),
+        "fog_50": lambda a: apply_fog(a, 0.5),
+        "fog_60": lambda a: apply_fog(a, 0.6),
+        "fog_70": lambda a: apply_fog(a, 0.7),
+        "fog_80": lambda a: apply_fog(a, 0.8),
+        "night": apply_night,
+        "blur_2": lambda a: apply_blur(a, 2),
+        "blur_4": lambda a: apply_blur(a, 4),
+        "blur_8": lambda a: apply_blur(a, 8),
+        "blur_16": lambda a: apply_blur(a, 16),
+        "noise_15": lambda a: apply_noise(a, 15),
+        "noise_30": lambda a: apply_noise(a, 30),
+        "noise_50": lambda a: apply_noise(a, 50),
+        "noise_100": lambda a: apply_noise(a, 100),
+        "occlusion": apply_occlusion,
     }
 
-    # Collect embeddings: 20 per category
-    print("\n--- Collecting embeddings ---", flush=True)
-    embeddings = {}
-    for cat_name, (fn, group) in categories.items():
-        print(f"  {cat_name} ({group})...", flush=True)
-        embeds = []
-        for i in range(20):
-            h = extract_hidden(model, processor, Image.fromarray(fn(i + 700)), prompt)
-            if h is not None:
-                embeds.append(h)
-        embeddings[cat_name] = {'embeds': np.array(embeds), 'group': group}
-        print(f"    Collected {len(embeds)} embeddings", flush=True)
+    all_points = []  # (condition, image_idx, dist_L3, dist_L32, full_ent, action_ent, top1_prob)
+    results = {}
 
-    # Split: first 10 ID for calibration, rest for train/test
-    cal_embeds = []
-    for cat_name, data in embeddings.items():
-        if data['group'] == 'ID':
-            cal_embeds.append(data['embeds'][:10])
-    cal_embeds = np.concatenate(cal_embeds, axis=0)
-    centroid = np.mean(cal_embeds, axis=0)
-    centroid_norm = centroid / (np.linalg.norm(centroid) + 1e-10)
+    for cname, cfn in corruption_suite.items():
+        print(f"\n--- {cname} ---", flush=True)
+        dists_l3 = []; dists_l32 = []
+        full_ents = []; action_ents = []; top1_probs = []
 
-    # Compute cosine distances for all remaining samples
-    train_scores = []
-    train_labels = []
-    test_scores = []
-    test_labels = []
-    test_cats = []
+        for i, arr in enumerate(test_arrs):
+            corr_arr = cfn(arr)
+            h, ent_info = extract_hidden_and_logits(model, processor, Image.fromarray(corr_arr), prompt, layers)
+            d3 = cosine_distance(h[3], centroids[3])
+            d32 = cosine_distance(h[32], centroids[32])
+            dists_l3.append(d3)
+            dists_l32.append(d32)
+            full_ents.append(ent_info["full_entropy"])
+            action_ents.append(ent_info["action_entropy"])
+            top1_probs.append(ent_info["top1_prob"])
+            all_points.append({
+                "condition": cname, "image": i,
+                "dist_L3": d3, "dist_L32": d32,
+                "full_entropy": ent_info["full_entropy"],
+                "action_entropy": ent_info["action_entropy"],
+                "top1_prob": ent_info["top1_prob"],
+            })
 
-    for cat_name, data in embeddings.items():
-        if data['group'] == 'ID':
-            # 10-14 for training calibrator, 15-19 for testing
-            for e in data['embeds'][10:15]:
-                e_norm = e / (np.linalg.norm(e) + 1e-10)
-                train_scores.append(float(1 - np.dot(e_norm, centroid_norm)))
-                train_labels.append(0)
-            for e in data['embeds'][15:]:
-                e_norm = e / (np.linalg.norm(e) + 1e-10)
-                test_scores.append(float(1 - np.dot(e_norm, centroid_norm)))
-                test_labels.append(0)
-                test_cats.append(cat_name)
-        else:
-            # First 10 for training calibrator, last 10 for testing
-            for e in data['embeds'][:10]:
-                e_norm = e / (np.linalg.norm(e) + 1e-10)
-                train_scores.append(float(1 - np.dot(e_norm, centroid_norm)))
-                train_labels.append(1)
-            for e in data['embeds'][10:]:
-                e_norm = e / (np.linalg.norm(e) + 1e-10)
-                test_scores.append(float(1 - np.dot(e_norm, centroid_norm)))
-                test_labels.append(1)
-                test_cats.append(cat_name)
+        entry = {
+            "dist_L3_mean": float(np.mean(dists_l3)),
+            "dist_L3_std": float(np.std(dists_l3)),
+            "dist_L32_mean": float(np.mean(dists_l32)),
+            "dist_L32_std": float(np.std(dists_l32)),
+            "full_entropy_mean": float(np.mean(full_ents)),
+            "full_entropy_std": float(np.std(full_ents)),
+            "action_entropy_mean": float(np.mean(action_ents)),
+            "action_entropy_std": float(np.std(action_ents)),
+            "top1_prob_mean": float(np.mean(top1_probs)),
+            "top1_prob_std": float(np.std(top1_probs)),
+        }
+        results[cname] = entry
+        print(f"  dist_L3={entry['dist_L3_mean']:.6f} dist_L32={entry['dist_L32_mean']:.4f} "
+              f"act_ent={entry['action_entropy_mean']:.3f} top1={entry['top1_prob_mean']:.4f}", flush=True)
 
-    train_scores = np.array(train_scores)
-    train_labels = np.array(train_labels)
-    test_scores = np.array(test_scores)
-    test_labels = np.array(test_labels)
+    # Compute correlations
+    pts = all_points
+    d3_arr = np.array([p["dist_L3"] for p in pts])
+    d32_arr = np.array([p["dist_L32"] for p in pts])
+    ae_arr = np.array([p["action_entropy"] for p in pts])
+    fe_arr = np.array([p["full_entropy"] for p in pts])
+    t1_arr = np.array([p["top1_prob"] for p in pts])
 
-    print(f"\nTrain: {len(train_scores)} ({sum(train_labels==0)} ID, {sum(train_labels==1)} OOD)", flush=True)
-    print(f"Test: {len(test_scores)} ({sum(test_labels==0)} ID, {sum(test_labels==1)} OOD)", flush=True)
+    def pearson(x, y):
+        if np.std(x) < 1e-10 or np.std(y) < 1e-10:
+            return 0.0
+        return float(np.corrcoef(x, y)[0, 1])
 
-    # Method 1: Raw threshold (uncalibrated)
-    print("\n--- Raw Threshold (uncalibrated) ---", flush=True)
-    raw_auroc = roc_auc_score(test_labels, test_scores)
-    # Convert to pseudo-probability: min-max scale
-    raw_probs = (test_scores - test_scores.min()) / (test_scores.max() - test_scores.min() + 1e-10)
-    raw_ece, raw_bins = compute_ece(raw_probs, test_labels)
-    raw_brier = brier_score_loss(test_labels, raw_probs)
-    print(f"  AUROC: {raw_auroc:.4f}, ECE: {raw_ece:.4f}, Brier: {raw_brier:.4f}", flush=True)
-
-    # Method 2: Platt scaling (logistic regression)
-    print("\n--- Platt Scaling ---", flush=True)
-    platt = LogisticRegression(C=1.0, solver='lbfgs', max_iter=1000)
-    platt.fit(train_scores.reshape(-1, 1), train_labels)
-    platt_probs = platt.predict_proba(test_scores.reshape(-1, 1))[:, 1]
-    platt_auroc = roc_auc_score(test_labels, platt_probs)
-    platt_ece, platt_bins = compute_ece(platt_probs, test_labels)
-    platt_brier = brier_score_loss(test_labels, platt_probs)
-    print(f"  AUROC: {platt_auroc:.4f}, ECE: {platt_ece:.4f}, Brier: {platt_brier:.4f}", flush=True)
-    print(f"  Coefficients: w={platt.coef_[0][0]:.4f}, b={platt.intercept_[0]:.4f}", flush=True)
-
-    # Method 3: Isotonic regression
-    print("\n--- Isotonic Regression ---", flush=True)
-    iso = IsotonicRegression(y_min=0, y_max=1, out_of_bounds='clip')
-    iso.fit(train_scores, train_labels)
-    iso_probs = iso.predict(test_scores)
-    iso_auroc = roc_auc_score(test_labels, iso_probs)
-    iso_ece, iso_bins = compute_ece(iso_probs, test_labels)
-    iso_brier = brier_score_loss(test_labels, iso_probs)
-    print(f"  AUROC: {iso_auroc:.4f}, ECE: {iso_ece:.4f}, Brier: {iso_brier:.4f}", flush=True)
-
-    # Method 4: Histogram binning
-    print("\n--- Histogram Binning ---", flush=True)
-    n_hist_bins = 5
-    bin_edges = np.percentile(train_scores, np.linspace(0, 100, n_hist_bins + 1))
-    bin_probs = []
-    for i in range(n_hist_bins):
-        if i < n_hist_bins - 1:
-            mask = (train_scores >= bin_edges[i]) & (train_scores < bin_edges[i + 1])
-        else:
-            mask = (train_scores >= bin_edges[i]) & (train_scores <= bin_edges[i + 1])
-        if mask.sum() > 0:
-            bin_probs.append(float(train_labels[mask].mean()))
-        else:
-            bin_probs.append(0.5)
-
-    hist_probs = np.zeros(len(test_scores))
-    for j, s in enumerate(test_scores):
-        assigned = False
-        for i in range(n_hist_bins):
-            if i < n_hist_bins - 1:
-                if bin_edges[i] <= s < bin_edges[i + 1]:
-                    hist_probs[j] = bin_probs[i]
-                    assigned = True
-                    break
-            else:
-                if bin_edges[i] <= s <= bin_edges[i + 1]:
-                    hist_probs[j] = bin_probs[i]
-                    assigned = True
-                    break
-        if not assigned:
-            hist_probs[j] = 1.0 if s > bin_edges[-1] else 0.0
-
-    hist_auroc = roc_auc_score(test_labels, hist_probs)
-    hist_ece, hist_bins = compute_ece(hist_probs, test_labels)
-    hist_brier = brier_score_loss(test_labels, hist_probs)
-    print(f"  AUROC: {hist_auroc:.4f}, ECE: {hist_ece:.4f}, Brier: {hist_brier:.4f}", flush=True)
-
-    # Method 5: Temperature-scaled sigmoid
-    print("\n--- Temperature-Scaled Sigmoid ---", flush=True)
-    # Find optimal temperature via grid search on train set
-    best_temp = 1.0
-    best_temp_ece = 1.0
-    temp_results = {}
-    for temp in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0]:
-        # Sigmoid with temperature: p = 1 / (1 + exp(-(score - threshold) / temp))
-        threshold = np.mean(train_scores[train_labels == 0])
-        probs = 1 / (1 + np.exp(-(test_scores - threshold) / temp))
-        ece_val, _ = compute_ece(probs, test_labels)
-        brier_val = brier_score_loss(test_labels, probs)
-        temp_results[f"T={temp}"] = {'temperature': temp, 'ece': float(ece_val), 'brier': float(brier_val)}
-        if ece_val < best_temp_ece:
-            best_temp_ece = ece_val
-            best_temp = temp
-
-    threshold = np.mean(train_scores[train_labels == 0])
-    sigmoid_probs = 1 / (1 + np.exp(-(test_scores - threshold) / best_temp))
-    sigmoid_auroc = roc_auc_score(test_labels, sigmoid_probs)
-    sigmoid_ece, sigmoid_bins = compute_ece(sigmoid_probs, test_labels)
-    sigmoid_brier = brier_score_loss(test_labels, sigmoid_probs)
-    print(f"  Best T={best_temp}: AUROC={sigmoid_auroc:.4f}, ECE={sigmoid_ece:.4f}, Brier={sigmoid_brier:.4f}", flush=True)
-
-    # Summary
-    print("\n--- SUMMARY ---", flush=True)
-    methods = {
-        'raw': {'auroc': raw_auroc, 'ece': raw_ece, 'brier': raw_brier},
-        'platt': {'auroc': platt_auroc, 'ece': platt_ece, 'brier': platt_brier},
-        'isotonic': {'auroc': iso_auroc, 'ece': iso_ece, 'brier': iso_brier},
-        'histogram': {'auroc': hist_auroc, 'ece': hist_ece, 'brier': hist_brier},
-        'sigmoid': {'auroc': sigmoid_auroc, 'ece': sigmoid_ece, 'brier': sigmoid_brier},
+    correlations = {
+        "dist_L3_vs_action_entropy": pearson(d3_arr, ae_arr),
+        "dist_L3_vs_full_entropy": pearson(d3_arr, fe_arr),
+        "dist_L3_vs_top1_prob": pearson(d3_arr, t1_arr),
+        "dist_L32_vs_action_entropy": pearson(d32_arr, ae_arr),
+        "dist_L32_vs_full_entropy": pearson(d32_arr, fe_arr),
+        "dist_L32_vs_top1_prob": pearson(d32_arr, t1_arr),
+        "action_entropy_vs_full_entropy": pearson(ae_arr, fe_arr),
     }
-    for name, m in methods.items():
-        print(f"  {name:12}: AUROC={m['auroc']:.4f}  ECE={m['ece']:.4f}  Brier={m['brier']:.4f}", flush=True)
 
-    # Save
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    print("\n" + "=" * 80)
+    print("CORRELATION MATRIX")
+    for k, v in correlations.items():
+        print(f"  {k}: r = {v:.4f}")
+
+    # Summary table
+    print("\n" + "=" * 80)
+    print(f"{'Condition':<15} {'dist_L3':>10} {'dist_L32':>10} {'act_ent':>10} {'top1_p':>10}")
+    for cname, entry in results.items():
+        print(f"{cname:<15} {entry['dist_L3_mean']:10.6f} {entry['dist_L32_mean']:10.4f} "
+              f"{entry['action_entropy_mean']:10.3f} {entry['top1_prob_mean']:10.4f}")
+
+    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
-        'experiment': 'confidence_calibration',
-        'experiment_number': 104,
-        'timestamp': timestamp,
-        'n_calibration': int(cal_embeds.shape[0]),
-        'n_train': int(len(train_scores)),
-        'n_test': int(len(test_scores)),
-        'methods': {
-            'raw': {'auroc': float(raw_auroc), 'ece': float(raw_ece), 'brier': float(raw_brier),
-                     'bins': raw_bins},
-            'platt': {'auroc': float(platt_auroc), 'ece': float(platt_ece), 'brier': float(platt_brier),
-                      'coef': float(platt.coef_[0][0]), 'intercept': float(platt.intercept_[0]),
-                      'bins': platt_bins},
-            'isotonic': {'auroc': float(iso_auroc), 'ece': float(iso_ece), 'brier': float(iso_brier),
-                         'bins': iso_bins},
-            'histogram': {'auroc': float(hist_auroc), 'ece': float(hist_ece), 'brier': float(hist_brier),
-                          'bins': hist_bins, 'bin_edges': [float(b) for b in bin_edges],
-                          'bin_probs': bin_probs},
-            'sigmoid': {'auroc': float(sigmoid_auroc), 'ece': float(sigmoid_ece), 'brier': float(sigmoid_brier),
-                        'best_temperature': float(best_temp), 'threshold': float(threshold),
-                        'temp_search': temp_results, 'bins': sigmoid_bins},
-        },
-        'train_scores': {'id': [float(s) for s, l in zip(train_scores, train_labels) if l == 0],
-                         'ood': [float(s) for s, l in zip(train_scores, train_labels) if l == 1]},
-        'test_scores': {'id': [float(s) for s, l in zip(test_scores, test_labels) if l == 0],
-                        'ood': [float(s) for s, l in zip(test_scores, test_labels) if l == 1]},
+        "experiment": "confidence_calibration",
+        "experiment_number": 156,
+        "timestamp": ts,
+        "n_cal": n_cal, "n_test": n_test,
+        "layers": layers,
+        "conditions": list(corruption_suite.keys()),
+        "results": results,
+        "correlations": correlations,
+        "all_points": all_points,
     }
-    output_path = os.path.join(RESULTS_DIR, f"confidence_calibration_{timestamp}.json")
-    with open(output_path, 'w') as f:
+    path = os.path.join(RESULTS_DIR, f"confidence_calibration_{ts}.json")
+    with open(path, "w") as f:
         json.dump(output, f, indent=2)
-    print(f"\nSaved to {output_path}", flush=True)
-
+    print(f"\nSaved: {path}")
 
 if __name__ == "__main__":
     main()

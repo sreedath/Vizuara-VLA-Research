@@ -2854,4 +2854,66 @@ The OR-gate architecture represents our recommended production deployment: two c
 \label{fig:adversarial}
 \end{figure}
 
+\subsection{Action Corruption Under OOD Inputs}
+
+Having established that the OOD detector reliably identifies distribution shifts, we now ask: \textbf{how much do OOD inputs actually corrupt the model's action outputs?} This is the safety-critical question — detection only matters if OOD inputs produce dangerous control errors.
+
+We generate 7-token action sequences using \texttt{model.generate()} for 6 test images under 12 corruption conditions, comparing the resulting action tokens to clean baselines.
+
+\textbf{Finding 228}: Night driving is the most action-disruptive corruption: all 7/7 action tokens change (L2 action shift = 0.789, MAE = 0.350), producing completely different control commands. This corroborates the detector's highest sensitivity to night (d' = 22.1 at L3).
+
+\textbf{Finding 229}: Even the mildest corruption (fog at 20\% opacity) alters 3.3 out of 7 action tokens (47\%), demonstrating that OOD inputs produce safety-relevant control changes well before they become visually obvious to a human operator.
+
+\textbf{Finding 230}: The \textbf{gripper dimension} (dim 6) is the most frequently affected action dimension across corruptions (8 of 12 types), likely because it is the least constrained dimension for driving tasks and thus most sensitive to embedding perturbations.
+
+\textbf{Finding 231}: Action corruption severity is \textbf{non-monotonic} with visual corruption intensity: fog at 60\% produces larger action shift (L2 = 0.608) than fog at 80\% (L2 = 0.428); blur at radius 4 produces the highest overall shift (L2 = 1.078) while radius 16 is less disruptive (L2 = 0.394). This means simple corruption severity metrics cannot predict safety impact.
+
+\textbf{Finding 232}: The non-monotonic corruption-to-action mapping provides a strong argument for dedicated OOD detection: since visual severity does not predict control error magnitude, a safety system cannot rely on pixel-level corruption metrics and must instead monitor the internal representation space where our detector operates.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig141_action_corruption.png}
+\caption{\textbf{Action corruption heatmap.} Left: MAE per action dimension across 12 corruption types — gripper and z-axis are most affected. Right: L2 action shift and total MAE — blur\_4 and night produce the largest control deviations.}
+\label{fig:action_corruption}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig142_token_disruption.png}
+\caption{\textbf{Token disruption analysis.} Left: Mean tokens changed per corruption — night changes all 7/7, even mild fog changes 3.3/7. Right: Gripper is the most frequently affected dimension across corruption types.}
+\label{fig:token_disruption}
+\end{figure}
+
+\subsection{Confidence Calibration: OOD Distance vs Model Entropy}
+
+We investigate whether the model's own output uncertainty — measured via action token logit entropy — provides a complementary safety signal to our external embedding-based detector.
+
+For 19 corruption conditions $\times$ 6 test images, we extract both cosine distances (L3, L32) and next-token logit entropy (computed over the 256 action token bins).
+
+\textbf{Finding 233}: OOD distance and model entropy are \textbf{moderately correlated}: L32 distance vs action entropy $r = 0.604$, L3 vs action entropy $r = 0.461$. The signals are related but far from redundant.
+
+\textbf{Finding 234}: Action token entropy perfectly tracks full vocabulary entropy ($r = 1.000$), meaning that OOD-induced uncertainty is not confined to the action head but propagates across the entire output distribution.
+
+\textbf{Finding 235}: Night driving produces extreme model uncertainty: action entropy = 4.056 (2.6$\times$ clean), top-1 probability drops to 0.161. The model ``knows it doesn't know,'' making entropy a useful supplementary signal for severe corruptions.
+
+\textbf{Finding 236}: \textbf{Entropy is dangerously unreliable for mild corruptions}: fog at 10--30\% opacity produces \emph{lower} entropy than clean images (1.35--1.46 vs 1.57), meaning the model becomes \emph{more confident} under mild OOD conditions. Our cosine distance detector correctly identifies these cases while entropy misses them entirely.
+
+\textbf{Finding 237}: The inverse correlation between L32 distance and top-1 probability ($r = -0.516$) confirms that increased OOD severity generally reduces model confidence — but the relationship is too weak and non-monotonic to serve as a reliable detection threshold.
+
+\textbf{Finding 238}: These results establish a clear hierarchy for safety monitoring: embedding-based OOD detection (cosine distance) is the primary safety signal; entropy-based confidence provides a useful \textbf{supplementary} signal for severe corruptions but must never serve as the standalone safety metric due to its paradoxical behavior under mild distribution shift.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig143_confidence_calibration.png}
+\caption{\textbf{OOD distance vs model confidence.} Left: L3 distance vs action entropy ($r = 0.461$). Center: L32 distance vs entropy ($r = 0.604$). Right: L32 distance vs top-1 probability ($r = -0.516$). Colors indicate corruption category.}
+\label{fig:confidence_calibration}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig144_confidence_summary.png}
+\caption{\textbf{Confidence calibration summary.} Left: Distance and entropy by condition — note the non-monotonic entropy for fog. Right: Correlation matrix — L32 distance correlates best with entropy but remains moderate ($r \approx 0.6$).}
+\label{fig:confidence_summary}
+\end{figure}
+
 \end{document}
