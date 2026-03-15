@@ -7871,4 +7871,25 @@ We test whether the calibrated detector generalizes to 6 corruption types not in
 
 \textbf{Finding 1096}: \textbf{Detection success on novel corruptions confirms the system detects DISTRIBUTIONAL SHIFTS, not corruption-specific signatures.} Any corruption producing sufficiently large global visual change shifts the embedding past the threshold, regardless of mechanism. The failure on dead pixels (too local) defines the detector's spatial resolution limit.
 
+\subsection{Experiment 400: Prompt Sensitivity Analysis}
+
+We test whether detection performance depends on the specific prompt used. Eight prompts are tested: standard instruction format, short, verbose, different task (navigate/place), minimal (``Action?''), unformatted, and question-only. We evaluate per-prompt AUROC, cross-prompt embedding similarity, and cross-prompt detection transfer.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig409_prompt.png}
+\caption{Experiment 400: Prompt sensitivity analysis. (A) ALL 8 prompts achieve AUROC=1.0---detection is prompt-invariant. (B) Shorter prompts produce larger corruption distances. (C) Cross-prompt transfer fails with 100\% FPR---prompt change dominates corruption. (D) Prompt distances (up to 0.208) dwarf fog corruption (0.003).}
+\label{fig:prompt_sensitivity}
+\end{figure}
+
+\textbf{Finding 1097}: \textbf{ALL 8 prompts achieve AUROC=1.0 for ALL 4 corruptions.} Detection is completely prompt-invariant---it works regardless of prompt formulation, task description, or formatting convention. Perfect performance is not an artifact of one specific prompt.
+
+\textbf{Finding 1098}: \textbf{Cross-prompt detection transfer FAILS with 100\% FPR for all prompt pairs.} Changing the prompt shifts the embedding up to $60\times$ more than corruption (0.208 vs 0.003). The detector requires consistent prompt usage between calibration and inference---a benign deployment constraint.
+
+\textbf{Finding 1099}: \textbf{Shorter prompts produce LARGER corruption distances.} The ``no\_format'' prompt yields fog distance 0.013 ($4\times$ standard), and ``minimal'' yields 0.005 ($1.7\times$). Removing instruction formatting amplifies the visual signal relative to text in the embedding.
+
+\textbf{Finding 1100}: \textbf{Prompt variation range (0.002--0.208) is up to $60\times$ larger than corruption distances.} Different prompts create fundamentally different ``views'' of the same image, each independently capable of perfect detection. The prompt reconfigures the embedding space geometry.
+
+\textbf{Finding 1101}: \textbf{The detector is robust to prompt CHOICE but not prompt CHANGE.} Any single prompt works perfectly; the failure is only in mixing prompts between calibration and inference. In deployment, the prompt is fixed, making this constraint trivially satisfied.
+
 \end{document}

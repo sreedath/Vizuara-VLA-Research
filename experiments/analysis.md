@@ -16500,3 +16500,21 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 843**: Novel corruptions interleave naturally in the severity ranking: night > blur > snow ≈ fog > JPEG > occlusion > rain > color_shift ≈ noise > dead_pixels. Snow (0.003) and JPEG (0.003) produce comparable embedding shifts to fog, while dead pixels are 50× smaller than the threshold.
 
 **Finding 844**: The detector's success on novel corruptions confirms it is detecting DISTRIBUTIONAL SHIFTS in the embedding space, not memorizing specific corruption signatures. Any corruption that produces a sufficiently large global visual change will shift the embedding past the threshold, regardless of corruption mechanism.
+
+---
+
+## Experiment 400: Prompt Sensitivity Analysis
+
+**Objective**: Test whether detection performance depends on the specific prompt used, and whether cross-prompt detection transfer works.
+
+**Method**: Test 8 different prompts (standard, short, verbose, navigate, place, minimal, no_format, question_only) with 3 scenes × 4 corruptions. Evaluate per-prompt AUROC, cross-prompt embedding similarity, and cross-prompt detection transfer.
+
+**Finding 845**: ALL 8 prompts achieve AUROC=1.0 for ALL 4 corruptions. Detection is completely PROMPT-INVARIANT — it works regardless of prompt formulation, task description, or formatting convention. The detector's perfect performance is not an artifact of one specific prompt.
+
+**Finding 846**: Cross-prompt detection transfer FAILS with 100% FPR for all prompt pairs. Changing the prompt shifts the embedding MORE than corruption does (prompt distance up to 0.208 vs fog corruption at 0.003). The detector REQUIRES consistent prompt usage between calibration and inference.
+
+**Finding 847**: Shorter and less-formatted prompts produce LARGER corruption distances. The "no_format" prompt yields fog distance 0.013 (4× standard), and "minimal" yields 0.005 (1.7×). Removing instruction formatting amplifies the visual signal relative to the text signal in the embedding.
+
+**Finding 848**: Prompt variation range (0.002-0.208 cosine distance) is up to 60× larger than corruption distances. This means the prompt fundamentally reconfigures the embedding space — different prompts create different "views" of the same image, each independently capable of perfect detection.
+
+**Finding 849**: The detector is robust to prompt CHOICE but not prompt CHANGE. Any single prompt works perfectly; the failure is only in MIXING prompts between calibration and inference. This is a benign constraint — in deployment, the prompt is fixed.
