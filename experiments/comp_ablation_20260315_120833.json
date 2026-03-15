@@ -1,0 +1,557 @@
+{
+  "experiment": "comprehensive_ablation",
+  "experiment_number": 320,
+  "timestamp": "20260315_120833",
+  "layer_token": {
+    "L0_bos": {
+      "layer": 0,
+      "token": "bos",
+      "token_idx": 0,
+      "auroc": 0.5,
+      "distances": {
+        "fog": 0.0,
+        "night": 0.0,
+        "blur": 0.0,
+        "noise": 0.0
+      },
+      "min_ood": 0.0
+    },
+    "L0_img_first": {
+      "layer": 0,
+      "token": "img_first",
+      "token_idx": 5,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.09867197275161743,
+        "night": 0.24834412336349487,
+        "blur": 0.6290795803070068,
+        "noise": 0.14849430322647095
+      },
+      "min_ood": 0.09867197275161743
+    },
+    "L0_img_mid": {
+      "layer": 0,
+      "token": "img_mid",
+      "token_idx": 137,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.0916982889175415,
+        "night": 0.1518033742904663,
+        "blur": 0.35253357887268066,
+        "noise": 0.12028259038925171
+      },
+      "min_ood": 0.0916982889175415
+    },
+    "L0_img_last": {
+      "layer": 0,
+      "token": "img_last",
+      "token_idx": 254,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.10784304141998291,
+        "night": 0.3359992504119873,
+        "blur": 0.5082862973213196,
+        "noise": 0.07261568307876587
+      },
+      "min_ood": 0.07261568307876587
+    },
+    "L0_last": {
+      "layer": 0,
+      "token": "last",
+      "token_idx": 273,
+      "auroc": 0.5,
+      "distances": {
+        "fog": 0.0,
+        "night": 0.0,
+        "blur": 0.0,
+        "noise": 0.0
+      },
+      "min_ood": 0.0
+    },
+    "L1_bos": {
+      "layer": 1,
+      "token": "bos",
+      "token_idx": 0,
+      "auroc": 0.5,
+      "distances": {
+        "fog": 0.0,
+        "night": 0.0,
+        "blur": 0.0,
+        "noise": 0.0
+      },
+      "min_ood": 0.0
+    },
+    "L1_img_first": {
+      "layer": 1,
+      "token": "img_first",
+      "token_idx": 5,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.09624290466308594,
+        "night": 0.24282938241958618,
+        "blur": 0.6118497252464294,
+        "noise": 0.14581298828125
+      },
+      "min_ood": 0.09624290466308594
+    },
+    "L1_img_mid": {
+      "layer": 1,
+      "token": "img_mid",
+      "token_idx": 137,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.0877687931060791,
+        "night": 0.14630377292633057,
+        "blur": 0.33578741550445557,
+        "noise": 0.11631155014038086
+      },
+      "min_ood": 0.0877687931060791
+    },
+    "L1_img_last": {
+      "layer": 1,
+      "token": "img_last",
+      "token_idx": 254,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.10151392221450806,
+        "night": 0.31962424516677856,
+        "blur": 0.4783684015274048,
+        "noise": 0.06858992576599121
+      },
+      "min_ood": 0.06858992576599121
+    },
+    "L1_last": {
+      "layer": 1,
+      "token": "last",
+      "token_idx": 273,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.0002459883689880371,
+        "night": 0.0006522536277770996,
+        "blur": 0.0033483505249023438,
+        "noise": 3.1948089599609375e-05
+      },
+      "min_ood": 3.1948089599609375e-05
+    },
+    "L3_bos": {
+      "layer": 3,
+      "token": "bos",
+      "token_idx": 0,
+      "auroc": 0.5,
+      "distances": {
+        "fog": 0.0,
+        "night": 0.0,
+        "blur": 0.0,
+        "noise": 0.0
+      },
+      "min_ood": 0.0
+    },
+    "L3_img_first": {
+      "layer": 3,
+      "token": "img_first",
+      "token_idx": 5,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.08046847581863403,
+        "night": 0.20665496587753296,
+        "blur": 0.5427348017692566,
+        "noise": 0.12710046768188477
+      },
+      "min_ood": 0.08046847581863403
+    },
+    "L3_img_mid": {
+      "layer": 3,
+      "token": "img_mid",
+      "token_idx": 137,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.07037335634231567,
+        "night": 0.11314916610717773,
+        "blur": 0.266091525554657,
+        "noise": 0.09518599510192871
+      },
+      "min_ood": 0.07037335634231567
+    },
+    "L3_img_last": {
+      "layer": 3,
+      "token": "img_last",
+      "token_idx": 254,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.07907480001449585,
+        "night": 0.24622094631195068,
+        "blur": 0.3856620788574219,
+        "noise": 0.054666876792907715
+      },
+      "min_ood": 0.054666876792907715
+    },
+    "L3_last": {
+      "layer": 3,
+      "token": "last",
+      "token_idx": 273,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.0008426308631896973,
+        "night": 0.0021948814392089844,
+        "blur": 0.005036652088165283,
+        "noise": 0.00015681982040405273
+      },
+      "min_ood": 0.00015681982040405273
+    },
+    "L15_bos": {
+      "layer": 15,
+      "token": "bos",
+      "token_idx": 0,
+      "auroc": 0.5,
+      "distances": {
+        "fog": 0.0,
+        "night": 0.0,
+        "blur": 0.0,
+        "noise": 0.0
+      },
+      "min_ood": 0.0
+    },
+    "L15_img_first": {
+      "layer": 15,
+      "token": "img_first",
+      "token_idx": 5,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.12297260761260986,
+        "night": 0.28235387802124023,
+        "blur": 0.6792184114456177,
+        "noise": 0.1588689088821411
+      },
+      "min_ood": 0.12297260761260986
+    },
+    "L15_img_mid": {
+      "layer": 15,
+      "token": "img_mid",
+      "token_idx": 137,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.07263839244842529,
+        "night": 0.08861804008483887,
+        "blur": 0.21023815870285034,
+        "noise": 0.11386489868164062
+      },
+      "min_ood": 0.07263839244842529
+    },
+    "L15_img_last": {
+      "layer": 15,
+      "token": "img_last",
+      "token_idx": 254,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.10397577285766602,
+        "night": 0.3462678790092468,
+        "blur": 0.5105522871017456,
+        "noise": 0.08879119157791138
+      },
+      "min_ood": 0.08879119157791138
+    },
+    "L15_last": {
+      "layer": 15,
+      "token": "last",
+      "token_idx": 273,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.017916977405548096,
+        "night": 0.044139325618743896,
+        "blur": 0.15780192613601685,
+        "noise": 0.014352679252624512
+      },
+      "min_ood": 0.014352679252624512
+    },
+    "L31_bos": {
+      "layer": 31,
+      "token": "bos",
+      "token_idx": 0,
+      "auroc": 0.5,
+      "distances": {
+        "fog": 0.0,
+        "night": 0.0,
+        "blur": 0.0,
+        "noise": 0.0
+      },
+      "min_ood": 0.0
+    },
+    "L31_img_first": {
+      "layer": 31,
+      "token": "img_first",
+      "token_idx": 5,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.16870921850204468,
+        "night": 0.2802274227142334,
+        "blur": 0.46302253007888794,
+        "noise": 0.20816421508789062
+      },
+      "min_ood": 0.16870921850204468
+    },
+    "L31_img_mid": {
+      "layer": 31,
+      "token": "img_mid",
+      "token_idx": 137,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.047707438468933105,
+        "night": 0.043820202350616455,
+        "blur": 0.1087120771408081,
+        "noise": 0.06462937593460083
+      },
+      "min_ood": 0.043820202350616455
+    },
+    "L31_img_last": {
+      "layer": 31,
+      "token": "img_last",
+      "token_idx": 254,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.23783373832702637,
+        "night": 0.41644495725631714,
+        "blur": 0.5745329856872559,
+        "noise": 0.21914196014404297
+      },
+      "min_ood": 0.21914196014404297
+    },
+    "L31_last": {
+      "layer": 31,
+      "token": "last",
+      "token_idx": 273,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.05777454376220703,
+        "night": 0.11267280578613281,
+        "blur": 0.2611653208732605,
+        "noise": 0.05934208631515503
+      },
+      "min_ood": 0.05777454376220703
+    },
+    "L32_bos": {
+      "layer": 32,
+      "token": "bos",
+      "token_idx": 0,
+      "auroc": 0.5,
+      "distances": {
+        "fog": 0.0,
+        "night": 0.0,
+        "blur": 0.0,
+        "noise": 0.0
+      },
+      "min_ood": 0.0
+    },
+    "L32_img_first": {
+      "layer": 32,
+      "token": "img_first",
+      "token_idx": 5,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.3118516206741333,
+        "night": 0.5064020156860352,
+        "blur": 0.8107964396476746,
+        "noise": 0.36652672290802
+      },
+      "min_ood": 0.3118516206741333
+    },
+    "L32_img_mid": {
+      "layer": 32,
+      "token": "img_mid",
+      "token_idx": 137,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.09139257669448853,
+        "night": 0.08507150411605835,
+        "blur": 0.1725020408630371,
+        "noise": 0.12041866779327393
+      },
+      "min_ood": 0.08507150411605835
+    },
+    "L32_img_last": {
+      "layer": 32,
+      "token": "img_last",
+      "token_idx": 254,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.37381893396377563,
+        "night": 0.7001010775566101,
+        "blur": 0.8734713196754456,
+        "noise": 0.3467674255371094
+      },
+      "min_ood": 0.3467674255371094
+    },
+    "L32_last": {
+      "layer": 32,
+      "token": "last",
+      "token_idx": 273,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.14063382148742676,
+        "night": 0.2786905765533447,
+        "blur": 0.6570128202438354,
+        "noise": 0.13939201831817627
+      },
+      "min_ood": 0.13939201831817627
+    }
+  },
+  "dimension_ablation": {
+    "4": {
+      "dims": 4,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.005504906177520752,
+        "night": 0.0305519700050354,
+        "blur": 0.03317618370056152,
+        "noise": 0.00039392709732055664
+      },
+      "min_ood": 0.00039392709732055664
+    },
+    "16": {
+      "dims": 16,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.012790501117706299,
+        "night": 0.051426708698272705,
+        "blur": 0.06706881523132324,
+        "noise": 0.002805352210998535
+      },
+      "min_ood": 0.002805352210998535
+    },
+    "64": {
+      "dims": 64,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.007285416126251221,
+        "night": 0.02318960428237915,
+        "blur": 0.03859126567840576,
+        "noise": 0.001067817211151123
+      },
+      "min_ood": 0.001067817211151123
+    },
+    "256": {
+      "dims": 256,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.00993490219116211,
+        "night": 0.02251988649368286,
+        "blur": 0.04583019018173218,
+        "noise": 0.001426398754119873
+      },
+      "min_ood": 0.001426398754119873
+    },
+    "1024": {
+      "dims": 1024,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.0022172927856445312,
+        "night": 0.006205320358276367,
+        "blur": 0.01330578327178955,
+        "noise": 0.0004088282585144043
+      },
+      "min_ood": 0.0004088282585144043
+    },
+    "4096": {
+      "dims": 4096,
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.0008426308631896973,
+        "night": 0.0021948814392089844,
+        "blur": 0.005036652088165283,
+        "noise": 0.00015681982040405273
+      },
+      "min_ood": 0.00015681982040405273
+    }
+  },
+  "metric_ablation": {
+    "cosine": {
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.0008426308631896973,
+        "night": 0.0021948814392089844,
+        "blur": 0.005036652088165283,
+        "noise": 0.00015681982040405273
+      },
+      "min_ood": 0.00015681982040405273
+    },
+    "euclidean": {
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.3556874692440033,
+        "night": 0.5601756572723389,
+        "blur": 0.8303752541542053,
+        "noise": 0.14743474125862122
+      },
+      "min_ood": 0.14743474125862122
+    },
+    "manhattan": {
+      "auroc": 1.0,
+      "distances": {
+        "fog": 17.22829818725586,
+        "night": 27.76376724243164,
+        "blur": 41.51845932006836,
+        "noise": 7.042644500732422
+      },
+      "min_ood": 7.042644500732422
+    },
+    "chebyshev": {
+      "auroc": 1.0,
+      "distances": {
+        "fog": 0.09375,
+        "night": 0.09375,
+        "blur": 0.09765625,
+        "noise": 0.03125
+      },
+      "min_ood": 0.03125
+    }
+  },
+  "calibration_ablation": {
+    "1": {
+      "n_scenes": 1,
+      "tp": 4,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0,
+      "sensitivity": 1.0,
+      "specificity": 1.0
+    },
+    "3": {
+      "n_scenes": 3,
+      "tp": 12,
+      "tn": 3,
+      "fp": 0,
+      "fn": 0,
+      "sensitivity": 1.0,
+      "specificity": 1.0
+    },
+    "5": {
+      "n_scenes": 5,
+      "tp": 20,
+      "tn": 5,
+      "fp": 0,
+      "fn": 0,
+      "sensitivity": 1.0,
+      "specificity": 1.0
+    },
+    "10": {
+      "n_scenes": 10,
+      "tp": 40,
+      "tn": 10,
+      "fp": 0,
+      "fn": 0,
+      "sensitivity": 1.0,
+      "specificity": 1.0
+    }
+  },
+  "summary": {
+    "layer_matters": true,
+    "token_matters": true,
+    "dims_matter": false,
+    "metric_matters": false,
+    "cal_size_matters": false,
+    "critical_choices": [
+      "token_position (BOS fails)",
+      "layer (L0 fails)"
+    ],
+    "non_critical_choices": []
+  }
+}

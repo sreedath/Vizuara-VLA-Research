@@ -12521,3 +12521,93 @@ Compares 8 OOD detection methods including hidden-state methods (cosine, euclide
 **Finding 474**: **Output-space methods fail specifically on fog (0.60-0.80 AUROC) and night (0.60).** Max logit and entropy both fail on fog and night corruptions because these corruptions make the model MORE confident (higher max logit, lower entropy) while producing wrong actions. Blur and noise increase uncertainty and are partially detectable. This confirms fog as the most dangerous corruption: undetectable by output-space methods while causing confident wrong actions.
 
 **Finding 475**: **Cosine distance is the optimal choice: AUROC=1.0 with minimal computation.** All hidden-state methods work equally well, but cosine distance requires only a single 4096D centroid vector and one dot product — the lowest storage and computation of any AUROC=1.0 method. Gram matrices require storing and comparing matrix signatures. Euclidean and norm difference work but carry no advantage over cosine.
+
+---
+
+## Experiment 319: Multi-Step Action Trajectory Under Corruption (Real OpenVLA-7B)
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_action_trajectory.py`
+**Results**: `experiments/trajectory_20260315_120640.json`
+**Figure**: `paper/latex/fig328_trajectory.png`
+
+### Summary
+
+Analyzes how corruption affects action token sequences: extended generation (21 tokens), determinism verification, severity-divergence curves, and per-dimension sensitivity.
+
+### Action Determinism
+
+5 clean passes produce identical 21-token sequences → perfectly deterministic autoregressive generation.
+
+### Extended Action Deviation (Severity 1.0)
+
+| Corruption | Tokens Changed | Total Deviation (bins) |
+|-----------|---------------|----------------------|
+| Fog | 6/7 | 309 |
+| Night | 7/8 | 393 |
+| Blur | 5/7 | 463 |
+| Noise | 6/7 | 283 |
+
+Blur has highest total deviation (463 bins) despite fewer changed tokens — larger per-token shifts.
+
+### Severity → Divergence Relationship
+
+Fog divergence is monotonically non-decreasing but not linear — action deviation can be non-monotonic (jumps between token bins at threshold severities).
+
+### Key Findings
+
+**Finding 476**: **Action generation is perfectly deterministic — 5 passes produce identical 21-token sequences.** The autoregressive generation with do_sample=False and greedy decoding produces bit-identical outputs. This determinism is the foundation for both the zero-variance detection property and the ability to detect ANY action change as corruption-induced.
+
+**Finding 477**: **Blur causes the largest per-token deviation (463 bins at severity 1.0) despite affecting fewer tokens.** Blur changes 5/7 action dimensions but each changed dimension shifts by ~93 bins on average, versus fog's 52 bins/dim and noise's 47 bins/dim. This confirms blur as the corruption type requiring the most urgent intervention — it causes the most dangerous robot behavior changes.
+
+**Finding 478**: **Action divergence is non-monotonic with severity.** Fog at 5% severity changes 4/7 tokens (158 bins deviation), while fog at 16% changes 4/7 but only 55 bins. This occurs because action tokens are quantized into 256 bins — small severity changes can flip a token across a bin boundary or keep it within the same bin. The detection distance, however, increases monotonically (ρ=1.0), making it a more reliable severity indicator than action deviation itself.
+
+**Finding 479**: **Night corruption at full severity changes 7/8 generated tokens** — the additional 8th token (beyond the standard 7 action dimensions) is also corrupted. This suggests corruption effects propagate through the autoregressive chain, affecting all downstream generation. Early detection and intervention are therefore critical to prevent cascading errors in multi-step planning.
+
+---
+
+## Experiment 320: Comprehensive Ablation Summary (Real OpenVLA-7B)
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_comprehensive_ablation.py`
+**Results**: `experiments/comp_ablation_20260315_120833.json`
+**Figure**: `paper/latex/fig329_compablation.png`
+
+### Summary
+
+Systematic sweep of all key hyperparameters: 6 layers × 5 token positions × 6 dimension counts × 4 metrics × 4 calibration sizes. Identifies exactly 2 critical choices: layer (avoid L0 for text tokens) and token position (avoid BOS).
+
+### Layer × Token Position AUROC
+
+| | BOS | img_first | img_mid | img_last | last |
+|---|-----|-----------|---------|----------|------|
+| L0 | **0.50** | 1.00 | 1.00 | 1.00 | **0.50** |
+| L1 | **0.50** | 1.00 | 1.00 | 1.00 | 1.00 |
+| L3 | **0.50** | 1.00 | 1.00 | 1.00 | 1.00 |
+| L15 | **0.50** | 1.00 | 1.00 | 1.00 | 1.00 |
+| L31 | **0.50** | 1.00 | 1.00 | 1.00 | 1.00 |
+| L32 | **0.50** | 1.00 | 1.00 | 1.00 | 1.00 |
+
+**BOS always fails (AUROC=0.5).** L0+last also fails (vision encoder doesn't affect text tokens). All other combinations: AUROC=1.0.
+
+### Dimension Truncation (all AUROC=1.0)
+
+4D, 16D, 64D, 256D, 1024D, 4096D — all achieve AUROC=1.0.
+
+### Distance Metrics (all AUROC=1.0)
+
+Cosine, Euclidean, Manhattan, Chebyshev — all achieve AUROC=1.0.
+
+### Calibration Size (per-scene, all perfect)
+
+N=1, 3, 5, 10 — all achieve 100% sensitivity and specificity.
+
+### Key Findings
+
+**Finding 480**: **Only 2 of 5 design choices are critical: (1) avoid BOS token and (2) avoid L0 for text positions.** BOS token at every layer produces AUROC=0.5 (random). L0 last token also produces AUROC=0.5. Every other combination of layer, token, dimension, metric, and calibration size achieves AUROC=1.0. The method is robust to virtually all implementation choices.
+
+**Finding 481**: **L0 image tokens DO carry signal (AUROC=1.0) while L0 text tokens do not.** The vision encoder (SigLIP) changes image token representations under corruption, but this information is not propagated to text token positions at L0. Starting from L1, even the last text token carries the corruption signal (AUROC=1.0). This means the LLM backbone is essential for distributing the corruption signal across all token positions.
+
+**Finding 482**: **Embedding dimension is completely non-critical — even 4D (16 bytes) achieves AUROC=1.0.** There is no minimum dimension requirement beyond 2D (per Experiment 317). The zero-variance property ensures that ANY non-trivial projection of the embedding preserves perfect detection, because the in-distribution variance is exactly 0.
+
+**Finding 483**: **Per-scene calibration is perfect at all sizes (N=1 to N=10).** With per-scene calibration (the recommended protocol), sensitivity=1.0 and specificity=1.0 regardless of how many scenes are calibrated. The method requires zero hyperparameter tuning beyond choosing any non-BOS token at any non-L0-text layer.

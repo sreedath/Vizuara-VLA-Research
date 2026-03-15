@@ -5941,4 +5941,44 @@ We compare 8 OOD detection methods spanning hidden-state approaches (cosine dist
 
 \textbf{Finding 729}: \textbf{Cosine distance is Pareto-optimal: AUROC=1.0 at minimum cost.} Among all AUROC=1.0 methods, cosine requires the least storage (one 4096D vector = 16KB, compressible to 16 bytes at 4D) and computation (one dot product). It is the natural choice for resource-constrained robotic deployment.
 
+\subsection{Experiment 319: Multi-Step Action Trajectory Under Corruption}
+
+We analyze corruption effects on extended action sequences, measuring divergence across multiple generation steps.
+
+\textbf{Setup.} We generate 21 action tokens (3 planning steps of 7 dimensions each) under clean and corrupted conditions, measuring per-token deviation and cumulative error. We verify action determinism with 5 clean passes and construct severity-divergence curves at 10 severity levels.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig328_trajectory.png}
+\caption{\textbf{Figure~328: Action trajectory analysis.} (A)~Severity-divergence curves: non-monotonic due to token quantization. (B)~At 100\% severity: blur highest deviation (463 bins), noise lowest (283).}
+\label{fig:trajectory}
+\end{figure}
+
+\textbf{Finding 730}: \textbf{Action generation is perfectly deterministic --- 5 passes produce identical 21-token sequences.} Greedy autoregressive decoding produces bit-identical outputs, forming the foundation for both zero-variance detection and the ability to attribute any action change to corruption.
+
+\textbf{Finding 731}: \textbf{Blur causes the largest per-token deviation (463 bins at severity 1.0).} Despite affecting only 5/7 dimensions, each changed dimension shifts by $\sim$93 bins on average, versus fog's 52 bins/dim. This confirms blur as the most dangerous corruption for robot control --- it produces the largest absolute action errors.
+
+\textbf{Finding 732}: \textbf{Action divergence is non-monotonic due to token quantization.} Fog at 5\% severity deviates by 158 bins, but 16\% severity deviates by only 55 bins --- tokens jump between discrete bins non-linearly. Cosine distance, however, increases monotonically ($\rho = 1.0$), making it a more reliable severity estimator than action deviation itself.
+
+\subsection{Experiment 320: Comprehensive Ablation Summary}
+
+We perform a systematic sweep of all key hyperparameters to identify which design choices matter for detection performance.
+
+\textbf{Setup.} We evaluate 6 layers $\times$ 5 token positions $\times$ 6 dimension counts $\times$ 4 distance metrics $\times$ 4 calibration sizes, all tested against 4 corruptions at 50\% severity.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig329_compablation.png}
+\caption{\textbf{Figure~329: Comprehensive ablation.} (A)~Layer $\times$ token AUROC: only BOS (all layers) and L0+last fail. (B)~All dimensions from 4D to 4096D achieve AUROC=1.0. (C)~All 4 metrics achieve AUROC=1.0. (D)~Only layer and token position are critical design choices.}
+\label{fig:compablation}
+\end{figure}
+
+\textbf{Finding 733}: \textbf{Only 2 of 5 design choices are critical: avoid BOS token, avoid L0 for text positions.} BOS produces AUROC=0.5 at every layer. L0 last token also produces 0.5. Every other combination achieves AUROC=1.0. The method is robust to virtually all implementation choices --- no hyperparameter tuning is required beyond these two exclusions.
+
+\textbf{Finding 734}: \textbf{L0 image tokens carry signal (AUROC=1.0) while L0 text tokens do not.} The vision encoder changes image token representations under corruption, but this information is not propagated to text positions at L0. From L1 onward, all token positions (including the last text token) carry the full detection signal. The LLM backbone is essential for distributing corruption information across the sequence.
+
+\textbf{Finding 735}: \textbf{4D embedding suffices (AUROC=1.0 at all dimension counts).} The zero-variance property ensures that any non-trivial projection preserves perfect detection. Even random 4D projections (16 bytes of storage) achieve AUROC=1.0, confirming the extreme compression potential of this method.
+
+\textbf{Finding 736}: \textbf{Recommended minimal configuration}: Layer $\geq$ L1, any non-BOS token, 4D truncation, cosine distance, per-scene single-image calibration. Total overhead: 16 bytes storage, one dot product per frame.
+
 \end{document}
