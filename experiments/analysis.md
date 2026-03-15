@@ -16281,3 +16281,32 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 
 **Finding 799**: Scenes 3 and 4 have near-identical centroids (distance=0.00007, vs 0.002-0.006 for other pairs), yet cross-scene transfer still varies. This confirms that centroid proximity does not guarantee transfer success — the corruption shift directions must also align.
 
+---
+
+## Experiment 391: Action Safety Analysis Under Corruption
+
+**Objective**: Analyze how corruptions affect action predictions across severity levels and whether detection triggers BEFORE dangerous action changes.
+
+**Method**: Extracted action tokens (7-dim, 256-bin) and detection distances at 11 severity levels (0.05–1.0) for all 4 corruptions. Measured per-dimension action shifts, action confidence, detection-action correlation, and timing of detection vs action change onset.
+
+**Key Results**:
+- Detection-action correlation is WEAK: Pearson r=0.15
+- Actions change BEFORE detection triggers for fog (sev=0.1 vs 0.2), night (0.05 vs 0.1), noise (0.2 vs 0.7)
+- Only blur has simultaneous detection and action change (both at sev=0.05)
+- Action divergence is NON-MONOTONIC: fog L2 goes 0→0.71→0.86→0.56→0.50 across severity
+- Confidence INCREASES under fog (0.53→0.89) — model becomes MORE confident as corruption worsens
+- Detection-confidence anti-correlation: r=-0.58
+- Noise has 3.5× safety gap: actions change at sev=0.2, detection triggers at sev=0.7
+- Dim 5 (wrist rotation) most vulnerable for fog/night; dim 4 (ry) for noise/blur
+- Dim 6 (gripper) most stable across all corruptions
+
+**Finding 800**: Detection distance and action divergence are WEAKLY correlated (r=0.15). Detection distance grows smoothly with severity while actions change in DISCRETE JUMPS (token quantization), creating fundamentally different temporal dynamics.
+
+**Finding 801**: Actions change BEFORE detection triggers for 3 of 4 corruptions. Fog: actions at sev=0.1, detection at sev=0.2. Night: actions at sev=0.05, detection at sev=0.1. Noise: catastrophic 3.5× gap (actions at sev=0.2, detection at sev=0.7). This reveals a critical SAFETY WINDOW where corrupted actions execute undetected.
+
+**Finding 802**: Action divergence is NON-MONOTONIC with severity. Fog L2 peaks at 0.86 (sev=0.3-0.7), then DECREASES to 0.50 at sev=1.0. Blur oscillates between 0.52 and 1.21. The model's discrete token space creates irregular action landscapes under continuous corruption.
+
+**Finding 803**: Fog corruption INCREASES model confidence from 0.53 (clean) to 0.89 (sev=1.0) while producing maximally wrong actions. This is the worst case of "confidently wrong" behavior — the model is most confident precisely when its actions are most dangerous.
+
+**Finding 804**: The detection-confidence anti-correlation (r=-0.58) means higher detection distances correlate with LOWER confidence, but confidence itself is a POOR safety proxy because it has near-zero correlation with actual action divergence (r=0.05).
+

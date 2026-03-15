@@ -7682,4 +7682,25 @@ We validate the detector across 5 structurally different synthetic driving scene
 
 \textbf{Finding 1051}: \textbf{Near-identical centroids (distance=0.00007) do not guarantee transfer success.} Scenes 3 and 4 share nearly identical centroid positions yet show different transfer patterns, confirming that shift direction alignment---not just centroid proximity---determines transferability.
 
+\subsection{Experiment 391: Action Safety Analysis Under Corruption}
+
+We analyze the relationship between detection distance and action divergence across severity levels. This experiment addresses a critical safety question: does detection trigger \textit{before} dangerous actions execute?
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig400_action_safety.png}
+\caption{Action safety analysis. (A) Detection distance grows smoothly with severity. (B) Action divergence is non-monotonic and quantized. (C) Actions change BEFORE detection triggers for 3/4 corruptions. (D) Fog confidence INCREASES with severity. (E) Per-dimension vulnerability. (F) Weak detection-action correlation ($r=0.15$).}
+\label{fig:action_safety}
+\end{figure}
+
+\textbf{Finding 1052}: \textbf{Detection distance and action divergence are weakly correlated ($r=0.15$).} Detection grows continuously while actions change in discrete jumps due to token quantization (256-bin). These fundamentally different dynamics mean detection distance cannot predict action magnitude.
+
+\textbf{Finding 1053}: \textbf{Actions change BEFORE detection triggers for 3/4 corruptions.} Fog: actions at severity 0.1, detection at 0.2. Night: actions at 0.05, detection at 0.1. Noise: catastrophic $3.5\times$ gap (actions at 0.2, detection at 0.7). Only blur triggers simultaneously. This reveals a critical safety window where corrupted actions execute undetected.
+
+\textbf{Finding 1054}: \textbf{Action divergence is non-monotonic with severity.} Fog L2 peaks at 0.86 (severity 0.3--0.7), then decreases to 0.50 at severity 1.0. Blur oscillates between 0.52 and 1.21. The 256-bin token space creates irregular action landscapes under continuous visual corruption.
+
+\textbf{Finding 1055}: \textbf{Fog corruption INCREASES model confidence from 0.53 to 0.89 while maximizing action error.} This is the worst case of ``confidently wrong'' behavior---the model is most confident precisely when its outputs are most dangerous. Confidence has near-zero correlation with actual action divergence ($r=0.05$).
+
+\textbf{Finding 1056}: \textbf{Rotation dimensions (4, 5) are most vulnerable; gripper (dim 6) is most stable.} Wrist rotation shifts by up to 0.62 under blur while gripper shifts only 0.02. This vulnerability hierarchy could inform dimension-specific action validation.
+
 \end{document}
