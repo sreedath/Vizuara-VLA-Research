@@ -7607,4 +7607,37 @@ We investigate the detector's behavior under realistic deployment conditions: gr
 
 \textbf{Finding 1036}: \textbf{FPR requires $N \geq 10$ for 0\% on held-out data.} With $N < 3$, the threshold is too tight (100\% FPR on unseen clean data). This establishes the minimum practical calibration requirement as 10 diverse clean images.
 
+% ============================================================
+% EXPERIMENT 388: Corruption Interpolation in Embedding Space
+% ============================================================
+
+\subsection{Experiment 388: Corruption Interpolation in Embedding Space}
+
+We investigate how the embedding space represents mixtures of corruption types by interpolating in pixel space and measuring the resulting embedding paths.
+
+\textbf{Perfectly Linear Embedding Paths.} All 6 interpolation paths achieve straightness $> 0.999$. Pixel-space linear mixtures map to nearly perfectly linear embedding paths, demonstrating that the visual encoder preserves affine structure.
+
+\textbf{Cancellation Valley in Fog-Night Interpolation.} The fog$\to$night path shows a U-shaped distance profile: detection distance \emph{decreases} to a minimum at the midpoint before rising again. The two corruptions partially cancel in embedding space, creating a ``detection valley.'' Despite this, all points remain above the detection threshold.
+
+\textbf{Dominant Corruption Wins Midpoints.} Every midpoint is classified as closest to one parent corruption, never as a novel hybrid. The corruption producing the larger embedding distance dominates the midpoint identity, consistent with the non-orthogonal shift structure found in Experiment 383.
+
+\textbf{Non-Monotonic Severity for Noise and Blur.} While fog and night have strictly monotonic severity-distance relationships, noise and blur exhibit non-monotonicity. This creates severity-specific detection valleys that complicate simple threshold-based detection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig397_interpolation.png}
+\caption{\textbf{Experiment 388}: Corruption interpolation. Embedding paths are perfectly linear (straightness $>$0.999). Fog-night shows U-shaped cancellation. Midpoints align with the dominant parent. Noise/blur have non-monotonic severity profiles.}
+\label{fig:interpolation}
+\end{figure}
+
+\textbf{Finding 1037}: \textbf{Pixel-space interpolation maps to linear embedding paths (straightness $>$ 0.999).} The visual encoder's corruption representation is affine --- linear mixtures in pixel space produce linear mixtures in embedding space.
+
+\textbf{Finding 1038}: \textbf{Fog-night interpolation creates a cancellation valley at the midpoint.} The anti-correlated shift directions ($\cos\theta = -0.32$) cause partial cancellation, reducing detection distance. This is the geometric consequence of non-orthogonal corruption subspaces.
+
+\textbf{Finding 1039}: \textbf{Midpoints are always classified as the dominant parent corruption.} No novel ``hybrid corruption'' representations emerge from interpolation. The higher-distance corruption wins the midpoint identity.
+
+\textbf{Finding 1040}: \textbf{Noise and blur have non-monotonic severity-distance profiles.} Unlike fog and night (strictly monotonic), noise and blur can become temporarily harder to detect at intermediate severities.
+
+\textbf{Finding 1041}: \textbf{Despite cancellation valleys, all interpolation points remain detectable.} The detector maintains 100\% coverage even through the worst-case mixing ratios, demonstrating fundamental robustness to corruption combinations.
+
 \end{document}
