@@ -1,0 +1,222 @@
+{
+  "snr": {
+    "fog": {
+      "ood_distance": 0.0027054548263549805,
+      "within_scene_snr": "infinity",
+      "cross_scene_snr": 412.8887939453125,
+      "scene_mean_d": 3.693699909490533e-05,
+      "scene_std_d": 6.5525023273949046e-06
+    },
+    "night": {
+      "ood_distance": 0.007991313934326172,
+      "within_scene_snr": "infinity",
+      "cross_scene_snr": 1219.58203125,
+      "scene_mean_d": 3.693699909490533e-05,
+      "scene_std_d": 6.5525023273949046e-06
+    },
+    "noise": {
+      "ood_distance": 0.0005123615264892578,
+      "within_scene_snr": "infinity",
+      "cross_scene_snr": 78.1932601928711,
+      "scene_mean_d": 3.693699909490533e-05,
+      "scene_std_d": 6.5525023273949046e-06
+    },
+    "blur": {
+      "ood_distance": 0.006263315677642822,
+      "within_scene_snr": "infinity",
+      "cross_scene_snr": 955.8662109375,
+      "scene_mean_d": 3.693699909490533e-05,
+      "scene_std_d": 6.5525023273949046e-06
+    }
+  },
+  "fisher": {
+    "fog": {
+      "l2_mean_diff": 0.6328060030937195,
+      "fisher_ratio": "infinity",
+      "discriminant_projection_id": -1.6797468662261963,
+      "discriminant_projection_ood": -2.3125526905059814,
+      "projection_gap": 0.6328058242797852
+    },
+    "night": {
+      "l2_mean_diff": 1.1041291952133179,
+      "fisher_ratio": "infinity",
+      "discriminant_projection_id": -1.6747289896011353,
+      "discriminant_projection_ood": -2.7788589000701904,
+      "projection_gap": 1.1041299104690552
+    },
+    "noise": {
+      "l2_mean_diff": 0.2712613344192505,
+      "fisher_ratio": "infinity",
+      "discriminant_projection_id": 2.0289900302886963,
+      "discriminant_projection_ood": 1.7577288150787354,
+      "projection_gap": 0.27126121520996094
+    },
+    "blur": {
+      "l2_mean_diff": 0.9250903129577637,
+      "fisher_ratio": "infinity",
+      "discriminant_projection_id": 0.9457076191902161,
+      "discriminant_projection_ood": 0.020617417991161346,
+      "projection_gap": 0.9250901937484741
+    }
+  },
+  "mahalanobis": {
+    "fog": {
+      "mahalanobis": 665.9175415039062,
+      "euclidean": 0.653200626373291,
+      "cosine": 0.002913355827331543,
+      "maha_eucl_ratio": 1019.4686279296875
+    },
+    "night": {
+      "mahalanobis": 1136.7496337890625,
+      "euclidean": 1.1041185855865479,
+      "cosine": 0.008026838302612305,
+      "maha_eucl_ratio": 1029.553955078125
+    },
+    "noise": {
+      "mahalanobis": 253.97853088378906,
+      "euclidean": 0.2595474421977997,
+      "cosine": 0.0004544258117675781,
+      "maha_eucl_ratio": 978.5437622070312
+    },
+    "blur": {
+      "mahalanobis": 998.9467163085938,
+      "euclidean": 0.9285303354263306,
+      "cosine": 0.006290912628173828,
+      "maha_eucl_ratio": 1075.83642578125
+    }
+  },
+  "min_detectable_effect": {
+    "fog_thresh_any": 0.01,
+    "night_thresh_any": 0.01,
+    "noise_thresh_any": 0.01,
+    "blur_thresh_any": 0.02
+  },
+  "power_analysis": {
+    "fog": {
+      "effect_size": 444.6172790527344,
+      "powers": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0,
+        "20": 1.0
+      },
+      "within_scene_power": 1.0
+    },
+    "night": {
+      "effect_size": 1225.0035400390625,
+      "powers": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0,
+        "20": 1.0
+      },
+      "within_scene_power": 1.0
+    },
+    "noise": {
+      "effect_size": 69.35149383544922,
+      "powers": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0,
+        "20": 1.0
+      },
+      "within_scene_power": 1.0
+    },
+    "blur": {
+      "effect_size": 960.077880859375,
+      "powers": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0,
+        "20": 1.0
+      },
+      "within_scene_power": 1.0
+    }
+  },
+  "mmd": {
+    "fog": {
+      "mmd_squared": 1.1087030172348022,
+      "mmd": 1.0529496669769287,
+      "bandwidth": 0.15940067172050476
+    },
+    "night": {
+      "mmd_squared": 0.9255157113075256,
+      "mmd": 0.9620372653007507,
+      "bandwidth": 0.26897063851356506
+    },
+    "noise": {
+      "mmd_squared": 0.61150062084198,
+      "mmd": 0.7819850444793701,
+      "bandwidth": 0.12053375691175461
+    },
+    "blur": {
+      "mmd_squared": 1.3730945587158203,
+      "mmd": 1.1717911958694458,
+      "bandwidth": 0.23359882831573486
+    }
+  },
+  "margins": {
+    "fog": {
+      "within_scene_margin": 0.0027054548263549805,
+      "cross_scene_margin": 0.0028649568557739258,
+      "max_id_distance": 4.839897155761719e-05,
+      "safety_factor_within": "infinity",
+      "safety_factor_cross": 60.194580078125
+    },
+    "night": {
+      "within_scene_margin": 0.007991313934326172,
+      "cross_scene_margin": 0.007978439331054688,
+      "max_id_distance": 4.839897155761719e-05,
+      "safety_factor_within": "infinity",
+      "safety_factor_cross": 165.8472900390625
+    },
+    "noise": {
+      "within_scene_margin": 0.0005123615264892578,
+      "cross_scene_margin": 0.00040602684020996094,
+      "max_id_distance": 4.839897155761719e-05,
+      "safety_factor_within": "infinity",
+      "safety_factor_cross": 9.38916301727295
+    },
+    "blur": {
+      "within_scene_margin": 0.006263315677642822,
+      "cross_scene_margin": 0.006242513656616211,
+      "max_id_distance": 4.839897155761719e-05,
+      "safety_factor_within": "infinity",
+      "safety_factor_cross": 129.9803009033203
+    }
+  },
+  "dimensionality": {
+    "singular_values": [
+      1.8980854749679565,
+      1.0804102420806885,
+      0.729799747467041,
+      0.4768637716770172,
+      0.3800102770328522,
+      0.2839123010635376,
+      0.24876759946346283,
+      0.15749035775661469,
+      0.09998228400945663,
+      0.09401623159646988
+    ],
+    "cumulative_variance": [
+      0.6133115291595459,
+      0.8120248317718506,
+      0.9026934504508972,
+      0.9414047598838806,
+      0.965988039970398,
+      0.979710042476654,
+      0.9902451038360596,
+      0.9944674968719482,
+      0.9961692094802856,
+      0.9976739287376404
+    ],
+    "dims_for_90pct": 3,
+    "dims_for_95pct": 5,
+    "dims_for_99pct": 7,
+    "effective_rank": 3.3994340896606445
+  }
+}
