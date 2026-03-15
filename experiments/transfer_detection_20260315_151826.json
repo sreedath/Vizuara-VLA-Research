@@ -1,0 +1,320 @@
+{
+  "transfer_matrix": {
+    "random_to_random": {
+      "per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0,
+      "is_same_domain": true
+    },
+    "random_to_gradient": {
+      "per_type": {
+        "fog": 0.89,
+        "night": 0.99,
+        "noise": 0.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.72,
+      "is_same_domain": false
+    },
+    "random_to_checkerboard": {
+      "per_type": {
+        "fog": 0.48,
+        "night": 0.72,
+        "noise": 0.28,
+        "blur": 0.74
+      },
+      "mean_auroc": 0.5549999999999999,
+      "is_same_domain": false
+    },
+    "random_to_natural": {
+      "per_type": {
+        "fog": 0.0,
+        "night": 0.94,
+        "noise": 0.0,
+        "blur": 0.98
+      },
+      "mean_auroc": 0.48,
+      "is_same_domain": false
+    },
+    "gradient_to_random": {
+      "per_type": {
+        "fog": 0.0,
+        "night": 1.0,
+        "noise": 0.93,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.7325,
+      "is_same_domain": false
+    },
+    "gradient_to_gradient": {
+      "per_type": {
+        "fog": 0.98,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.995,
+      "is_same_domain": true
+    },
+    "gradient_to_checkerboard": {
+      "per_type": {
+        "fog": 0.39,
+        "night": 0.72,
+        "noise": 0.59,
+        "blur": 0.67
+      },
+      "mean_auroc": 0.5924999999999999,
+      "is_same_domain": false
+    },
+    "gradient_to_natural": {
+      "per_type": {
+        "fog": 0.0,
+        "night": 0.79,
+        "noise": 0.03,
+        "blur": 0.62
+      },
+      "mean_auroc": 0.36,
+      "is_same_domain": false
+    },
+    "checkerboard_to_random": {
+      "per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.21,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.8025,
+      "is_same_domain": false
+    },
+    "checkerboard_to_gradient": {
+      "per_type": {
+        "fog": 0.76,
+        "night": 0.98,
+        "noise": 0.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.685,
+      "is_same_domain": false
+    },
+    "checkerboard_to_checkerboard": {
+      "per_type": {
+        "fog": 0.82,
+        "night": 1.0,
+        "noise": 0.71,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.8825,
+      "is_same_domain": true
+    },
+    "checkerboard_to_natural": {
+      "per_type": {
+        "fog": 0.0,
+        "night": 0.97,
+        "noise": 0.0,
+        "blur": 0.95
+      },
+      "mean_auroc": 0.48,
+      "is_same_domain": false
+    },
+    "natural_to_random": {
+      "per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.11,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.7775,
+      "is_same_domain": false
+    },
+    "natural_to_gradient": {
+      "per_type": {
+        "fog": 0.7,
+        "night": 0.31,
+        "noise": 0.0,
+        "blur": 0.0
+      },
+      "mean_auroc": 0.2525,
+      "is_same_domain": false
+    },
+    "natural_to_checkerboard": {
+      "per_type": {
+        "fog": 0.64,
+        "night": 0.46,
+        "noise": 0.26,
+        "blur": 0.13
+      },
+      "mean_auroc": 0.37250000000000005,
+      "is_same_domain": false
+    },
+    "natural_to_natural": {
+      "per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0,
+      "is_same_domain": true
+    }
+  },
+  "domain_gap": {
+    "gradient_vs_random": 0.0030689239501953125,
+    "gradient_vs_natural": 0.01408308744430542,
+    "checkerboard_vs_random": 0.0039064884185791016,
+    "checkerboard_vs_gradient": 0.004112958908081055,
+    "checkerboard_vs_natural": 0.013203322887420654,
+    "natural_vs_random": 0.008564949035644531
+  },
+  "universal": {
+    "random": {
+      "per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.41,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.8525
+    },
+    "gradient": {
+      "per_type": {
+        "fog": 0.87,
+        "night": 0.97,
+        "noise": 0.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.71
+    },
+    "checkerboard": {
+      "per_type": {
+        "fog": 0.56,
+        "night": 0.75,
+        "noise": 0.39,
+        "blur": 0.84
+      },
+      "mean_auroc": 0.635
+    },
+    "natural": {
+      "per_type": {
+        "fog": 0.0,
+        "night": 0.96,
+        "noise": 0.08,
+        "blur": 0.98
+      },
+      "mean_auroc": 0.505
+    }
+  },
+  "degradation": {
+    "per_transfer": {
+      "random_to_gradient": {
+        "same_domain": 1.0,
+        "cross_domain": 0.72,
+        "degradation": 0.28,
+        "relative_degradation": 0.28
+      },
+      "random_to_checkerboard": {
+        "same_domain": 1.0,
+        "cross_domain": 0.5549999999999999,
+        "degradation": 0.44500000000000006,
+        "relative_degradation": 0.44500000000000006
+      },
+      "random_to_natural": {
+        "same_domain": 1.0,
+        "cross_domain": 0.48,
+        "degradation": 0.52,
+        "relative_degradation": 0.52
+      },
+      "gradient_to_random": {
+        "same_domain": 0.995,
+        "cross_domain": 0.7325,
+        "degradation": 0.26249999999999996,
+        "relative_degradation": 0.2638190954773869
+      },
+      "gradient_to_checkerboard": {
+        "same_domain": 0.995,
+        "cross_domain": 0.5924999999999999,
+        "degradation": 0.4025000000000001,
+        "relative_degradation": 0.4045226130653267
+      },
+      "gradient_to_natural": {
+        "same_domain": 0.995,
+        "cross_domain": 0.36,
+        "degradation": 0.635,
+        "relative_degradation": 0.6381909547738693
+      },
+      "checkerboard_to_random": {
+        "same_domain": 0.8825,
+        "cross_domain": 0.8025,
+        "degradation": 0.07999999999999996,
+        "relative_degradation": 0.09065155807365435
+      },
+      "checkerboard_to_gradient": {
+        "same_domain": 0.8825,
+        "cross_domain": 0.685,
+        "degradation": 0.1974999999999999,
+        "relative_degradation": 0.22379603399433418
+      },
+      "checkerboard_to_natural": {
+        "same_domain": 0.8825,
+        "cross_domain": 0.48,
+        "degradation": 0.40249999999999997,
+        "relative_degradation": 0.45609065155807366
+      },
+      "natural_to_random": {
+        "same_domain": 1.0,
+        "cross_domain": 0.7775,
+        "degradation": 0.22250000000000003,
+        "relative_degradation": 0.22250000000000003
+      },
+      "natural_to_gradient": {
+        "same_domain": 1.0,
+        "cross_domain": 0.2525,
+        "degradation": 0.7475,
+        "relative_degradation": 0.7475
+      },
+      "natural_to_checkerboard": {
+        "same_domain": 1.0,
+        "cross_domain": 0.37250000000000005,
+        "degradation": 0.6275,
+        "relative_degradation": 0.6275
+      }
+    },
+    "worst_transfer": {
+      "key": "natural_to_gradient",
+      "degradation": 0.7475
+    },
+    "best_transfer": {
+      "key": "checkerboard_to_random",
+      "degradation": 0.07999999999999996
+    }
+  },
+  "per_corruption_transfer": {
+    "fog": {
+      "mean_cross_auroc": 0.4883333333333333,
+      "min_cross_auroc": 0.0,
+      "std_cross_auroc": 0.38623898761719483,
+      "all_perfect": false
+    },
+    "night": {
+      "mean_cross_auroc": 0.8233333333333336,
+      "min_cross_auroc": 0.31,
+      "std_cross_auroc": 0.22343281366491857,
+      "all_perfect": false
+    },
+    "noise": {
+      "mean_cross_auroc": 0.20083333333333334,
+      "min_cross_auroc": 0.0,
+      "std_cross_auroc": 0.2787011043314245,
+      "all_perfect": false
+    },
+    "blur": {
+      "mean_cross_auroc": 0.7575000000000002,
+      "min_cross_auroc": 0.0,
+      "std_cross_auroc": 0.33850467746645196,
+      "all_perfect": false
+    }
+  }
+}

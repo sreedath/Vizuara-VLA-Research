@@ -14874,3 +14874,42 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 
 **Finding 649**: The noise detection gap is scene-dependent: median gap is essentially zero (0.000001) while worst case is negative. Noise detection fundamentally requires per-scene calibration, not centroid-based detection.
 
+
+## Experiment 361: Transfer Detection
+
+**Script**: `scripts/real_vla_transfer_detection.py`
+**Result**: `experiments/transfer_detection_20260315_151826.json`
+**Figure**: `figures/fig370_transfer.png`
+
+### Key Results
+
+**Cross-Scene Transfer Matrix** (mean AUROC):
+| Train→Test | random | gradient | checker | natural |
+|-----------|--------|----------|---------|---------|
+| random | **1.000** | 0.720 | 0.555 | 0.480 |
+| gradient | 0.733 | **0.995** | 0.592 | 0.360 |
+| checker | 0.802 | 0.685 | **0.882** | 0.480 |
+| natural | 0.777 | 0.253 | 0.373 | **1.000** |
+
+**Domain Gap**: gradient-random closest (0.003), gradient-natural farthest (0.014)
+
+**Universal Calibration** (mixed training):
+- random: fog=1.0, night=1.0, noise=0.41, blur=1.0
+- gradient: fog=0.87, night=0.97, noise=0.0, blur=1.0
+- checkerboard: fog=0.56, night=0.75, noise=0.39, blur=0.84
+- natural: fog=0.0, night=0.96, noise=0.08, blur=0.98
+
+**Per-Corruption Transfer**: night best (0.823 mean), noise worst (0.201 mean)
+
+### Findings
+
+**Finding 650**: Cross-domain transfer FAILS dramatically: same-domain AUROC averages 0.97 while cross-domain drops to 0.57 — a 41% degradation. Detection is fundamentally scene-specific.
+
+**Finding 651**: Universal calibration (mixed training set) produces catastrophic failures: fog on natural=0.000, noise on gradient=0.000. Mixing domains dilutes the centroid, degrading detection for all.
+
+**Finding 652**: Night is the most transferable corruption (cross-domain mean 0.823, min 0.310), while noise is least transferable (mean 0.201, min 0.000). Night's large embedding shift survives domain mismatch.
+
+**Finding 653**: Domain gap predicts transfer performance: the farthest domain pair (gradient-natural, gap=0.014) has the worst transfer (0.253), confirming that centroid displacement between domains directly degrades detection.
+
+**Finding 654**: Worst transfer is natural→gradient (degradation 0.748). Best transfer is checkerboard→random (degradation 0.080). Scene structure complexity determines transfer difficulty.
+

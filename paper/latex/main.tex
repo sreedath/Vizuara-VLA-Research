@@ -6847,4 +6847,25 @@ We provide formal guarantees on detection reliability through leave-one-out cros
 
 \textbf{Finding 901}: \textbf{Noise detection fundamentally requires per-scene calibration.} The centroid-based approach cannot certify noise at any severity because the noise-vs-clean gap is scene-dependent and can be negative. Per-scene one-shot calibration (Experiment 355) resolves this limitation.
 
+\subsection{Experiment 361: Transfer Detection}
+
+We test whether a detector calibrated on one scene type can detect corruptions in another, using random pixels, gradient scenes, checkerboards, and natural textures.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig370_transfer.png}
+\caption{Cross-domain transfer analysis. Top-left: transfer matrix --- diagonal (same-domain) averages 0.97 while off-diagonal drops to 0.57. Top-right: universal calibration fails catastrophically for fog-on-natural (0.0) and noise-on-gradient (0.0). Bottom-left: night transfers best (0.823 mean), noise worst (0.201). Bottom-right: domain gap predicts transfer degradation.}
+\label{fig:transfer}
+\end{figure}
+
+\textbf{Finding 902}: \textbf{Cross-domain transfer fails: same-domain AUROC 0.97 vs cross-domain 0.57 (41\% degradation).} Detection is fundamentally scene-specific --- a centroid calibrated on one scene type cannot reliably detect corruptions in another.
+
+\textbf{Finding 903}: \textbf{Universal calibration (mixed training) produces catastrophic failures.} Fog on natural texture achieves AUROC=0.0, noise on gradient=0.0. Mixing diverse domains dilutes the centroid, degrading detection for all scene types.
+
+\textbf{Finding 904}: \textbf{Night is the most transferable corruption (cross-domain mean 0.823).} Its large embedding shift ($\sim 2 \times 10^{-3}$) survives domain mismatch, while noise (mean 0.201) fails because its small shift is overwhelmed by the domain gap.
+
+\textbf{Finding 905}: \textbf{Domain gap predicts transfer performance: gradient-natural (gap=0.014) yields worst transfer (0.253).} Centroid displacement between training and test domains directly degrades detection, confirming that in-domain calibration is essential.
+
+\textbf{Finding 906}: \textbf{This result demands per-deployment calibration.} The practical implication is that each deployment environment requires its own calibration images --- a universal detector calibrated on lab data will fail in the field.
+
 \end{document}
