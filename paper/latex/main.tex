@@ -5899,4 +5899,46 @@ We validate the complete deployment protocol across 8 diverse scenes, comparing 
 
 \textbf{Finding 721}: \textbf{Recommended deployment protocol}: (1)~Per-scene single-image calibration ($<$100ms, one forward pass); (2)~Store 4D centroid (16 bytes); (3)~Threshold $\tau = 0$ (any $d > 0$ triggers alert); (4)~Instantaneous recovery when conditions clear. Total overhead: one calibration pass + 16 bytes storage + sub-millisecond detection per frame.
 
+\subsection{Experiment 317: Deep Information-Theoretic Analysis}
+
+We formalize the detection method using information theory, quantifying the information content of cosine distance about corruption severity and type.
+
+\textbf{Setup.} For each corruption type, we measure cosine distance at 20 severity levels (0.05--1.0), compute mutual information via histogram binning, Spearman rank correlation, and Fisher information from numerical embedding gradients. We also analyze rate-distortion under dimension truncation and corruption direction distinguishability.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig326_infotheory.png}
+\caption{\textbf{Figure~326: Information-theoretic analysis.} (A)~Mutual information: 1.3--1.7 bits between distance and severity. (B)~Rate-distortion: 1D fails, 2D+ detects all corruptions. (C)~Fisher information: blur most estimable (4.65). (D)~Corruption directions form distinct angles ($-0.53$ to $+0.46$ cosine similarity).}
+\label{fig:infotheory}
+\end{figure}
+
+\textbf{Finding 722}: \textbf{Perfect Spearman $\rho = 1.0$ for fog/night/blur --- distance is a perfect ordinal severity estimator.} Cosine distance maintains perfect rank ordering with severity: more severe corruption always produces higher distance. The distance channel carries 1.3--1.7 bits of mutual information (58--76\% of maximum), with night highest at NMI=0.756.
+
+\textbf{Finding 723}: \textbf{2D is the minimum embedding dimension for detection.} At 1D, all corruptions produce $d = 0$ (information loss). At 2D, all four types are detected. The rate-distortion curve is non-monotonic: truncated 4--16D distances can \emph{exceed} the full 4096D distance by 3--15$\times$, because low-dimensional subspaces concentrate the corruption signal.
+
+\textbf{Finding 724}: \textbf{Fisher information highest for blur (4.65), lowest for noise (0.27).} Blur severity is most precisely estimable from distance, with signal distributed across 1,276 informative dimensions (Gini=0.51). Noise has lowest Fisher information, consistent with its stochastic nature and weakest severity estimation (Experiment~311).
+
+\textbf{Finding 725}: \textbf{Corruption types are geometrically distinct in embedding space.} Fog and noise shift embeddings in nearly opposite directions ($\cos = -0.525$), while fog and blur share partial alignment ($\cos = 0.464$). Night and noise are orthogonal ($\cos = -0.005$). This geometric separation enables corruption type identification from the embedding shift direction alone.
+
+\subsection{Experiment 318: Extended Baseline Comparison}
+
+We compare 8 OOD detection methods spanning hidden-state approaches (cosine distance, Euclidean distance, norm difference, Gram matrices at L1/L3/L15) and output-space approaches (maximum softmax probability, entropy).
+
+\textbf{Setup.} Ten clean reference scores and 20 OOD scores (4 corruptions $\times$ 5 severities) are computed for each method. AUROC is calculated per method overall and per corruption type.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig327_baselines.png}
+\caption{\textbf{Figure~327: Extended baseline comparison.} (A)~All 6 hidden-state methods achieve AUROC=1.0; output-space methods (MSP=0.85, entropy=0.75) fail. (B)~Per-corruption: fog and night specifically defeat output-space methods (0.60 AUROC).}
+\label{fig:baselines}
+\end{figure}
+
+\textbf{Finding 726}: \textbf{All 6 hidden-state methods achieve AUROC=1.0; both output-space methods fail.} Cosine distance, Euclidean distance, norm difference, and Gram matrices at three layers all perfectly separate clean from corrupted embeddings. Maximum softmax probability (0.85) and entropy (0.75) fail because corrupted inputs can produce \emph{higher} model confidence than clean inputs.
+
+\textbf{Finding 727}: \textbf{Gram matrices produce the largest separation margins but highest cost.} Gram L15 gap = 3,521, Gram L3 = 406, versus cosine = $2.8 \times 10^{-5}$. However, Gram matrices require $O(k^2)$ storage and comparison (where $k$ is the number of tokens), while cosine distance needs only one 4096D vector and one dot product.
+
+\textbf{Finding 728}: \textbf{Output-space methods fail on fog (AUROC 0.60--0.80) and night (0.60).} Fog and night make the model \emph{more confident} while producing wrong actions --- the most dangerous failure mode. MSP and entropy partially detect blur and noise (AUROC 0.80--1.0) because these corruptions increase output uncertainty. This confirms that output-space detectors are fundamentally unsafe for VLA deployment.
+
+\textbf{Finding 729}: \textbf{Cosine distance is Pareto-optimal: AUROC=1.0 at minimum cost.} Among all AUROC=1.0 methods, cosine requires the least storage (one 4096D vector = 16KB, compressible to 16 bytes at 4D) and computation (one dot product). It is the natural choice for resource-constrained robotic deployment.
+
 \end{document}

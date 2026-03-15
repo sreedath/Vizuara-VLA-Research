@@ -12413,3 +12413,111 @@ All dimension counts from 4 to 4096 achieve perfect detection.
 **Finding 465**: **Cross-scene calibration with N=2 scenes drops to AUROC=0.996 due to overlap.** Averaging centroids from 2 different scenes creates a compromise point where one scene's clean distance equals another scene's OOD distance. N=1 and N≥3 avoid this by chance. This confirms that per-scene calibration is fundamentally superior to multi-scene averaging.
 
 **Finding 466**: **Complete deployment protocol: (1) per-scene single-image calibration (<100ms), (2) 4D centroid storage (16 bytes), (3) threshold τ=0 (any d>0 triggers alert), (4) instantaneous recovery when conditions improve.** Total deployment overhead: one forward pass for calibration + 16 bytes persistent storage + sub-millisecond online detection per frame.
+
+---
+
+## Experiment 317: Deep Information-Theoretic Analysis (Real OpenVLA-7B)
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_info_theory_deep.py`
+**Results**: `experiments/info_deep_20260315_120044.json`
+**Figure**: `paper/latex/fig326_infotheory.png`
+
+### Summary
+
+Formalizes the detection method through information theory: mutual information between corruption severity and embedding distance, Fisher information for severity estimation, rate-distortion under dimension reduction, and corruption type distinguishability.
+
+### Mutual Information: Distance ↔ Severity
+
+| Corruption | MI (bits) | NMI | Spearman ρ |
+|-----------|----------|-----|-----------|
+| Fog | 1.521 | 0.660 | 1.000 |
+| Night | 1.741 | 0.756 | 1.000 |
+| Blur | 1.334 | 0.579 | 1.000 |
+| Noise | 1.660 | 0.720 | 0.994 |
+
+All corruptions have perfect (or near-perfect) rank correlation.
+
+### Fisher Information
+
+| Corruption | Total Fisher | Informative Dims | Gini |
+|-----------|-------------|-----------------|------|
+| Fog | 0.68 | 917/4096 | 0.651 |
+| Night | 3.91 | 1312/4096 | 0.475 |
+| Blur | 4.65 | 1276/4096 | 0.507 |
+| Noise | 0.27 | 853/4096 | 0.562 |
+
+### Rate-Distortion (Minimum Detectable Dimension)
+
+All corruptions: 1D = undetected (d=0), 2D+ = detected.
+Minimum embedding for detection = 2 dimensions.
+
+### Corruption Direction Similarities
+
+| Pair | Cosine Similarity |
+|------|------------------|
+| Fog vs Night | -0.283 |
+| Fog vs Noise | -0.525 |
+| Fog vs Blur | 0.464 |
+| Night vs Blur | 0.159 |
+| Night vs Noise | -0.005 |
+| Blur vs Noise | -0.371 |
+
+### Key Findings
+
+**Finding 467**: **Perfect Spearman rank correlation (ρ=1.0) for fog/night/blur — distance is a perfect ordinal severity estimator.** The cosine distance maintains perfect rank ordering with corruption severity, meaning more severe corruption always produces higher distance. Noise has ρ=0.994, nearly perfect. This confirms the distance as a monotonic severity proxy.
+
+**Finding 468**: **1.3-1.7 bits mutual information between distance and severity (out of 2.3 bit maximum).** The distance channel carries 58-76% of the maximum possible information about severity level. Night has the highest information content (1.74 bits, NMI=0.76). The remaining entropy comes from the discrete binning — the continuous rank correlation is perfect.
+
+**Finding 469**: **2D is the minimum embedding dimension for detection.** At 1D, all corruptions produce d=0 (undetected). At 2D, all four corruption types are detected. The rate-distortion curve is non-monotonic: truncated distances at 4-16D can EXCEED the full 4096D distance by 3-15×, because low-dimensional subspaces concentrate the corruption signal.
+
+**Finding 470**: **Blur has highest Fisher information (4.65) — most estimable severity.** Blur severity can be estimated most precisely from embedding distance, followed by night (3.91) and fog (0.68). Noise has lowest Fisher information (0.27), consistent with its stochastic nature. Fisher information is distributed across 853-1312 dimensions, confirming that signal is widespread rather than concentrated.
+
+**Finding 471**: **Corruption types are geometrically distinct — fog-noise anti-correlated (cos=-0.525).** The direction of embedding shift differs substantially between corruption types. Fog and noise push in nearly opposite directions (cos=-0.525), while fog and blur share some direction (cos=0.464). Night and noise are orthogonal (cos=-0.005). This geometric separation enables corruption type identification from embedding shift direction.
+
+---
+
+## Experiment 318: Extended Baseline Comparison (Real OpenVLA-7B)
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_extended_baselines.py`
+**Results**: `experiments/baselines_20260315_120230.json`
+**Figure**: `paper/latex/fig327_baselines.png`
+
+### Summary
+
+Compares 8 OOD detection methods including hidden-state methods (cosine, euclidean, norm, Gram matrices at 3 layers) and output-space methods (max logit/MSP, entropy). All 6 hidden-state methods achieve AUROC=1.0; both output-space methods fail.
+
+### Overall AUROC
+
+| Method | AUROC | Gap (OOD min − Clean max) |
+|--------|-------|--------------------------|
+| **Cosine (Ours)** | **1.000** | 2.8e-05 |
+| Euclidean | 1.000 | 0.066 |
+| Norm Difference | 1.000 | 0.002 |
+| Gram L1 | 1.000 | 0.307 |
+| Gram L3 | 1.000 | 405.9 |
+| Gram L15 | 1.000 | 3521.3 |
+| Max Logit (MSP) | 0.850 | -0.422 |
+| Entropy | 0.750 | -1.574 |
+
+### Per-Corruption AUROC
+
+| Method | Fog | Night | Blur | Noise |
+|--------|-----|-------|------|-------|
+| Cosine | 1.000 | 1.000 | 1.000 | 1.000 |
+| Euclidean | 1.000 | 1.000 | 1.000 | 1.000 |
+| Norm Diff | 1.000 | 1.000 | 1.000 | 1.000 |
+| Gram L3 | 1.000 | 1.000 | 1.000 | 1.000 |
+| Max Logit | 0.800 | 0.600 | 1.000 | 1.000 |
+| Entropy | 0.600 | 0.600 | 1.000 | 0.800 |
+
+### Key Findings
+
+**Finding 472**: **All 6 hidden-state methods achieve AUROC=1.0 — both output-space methods fail.** Cosine distance, Euclidean distance, norm difference, and Gram matrices at L1/L3/L15 all perfectly separate clean from corrupted. Max logit (MSP) achieves only 0.85, entropy only 0.75. This confirms that the detection signal resides in the hidden states, not the output logits.
+
+**Finding 473**: **Gram matrices have the largest separation margins.** Gram L15 produces a gap of 3521, Gram L3 a gap of 406, far exceeding cosine (2.8e-05) or euclidean (0.066). However, Gram matrices require storing and comparing larger signatures and more computation, while cosine distance with a single centroid achieves the same AUROC with minimal overhead.
+
+**Finding 474**: **Output-space methods fail specifically on fog (0.60-0.80 AUROC) and night (0.60).** Max logit and entropy both fail on fog and night corruptions because these corruptions make the model MORE confident (higher max logit, lower entropy) while producing wrong actions. Blur and noise increase uncertainty and are partially detectable. This confirms fog as the most dangerous corruption: undetectable by output-space methods while causing confident wrong actions.
+
+**Finding 475**: **Cosine distance is the optimal choice: AUROC=1.0 with minimal computation.** All hidden-state methods work equally well, but cosine distance requires only a single 4096D centroid vector and one dot product — the lowest storage and computation of any AUROC=1.0 method. Gram matrices require storing and comparing matrix signatures. Euclidean and norm difference work but carry no advantage over cosine.
