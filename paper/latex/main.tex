@@ -7303,4 +7303,44 @@ We investigate how image preprocessing operations --- resolution changes, JPEG c
 
 \textbf{Finding 991}: \textbf{Center cropping is the least disruptive preprocessing (FPR$\approx$0\%).} Spatial cropping barely affects embeddings, suggesting the detector relies primarily on color/texture statistics rather than spatial layout --- consistent with the global, holistic nature of corruption detection.
 
+% ============================================================
+% EXPERIMENT 379: Feature Attribution for Corruption Detection
+% ============================================================
+
+\subsection{Experiment 379: Feature Attribution for Corruption Detection}
+
+We investigate which input features the detector relies on most through four complementary analyses: occlusion sensitivity, channel importance, frequency band decomposition, and spatial uniformity testing.
+
+\textbf{Occlusion Sensitivity Reveals Holistic Detection.} We mask each 32$\times$32 patch (7$\times$7 grid) with gray pixels and measure the change in detection distance. Remarkably, \emph{all} patches produce negative importance values --- masking any patch \emph{reduces} detection distance. No single spatial region is responsible for corruption detection; the detector uses a global, distributed representation. Center pixels contribute slightly more than corners (fog center importance: $-6.75 \times 10^{-4}$ vs corners: $-1.70 \times 10^{-4}$).
+
+\textbf{Asymmetric Channel Importance.} Zeroing the green channel \emph{increases} detection distance for all corruptions (up to $+87\%$ for fog), while zeroing red \emph{decreases} it (up to $-38\%$ for noise). Green acts as a suppressive normalizing channel, while red carries the corruption-discriminative signal. This asymmetry is consistent across all four corruption types.
+
+\textbf{Frequency Dichotomy.} Fourier analysis of the corruption difference images reveals a clean partition: fog and night concentrate $90\%$ of energy in the low-frequency band ($< 30$ cycles), while noise and blur concentrate $60\%$ in the high-frequency band ($> 80$ cycles). This frequency dichotomy explains the detector's differential performance: low-frequency corruptions produce larger, more uniform embedding shifts, while high-frequency corruptions (especially noise) produce smaller, harder-to-detect shifts.
+
+\textbf{Three Spatial Interaction Patterns.} Half-image corruption (corrupting only left/right/top/bottom halves) reveals three distinct patterns:
+\begin{itemize}
+    \item \textbf{Fog}: spatially uniform (half/full ratio = 1.06), half-corruption sufficient for detection
+    \item \textbf{Night/Blur}: super-additive (ratio = 0.40--0.56), full image needed for maximum detection
+    \item \textbf{Noise}: sub-additive (ratio = 2.99), half-corruption \emph{easier} to detect than full
+\end{itemize}
+
+The noise result is striking: the clean/noisy boundary creates additional detectable signal. Partial noise produces 3$\times$ the embedding shift of full noise, suggesting the transition discontinuity is more detectable than uniform noise.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig388_attribution.png}
+\caption{\textbf{Experiment 379}: Feature attribution analysis. Occlusion heatmaps show holistic detection (no dominant patches). Channel importance reveals green as suppressive, red as discriminative. Frequency analysis shows fog/night are low-frequency, noise/blur are high-frequency. Spatial analysis reveals three interaction patterns.}
+\label{fig:attribution}
+\end{figure}
+
+\textbf{Finding 992}: \textbf{Corruption detection is holistic: no single 32$\times$32 patch is responsible.} All patches contribute negatively when masked, with center slightly more important than corners. The detector relies on global image statistics, not local features.
+
+\textbf{Finding 993}: \textbf{The green channel suppresses detection (+87\% distance when removed for fog).} Green acts as a normalizing channel while red carries the corruption-discriminative signal ($-38\%$ when removed for noise). This RGB asymmetry is consistent across all corruption types.
+
+\textbf{Finding 994}: \textbf{Fog/night are low-frequency corruptions (90\% low-freq energy); noise/blur are high-frequency (60\% high-freq).} This frequency dichotomy directly explains the detector's differential behavior: low-frequency corruptions produce larger, more uniform embedding shifts.
+
+\textbf{Finding 995}: \textbf{Half-noise produces 3$\times$ the embedding shift of full noise (ratio = 2.99).} The clean/noisy boundary creates additional detectable signal --- partial noise is \emph{easier} to detect than uniform noise. This is the opposite pattern from blur/night (ratio 0.40--0.56), where both halves must be corrupted for maximum detection.
+
+\textbf{Finding 996}: \textbf{Three distinct spatial interaction patterns partition the corruption types.} Fog is spatially uniform, blur/night are super-additive (requiring full coverage), and noise is uniquely sub-additive. These patterns correspond to the frequency dichotomy: low-freq corruptions (fog/night) behave differently from high-freq corruptions (noise/blur).
+
 \end{document}
