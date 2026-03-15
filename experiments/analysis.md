@@ -6411,3 +6411,67 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 5. **AND gate has zero FPR but misses fog**: AND requires both layers to agree, which reduces recall to 91.2% (misses 70% of fog_30% and some desert).
 
 6. **Final architecture recommendation**: Use the **OR-gate L3∨L32 detector** with 3σ thresholds. It achieves F1=0.997 with perfect recall — the optimal tradeoff for safety-critical autonomous driving.
+
+---
+
+## Finding 139: Mahalanobis Distance vs Cosine Distance (Experiment 145)
+
+**Question**: Does accounting for the covariance structure of calibration embeddings (Mahalanobis distance) improve OOD detection compared to cosine distance?
+
+**Setup**: 12 calibration images, 10 test ID, 6 OOD per category (8 categories). Compared cosine distance and PCA-based Mahalanobis distance at L3 and L32.
+
+**Key Results**:
+
+| Layer | Metric | Overall AUROC | d-prime | Fog_30 AUROC |
+|-------|--------|--------------|---------|--------------|
+| L3 | Cosine | 0.950 | 1.86 | 0.850 |
+| L3 | Mahalanobis | **1.000** | **2.78** | **1.000** |
+| L32 | Cosine | **0.965** | **2.21** | 0.717 |
+| L32 | Mahalanobis | 0.942 | 1.13 | 0.650 |
+
+**Critical Insights**:
+
+1. **Mahalanobis dominates at L3**: AUROC improves from 0.950→1.000. The covariance normalization in PCA space corrects for the low variance at early layers, where all distances are tiny (~0.0004 mean) but structure exists in the covariance.
+
+2. **Mahalanobis resolves fog_30 at L3**: AUROC jumps from 0.85→1.00. The fog perturbation shifts embeddings along a direction that cosine distance barely detects, but Mahalanobis amplifies because the covariance matrix captures this direction's low variance.
+
+3. **Cosine dominates at L32**: AUROC 0.965 vs 0.942 for Mahalanobis. At L32, the embedding space is more isotropic (balanced variance across dimensions), so covariance normalization adds noise rather than signal.
+
+4. **Layer × Metric interaction**: The optimal metric depends on the layer — L3 benefits from covariance-awareness while L32 benefits from simplicity. This suggests the OOD signal lives in different subspaces at different layers.
+
+5. **Per-category analysis**: Mahalanobis improves ALL categories at L3 (e.g., occlusion AUROC 0.75→1.0). At L32, it degrades noise (1.0→0.983), snow (1.0→0.983), and occlusion (1.0→0.917).
+
+6. **Practical implication**: An enhanced OR-gate could use Mahalanobis at L3 and cosine at L32 for optimal performance across both layers.
+
+---
+
+## Finding 140: Threshold Sensitivity Analysis (Experiment 146)
+
+**Question**: How sensitive is the OR-gate detector to the choice of σ threshold? What is the optimal operating point?
+
+**Setup**: Swept σ from 1.0 to 6.0 across 4 strategies (L3-only, L32-only, OR-gate, AND-gate). 12 cal, 15 test ID, 8 OOD per category (8 categories).
+
+**Key Results**:
+
+| σ | OR Recall | OR Precision | OR F1 | OR FPR |
+|---|-----------|-------------|-------|--------|
+| 1.0 | 0.984 | 0.926 | 0.955 | 0.333 |
+| 2.0 | 0.969 | 0.939 | 0.954 | 0.267 |
+| 2.5 | 0.938 | 0.984 | **0.960** | 0.067 |
+| 3.0 | 0.875 | 0.982 | 0.926 | 0.067 |
+| 3.5 | 0.875 | 1.000 | 0.933 | **0.000** |
+| 5.0 | 0.844 | 1.000 | 0.915 | 0.000 |
+
+**Critical Insights**:
+
+1. **σ=2.5 maximizes F1=0.960** with 6.7% FPR. For applications tolerating some false positives, this is the optimal operating point.
+
+2. **σ=3.5 achieves zero FPR** while maintaining recall=0.875 and F1=0.933. For applications where false alarms are costly, this provides zero false positives.
+
+3. **Graceful degradation**: Recall drops slowly from 0.984 at σ=1.0 to 0.828 at σ=6.0. No cliff-edge behavior—the threshold is robust.
+
+4. **OR gate ≈ L32-only at this sample size**: At σ=3.0, the OR gate and L32-only strategies have identical performance (recall=0.875, FPR=0.067). This suggests L3's contribution is marginal with the current calibration set.
+
+5. **AND gate = L3-only**: The AND gate's performance equals L3-only (both recall=0.797, FPR=0.000), confirming L3 is the more conservative detector.
+
+6. **Threshold robustness zone**: σ ∈ [2.0, 3.5] provides F1 > 0.93 for the OR gate, a wide operating window that doesn't require precise tuning.

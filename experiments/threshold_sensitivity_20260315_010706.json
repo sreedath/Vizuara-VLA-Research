@@ -1,0 +1,1823 @@
+{
+  "experiment": "threshold_sensitivity",
+  "experiment_number": 146,
+  "timestamp": "20260315_010706",
+  "n_cal": 12,
+  "n_test_id": 15,
+  "n_ood_per_cat": 8,
+  "ood_categories": [
+    "fog_30",
+    "fog_60",
+    "night",
+    "blur",
+    "noise",
+    "occlusion",
+    "snow",
+    "overexpose"
+  ],
+  "sigma_levels": [
+    1.0,
+    1.5,
+    2.0,
+    2.5,
+    3.0,
+    3.5,
+    4.0,
+    5.0,
+    6.0
+  ],
+  "cal_distances": {
+    "L3": {
+      "mean": 0.0003682573636372884,
+      "std": 6.0961063048458525e-05
+    },
+    "L32": {
+      "mean": 0.10226322710514069,
+      "std": 0.012938654198453671
+    }
+  },
+  "results": {
+    "sigma_1.0": {
+      "thresholds": {
+        "L3": 0.00042921842668574694,
+        "L32": 0.11520188130359435
+      },
+      "L3_only": {
+        "fpr": 0.3333333333333333,
+        "recall": 0.953125,
+        "precision": 0.9242424242424242,
+        "f1": 0.9384615384615383,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.75,
+            "n_flagged": 6,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.875,
+            "n_flagged": 7,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "L32_only": {
+        "fpr": 0.3333333333333333,
+        "recall": 0.984375,
+        "precision": 0.9264705882352942,
+        "f1": 0.9545454545454545,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.875,
+            "n_flagged": 7,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "OR_gate": {
+        "fpr": 0.3333333333333333,
+        "recall": 0.984375,
+        "precision": 0.9264705882352942,
+        "f1": 0.9545454545454545,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.875,
+            "n_flagged": 7,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "AND_gate": {
+        "fpr": 0.3333333333333333,
+        "recall": 0.953125,
+        "precision": 0.9242424242424242,
+        "f1": 0.9384615384615383,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.75,
+            "n_flagged": 6,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.875,
+            "n_flagged": 7,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      }
+    },
+    "sigma_1.5": {
+      "thresholds": {
+        "L3": 0.0004596989582099762,
+        "L32": 0.1216712084028212
+      },
+      "L3_only": {
+        "fpr": 0.0,
+        "recall": 0.890625,
+        "precision": 1.0,
+        "f1": 0.9421487603305785,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.75,
+            "n_flagged": 6,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "L32_only": {
+        "fpr": 0.3333333333333333,
+        "recall": 0.921875,
+        "precision": 0.921875,
+        "f1": 0.921875,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "OR_gate": {
+        "fpr": 0.3333333333333333,
+        "recall": 0.96875,
+        "precision": 0.9253731343283582,
+        "f1": 0.9465648854961832,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.75,
+            "n_flagged": 6,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "AND_gate": {
+        "fpr": 0.0,
+        "recall": 0.84375,
+        "precision": 1.0,
+        "f1": 0.9152542372881356,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      }
+    },
+    "sigma_2.0": {
+      "thresholds": {
+        "L3": 0.0004901794897342054,
+        "L32": 0.12814053550204801
+      },
+      "L3_only": {
+        "fpr": 0.0,
+        "recall": 0.890625,
+        "precision": 1.0,
+        "f1": 0.9421487603305785,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.75,
+            "n_flagged": 6,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "L32_only": {
+        "fpr": 0.26666666666666666,
+        "recall": 0.921875,
+        "precision": 0.9365079365079365,
+        "f1": 0.9291338582677166,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "OR_gate": {
+        "fpr": 0.26666666666666666,
+        "recall": 0.96875,
+        "precision": 0.9393939393939394,
+        "f1": 0.9538461538461539,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.75,
+            "n_flagged": 6,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "AND_gate": {
+        "fpr": 0.0,
+        "recall": 0.84375,
+        "precision": 1.0,
+        "f1": 0.9152542372881356,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      }
+    },
+    "sigma_2.5": {
+      "thresholds": {
+        "L3": 0.0005206600212584347,
+        "L32": 0.13460986260127486
+      },
+      "L3_only": {
+        "fpr": 0.0,
+        "recall": 0.859375,
+        "precision": 1.0,
+        "f1": 0.9243697478991597,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.5,
+            "n_flagged": 4,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "L32_only": {
+        "fpr": 0.06666666666666667,
+        "recall": 0.90625,
+        "precision": 0.9830508474576272,
+        "f1": 0.943089430894309,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.25,
+            "n_flagged": 2,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "OR_gate": {
+        "fpr": 0.06666666666666667,
+        "recall": 0.9375,
+        "precision": 0.9836065573770492,
+        "f1": 0.96,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.5,
+            "n_flagged": 4,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "AND_gate": {
+        "fpr": 0.0,
+        "recall": 0.828125,
+        "precision": 1.0,
+        "f1": 0.905982905982906,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.25,
+            "n_flagged": 2,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      }
+    },
+    "sigma_3.0": {
+      "thresholds": {
+        "L3": 0.0005511405527826639,
+        "L32": 0.1410791897005017
+      },
+      "L3_only": {
+        "fpr": 0.0,
+        "recall": 0.796875,
+        "precision": 1.0,
+        "f1": 0.8869565217391304,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "L32_only": {
+        "fpr": 0.06666666666666667,
+        "recall": 0.875,
+        "precision": 0.9824561403508771,
+        "f1": 0.9256198347107438,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "OR_gate": {
+        "fpr": 0.06666666666666667,
+        "recall": 0.875,
+        "precision": 0.9824561403508771,
+        "f1": 0.9256198347107438,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "AND_gate": {
+        "fpr": 0.0,
+        "recall": 0.796875,
+        "precision": 1.0,
+        "f1": 0.8869565217391304,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      }
+    },
+    "sigma_3.5": {
+      "thresholds": {
+        "L3": 0.0005816210843068932,
+        "L32": 0.14754851679972852
+      },
+      "L3_only": {
+        "fpr": 0.0,
+        "recall": 0.796875,
+        "precision": 1.0,
+        "f1": 0.8869565217391304,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "L32_only": {
+        "fpr": 0.0,
+        "recall": 0.875,
+        "precision": 1.0,
+        "f1": 0.9333333333333333,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "OR_gate": {
+        "fpr": 0.0,
+        "recall": 0.875,
+        "precision": 1.0,
+        "f1": 0.9333333333333333,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "AND_gate": {
+        "fpr": 0.0,
+        "recall": 0.796875,
+        "precision": 1.0,
+        "f1": 0.8869565217391304,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      }
+    },
+    "sigma_4.0": {
+      "thresholds": {
+        "L3": 0.0006121016158311225,
+        "L32": 0.15401784389895537
+      },
+      "L3_only": {
+        "fpr": 0.0,
+        "recall": 0.796875,
+        "precision": 1.0,
+        "f1": 0.8869565217391304,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "L32_only": {
+        "fpr": 0.0,
+        "recall": 0.859375,
+        "precision": 1.0,
+        "f1": 0.9243697478991597,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.875,
+            "n_flagged": 7,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "OR_gate": {
+        "fpr": 0.0,
+        "recall": 0.859375,
+        "precision": 1.0,
+        "f1": 0.9243697478991597,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.875,
+            "n_flagged": 7,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "AND_gate": {
+        "fpr": 0.0,
+        "recall": 0.796875,
+        "precision": 1.0,
+        "f1": 0.8869565217391304,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      }
+    },
+    "sigma_5.0": {
+      "thresholds": {
+        "L3": 0.000673062678879581,
+        "L32": 0.16695649809740903
+      },
+      "L3_only": {
+        "fpr": 0.0,
+        "recall": 0.796875,
+        "precision": 1.0,
+        "f1": 0.8869565217391304,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "L32_only": {
+        "fpr": 0.0,
+        "recall": 0.71875,
+        "precision": 1.0,
+        "f1": 0.8363636363636363,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.75,
+            "n_flagged": 6,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "OR_gate": {
+        "fpr": 0.0,
+        "recall": 0.84375,
+        "precision": 1.0,
+        "f1": 0.9152542372881356,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.75,
+            "n_flagged": 6,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "AND_gate": {
+        "fpr": 0.0,
+        "recall": 0.671875,
+        "precision": 1.0,
+        "f1": 0.8037383177570093,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      }
+    },
+    "sigma_6.0": {
+      "thresholds": {
+        "L3": 0.0007340237419280395,
+        "L32": 0.17989515229586273
+      },
+      "L3_only": {
+        "fpr": 0.0,
+        "recall": 0.796875,
+        "precision": 1.0,
+        "f1": 0.8869565217391304,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "L32_only": {
+        "fpr": 0.0,
+        "recall": 0.703125,
+        "precision": 1.0,
+        "f1": 0.8256880733944955,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.625,
+            "n_flagged": 5,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "OR_gate": {
+        "fpr": 0.0,
+        "recall": 0.828125,
+        "precision": 1.0,
+        "f1": 0.905982905982906,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.625,
+            "n_flagged": 5,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      },
+      "AND_gate": {
+        "fpr": 0.0,
+        "recall": 0.671875,
+        "precision": 1.0,
+        "f1": 0.8037383177570093,
+        "per_category": {
+          "fog_30": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "fog_60": {
+            "recall": 0.0,
+            "n_flagged": 0,
+            "n_total": 8
+          },
+          "night": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "blur": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "noise": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "occlusion": {
+            "recall": 0.375,
+            "n_flagged": 3,
+            "n_total": 8
+          },
+          "snow": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          },
+          "overexpose": {
+            "recall": 1.0,
+            "n_flagged": 8,
+            "n_total": 8
+          }
+        }
+      }
+    }
+  }
+}

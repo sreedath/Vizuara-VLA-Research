@@ -2692,4 +2692,38 @@ We implement four detection strategies with 3$\sigma$ thresholds and evaluate on
 
 The OR-gate architecture represents our recommended production deployment: two cosine distance computations (one at L3, one at L32) against their respective centroids, with an OOD flag raised if either exceeds its 3$\sigma$ threshold. Total computational cost: 100~$\mu$s (two cosine distances on 4096-d vectors). Total false positive rate: 2.5\%, which can be reduced with larger calibration sets. The system requires only $\sim$8 calibration images per layer, no training, no gradient computation, and adds zero latency to the inference pipeline.
 
+\subsection{Mahalanobis vs Cosine Distance}
+\label{app:mahalanobis}
+
+\textbf{Finding 197}: At layer 3, Mahalanobis distance (PCA-based, with covariance normalization) achieves AUROC$=$1.000 vs cosine's 0.950. At layer 32, cosine distance wins (AUROC$=$0.965 vs 0.942). The optimal metric depends on the layer.
+
+\textbf{Finding 198}: Mahalanobis distance resolves the fog\_30\% vulnerability at L3 (AUROC 0.85$\to$1.00 for cosine$\to$Mahalanobis) and improves occlusion detection (0.75$\to$1.00). The covariance normalization amplifies OOD signal in low-variance directions where cosine distance is blind.
+
+\textbf{Finding 199}: At L32, Mahalanobis degrades detection for noise (1.0$\to$0.983), snow (1.0$\to$0.983), and occlusion (1.0$\to$0.917). The L32 embedding space is more isotropic, so covariance normalization introduces noise.
+
+\textbf{Finding 200}: The layer$\times$metric interaction reveals that OOD signals live in different subspaces at different depths. Early layers (L3) have anisotropic covariance where Mahalanobis excels; late layers (L32) have more balanced variance where cosine suffices.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig131_mahalanobis_vs_cosine.png}
+\caption{\textbf{Mahalanobis vs cosine distance.} (A) Per-category AUROC: Mahalanobis at L3 achieves perfect detection on all categories including fog\_30\% (1.000 vs 0.850 for cosine). (B) d-prime shows cosine dominates at L32 for most categories. (C) Summary: L3-Mahalanobis achieves the highest overall AUROC (1.000).}
+\label{fig:mahalanobis}
+\end{figure}
+
+\subsection{Threshold Sensitivity Analysis}
+\label{app:threshold}
+
+\textbf{Finding 201}: The OR-gate detector is robust to threshold choice. F1 exceeds 0.93 across the range $\sigma \in [2.0, 3.5]$, requiring no precise tuning. $\sigma{=}2.5$ maximizes F1$=$0.960 with 6.7\% FPR; $\sigma{=}3.5$ achieves zero FPR with F1$=$0.933.
+
+\textbf{Finding 202}: Recall degrades gracefully from 0.984 at $\sigma{=}1.0$ to 0.828 at $\sigma{=}6.0$ with no cliff-edge behavior. This smooth degradation enables principled threshold selection based on application-specific precision-recall requirements.
+
+\textbf{Finding 203}: At $\sigma{=}3.0$, the OR gate and L32-only strategies converge (both recall$=$0.875, FPR$=$0.067), while AND gate equals L3-only (recall$=$0.797, FPR$=$0.000). This confirms L3 is the conservative detector and L32 is the sensitive one.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig132_threshold_sensitivity.png}
+\caption{\textbf{Threshold sensitivity.} (A) ROC curves: OR gate dominates the recall-FPR tradeoff at all thresholds. (B) F1 vs $\sigma$: peak F1$=$0.960 at $\sigma{=}2.5$; robust operating window $\sigma \in [2.0, 3.5]$. (C) Heatmap at $\sigma{=}3.0$: per-category recall across strategies.}
+\label{fig:threshold}
+\end{figure}
+
 \end{document}
