@@ -1,0 +1,554 @@
+{
+  "experiment": "deployment_simulation",
+  "experiment_number": 160,
+  "timestamp": "20260315_022006",
+  "n_cal": 9,
+  "sigma": 3.0,
+  "thresholds": {
+    "3": {
+      "advisory": 0.0005572155085434067,
+      "warning": 0.0007466836042992701,
+      "emergency": 0.0009361517000551334
+    },
+    "32": {
+      "advisory": 0.14021991070375353,
+      "warning": 0.18087802415951446,
+      "emergency": 0.22153613761527538
+    }
+  },
+  "cal_stats": {
+    "3": {
+      "mean": 0.0003677474127875434,
+      "std": 6.315603191862111e-05
+    },
+    "32": {
+      "mean": 0.09956179724799262,
+      "std": 0.01355270448525364
+    }
+  },
+  "scenarios": {
+    "fog_cycle": [
+      {
+        "frame": 0,
+        "fog_alpha": 0.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 1,
+        "fog_alpha": 0.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 2,
+        "fog_alpha": 0.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 3,
+        "fog_alpha": 0.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 4,
+        "fog_alpha": 0.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 5,
+        "fog_alpha": 0.1,
+        "dist_L3": 0.0004469156265258789,
+        "dist_L32": 0.12227040529251099,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 6,
+        "fog_alpha": 0.2,
+        "dist_L3": 0.0004576444625854492,
+        "dist_L32": 0.12251591682434082,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 7,
+        "fog_alpha": 0.3,
+        "dist_L3": 0.0005407333374023438,
+        "dist_L32": 0.12897080183029175,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 8,
+        "fog_alpha": 0.4,
+        "dist_L3": 0.000643610954284668,
+        "dist_L32": 0.13486015796661377,
+        "level": 1,
+        "label": "ADVISORY"
+      },
+      {
+        "frame": 9,
+        "fog_alpha": 0.5,
+        "dist_L3": 0.0008186697959899902,
+        "dist_L32": 0.14273673295974731,
+        "level": 2,
+        "label": "WARNING"
+      },
+      {
+        "frame": 10,
+        "fog_alpha": 0.6,
+        "dist_L3": 0.0009574294090270996,
+        "dist_L32": 0.1600629687309265,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 11,
+        "fog_alpha": 0.7,
+        "dist_L3": 0.0010967850685119629,
+        "dist_L32": 0.17797106504440308,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 12,
+        "fog_alpha": 0.8,
+        "dist_L3": 0.0012972354888916016,
+        "dist_L32": 0.20694774389266968,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 13,
+        "fog_alpha": 0.7,
+        "dist_L3": 0.0010967850685119629,
+        "dist_L32": 0.17797106504440308,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 14,
+        "fog_alpha": 0.6,
+        "dist_L3": 0.0009574294090270996,
+        "dist_L32": 0.1600629687309265,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 15,
+        "fog_alpha": 0.5,
+        "dist_L3": 0.0008186697959899902,
+        "dist_L32": 0.14273673295974731,
+        "level": 2,
+        "label": "WARNING"
+      },
+      {
+        "frame": 16,
+        "fog_alpha": 0.4,
+        "dist_L3": 0.000643610954284668,
+        "dist_L32": 0.13486015796661377,
+        "level": 1,
+        "label": "ADVISORY"
+      },
+      {
+        "frame": 17,
+        "fog_alpha": 0.3,
+        "dist_L3": 0.0005407333374023438,
+        "dist_L32": 0.12897080183029175,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 18,
+        "fog_alpha": 0.2,
+        "dist_L3": 0.0004576444625854492,
+        "dist_L32": 0.12251591682434082,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 19,
+        "fog_alpha": 0.1,
+        "dist_L3": 0.0004469156265258789,
+        "dist_L32": 0.12227040529251099,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 20,
+        "fog_alpha": 0.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 21,
+        "fog_alpha": 0.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 22,
+        "fog_alpha": 0.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 23,
+        "fog_alpha": 0.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 24,
+        "fog_alpha": 0.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      }
+    ],
+    "day_night_cycle": [
+      {
+        "frame": 0,
+        "brightness": 1.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 1,
+        "brightness": 1.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 2,
+        "brightness": 1.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 3,
+        "brightness": 1.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 4,
+        "brightness": 0.8,
+        "dist_L3": 0.0006287097930908203,
+        "dist_L32": 0.15393805503845215,
+        "level": 1,
+        "label": "ADVISORY"
+      },
+      {
+        "frame": 5,
+        "brightness": 0.6,
+        "dist_L3": 0.0010440945625305176,
+        "dist_L32": 0.23650586605072021,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 6,
+        "brightness": 0.4,
+        "dist_L3": 0.0022673606872558594,
+        "dist_L32": 0.31932389736175537,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 7,
+        "brightness": 0.3,
+        "dist_L3": 0.0030537843704223633,
+        "dist_L32": 0.3290090560913086,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 8,
+        "brightness": 0.2,
+        "dist_L3": 0.0035349130630493164,
+        "dist_L32": 0.36570125818252563,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 9,
+        "brightness": 0.15,
+        "dist_L3": 0.0036169886589050293,
+        "dist_L32": 0.3864101767539978,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 10,
+        "brightness": 0.1,
+        "dist_L3": 0.003663182258605957,
+        "dist_L32": 0.3958784341812134,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 11,
+        "brightness": 0.1,
+        "dist_L3": 0.003663182258605957,
+        "dist_L32": 0.3958784341812134,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 12,
+        "brightness": 0.1,
+        "dist_L3": 0.003663182258605957,
+        "dist_L32": 0.3958784341812134,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 13,
+        "brightness": 0.1,
+        "dist_L3": 0.003663182258605957,
+        "dist_L32": 0.3958784341812134,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 14,
+        "brightness": 0.1,
+        "dist_L3": 0.003663182258605957,
+        "dist_L32": 0.3958784341812134,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 15,
+        "brightness": 0.15,
+        "dist_L3": 0.0036169886589050293,
+        "dist_L32": 0.3864101767539978,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 16,
+        "brightness": 0.2,
+        "dist_L3": 0.0035349130630493164,
+        "dist_L32": 0.36570125818252563,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 17,
+        "brightness": 0.3,
+        "dist_L3": 0.0030537843704223633,
+        "dist_L32": 0.3290090560913086,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 18,
+        "brightness": 0.4,
+        "dist_L3": 0.0022673606872558594,
+        "dist_L32": 0.31932389736175537,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 19,
+        "brightness": 0.6,
+        "dist_L3": 0.0010440945625305176,
+        "dist_L32": 0.23650586605072021,
+        "level": 3,
+        "label": "EMERGENCY"
+      },
+      {
+        "frame": 20,
+        "brightness": 0.8,
+        "dist_L3": 0.0006287097930908203,
+        "dist_L32": 0.15393805503845215,
+        "level": 1,
+        "label": "ADVISORY"
+      },
+      {
+        "frame": 21,
+        "brightness": 1.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 22,
+        "brightness": 1.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 23,
+        "brightness": 1.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 24,
+        "brightness": 1.0,
+        "dist_L3": 0.00044351816177368164,
+        "dist_L32": 0.12197524309158325,
+        "level": 0,
+        "label": "NORMAL"
+      }
+    ],
+    "scene_transitions": [
+      {
+        "frame": 0,
+        "scene": "highway",
+        "dist_L3": 0.00046700239181518555,
+        "dist_L32": 0.13386809825897217,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 1,
+        "scene": "highway",
+        "dist_L3": 0.00048798322677612305,
+        "dist_L32": 0.12930023670196533,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 2,
+        "scene": "highway",
+        "dist_L3": 0.00047600269317626953,
+        "dist_L32": 0.1249697208404541,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 3,
+        "scene": "urban",
+        "dist_L3": 0.0002867579460144043,
+        "dist_L32": 0.09901493787765503,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 4,
+        "scene": "urban",
+        "dist_L3": 0.00030690431594848633,
+        "dist_L32": 0.09740418195724487,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 5,
+        "scene": "urban",
+        "dist_L3": 0.00029212236404418945,
+        "dist_L32": 0.08767896890640259,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 6,
+        "scene": "rural",
+        "dist_L3": 0.0004115104675292969,
+        "dist_L32": 0.09365743398666382,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 7,
+        "scene": "rural",
+        "dist_L3": 0.0003573298454284668,
+        "dist_L32": 0.10629111528396606,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 8,
+        "scene": "rural",
+        "dist_L3": 0.0003777146339416504,
+        "dist_L32": 0.0963754653930664,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 9,
+        "scene": "highway",
+        "dist_L3": 0.00042819976806640625,
+        "dist_L32": 0.12638747692108154,
+        "level": 0,
+        "label": "NORMAL"
+      },
+      {
+        "frame": 10,
+        "scene": "highway",
+        "dist_L3": 0.00044673681259155273,
+        "dist_L32": 0.12267816066741943,
+        "level": 0,
+        "label": "NORMAL"
+      }
+    ]
+  },
+  "metrics": {
+    "fog_cycle": {
+      "n_frames": 25,
+      "n_transitions": 6,
+      "max_level": 3,
+      "normal_frac": 0.64,
+      "advisory_frac": 0.08,
+      "warning_frac": 0.08,
+      "emergency_frac": 0.2
+    },
+    "day_night_cycle": {
+      "n_frames": 25,
+      "n_transitions": 4,
+      "max_level": 3,
+      "normal_frac": 0.32,
+      "advisory_frac": 0.08,
+      "warning_frac": 0.0,
+      "emergency_frac": 0.6
+    },
+    "scene_transitions": {
+      "n_frames": 11,
+      "n_transitions": 0,
+      "max_level": 0,
+      "normal_frac": 1.0,
+      "advisory_frac": 0.0,
+      "warning_frac": 0.0,
+      "emergency_frac": 0.0
+    }
+  }
+}

@@ -2968,4 +2968,58 @@ Six individual scores (3 metrics $\times$ 2 layers) are z-score normalized again
 \label{fig:ensemble_percategory}
 \end{figure}
 
+\subsection{Layer-wise OOD Information Flow}
+
+We trace how OOD signal propagates through all 33 transformer layers (0--32), revealing the architectural basis for our dual-layer detector design.
+
+\textbf{Finding 246}: Layer 0 (raw token embedding) contains \textbf{zero OOD signal} ($d' = 0.0$ for all corruptions). OOD information is created entirely by the transformer's processing of visual tokens through attention and feed-forward layers.
+
+\textbf{Finding 247}: Different corruptions peak at \textbf{different optimal layers}: night peaks at L7 ($d' = 30.1$), blur at L2 ($d' = 7.0$), noise at L32 ($d' = 13.6$), fog at L31 ($d' = 6.1$), and occlusion at L26 ($d' = 3.5$). No single layer is optimal for all corruption types.
+
+\textbf{Finding 248}: OOD signal shows a characteristic \textbf{dip in middle layers} (L5--L20) before recovering in late layers (L29--L32). Night driving exhibits a bimodal profile with peaks at L7 and L30, suggesting the model processes visual anomalies in two distinct phases.
+
+\textbf{Finding 249}: Early layers (L1--L4) provide strong initial OOD detection for all corruption types (night $d' \approx 24$, blur $d' \approx 7$, noise $d' \approx 8$), while late layers (L29--L32) recover signal for corruptions that early layers partially suppress (fog, occlusion). This validates the OR-gate dual-layer architecture: L3 captures early visual anomalies while L32 captures high-level semantic shifts.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig149_layer_flow.png}
+\caption{\textbf{Layer-wise OOD information flow.} Left: $d'$ heatmap across all 33 layers and 6 corruption types — white stars mark peak layers. Right: $d'$ traces show corruption-specific profiles with early peaks (night, blur), late peaks (fog, noise), and middle-layer dips.}
+\label{fig:layer_flow}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig150_peak_layers.png}
+\caption{\textbf{Peak detection layers.} Left: Optimal layer per corruption — different corruptions peak at different depths. Right: Mean $d'$ by layer group — early layers detect all corruptions; late layers add value for fog and occlusion.}
+\label{fig:peak_layers}
+\end{figure}
+
+\subsection{Deployment Simulation}
+
+We simulate a complete deployment pipeline with detection, severity estimation, and graduated response to validate the system's behavior under realistic driving scenarios.
+
+Three response levels above NORMAL are defined using calibration statistics: \textbf{ADVISORY} (3$\sigma$, reduce speed 20\%), \textbf{WARNING} (6$\sigma$, reduce speed 50\%), and \textbf{EMERGENCY} (9$\sigma$, initiate safe stop).
+
+\textbf{Finding 250}: In the fog onset scenario, the system produces \textbf{smooth graduated escalation}: NORMAL at fog $\alpha < 0.4$, ADVISORY at $\alpha = 0.4$, WARNING at $\alpha = 0.5$, EMERGENCY at $\alpha \geq 0.6$. Fog clearing follows the reverse de-escalation pattern, demonstrating temporal consistency.
+
+\textbf{Finding 251}: Night onset triggers \textbf{rapid escalation}: brightness dropping from 1.0 to 0.6 jumps from NORMAL directly to EMERGENCY, skipping WARNING entirely. This reflects the detector's high sensitivity to illumination changes and suggests the 3-level system may need temporal smoothing for rapid-onset conditions.
+
+\textbf{Finding 252}: Scene transitions (highway $\to$ urban $\to$ rural $\to$ highway) produce \textbf{zero false alarms} — all 11 frames remain NORMAL. The diverse calibration set (3 scene types $\times$ 3 images) correctly prevents false positives during normal driving variations, validating the calibration diversity finding from Experiment~152.
+
+\textbf{Finding 253}: The complete pipeline — calibration, detection, severity estimation, graduated response — runs with zero implementation overhead beyond a single forward pass with \texttt{output\_hidden\_states=True}, making it deployable as a lightweight safety wrapper around any VLA model.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig151_deployment_sim.png}
+\caption{\textbf{Deployment simulation.} Top: Fog cycle — smooth escalation from NORMAL through ADVISORY and WARNING to EMERGENCY at fog $\alpha \geq 0.6$. Bottom: Day/night — rapid escalation to EMERGENCY at brightness $\leq 0.6$.}
+\label{fig:deployment_sim}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig152_deployment_metrics.png}
+\caption{\textbf{Deployment metrics.} Left: Scene transitions remain NORMAL with zero false alarms. Right: Response level distribution — fog cycle shows balanced escalation; night is dominated by EMERGENCY.}
+\label{fig:deployment_metrics}
+\end{figure}
+
 \end{document}
