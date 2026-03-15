@@ -8667,3 +8667,36 @@ All ID means and stds are effectively 0.0 for all metrics.
 5. **Noise uses the most dimensions (99.9%)**: Noise perturbs nearly every dimension because it adds independent random variation to every pixel.
 
 **Finding**: OOD signal is **maximally distributed** across embedding dimensions: 97-99% of all 4096 dimensions show deviation under corruption, with the top-20 dims carrying only 3-5% of total signal. This is the mechanistic explanation for why random projection preserves the signal (JL-guarantee applies when signal is distributed) while PCA fails (no dominant principal components). Clean images produce exactly identical embeddings (std=0.0), confirming that the model has zero in-distribution variance.
+---
+
+### Finding 223: Diverse Scene Robustness (Experiment 228)
+
+**Experiment**: Test OOD detection with visually diverse clean images from 5 scene types (highway, urban, rural, parking, intersection). Do diverse calibration scenes break the zero-variance assumption?
+
+**Cross-Scene Centroid Distances (L3)**:
+| Scene | Distance to Global Centroid |
+|-------|---------------------------|
+| Highway | 0.000475 |
+| Urban | 0.000772 |
+| Rural | 0.000665 |
+| Parking | 0.002577 |
+| Intersection | 0.001231 |
+| Cross-scene mean | 0.001151 |
+
+**Per-Corruption AUROC with Diverse Calibration**:
+| Corruption | L1 AUROC | L3 AUROC |
+|-----------|----------|----------|
+| Fog | 0.80 | 0.76 |
+| Night | 0.96 | 1.00 |
+| Blur | 0.89 | 0.88 |
+| Noise | 0.88 | 0.88 |
+| **Overall** | **0.88** | **0.88** |
+
+**Key Findings**:
+1. **Diverse scenes break zero-variance**: With diverse scenes, ID mean distance becomes 0.001154 (vs 0.0 with identical scenes). The zero-variance assumption no longer holds.
+2. **Parking lot is the outlier**: Distance 0.002577, which EXCEEDS the fog corruption distance (0.000698). This makes fog undetectable when parking images are in the mix.
+3. **Fog is the hardest corruption**: AUROC drops to 0.76 at L3 because fog's small embedding shift (0.000698) is overwhelmed by inter-scene variance (0.001151 mean).
+4. **Night remains perfectly detected**: AUROC=1.0 because night's large embedding shift (0.003403) exceeds inter-scene variance by 3×.
+5. **This identifies the key challenge**: The detector's limitation is that corruption shift must exceed scene diversity. Per-scene calibration (Experiment 229) should recover performance.
+
+**Finding**: Diverse scene calibration reduces overall AUROC to **0.88** (from 1.0 with homogeneous scenes). The fundamental limitation: corruption's embedding shift must exceed in-distribution scene variance. Fog (0.000698 shift) becomes partially invisible when scene variance (0.001151 mean) exceeds it. Night (0.003403 shift) remains perfectly detected. This motivates per-scene calibration strategies.

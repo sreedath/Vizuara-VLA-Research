@@ -4366,4 +4366,37 @@ Noise & 99.9\% & 3.1\% & 0.0 \\
 
 \textbf{Finding 455}: Different corruptions use partially different dimensions (25--45\% overlap in top-20), explaining both the universal detectability and the distinct embedding directions that enable corruption-type identification (Experiment 209).
 
+\subsection{Diverse Scene Challenge}
+
+\textbf{Experiment 228: Diverse Scene Robustness.} We test OOD detection when calibration includes 5 visually distinct scene types: highway, urban, rural, parking lot, and intersection. This breaks the zero-variance assumption.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Corruption} & \textbf{L1 AUROC} & \textbf{L3 AUROC} \\
+\midrule
+Fog & 0.80 & 0.76 \\
+Night & 0.96 & 1.00 \\
+Blur & 0.89 & 0.88 \\
+Noise & 0.88 & 0.88 \\
+\midrule
+\textbf{Overall} & \textbf{0.88} & \textbf{0.88} \\
+\bottomrule
+\end{tabular}
+\caption{Diverse scene calibration reduces AUROC from 1.0 to 0.88. Fog is hardest (0.76) because its small embedding shift is overwhelmed by inter-scene variance.}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig239_diverse_scenes.png}
+\caption{(Left) Parking lot centroid is 0.002577 from global --- exceeding fog's corruption distance (0.000698). (Right) Per-corruption AUROC: night remains perfect but fog drops to 0.76.}
+\end{figure}
+
+\textbf{Finding 456}: Diverse scene calibration reduces AUROC to 0.88. The detector's fundamental requirement: \textbf{corruption shift must exceed scene variance}. Fog's 0.000698 shift is smaller than the parking lot's 0.002577 deviation from the global centroid.
+
+\textbf{Finding 457}: Night corruption remains perfectly detected (AUROC=1.0) even with diverse scenes because its 0.003403 shift exceeds inter-scene variance by 3$\times$. The detection threshold scales with the signal-to-noise ratio between corruption shift and in-distribution variance.
+
+\textbf{Finding 458}: This identifies the key architectural limitation and motivates \textbf{per-scene calibration}: maintaining scene-specific centroids eliminates inter-scene variance and should recover AUROC=1.0.
+
 \end{document}

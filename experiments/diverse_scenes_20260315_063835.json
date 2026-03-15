@@ -1,0 +1,63 @@
+{
+  "experiment": "diverse_scene_robustness",
+  "experiment_number": 228,
+  "timestamp": "20260315_063835",
+  "n_per_scene": 4,
+  "scene_types": [
+    "highway",
+    "urban",
+    "rural",
+    "parking",
+    "intersection"
+  ],
+  "scene_results": {
+    "L1": {
+      "per_scene_to_global": {
+        "highway": 0.000183,
+        "urban": 0.000241,
+        "rural": 0.000372,
+        "parking": 0.001366,
+        "intersection": 0.000207
+      },
+      "cross_scene_mean_dist": 0.000477,
+      "cross_scene_max_dist": 0.001379,
+      "cross_scene_std_dist": 0.00045
+    },
+    "L3": {
+      "per_scene_to_global": {
+        "highway": 0.000475,
+        "urban": 0.000772,
+        "rural": 0.000665,
+        "parking": 0.002577,
+        "intersection": 0.001231
+      },
+      "cross_scene_mean_dist": 0.001151,
+      "cross_scene_max_dist": 0.002618,
+      "cross_scene_std_dist": 0.000758
+    }
+  },
+  "detection_results": {
+    "L1": {
+      "auroc": 0.8825,
+      "per_corruption": {
+        "fog": 0.8,
+        "night": 0.96,
+        "blur": 0.89,
+        "noise": 0.88
+      },
+      "id_mean": 0.000474,
+      "ood_mean": 0.001324
+    },
+    "L3": {
+      "auroc": 0.88,
+      "per_corruption": {
+        "fog": 0.76,
+        "night": 1.0,
+        "blur": 0.88,
+        "noise": 0.88
+      },
+      "id_mean": 0.001154,
+      "ood_mean": 0.002624
+    }
+  }
+}
