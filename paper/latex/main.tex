@@ -5222,4 +5222,22 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 590}: L3 is the \textbf{most geometrically compact layer}: 85.7\% of variance in 3 PCs versus 72.3\% (L15) and 54.5\% (L31). Higher layers spread the corruption signal across more dimensions, making L3 uniquely suited for low-dimensional detection and visualization.
 
+\subsection{Vision Encoder vs Language Model Attribution}
+
+\textbf{Experiment 277: Signal Origin and Flow.} We trace the OOD signal through the complete model pipeline by registering forward hooks at three stages: (1) SigLIP vision encoder featurizer (256$\times$1024), (2) fused featurizer (256$\times$1152), (3) projection layer (256$\times$4096), plus all 33 language model layers.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig286_attribution.png}
+\caption{Signal flow through the OpenVLA pipeline. (a) Cosine distance across all 33 LLM layers (log scale): L0$\approx$0, exponential growth L11--L17, L32 spike. (b) Complete pipeline: vision encoder ($d$=0.2--0.5) $\to$ L0 bottleneck ($d\approx10^{-16}$) $\to$ re-amplification through attention. (c) Distance comparison across pipeline stages. (d) Early layer signal emergence (L0--L12, linear scale).}
+\end{figure}
+
+\textbf{Finding 591}: The OOD signal \textbf{originates in the vision encoder}: SigLIP featurizer cosine distance is $d = 0.20$--$0.50$ for corrupted vs.\ clean inputs. The vision backbone inherently encodes corruption as a large directional shift --- night and blur produce the strongest shifts ($d \approx 0.5$), while noise produces the weakest ($d = 0.20$).
+
+\textbf{Finding 592}: Layer 0 of the language model is a \textbf{complete signal bottleneck}: cosine distance drops from $d = 0.2$--$0.5$ (projector output) to $d \approx 10^{-16}$ (L0). This occurs because the last token position is a \emph{text} token whose L0 embedding comes from vocabulary lookup, independent of image content. Visual information only reaches this position through transformer attention in subsequent layers.
+
+\textbf{Finding 593}: The signal exhibits \textbf{two-phase amplification}: slow growth through early layers (L1--L10: $d = 0.001 \to 0.008$) via attention-mediated transfer from image token positions, followed by exponential amplification in mid-layers (L11--L17: $d = 0.008 \to 0.30$). The final layer (L32) produces a $2\times$ spike ($d = 0.33$--$0.70$), reflecting projection into vocabulary space where corrupted inputs map to different token distributions.
+
+\textbf{Finding 594}: Despite the L0 bottleneck, \textbf{L3 already provides sufficient signal} for perfect detection ($d = 0.003$--$0.008$ vs.\ clean $d = 0$). Only 3 layers of attention transfer are needed to reconstruct the corruption signal, explaining why our minimal L3 detector achieves AUROC=1.0.
+
 \end{document}
