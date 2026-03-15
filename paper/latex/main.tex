@@ -2838,4 +2838,20 @@ The OR-gate architecture represents our recommended production deployment: two c
 \label{fig:temporal}
 \end{figure}
 
+\subsection{Adversarial Robustness}
+\label{app:adversarial}
+
+\textbf{Finding 225}: The OOD detector is robust to 4 of 5 gradient-free attack types (random patch, color shift, spatial shift, channel swap), detecting corruptions even at modest pixel MSE levels ($\sim$12--140).
+
+\textbf{Finding 226}: \textbf{High-frequency checkerboard patterns evade detection}: amplitude 40 produces MSE$=$1491 (significant pixel corruption) but L32 distance$=$0.019 (below threshold). The ViT's 16$\times$16 patch embedding acts as a low-pass filter, smoothing away high-frequency perturbations before they reach the embedding layers.
+
+\textbf{Finding 227}: This vulnerability has \textbf{low practical risk}: high-frequency patterns are destroyed by camera noise, JPEG compression, and sensor pipelines. Natural driving corruptions (fog, rain, blur, night) are all low-frequency and robustly detected.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig140_adversarial.png}
+\caption{\textbf{Adversarial robustness.} (A) Pixel MSE vs L32 distance: most attacks follow the detection boundary; high-freq evades (bottom-right zone). (B) Detection rate: 100\% for random patch and color shift; 67\% for high-freq. (C) High-freq detail: MSE grows with amplitude while L32 stays below threshold up to amplitude 40.}
+\label{fig:adversarial}
+\end{figure}
+
 \end{document}

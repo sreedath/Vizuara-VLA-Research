@@ -1,92 +1,87 @@
-"""Generate Figure 67: Adversarial Perturbation Robustness."""
 import json
-import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import numpy as np
 
-OUT_DIR = "/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/paper/figures"
+with open("/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/experiments/adversarial_detector_20260315_014756.json") as f:
+    data = json.load(f)
 
-# Data from experiment 81
-perturbations = [
-    ('Gauss-10', 1.000, 0.131),
-    ('Gauss-25', 1.000, 0.221),
-    ('Gauss-50', 1.000, 0.307),
-    ('Gauss-100', 0.667, 0.395),
-    ('S&P-1%', 0.356, 0.433),
-    ('S&P-5%', 0.208, 0.456),
-    ('S&P-10%', 0.537, 0.422),
-    ('S&P-20%', 0.597, 0.417),
-    ('JPEG-50', 1.000, 0.092),
-    ('JPEG-20', 1.000, 0.092),
-    ('JPEG-5', 1.000, 0.101),
-    ('Blur-1', 1.000, 0.126),
-    ('Blur-3', 0.991, 0.310),
-    ('Blur-5', 0.949, 0.335),
-]
+results = data["results"]
+cal_stats = data["cal_stats"]
+threshold_l32 = cal_stats["L32"]["mean"] + 3 * cal_stats["L32"]["std"]
 
-names = [p[0] for p in perturbations]
-aurocs = [p[1] for p in perturbations]
-dists = [p[2] for p in perturbations]
+fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 
-fig, axes = plt.subplots(1, 2, figsize=(15, 6))
-
-# Panel (a): AUROC by perturbation type
+# Panel A: Pixel MSE vs L32 distance for all attacks
 ax = axes[0]
-colors = []
-for a in aurocs:
-    if a >= 0.95:
-        colors.append('#4CAF50')
-    elif a >= 0.8:
-        colors.append('#FF9800')
-    else:
-        colors.append('#F44336')
+attacks = list(results.keys())
+colors = ["#2196F3", "#FF9800", "#4CAF50", "#F44336", "#9C27B0"]
+for attack, color in zip(attacks, colors):
+    ar = results[attack]["results"]
+    mses = [r["pixel_mse"] for r in ar]
+    l32s = [r["L32_distance"] for r in ar]
+    ax.scatter(mses, l32s, color=color, s=80, alpha=0.7, label=attack.replace("_", " "))
+    ax.plot(mses, l32s, color=color, alpha=0.3)
 
-bars = ax.barh(range(len(names)), aurocs, 0.6, color=colors,
-               edgecolor='black', linewidth=0.5, alpha=0.85)
-ax.set_yticks(range(len(names)))
-ax.set_yticklabels(names, fontsize=9)
-ax.set_xlabel('AUROC', fontsize=11)
-ax.set_title('(a) Detection AUROC Under Perturbation', fontsize=12, fontweight='bold')
-ax.axvline(x=0.95, color='green', linestyle='--', alpha=0.3, label='Robust (0.95)')
-ax.axvline(x=0.80, color='orange', linestyle='--', alpha=0.3, label='Weak (0.80)')
-ax.set_xlim(0, 1.1)
-ax.legend(fontsize=8, loc='lower right')
-ax.grid(True, alpha=0.3, axis='x')
+ax.axhline(y=threshold_l32, color='red', linestyle='--', linewidth=2, label=f'L32 3σ threshold')
+ax.set_xlabel("Pixel MSE (corruption severity)")
+ax.set_ylabel("L32 Cosine Distance")
+ax.set_title("(A) Pixel Corruption vs Embedding Distance")
+ax.legend(fontsize=8)
+# Shade evasion zone
+ax.axhspan(0, threshold_l32, xmin=0.3, alpha=0.1, color='red')
+ax.text(2000, threshold_l32/2, "Evasion\nZone", ha='center', fontsize=10, color='red', alpha=0.5)
 
-for bar, v in zip(bars, aurocs):
-    ax.text(bar.get_width() + 0.01, bar.get_y() + bar.get_height()/2.,
-            f'{v:.3f}', ha='left', va='center', fontsize=8, fontweight='bold')
-
-# Add category labels
-ax.annotate('JPEG: Fully Robust', xy=(1.0, 9.5), fontsize=9,
-            color='darkgreen', fontweight='bold')
-ax.annotate('S&P: Breaks\nDetection!', xy=(0.3, 5), fontsize=9,
-            color='darkred', fontweight='bold')
-
-# Panel (b): Perturbed ID distance vs OOD distance
+# Panel B: Detection rate by attack type
 ax = axes[1]
-clean_id = 0.087
-ood_mean = 0.408
+attack_labels = [a.replace("_", "\n") for a in attacks]
+det_rates = []
+for attack in attacks:
+    ar = results[attack]["results"]
+    total = len(ar)
+    detected = sum(1 for r in ar if r["L3_flagged"] or r["L32_flagged"])
+    det_rates.append(detected / total)
 
-ax.barh(range(len(names)), dists, 0.6, color=colors,
-        edgecolor='black', linewidth=0.5, alpha=0.7, label='Perturbed ID dist')
-ax.axvline(x=clean_id, color='blue', linestyle='-', linewidth=2, label=f'Clean ID ({clean_id:.3f})')
-ax.axvline(x=ood_mean, color='red', linestyle='-', linewidth=2, label=f'OOD mean ({ood_mean:.3f})')
-ax.set_yticks(range(len(names)))
-ax.set_yticklabels(names, fontsize=9)
-ax.set_xlabel('Cosine Distance to Centroid', fontsize=11)
-ax.set_title('(b) Perturbation Drift in Embedding Space', fontsize=12, fontweight='bold')
-ax.legend(fontsize=8, loc='lower right')
-ax.grid(True, alpha=0.3, axis='x')
+bars = ax.bar(range(len(attacks)), det_rates, color=colors, alpha=0.85)
+ax.set_xticks(range(len(attacks)))
+ax.set_xticklabels(attack_labels, fontsize=8)
+ax.set_ylabel("Detection Rate")
+ax.set_ylim(0, 1.1)
+ax.set_title("(B) Detection Rate by Attack Type")
+for bar, rate in zip(bars, det_rates):
+    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.02,
+            f"{rate:.0%}", ha='center', fontsize=10, fontweight='bold')
 
-# Shade danger zone
-ax.axvspan(ood_mean - 0.05, ood_mean + 0.05, alpha=0.1, color='red')
-ax.annotate('S&P crosses\ninto OOD zone', xy=(0.43, 5), xytext=(0.5, 2),
-            fontsize=9, color='darkred', fontweight='bold',
-            arrowprops=dict(arrowstyle='->', color='darkred'))
+# Panel C: High-freq attack detail (the one that evades)
+ax = axes[2]
+hf = results["high_freq"]["results"]
+strengths = [r["strength"] for r in hf]
+mses = [r["pixel_mse"] for r in hf]
+l32s = [r["L32_distance"] for r in hf]
+
+ax2 = ax.twinx()
+bars1 = ax.bar([s - 2 for s in strengths], mses, 4, color='#90CAF9', alpha=0.7, label='Pixel MSE')
+line1, = ax2.plot(strengths, l32s, 'o-', color='#F44336', markersize=8, linewidth=2, label='L32 distance')
+ax2.axhline(y=threshold_l32, color='red', linestyle='--', alpha=0.5)
+
+ax.set_xlabel("High-freq amplitude")
+ax.set_ylabel("Pixel MSE", color='#2196F3')
+ax2.set_ylabel("L32 Cosine Distance", color='#F44336')
+ax.set_title("(C) High-Freq Attack: MSE Grows While Embedding Stays")
+
+# Mark evasion region
+for r in hf:
+    if r["pixel_mse"] > 500 and not r["L32_flagged"]:
+        ax.annotate("EVADES!", xy=(r["strength"], r["pixel_mse"]),
+                    xytext=(r["strength"]+10, r["pixel_mse"]+500),
+                    fontsize=9, color='red', fontweight='bold',
+                    arrowprops=dict(arrowstyle='->', color='red'))
+
+lines = [bars1, line1]
+labels = ['Pixel MSE', 'L32 distance']
+ax.legend(lines, labels, loc='upper left', fontsize=8)
 
 plt.tight_layout()
-plt.savefig(f'{OUT_DIR}/fig67_adversarial_robustness.png', dpi=200, bbox_inches='tight')
-plt.savefig(f'{OUT_DIR}/fig67_adversarial_robustness.pdf', dpi=200, bbox_inches='tight')
-print("Saved fig67_adversarial_robustness.png/pdf")
+plt.savefig("/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/paper/latex/figures/fig140_adversarial.png", dpi=150, bbox_inches='tight')
+print("Saved fig140")

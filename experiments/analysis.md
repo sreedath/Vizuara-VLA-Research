@@ -6688,3 +6688,33 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 4. **Blur shows saturation**: L32 distance peaks around radius=8 (0.370) then slightly decreases at higher radii (0.323 at radius 12). This is consistent with the vision encoder's receptive field — beyond a certain blur, additional blur has diminishing effect.
 
 5. **Detector enables severity estimation**: The smooth, monotonic distance curve could be used not just for binary OOD detection but for estimating corruption severity, enabling graduated response (slow down vs stop).
+
+---
+
+## Finding 148: Adversarial Robustness of OOD Detector (Experiment 154)
+
+**Question**: Can gradient-free adversarial attacks evade the embedding-based OOD detector while significantly corrupting the image?
+
+**Setup**: 5 attack types (random patch, color shift, high-frequency checkerboard, spatial shift, channel swap) at 6 strength levels each. Detection via cosine OR-gate at L3 and L32 with 3σ threshold.
+
+**Key Results**:
+
+| Attack | Detection Rate | Evasion? | Key Finding |
+|--------|---------------|----------|-------------|
+| Random patch | 6/6 (100%) | No | Even small patches detected |
+| Color shift | 6/6 (100%) | No | Color changes detected at MSE=12 |
+| **High-freq** | **4/6 (67%)** | **Yes at amp=40** | MSE=1491 but L32=0.019 (below threshold) |
+| Spatial shift | 5/6 (83%) | No* | 1px shift undetected (MSE=138) |
+| Channel swap | 5/6 (83%) | No* | 10% blend undetected (MSE=27, low corruption) |
+
+**Critical Insights**:
+
+1. **Only high-frequency patterns evade the detector**: Checkerboard patterns at amplitude 40 produce MSE=1491 (significant pixel corruption) but L32 distance=0.019 (below 3σ threshold). The vision encoder's downsampling naturally filters high-frequency patterns.
+
+2. **This is a known vulnerability of ViT-based models**: The patch embedding in ViT averages over 16×16 pixel patches, acting as a low-pass filter. High-frequency perturbations are smoothed away before reaching the transformer layers.
+
+3. **Low-frequency attacks are robustly detected**: Color shifts, brightness changes, blur — all low-frequency corruptions — are detected even at modest MSE levels. The detector is strongest against the types of corruption most likely in real driving.
+
+4. **Practical risk is low**: High-frequency checkerboard patterns are unlikely in natural driving scenarios. Adversarial attacks requiring precise pixel-level control are impractical for physical-world deployment (camera noise, JPEG compression, sensor pipeline all destroy high-frequency patterns).
+
+5. **Defense recommendation**: If high-frequency robustness is needed, add a simple high-pass filter check as a preprocessing step (detect images with unusual high-frequency energy).

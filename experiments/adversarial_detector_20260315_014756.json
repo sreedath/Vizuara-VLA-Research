@@ -1,0 +1,290 @@
+{
+  "experiment": "adversarial_detector",
+  "experiment_number": 154,
+  "timestamp": "20260315_014756",
+  "n_cal": 10,
+  "sigma": 3.0,
+  "layers": [
+    3,
+    32
+  ],
+  "cal_stats": {
+    "L3": {
+      "mean": 9.989738464355468e-06,
+      "std": 3.659569864362958e-06,
+      "max": 1.913309097290039e-05
+    },
+    "L32": {
+      "mean": 0.01427437663078308,
+      "std": 0.0032725664835723573,
+      "max": 0.020069122314453125
+    }
+  },
+  "results": {
+    "random_patch": {
+      "description": "Random noise in a small patch (20% of image)",
+      "results": [
+        {
+          "strength": 10.0,
+          "pixel_mse": 3.9715423583984375,
+          "L3_distance": 9.417533874511719e-05,
+          "L32_distance": 0.03792482614517212,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 30.0,
+          "pixel_mse": 34.48797607421875,
+          "L3_distance": 0.0003822445869445801,
+          "L32_distance": 0.34773069620132446,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 50.0,
+          "pixel_mse": 76.82465362548828,
+          "L3_distance": 0.0008327960968017578,
+          "L32_distance": 0.3562871217727661,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 80.0,
+          "pixel_mse": 167.4982452392578,
+          "L3_distance": 0.0024622678756713867,
+          "L32_distance": 0.46860742568969727,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 128.0,
+          "pixel_mse": 319.2843322753906,
+          "L3_distance": 0.0013649463653564453,
+          "L32_distance": 0.4290078282356262,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 200.0,
+          "pixel_mse": 470.8621826171875,
+          "L3_distance": 0.0034801363945007324,
+          "L32_distance": 0.5383179187774658,
+          "L3_flagged": true,
+          "L32_flagged": true
+        }
+      ]
+    },
+    "color_shift": {
+      "description": "Shift all channels by different amounts",
+      "results": [
+        {
+          "strength": 5.0,
+          "pixel_mse": 11.586929321289062,
+          "L3_distance": 5.78761100769043e-05,
+          "L32_distance": 0.02031487226486206,
+          "L3_flagged": true,
+          "L32_flagged": false
+        },
+        {
+          "strength": 10.0,
+          "pixel_mse": 44.27267837524414,
+          "L3_distance": 0.00014698505401611328,
+          "L32_distance": 0.03638190031051636,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 20.0,
+          "pixel_mse": 177.0031280517578,
+          "L3_distance": 0.00030493736267089844,
+          "L32_distance": 0.0794641375541687,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 40.0,
+          "pixel_mse": 716.1294555664062,
+          "L3_distance": 0.0005285739898681641,
+          "L32_distance": 0.1433868408203125,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 60.0,
+          "pixel_mse": 1609.5322265625,
+          "L3_distance": 0.0006819963455200195,
+          "L32_distance": 0.16370993852615356,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 80.0,
+          "pixel_mse": 2820.149169921875,
+          "L3_distance": 0.0008186697959899902,
+          "L32_distance": 0.1778935194015503,
+          "L3_flagged": true,
+          "L32_flagged": true
+        }
+      ]
+    },
+    "high_freq": {
+      "description": "Add high-frequency pattern (checkerboard)",
+      "results": [
+        {
+          "strength": 5.0,
+          "pixel_mse": 24.8810977935791,
+          "L3_distance": 6.67572021484375e-06,
+          "L32_distance": 0.013301968574523926,
+          "L3_flagged": false,
+          "L32_flagged": false
+        },
+        {
+          "strength": 10.0,
+          "pixel_mse": 99.441650390625,
+          "L3_distance": 7.510185241699219e-06,
+          "L32_distance": 0.012617766857147217,
+          "L3_flagged": false,
+          "L32_flagged": false
+        },
+        {
+          "strength": 20.0,
+          "pixel_mse": 393.537353515625,
+          "L3_distance": 5.245208740234375e-06,
+          "L32_distance": 0.011975765228271484,
+          "L3_flagged": false,
+          "L32_flagged": false
+        },
+        {
+          "strength": 40.0,
+          "pixel_mse": 1491.4381103515625,
+          "L3_distance": 8.046627044677734e-06,
+          "L32_distance": 0.018456339836120605,
+          "L3_flagged": false,
+          "L32_flagged": false
+        },
+        {
+          "strength": 60.0,
+          "pixel_mse": 3213.757080078125,
+          "L3_distance": 3.170967102050781e-05,
+          "L32_distance": 0.029127657413482666,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 80.0,
+          "pixel_mse": 5478.50537109375,
+          "L3_distance": 6.842613220214844e-05,
+          "L32_distance": 0.04737061262130737,
+          "L3_flagged": true,
+          "L32_flagged": true
+        }
+      ]
+    },
+    "spatial_shift": {
+      "description": "Shift image pixels by N positions",
+      "results": [
+        {
+          "strength": 1.0,
+          "pixel_mse": 137.71987915039062,
+          "L3_distance": 2.008676528930664e-05,
+          "L32_distance": 0.017182588577270508,
+          "L3_flagged": false,
+          "L32_flagged": false
+        },
+        {
+          "strength": 3.0,
+          "pixel_mse": 373.20849609375,
+          "L3_distance": 6.318092346191406e-05,
+          "L32_distance": 0.06364661455154419,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 5.0,
+          "pixel_mse": 608.2852172851562,
+          "L3_distance": 8.302927017211914e-05,
+          "L32_distance": 0.05169355869293213,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 10.0,
+          "pixel_mse": 726.0895385742188,
+          "L3_distance": 4.106760025024414e-05,
+          "L32_distance": 0.06192171573638916,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 20.0,
+          "pixel_mse": 726.5977172851562,
+          "L3_distance": 7.873773574829102e-05,
+          "L32_distance": 0.06315600872039795,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 50.0,
+          "pixel_mse": 726.8441772460938,
+          "L3_distance": 0.00014191865921020508,
+          "L32_distance": 0.1193692684173584,
+          "L3_flagged": true,
+          "L32_flagged": true
+        }
+      ]
+    },
+    "channel_swap": {
+      "description": "Blend with channel-permuted version",
+      "results": [
+        {
+          "strength": 0.1,
+          "pixel_mse": 26.942337036132812,
+          "L3_distance": 1.055002212524414e-05,
+          "L32_distance": 0.015472471714019775,
+          "L3_flagged": false,
+          "L32_flagged": false
+        },
+        {
+          "strength": 0.2,
+          "pixel_mse": 106.83744049072266,
+          "L3_distance": 3.11732292175293e-05,
+          "L32_distance": 0.028637826442718506,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 0.3,
+          "pixel_mse": 240.51641845703125,
+          "L3_distance": 9.846687316894531e-05,
+          "L32_distance": 0.06900155544281006,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 0.5,
+          "pixel_mse": 666.379150390625,
+          "L3_distance": 0.0002562403678894043,
+          "L32_distance": 0.1374189853668213,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 0.7,
+          "pixel_mse": 1306.1519775390625,
+          "L3_distance": 0.0004032254219055176,
+          "L32_distance": 0.16242223978042603,
+          "L3_flagged": true,
+          "L32_flagged": true
+        },
+        {
+          "strength": 1.0,
+          "pixel_mse": 2664.88916015625,
+          "L3_distance": 0.0005310177803039551,
+          "L32_distance": 0.18120646476745605,
+          "L3_flagged": true,
+          "L32_flagged": true
+        }
+      ]
+    }
+  }
+}
