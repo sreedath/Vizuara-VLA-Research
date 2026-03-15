@@ -1,0 +1,80 @@
+{
+  "experiment": "prompt_clustering",
+  "experiment_number": 235,
+  "timestamp": "20260315_070920",
+  "layer": 3,
+  "prompts": [
+    "forward",
+    "left",
+    "stop",
+    "pickup",
+    "navigate"
+  ],
+  "corruption_types": [
+    "fog",
+    "night",
+    "noise",
+    "blur"
+  ],
+  "per_prompt_results": {
+    "forward": {
+      "distances": {
+        "fog": 0.000698,
+        "night": 0.003403,
+        "noise": 0.002883,
+        "blur": 0.001068
+      },
+      "nc_accuracy": 1.0
+    },
+    "left": {
+      "distances": {
+        "fog": 0.000767,
+        "night": 0.003649,
+        "noise": 0.003178,
+        "blur": 0.001152
+      },
+      "nc_accuracy": 1.0
+    },
+    "stop": {
+      "distances": {
+        "fog": 0.000822,
+        "night": 0.003802,
+        "noise": 0.003217,
+        "blur": 0.001126
+      },
+      "nc_accuracy": 1.0
+    },
+    "pickup": {
+      "distances": {
+        "fog": 0.000728,
+        "night": 0.003532,
+        "noise": 0.002935,
+        "blur": 0.001019
+      },
+      "nc_accuracy": 1.0
+    },
+    "navigate": {
+      "distances": {
+        "fog": 0.000693,
+        "night": 0.003338,
+        "noise": 0.002809,
+        "blur": 0.001012
+      },
+      "nc_accuracy": 1.0
+    }
+  },
+  "cross_prompt_transfer": {
+    "left": {
+      "accuracy": 1.0
+    },
+    "stop": {
+      "accuracy": 1.0
+    },
+    "pickup": {
+      "accuracy": 1.0
+    },
+    "navigate": {
+      "accuracy": 1.0
+    }
+  }
+}

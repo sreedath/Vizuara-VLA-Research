@@ -8859,3 +8859,33 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **K-means merges night and blur**: Because they have similar embedding structure, unsupervised clustering groups them together. But with corruption-type centroids (supervised), 100% separation is achieved.
 
 **Finding 229**: Corruption types form **distinct, well-separated clusters** in embedding space (silhouette = 0.84). A simple nearest-centroid classifier achieves **100% corruption type identification** across all 6 types. The cosine distance detector can simultaneously detect OOD inputs AND identify the specific corruption type.
+
+---
+
+## Experiment 235: Cross-Prompt Corruption Identification
+
+**Research Question**: Is corruption type identification robust to prompt changes? If corruption clusters are prompt-invariant, the same type centroids can be reused regardless of the robot's task.
+
+**Method**: Test corruption identification (fog, night, noise, blur) across 5 different prompts (forward, left, stop, pickup, navigate). Then test cross-prompt transfer: train type centroids on the "forward" prompt and classify corruption under the 4 other prompts using shift-vector cosine similarity.
+
+**Results**:
+
+**Per-prompt identification**: 100% accuracy for all 5 prompts.
+
+| Prompt | Fog Dist | Night Dist | Noise Dist | Blur Dist | NC Acc |
+|--------|---------|-----------|-----------|----------|--------|
+| forward | 0.000698 | 0.003403 | 0.002883 | 0.001068 | 100% |
+| left | 0.000767 | 0.003649 | 0.003178 | 0.001152 | 100% |
+| stop | 0.000822 | 0.003802 | 0.003217 | 0.001126 | 100% |
+| pickup | 0.000728 | 0.003532 | 0.002935 | 0.001019 | 100% |
+| navigate | 0.000693 | 0.003338 | 0.002809 | 0.001012 | 100% |
+
+**Cross-prompt transfer**: 100% accuracy for all 4 transfer prompts (16/16 correct).
+
+**Key Findings**:
+1. **Corruption identification is prompt-invariant**: All 5 prompts achieve 100% accuracy independently.
+2. **Cross-prompt transfer works perfectly**: Centroids trained on "forward" correctly classify corruptions under "left", "stop", "pickup", and "navigate" (16/16).
+3. **Corruption ordering is preserved**: Across all prompts, night > noise > blur > fog distance ordering holds consistently.
+4. **Distance magnitudes vary slightly**: Night distance ranges from 0.003338 to 0.003802 across prompts (~14% variation), but relative ordering never changes.
+
+**Finding 230**: Corruption type identification is **100% prompt-invariant**: all 5 prompts achieve perfect identification, and centroids trained on one prompt transfer perfectly to 4 others. Corruption type identification requires zero prompt-specific calibration.
