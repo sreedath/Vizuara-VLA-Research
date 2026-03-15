@@ -6574,4 +6574,25 @@ We study detection behavior over sequences of frames, analyzing frame-to-frame c
 
 \textbf{Finding 843}: \textbf{EWMA adds zero benefit: both single-frame and EWMA achieve precision=recall=1.0 with latency=0.} Temporal smoothing is unnecessary and only adds recovery lag (EWMA at $\alpha=0.1$ takes multiple frames to reset after corruption ends).
 
+%% ============================================================
+\subsection{Experiment 348: Information-Theoretic Analysis}
+\label{sec:exp348}
+
+We characterize the detection signal using information-theoretic measures: mutual information, KL divergence, channel capacity, multiclass classification, severity encoding, and compression bounds.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig357_infotheo.png}
+\caption{\textbf{Experiment 348}: Information-theoretic analysis. Top-left: KL divergence from clean (night highest at 3549). Top-right: pairwise KL between types with perfect multiclass classification. Bottom-left: severity channel with $\rho \geq 0.94$ and 3.6--4.0 bits. Bottom-right: only 2 PCA dimensions needed for full detection.}
+\label{fig:exp348}
+\end{figure}
+
+\textbf{Finding 844}: \textbf{The detection channel operates at maximum capacity: MI = 1.0 bit with zero histogram overlap for all types.} The cosine distance perfectly separates clean from corrupted --- this is the information-theoretic ceiling.
+
+\textbf{Finding 845}: \textbf{Corruption type is perfectly classifiable from embeddings: 100\% accuracy across 80 samples.} The embedding encodes not just binary clean/corrupt but which specific corruption occurred (pairwise symmetric KL = 2500--11200).
+
+\textbf{Finding 846}: \textbf{Embeddings encode $\sim$4 bits of severity information (Spearman $\rho = 0.94$--$0.98$).} All 6 severity levels are distinguishable for fog/night (15/15 pairs separated). The OOD signal is quantitative, not just binary.
+
+\textbf{Finding 847}: \textbf{Only 2 PCA dimensions suffice for detection --- a $2048\times$ compression from 4096D.} At $k=1$ (57\% variance), only fog and blur are detected; at $k=2$ (88\% variance), all 4 types are captured. The detection manifold is essentially 2-dimensional.
+
 \end{document}

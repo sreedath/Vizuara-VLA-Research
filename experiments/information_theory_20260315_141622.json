@@ -1,0 +1,505 @@
+{
+  "entropy": {
+    "k=3": {
+      "clean_entropy": -9.054401029513045,
+      "variance_explained": 0.9525066018104553,
+      "per_type": {
+        "fog": {
+          "entropy": -10.202257452563686,
+          "kl_from_clean": 825.2181072986482
+        },
+        "night": {
+          "entropy": -8.254749159879562,
+          "kl_from_clean": 937.1373061884233
+        },
+        "noise": {
+          "entropy": -9.137071975277756,
+          "kl_from_clean": 8.043337437507722
+        },
+        "blur": {
+          "entropy": -6.634928493748573,
+          "kl_from_clean": 510.1933535490528
+        }
+      }
+    },
+    "k=5": {
+      "clean_entropy": -14.859113018375162,
+      "variance_explained": 0.9631239175796509,
+      "per_type": {
+        "fog": {
+          "entropy": -17.029187587938544,
+          "kl_from_clean": 903.179968576201
+        },
+        "night": {
+          "entropy": -14.23382257232658,
+          "kl_from_clean": 1670.482546153073
+        },
+        "noise": {
+          "entropy": -15.65575306448472,
+          "kl_from_clean": 11.878671465872312
+        },
+        "blur": {
+          "entropy": -10.003334260944953,
+          "kl_from_clean": 581.411922189076
+        }
+      }
+    },
+    "k=10": {
+      "clean_entropy": -32.29121712439236,
+      "variance_explained": 0.9763363003730774,
+      "per_type": {
+        "fog": {
+          "entropy": -35.754873534838204,
+          "kl_from_clean": 1656.5056968533902
+        },
+        "night": {
+          "entropy": -31.090286198407796,
+          "kl_from_clean": 3548.7385993073854
+        },
+        "noise": {
+          "entropy": -32.918702482338745,
+          "kl_from_clean": 72.51560091763596
+        },
+        "blur": {
+          "entropy": -23.198287460578484,
+          "kl_from_clean": 1502.2372891376026
+        }
+      }
+    },
+    "k=20": {
+      "clean_entropy": -78.11727915046744,
+      "variance_explained": 0.9869874715805054,
+      "per_type": {
+        "fog": {
+          "entropy": -87.9819498750871,
+          "kl_from_clean": 15754959.286340501
+        },
+        "night": {
+          "entropy": -77.04559555135924,
+          "kl_from_clean": 165747822.93168983
+        },
+        "noise": {
+          "entropy": -80.43758536924007,
+          "kl_from_clean": 1579820.3128353416
+        },
+        "blur": {
+          "entropy": -62.869144220866616,
+          "kl_from_clean": 351518222.01419026
+        }
+      }
+    }
+  },
+  "distance_channel": {
+    "fog": {
+      "clean_mean": 5.960464477539063e-09,
+      "clean_std": 8.820681921809162e-08,
+      "ood_mean": 0.0009952366352081298,
+      "ood_std": 7.742709453416633e-05,
+      "h_clean_1d": -0.0,
+      "h_ood_1d": 1.188376371734507,
+      "mutual_information": 1.0,
+      "channel_capacity_approx": 1.0,
+      "histogram_overlap": 0.0,
+      "separation_score": 1.0
+    },
+    "night": {
+      "clean_mean": 5.960464477539063e-09,
+      "clean_std": 8.820681921809162e-08,
+      "ood_mean": 0.0020354777574539185,
+      "ood_std": 0.0001260028745248274,
+      "h_clean_1d": -0.0,
+      "h_ood_1d": 0.934068055375491,
+      "mutual_information": 1.0,
+      "channel_capacity_approx": 1.0,
+      "histogram_overlap": 0.0,
+      "separation_score": 1.0
+    },
+    "noise": {
+      "clean_mean": 5.960464477539063e-09,
+      "clean_std": 8.820681921809162e-08,
+      "ood_mean": 0.0001189112663269043,
+      "ood_std": 3.1979777772903936e-05,
+      "h_clean_1d": -0.0,
+      "h_ood_1d": 2.090468570732828,
+      "mutual_information": 1.0,
+      "channel_capacity_approx": 1.0,
+      "histogram_overlap": 0.0,
+      "separation_score": 1.0
+    },
+    "blur": {
+      "clean_mean": 5.960464477539063e-09,
+      "clean_std": 8.820681921809162e-08,
+      "ood_mean": 0.005044335126876831,
+      "ood_std": 0.0003639326946233893,
+      "h_clean_1d": -0.0,
+      "h_ood_1d": 0.9927744539878083,
+      "mutual_information": 1.0,
+      "channel_capacity_approx": 1.0,
+      "histogram_overlap": 0.0,
+      "separation_score": 1.0
+    }
+  },
+  "multiclass": {
+    "pairwise_kl": {
+      "fog_vs_night": {
+        "kl_forward": 4223.144699856359,
+        "kl_backward": 18183.780604518128,
+        "symmetric_kl": 11203.462652187243
+      },
+      "fog_vs_noise": {
+        "kl_forward": 2978.2815551881877,
+        "kl_backward": 2045.2090663278448,
+        "symmetric_kl": 2511.7453107580163
+      },
+      "fog_vs_blur": {
+        "kl_forward": 990.2466569503596,
+        "kl_backward": 20956.514788899924,
+        "symmetric_kl": 10973.380722925142
+      },
+      "night_vs_noise": {
+        "kl_forward": 9312.82004435105,
+        "kl_backward": 4396.047541647088,
+        "symmetric_kl": 6854.433792999069
+      },
+      "night_vs_blur": {
+        "kl_forward": 4305.1709343583425,
+        "kl_backward": 12045.167724180692,
+        "symmetric_kl": 8175.169329269517
+      },
+      "noise_vs_blur": {
+        "kl_forward": 2188.09334861072,
+        "kl_backward": 11642.224301798893,
+        "symmetric_kl": 6915.158825204807
+      }
+    },
+    "classification_accuracy": 1.0,
+    "confusion_matrix": {
+      "fog": {
+        "fog": 20,
+        "night": 0,
+        "noise": 0,
+        "blur": 0
+      },
+      "night": {
+        "fog": 0,
+        "night": 20,
+        "noise": 0,
+        "blur": 0
+      },
+      "noise": {
+        "fog": 0,
+        "night": 0,
+        "noise": 20,
+        "blur": 0
+      },
+      "blur": {
+        "fog": 0,
+        "night": 0,
+        "noise": 0,
+        "blur": 20
+      }
+    },
+    "n_classes": 4,
+    "max_possible_mi": 2.0
+  },
+  "severity_channel": {
+    "fog": {
+      "severities": [
+        0.1,
+        0.2,
+        0.3,
+        0.5,
+        0.7,
+        1.0
+      ],
+      "mean_distances": [
+        5.065798759460449e-05,
+        0.00018785595893859862,
+        0.00038962960243225095,
+        0.000984269380569458,
+        0.001658850908279419,
+        0.0029644787311553953
+      ],
+      "spearman_rho": 0.982995276465685,
+      "distinguishable_pairs": 15,
+      "total_pairs": 15,
+      "severity_bits": 4.0
+    },
+    "night": {
+      "severities": [
+        0.1,
+        0.2,
+        0.3,
+        0.5,
+        0.7,
+        1.0
+      ],
+      "mean_distances": [
+        9.549260139465331e-05,
+        0.00037012100219726565,
+        0.0008355617523193359,
+        0.002016758918762207,
+        0.003637653589248657,
+        0.008197879791259766
+      ],
+      "spearman_rho": 0.9795498749652681,
+      "distinguishable_pairs": 15,
+      "total_pairs": 15,
+      "severity_bits": 4.0
+    },
+    "noise": {
+      "severities": [
+        0.1,
+        0.2,
+        0.3,
+        0.5,
+        0.7,
+        1.0
+      ],
+      "mean_distances": [
+        1.3697147369384766e-05,
+        3.502368927001953e-05,
+        5.974173545837402e-05,
+        0.00012883543968200684,
+        0.00022709369659423828,
+        0.00047240257263183596
+      ],
+      "spearman_rho": 0.9406501806057238,
+      "distinguishable_pairs": 12,
+      "total_pairs": 15,
+      "severity_bits": 3.700439718141092
+    },
+    "blur": {
+      "severities": [
+        0.1,
+        0.2,
+        0.3,
+        0.5,
+        0.7,
+        1.0
+      ],
+      "mean_distances": [
+        0.0007349729537963867,
+        0.002230846881866455,
+        0.003644740581512451,
+        0.005015808343887329,
+        0.0053143143653869625,
+        0.005672067403793335
+      ],
+      "spearman_rho": 0.9578771881078078,
+      "distinguishable_pairs": 11,
+      "total_pairs": 15,
+      "severity_bits": 3.584962500721156
+    }
+  },
+  "compression": {
+    "k=1": {
+      "variance_explained": 0.5723251104354858,
+      "per_type": {
+        "fog": {
+          "mean_dist": 2.0,
+          "min_dist": 2.0,
+          "detection_rate": 1.0
+        },
+        "night": {
+          "mean_dist": 0.0,
+          "min_dist": 0.0,
+          "detection_rate": 0.0
+        },
+        "noise": {
+          "mean_dist": 0.0,
+          "min_dist": 0.0,
+          "detection_rate": 0.0
+        },
+        "blur": {
+          "mean_dist": 2.0,
+          "min_dist": 2.0,
+          "detection_rate": 1.0
+        }
+      },
+      "all_detected": false
+    },
+    "k=2": {
+      "variance_explained": 0.8812697529792786,
+      "per_type": {
+        "fog": {
+          "mean_dist": 0.6188352972269058,
+          "min_dist": 0.5572539567947388,
+          "detection_rate": 1.0
+        },
+        "night": {
+          "mean_dist": 0.9932437151670456,
+          "min_dist": 0.8739636540412903,
+          "detection_rate": 1.0
+        },
+        "noise": {
+          "mean_dist": 0.002966362237930298,
+          "min_dist": 8.940696716308594e-07,
+          "detection_rate": 1.0
+        },
+        "blur": {
+          "mean_dist": 1.9358012199401855,
+          "min_dist": 1.9021968841552734,
+          "detection_rate": 1.0
+        }
+      },
+      "all_detected": true
+    },
+    "k=3": {
+      "variance_explained": 0.9525066018104553,
+      "per_type": {
+        "fog": {
+          "mean_dist": 0.8527617186307908,
+          "min_dist": 0.7652234435081482,
+          "detection_rate": 1.0
+        },
+        "night": {
+          "mean_dist": 1.0473924279212952,
+          "min_dist": 0.928188145160675,
+          "detection_rate": 1.0
+        },
+        "noise": {
+          "mean_dist": 0.016627314686775207,
+          "min_dist": 0.0017682313919067383,
+          "detection_rate": 1.0
+        },
+        "blur": {
+          "mean_dist": 1.8543122351169585,
+          "min_dist": 1.7651519775390625,
+          "detection_rate": 1.0
+        }
+      },
+      "all_detected": true
+    },
+    "k=5": {
+      "variance_explained": 0.9631239175796509,
+      "per_type": {
+        "fog": {
+          "mean_dist": 0.8502955377101898,
+          "min_dist": 0.7599629759788513,
+          "detection_rate": 1.0
+        },
+        "night": {
+          "mean_dist": 1.0430822879076005,
+          "min_dist": 0.9257471561431885,
+          "detection_rate": 1.0
+        },
+        "noise": {
+          "mean_dist": 0.021909424662590028,
+          "min_dist": 0.003353297710418701,
+          "detection_rate": 1.0
+        },
+        "blur": {
+          "mean_dist": 1.8423068165779113,
+          "min_dist": 1.7571570873260498,
+          "detection_rate": 1.0
+        }
+      },
+      "all_detected": true
+    },
+    "k=10": {
+      "variance_explained": 0.9763363003730774,
+      "per_type": {
+        "fog": {
+          "mean_dist": 0.8497279942035675,
+          "min_dist": 0.7633546590805054,
+          "detection_rate": 1.0
+        },
+        "night": {
+          "mean_dist": 1.035268446803093,
+          "min_dist": 0.9145298600196838,
+          "detection_rate": 1.0
+        },
+        "noise": {
+          "mean_dist": 0.06380687355995178,
+          "min_dist": 0.03175067901611328,
+          "detection_rate": 1.0
+        },
+        "blur": {
+          "mean_dist": 1.812517273426056,
+          "min_dist": 1.7199983596801758,
+          "detection_rate": 1.0
+        }
+      },
+      "all_detected": true
+    },
+    "k=20": {
+      "variance_explained": 0.9869874715805054,
+      "per_type": {
+        "fog": {
+          "mean_dist": 0.845216178894043,
+          "min_dist": 0.7570589780807495,
+          "detection_rate": 1.0
+        },
+        "night": {
+          "mean_dist": 1.0263476639986038,
+          "min_dist": 0.9100580215454102,
+          "detection_rate": 1.0
+        },
+        "noise": {
+          "mean_dist": 0.07452915906906128,
+          "min_dist": 0.04028975963592529,
+          "detection_rate": 1.0
+        },
+        "blur": {
+          "mean_dist": 1.7977264285087586,
+          "min_dist": 1.701804280281067,
+          "detection_rate": 1.0
+        }
+      },
+      "all_detected": true
+    },
+    "k=50": {
+      "variance_explained": 0.9969207644462585,
+      "per_type": {
+        "fog": {
+          "mean_dist": 0.8376509994268417,
+          "min_dist": 0.7519826292991638,
+          "detection_rate": 1.0
+        },
+        "night": {
+          "mean_dist": 1.0190043896436691,
+          "min_dist": 0.906397819519043,
+          "detection_rate": 1.0
+        },
+        "noise": {
+          "mean_dist": 0.08825964331626893,
+          "min_dist": 0.05309778451919556,
+          "detection_rate": 1.0
+        },
+        "blur": {
+          "mean_dist": 1.7841279625892639,
+          "min_dist": 1.6927064657211304,
+          "detection_rate": 1.0
+        }
+      },
+      "all_detected": true
+    },
+    "k=100": {
+      "variance_explained": 1.0,
+      "per_type": {
+        "fog": {
+          "mean_dist": 0.8383210211992264,
+          "min_dist": 0.7541501522064209,
+          "detection_rate": 1.0
+        },
+        "night": {
+          "mean_dist": 1.020668587088585,
+          "min_dist": 0.9081568717956543,
+          "detection_rate": 1.0
+        },
+        "noise": {
+          "mean_dist": 0.09846773445606231,
+          "min_dist": 0.06218999624252319,
+          "detection_rate": 1.0
+        },
+        "blur": {
+          "mean_dist": 1.779954880475998,
+          "min_dist": 1.6900596618652344,
+          "detection_rate": 1.0
+        }
+      },
+      "all_detected": true
+    }
+  }
+}

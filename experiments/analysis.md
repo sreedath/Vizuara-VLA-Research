@@ -14246,3 +14246,58 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 **Finding 590**: **Intermittent corruption at any frequency is perfectly detected — 0% false alarms, 100% detection across all patterns.** Whether corruption hits every 2nd or every 10th frame, single-frame detection catches it immediately with zero false positives. No temporal filtering needed.
 
 **Finding 591**: **EWMA detector adds zero benefit over single-frame — both achieve precision=1.0 and recall=1.0 with latency=0.** The perfect frame-level discrimination makes temporal smoothing unnecessary. EWMA at low α (0.1) only adds recovery lag when corruption ends.
+
+---
+
+## Experiment 348: Information-Theoretic Analysis of OOD Detection
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_information_theory.py`
+**Status**: Complete
+
+### Setup
+- 20 scenes, 4 corruption types at severity 0.5
+- PCA-reduced entropy and KL divergence (k=3,5,10,20)
+- 1D distance channel analysis (MI, channel capacity)
+- Multiclass corruption classification (nearest centroid, LOO)
+- Severity information channel (Spearman ρ, distinguishable pairs)
+- Compression bounds (minimum PCA dims for detection)
+
+### Results
+
+#### Distance Channel
+- **MI = 1.0 bit** for all 4 corruption types (perfect binary detection)
+- Histogram overlap = 0.0, separation score = 1.0
+- Channel capacity ≈ 1.0 bit — the detection channel operates at theoretical maximum
+
+#### KL Divergence (k=10 PCA dims)
+- Fog: KL = 1657
+- Night: KL = 3549
+- Noise: KL = 73 (smallest — closest to clean)
+- Blur: KL = 1502
+
+#### Multiclass Classification
+- **100% accuracy** (80/80) classifying which corruption type from embedding alone
+- Perfect confusion matrix (diagonal)
+- Pairwise symmetric KL: fog↔night=11203, fog↔noise=2512, night↔blur=8175
+
+#### Severity Information Channel
+- Fog: ρ=0.983, 15/15 pairs separated, 4.0 severity bits
+- Night: ρ=0.980, 15/15 pairs separated, 4.0 severity bits
+- Noise: ρ=0.941, 12/15 pairs separated, 3.7 severity bits
+- Blur: ρ=0.958, 11/15 pairs separated, 3.6 severity bits
+
+#### Compression Bounds
+- **k=1**: detects fog+blur only (57% variance)
+- **k=2**: detects ALL types (88% variance) — minimum sufficient
+- **k=3+**: all types detected with increasing variance explained
+
+### Key Findings
+
+**Finding 592**: **The detection channel operates at theoretical maximum capacity: MI = 1.0 bit with zero histogram overlap for all 4 types.** The cosine distance is a perfect binary classifier — the clean/corrupt distributions are completely separated. This is the information-theoretic ceiling; no detector can do better.
+
+**Finding 593**: **Corruption TYPE is perfectly classifiable from embeddings alone — 100% accuracy across 80 test samples with nearest centroid.** The embedding carries not just binary clean/corrupt information but encodes which specific corruption occurred. Pairwise KL divergences (2500-11200) confirm the corruption types occupy distinct regions.
+
+**Finding 594**: **Embeddings encode ~4 bits of severity information for fog/night (all 6 severity levels distinguishable) and ~3.6 bits for blur.** Spearman ρ = 0.94-0.98 between severity and cosine distance. The OOD signal is not just binary but quantitative — severity can be estimated from the embedding.
+
+**Finding 595**: **Only 2 PCA dimensions suffice for perfect detection of all 4 types — a 2048× compression from 4096D.** The detection signal is essentially 2-dimensional. At k=1, fog and blur are detected but night and noise are missed (they project orthogonally to PC1).
