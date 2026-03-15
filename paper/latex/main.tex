@@ -7442,4 +7442,37 @@ We map the minimum detectable severity for each corruption type through a fine-g
 
 \textbf{Finding 1011}: \textbf{The quadratic scaling explains the detector's effectiveness.} Small corruptions are disproportionately harder to detect (sublinear regime), but operational corruptions ($>$0.3) fall in the superlinear regime where the signal grows much faster than severity.
 
+% ============================================================
+% EXPERIMENT 383: Embedding Space Geometry Under Corruption
+% ============================================================
+
+\subsection{Experiment 383: Embedding Space Geometry Under Corruption}
+
+We characterize the geometric structure of corruption-induced shifts in the 4096-dimensional embedding space through shift consistency analysis, orthogonality measurement, PCA dimensionality, and severity-dependent direction stability.
+
+\textbf{Noise Shifts Are Scene-Dependent.} While fog (0.989), night (0.989), and blur (0.982) produce highly consistent shift directions across scenes, noise achieves only 0.794 mean consistency (minimum 0.616). Each scene responds differently to noise corruption, explaining the fundamental difficulty of noise detection with a single centroid.
+
+\textbf{Corruption Directions Are Not Orthogonal.} Pairwise cosine similarities reveal significant correlation structure: fog and noise are anti-correlated ($\cos\theta = -0.57$), fog and blur are positively correlated ($+0.47$), while night is the most independent corruption. This non-orthogonality means corruption effects partially cancel or reinforce each other in mixed scenarios.
+
+\textbf{3-Component Corruption Manifold.} PCA on the shift space reveals that just 3 components explain 95.4\% of variance (PC1: 57.7\%, PC2: 30.8\%, PC3: 7.0\%). The corruption manifold is extremely low-dimensional relative to the 4096-D embedding space.
+
+\textbf{Corruption Directions Rotate with Severity.} Only fog maintains a stable shift direction across severity levels ($\cos\theta > 0.93$). Night rotates dramatically at high severity (similarity drops to 0.51 at severity 1.0), while noise rotates at low severity (0.44 at severity 0.1). This means calibration at one severity does not perfectly transfer to others.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig392_geometry.png}
+\caption{\textbf{Experiment 383}: Embedding geometry. Noise has low shift consistency (0.794 vs 0.98+). Shift directions are non-orthogonal (fog-noise: $-0.57$). PCA shows 3-component manifold (95.4\%). Direction stability varies: fog stable, night/noise rotate with severity.}
+\label{fig:geometry}
+\end{figure}
+
+\textbf{Finding 1012}: \textbf{Noise shift consistency is 0.794 vs 0.98+ for other corruptions.} Each scene responds differently to noise, explaining centroid-based detection difficulty. The minimum per-scene consistency of 0.616 means some scenes' noise shifts are nearly orthogonal to the mean.
+
+\textbf{Finding 1013}: \textbf{Fog and noise shifts are anti-correlated ($\cos\theta = -0.57$).} Corruptions do not occupy orthogonal subspaces --- they share structure. This explains the sub-additive behavior of mixed corruptions (Experiment 377).
+
+\textbf{Finding 1014}: \textbf{3 PCA components capture 95.4\% of corruption shift variance in 4096-D space.} The corruption manifold is extremely low-dimensional, making detection geometrically favorable despite the high ambient dimensionality.
+
+\textbf{Finding 1015}: \textbf{Only fog has a severity-stable shift direction ($>$0.93 at all levels).} Night rotates to $\cos\theta = 0.51$ at severity 1.0; noise to 0.44 at severity 0.1. Calibration severity matters for direction-based (not distance-based) detection methods.
+
+\textbf{Finding 1016}: \textbf{Blur retains 45\% unexplained variance after removing all corruption directions.} Blur has significant unique geometric structure beyond simple directional shifts, consistent with its complex frequency-domain signature (Experiment 379).
+
 \end{document}

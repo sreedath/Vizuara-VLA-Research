@@ -15915,3 +15915,71 @@ ALL corruptions follow QUADRATIC distance-severity scaling (R² > 0.985). Detect
 
 **Finding 759**: The quadratic scaling explains WHY the detector works: at severity 1.0, distances are 30-100x the clean threshold. Even with imperfect calibration, the massive safety margin at operational severity levels provides robust detection.
 
+---
+
+## Experiment 383: Embedding Space Geometry Under Corruption
+
+**Objective**: What is the geometric structure of corruption shifts in embedding space? Tests shift consistency, orthogonality, PCA dimensionality, projection overlap, residual analysis, and severity direction stability.
+
+**Setup**: 15 scenes, 10 used for corruption embeddings, 4 corruptions at severity 0.5. PCA on all 40 shift vectors. Severity scaling tested at 0.1-1.0.
+
+### Results
+
+**Shift Consistency** (cosine sim of individual shifts to mean direction):
+| Corruption | Mean | Min | Magnitude |
+|-----------|------|-----|-----------|
+| Fog | 0.989 | 0.977 | 0.374 |
+| Night | 0.989 | 0.985 | 0.527 |
+| Noise | **0.794** | **0.616** | 0.107 |
+| Blur | 0.982 | 0.974 | 0.816 |
+
+Noise shifts are dramatically less consistent (0.794 vs 0.98+ for others).
+
+**Shift Direction Orthogonality** (cosine similarity between corruption directions):
+| | Fog | Night | Noise | Blur |
+|-|-----|-------|-------|------|
+| Fog | 1.00 | -0.32 | -0.57 | +0.47 |
+| Night | | 1.00 | -0.13 | +0.15 |
+| Noise | | | 1.00 | -0.42 |
+| Blur | | | | 1.00 |
+
+NOT orthogonal! Fog and noise are anti-correlated (-0.57). Fog and blur are positively correlated (+0.47). Night is most independent.
+
+**PCA of Shift Space**: 3 components explain 95.4% of variance:
+- PC1: 57.7% (dominant corruption axis)
+- PC2: 30.8%
+- PC3: 7.0%
+- 99% requires 15 components
+
+**Residual After Removing All Corruption Directions**:
+| Corruption | After Self | After All |
+|-----------|-----------|-----------|
+| Fog | ~0 | ~0 |
+| Night | ~0 | 21.4% |
+| Noise | ~0 | 38.7% |
+| Blur | ~0 | 45.0% |
+
+Fog is fully explained by the 4 corruption directions. Blur has 45% unexplained — significant unique structure.
+
+**Severity Direction Stability** (similarity to sev=0.5 direction):
+| Corruption | sev=0.1 | sev=0.3 | sev=0.7 | sev=1.0 | Stable? |
+|-----------|---------|---------|---------|---------|---------|
+| Fog | 0.938 | 0.988 | 0.989 | 0.959 | Yes |
+| Night | 0.748 | 0.908 | 0.838 | 0.510 | No |
+| Noise | 0.436 | 0.888 | 0.964 | 0.936 | No |
+| Blur | 0.553 | 0.952 | 0.951 | 0.875 | No |
+
+Only fog has a stable direction across severities. Night dramatically rotates at severity 1.0 (sim=0.51). Noise rotates at low severity (sim=0.44 at 0.1).
+
+### Findings
+
+**Finding 760**: Noise shift consistency is dramatically lower (0.794) than other corruptions (0.98+), with minimum per-scene consistency of only 0.616. Each scene responds differently to noise, explaining why noise is hard to detect with a single centroid.
+
+**Finding 761**: Corruption shift directions are NOT orthogonal. Fog and noise are anti-correlated (cos_sim=-0.57), meaning fog shifts in the opposite direction from noise. Fog and blur are positively correlated (+0.47). Night is the most independent corruption.
+
+**Finding 762**: Only 3 PCA components explain 95.4% of all corruption shift variance. The corruption manifold is extremely low-dimensional (3D in 4096-D space), confirming that the model uses a tiny subspace for representing visual corruption.
+
+**Finding 763**: Blur retains 45% unexplained variance after removing all 4 corruption direction projections. Blur's effect is more complex than a simple directional shift — it has significant unique geometric structure not captured by any mean corruption direction.
+
+**Finding 764**: Corruption directions ROTATE with severity. Only fog maintains stable direction (sim>0.93 at all severities). Night rotates dramatically at high severity (sim=0.51 at sev=1.0), and noise rotates at low severity (sim=0.44 at sev=0.1). This means calibrating at one severity level does NOT perfectly transfer to other severity levels.
+
