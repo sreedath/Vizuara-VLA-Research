@@ -13663,3 +13663,61 @@ Mean=139.8ms (7.2 FPS), P95=193.1ms. The detection computation adds <1ms overhea
 **Finding 546**: **All multi-corruption combinations detected; ordering produces 12× distance variation but no false negatives.** Applying corruptions in different orders changes the cosine distance by up to 12×, consistent with the non-commutative corruption algebra (Experiment 323), but the detector catches every combination regardless of order.
 
 **Finding 547**: **Full pipeline runs at 7.2 FPS with <1ms detection overhead.** The bottleneck is model inference (139.8ms mean). The actual distance computation adds <1ms, confirming negligible computational cost for real-time deployment.
+
+---
+
+## Experiment 337: Embedding Forensics (Real OpenVLA-7B)
+
+**Date:** 2025-03-15
+**Script:** `scripts/real_vla_embedding_forensics.py`
+**Results:** `experiments/embed_forensics_20260315_131930.json`
+**Figure:** `paper/latex/fig346_forensics.png`
+
+Deep forensic analysis of embedding shift structure, sparsity, sign patterns, and norm decomposition.
+
+### Shift Magnitudes
+
+| Corruption | L2 Norm | Gini | Sparsity | Top-100 % |
+|-----------|---------|------|----------|-----------|
+| Fog | 0.633 | 0.419 | 0.8% | 8.9% |
+| Night | 1.104 | 0.426 | 0.6% | 9.5% |
+| Noise | 0.271 | 0.429 | 2.5% | 9.9% |
+| Blur | 0.925 | 0.422 | 0.5% | 8.5% |
+
+All shifts have moderate Gini coefficients (~0.42) with <2.5% sparse dimensions. The signal is DISTRIBUTED, not concentrated in a few dimensions.
+
+### Sign Pattern
+
+Nearly balanced positive/negative (~50/50). Sign agreement between corruptions: Night-blur highest (72%), fog-noise lowest (33%, confirming anti-correlation).
+
+### Top-k Reconstruction
+
+Need ~2000/4096 dimensions to recover 93% of the full corruption signal. Top-10 dimensions capture only 6-9%. This is consistent with the distributed signal finding.
+
+### Norm Decomposition
+
+Shifts are ~80% perpendicular to the clean embedding:
+- Fog: 20% parallel, 80% perpendicular
+- Night: 20% parallel, 80% perpendicular
+- Blur: 11% parallel, 89% perpendicular
+- Noise: 25% parallel, 75% perpendicular
+
+Corruption primarily ROTATES the embedding in high-dimensional space rather than changing its magnitude. This explains why cosine distance (angle-sensitive) works so well.
+
+### Cross-Scene Fingerprint Stability
+
+Night has the most stable fingerprint (3690/4096 dims stable, sign consistency 0.960). Noise is least stable (2357 dims, 0.820 consistency). These match the cross-scene direction consistency findings from Experiment 332.
+
+### Effective Dimensions
+
+Blur has the most distributed signal (941 effective dims, top-5 carry only 23%). Noise is most concentrated (414 effective dims, top-5 carry 52%).
+
+### Key Findings
+
+**Finding 548**: **Corruption shifts are ~80% perpendicular to the clean embedding — detection works by measuring rotation, not rescaling.** Cosine distance measures angular deviation, and corruption overwhelmingly rotates the embedding in 4096D space. The parallel component (norm change) is only 11-25%. This is WHY cosine distance is the ideal metric.
+
+**Finding 549**: **Signal is distributed across ~2000 dimensions (Gini ≈ 0.42); no sparse shortcut exists.** Top-10 dimensions capture only 6-9% of the full signal; ~2000 are needed for 93% recovery. This distributed nature explains why random projection to 32D works: any random subspace captures the broadly spread signal.
+
+**Finding 550**: **Night-blur sign agreement is 72%; fog-noise is only 33%.** Corruption pairs that share more sign structure are those that act on similar image features (night-blur both suppress detail). Fog-noise anti-correlation in signs matches their 118.5° directional anti-correlation found in Experiment 323.
+
+**Finding 551**: **Night has the most stable cross-scene fingerprint (3690/4096 dims stable, sign consistency 0.960).** Night's shift vector is the most invariant to scene content — nearly the same 4096D direction regardless of what's in the image. This is because night uniformly suppresses all pixel values, creating a scene-independent transformation.

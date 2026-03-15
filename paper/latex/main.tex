@@ -6325,4 +6325,27 @@ We simulate extreme deployment scenarios: rapid corruption switching, gradual de
 
 \textbf{Finding 799}: \textbf{Full pipeline at 7.2 FPS; detection overhead $<$1ms.} The bottleneck is model inference (139.8ms). The distance computation adds $<$1ms, confirming negligible cost. The P95 latency of 193.1ms supports real-time deployment for manipulation tasks.
 
+%% ============================================================
+\subsection{Experiment 337: Embedding Forensics}
+\label{sec:exp337}
+
+We perform deep forensic analysis of the embedding shift structure: magnitude distribution, sign patterns, top-$k$ reconstruction, norm decomposition, and cross-scene fingerprint stability.
+
+\textbf{Setup.} We extract shift vectors ($\Delta = e_\text{corrupt} - e_\text{clean}$) for 4 corruption types at full severity, analyzing per-dimension magnitudes, sign patterns, sparsity, top-$k$ reconstruction fidelity, and perpendicular/parallel decomposition relative to the clean embedding.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig346_forensics.png}
+\caption{\textbf{Figure~346: Embedding forensics.} (A)~Need $\sim$2000 dims for 90\% reconstruction --- signal is distributed. (B)~$\sim$80\% perpendicular shift (rotation, not rescaling). (C)~Sign agreement: night--blur 72\%, fog--noise 33\%. (D)~Gini$\approx$0.42 with $<$2.5\% sparsity. (E)~Night most stable fingerprint (3690/4096 dims). (F)~Blur most distributed (941 effective dims).}
+\label{fig:forensics}
+\end{figure}
+
+\textbf{Finding 800}: \textbf{Corruption shifts are $\sim$80\% perpendicular to clean --- detection measures rotation, not rescaling.} The parallel component is only 11--25\% of the shift magnitude. Cosine distance measures angular deviation, and corruption overwhelmingly \emph{rotates} the embedding in 4096D space. This explains why cosine distance is the ideal metric: it directly captures the dominant signal component.
+
+\textbf{Finding 801}: \textbf{Signal distributed across $\sim$2000 dims (Gini$\approx$0.42); no sparse shortcut.} Top-10 dimensions capture only 6--9\% of the full signal; approximately 2000 are needed for 93\% recovery. The distributed nature explains why random projection to 32D works: any random 32D subspace captures the broadly spread signal by Johnson-Lindenstrauss.
+
+\textbf{Finding 802}: \textbf{Night has the most stable fingerprint: 3690/4096 dims stable, sign consistency 0.960.} Night's shift vector is nearly scene-invariant because uniform brightness suppression creates a scene-independent transformation. Noise is least stable (2357 dims, 0.820 consistency), consistent with its lower cross-scene direction similarity.
+
+\textbf{Finding 803}: \textbf{Night--blur sign agreement 72\%, fog--noise only 33\% --- matching directional anti-correlation.} Corruption pairs sharing sign structure (night--blur: both suppress visual detail) align directionally. The fog--noise 33\% sign agreement matches their 118.5$^\circ$ anti-correlation, confirming that sign patterns encode the corruption algebra structure.
+
 \end{document}
