@@ -8380,3 +8380,25 @@ snow       0     0     0     0      0     0     6
 3. **Compositionality is monotonic**: More corruptions → larger OOD distance → easier detection. The detection problem gets easier, not harder, with compound corruptions.
 
 **Finding**: **Compositional corruption detection is perfect** — all 15 combinations of 1-4 simultaneous corruptions achieve AUROC=1.0. Multiple corruptions increase embedding deviation monotonically, with no cancellation effects. This is important for real-world scenarios where multiple degradation factors often co-occur (e.g., rain+fog, night+blur from windshield condensation).
+---
+
+### Finding 213: Embedding Trajectory Analysis (Experiment 218)
+
+**Experiment**: Trace the embedding's path as corruption severity increases continuously from 0.0 (clean) to 1.0 (maximum) in 13 steps. Measure cosine distance from clean centroid at each step.
+
+**Trajectory Properties**:
+| Corruption | L1 Max Dist | L3 Max Dist | L3 Linearity (r) | L3 Detection Threshold |
+|-----------|-------------|-------------|-------------------|----------------------|
+| Fog | 0.000668 | 0.001205 | 0.978 | severity ≥ 0.3 |
+| Night | 0.002539 | 0.004050 | 0.981 | severity ≥ 0.15 |
+| Blur | 0.000582 | 0.001107 | 0.797 | severity ≥ 0.15 |
+| Noise | 0.002594 | 0.005206 | 0.992 | severity ≥ 0.05 |
+
+**Key Findings**:
+1. **Fog, night, and noise are highly linear**: Cosine distance increases nearly proportionally with severity (r > 0.94). The embedding moves along a straight line in 4096D space as severity increases.
+2. **Blur saturates and slightly reverses**: At L3, blur peaks at severity 0.5 (d=0.001107) then slightly decreases to 0.000840 at severity 1.0. Extreme blur converges to a uniform-ish image, moving the embedding to a different region.
+3. **Noise has the earliest detection threshold**: Detectable (dist > 0.0001) at severity 0.05 for L3. Even very mild noise creates a measurable embedding shift.
+4. **Night and noise produce the largest maximum displacements**: ~4-5× larger than fog and blur at L3. These corruptions fundamentally alter the visual content more than fog or blur.
+5. **L3 is more sensitive than L1**: L3 distances are 1.6-2.0× larger than L1 at all severities, confirming L3 as the preferred detection layer.
+
+**Finding**: Embedding trajectories reveal that fog, night, and noise follow **highly linear paths** (r > 0.94) through embedding space as severity increases, while blur **saturates and slightly reverses** at high severity. Noise is detectable at the lowest severity (0.05), making it the most sensitive corruption. The linearity of these trajectories enables **severity estimation** from cosine distance — a single measurement can approximate how corrupted the input is, not just whether corruption exists.

@@ -4072,4 +4072,21 @@ We test all combinations of 1--4 simultaneous corruptions (fog, night, blur, noi
 \label{fig:compositional}
 \end{figure}
 
+\subsection{Embedding Trajectory Analysis}
+
+We trace how the embedding evolves as corruption severity increases continuously from 0\% to 100\% in 13 steps.
+
+\textbf{Finding 429}: Fog, night, and noise follow \textbf{highly linear trajectories} ($r > 0.94$) through embedding space---cosine distance increases proportionally with severity. This enables \textbf{severity estimation} from a single cosine distance measurement, not just binary detection.
+
+\textbf{Finding 430}: Blur exhibits a \textbf{non-monotonic trajectory}: distance peaks at 50\% severity then slightly decreases, as extreme blur converges toward a uniform image. Despite this, blur is detectable at all severities above 0.15.
+
+\textbf{Finding 431}: Noise is detectable at the \textbf{lowest severity} (0.05), while fog requires 0.3. The embedding sensitivity ordering is noise $>$ night $>$ blur $>$ fog, which correlates with the visual information destroyed by each corruption type.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig230_trajectory.png}
+\caption{\textbf{Embedding trajectories.} Cosine distance from clean centroid vs.\ corruption severity. Fog, night, and noise are highly linear ($r > 0.94$); blur saturates and slightly reverses at high severity.}
+\label{fig:trajectory}
+\end{figure}
+
 \end{document}

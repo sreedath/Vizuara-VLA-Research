@@ -1,0 +1,620 @@
+{
+  "experiment": "embedding_trajectory",
+  "experiment_number": 218,
+  "timestamp": "20260315_060359",
+  "severities": [
+    0.0,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9,
+    1.0
+  ],
+  "layers": [
+    1,
+    3
+  ],
+  "trajectories": {
+    "fog": {
+      "L1": [
+        {
+          "severity": 0.0,
+          "dist_from_clean": -0.0,
+          "step_dist": -0.0
+        },
+        {
+          "severity": 0.05,
+          "dist_from_clean": 7e-06,
+          "step_dist": 7e-06
+        },
+        {
+          "severity": 0.1,
+          "dist_from_clean": 1.7e-05,
+          "step_dist": 4e-06
+        },
+        {
+          "severity": 0.15,
+          "dist_from_clean": 3.3e-05,
+          "step_dist": 8e-06
+        },
+        {
+          "severity": 0.2,
+          "dist_from_clean": 4.4e-05,
+          "step_dist": 8e-06
+        },
+        {
+          "severity": 0.3,
+          "dist_from_clean": 8e-05,
+          "step_dist": 1.2e-05
+        },
+        {
+          "severity": 0.4,
+          "dist_from_clean": 0.00014,
+          "step_dist": 1.2e-05
+        },
+        {
+          "severity": 0.5,
+          "dist_from_clean": 0.000225,
+          "step_dist": 2.5e-05
+        },
+        {
+          "severity": 0.6,
+          "dist_from_clean": 0.000297,
+          "step_dist": 1.5e-05
+        },
+        {
+          "severity": 0.7,
+          "dist_from_clean": 0.000447,
+          "step_dist": 4.3e-05
+        },
+        {
+          "severity": 0.8,
+          "dist_from_clean": 0.000519,
+          "step_dist": 1.4e-05
+        },
+        {
+          "severity": 0.9,
+          "dist_from_clean": 0.000552,
+          "step_dist": 2.7e-05
+        },
+        {
+          "severity": 1.0,
+          "dist_from_clean": 0.000668,
+          "step_dist": 9.2e-05
+        }
+      ],
+      "L3": [
+        {
+          "severity": 0.0,
+          "dist_from_clean": 0.0,
+          "step_dist": 0.0
+        },
+        {
+          "severity": 0.05,
+          "dist_from_clean": 1.3e-05,
+          "step_dist": 1.3e-05
+        },
+        {
+          "severity": 0.1,
+          "dist_from_clean": 2.9e-05,
+          "step_dist": 9e-06
+        },
+        {
+          "severity": 0.15,
+          "dist_from_clean": 5.1e-05,
+          "step_dist": 9e-06
+        },
+        {
+          "severity": 0.2,
+          "dist_from_clean": 7.6e-05,
+          "step_dist": 1.3e-05
+        },
+        {
+          "severity": 0.3,
+          "dist_from_clean": 0.000141,
+          "step_dist": 2.1e-05
+        },
+        {
+          "severity": 0.4,
+          "dist_from_clean": 0.000233,
+          "step_dist": 2.2e-05
+        },
+        {
+          "severity": 0.5,
+          "dist_from_clean": 0.000375,
+          "step_dist": 4e-05
+        },
+        {
+          "severity": 0.6,
+          "dist_from_clean": 0.000502,
+          "step_dist": 2.8e-05
+        },
+        {
+          "severity": 0.7,
+          "dist_from_clean": 0.000652,
+          "step_dist": 4.8e-05
+        },
+        {
+          "severity": 0.8,
+          "dist_from_clean": 0.000794,
+          "step_dist": 2.5e-05
+        },
+        {
+          "severity": 0.9,
+          "dist_from_clean": 0.000936,
+          "step_dist": 4.9e-05
+        },
+        {
+          "severity": 1.0,
+          "dist_from_clean": 0.001205,
+          "step_dist": 0.00012
+        }
+      ]
+    },
+    "night": {
+      "L1": [
+        {
+          "severity": 0.0,
+          "dist_from_clean": -0.0,
+          "step_dist": -0.0
+        },
+        {
+          "severity": 0.05,
+          "dist_from_clean": 1.1e-05,
+          "step_dist": 1.1e-05
+        },
+        {
+          "severity": 0.1,
+          "dist_from_clean": 3.1e-05,
+          "step_dist": 9e-06
+        },
+        {
+          "severity": 0.15,
+          "dist_from_clean": 5.9e-05,
+          "step_dist": 9e-06
+        },
+        {
+          "severity": 0.2,
+          "dist_from_clean": 0.000106,
+          "step_dist": 1.4e-05
+        },
+        {
+          "severity": 0.3,
+          "dist_from_clean": 0.000217,
+          "step_dist": 3.2e-05
+        },
+        {
+          "severity": 0.4,
+          "dist_from_clean": 0.000366,
+          "step_dist": 4.5e-05
+        },
+        {
+          "severity": 0.5,
+          "dist_from_clean": 0.000547,
+          "step_dist": 4.2e-05
+        },
+        {
+          "severity": 0.6,
+          "dist_from_clean": 0.000719,
+          "step_dist": 2.7e-05
+        },
+        {
+          "severity": 0.7,
+          "dist_from_clean": 0.000985,
+          "step_dist": 4.2e-05
+        },
+        {
+          "severity": 0.8,
+          "dist_from_clean": 0.001289,
+          "step_dist": 4e-05
+        },
+        {
+          "severity": 0.9,
+          "dist_from_clean": 0.001811,
+          "step_dist": 0.000149
+        },
+        {
+          "severity": 1.0,
+          "dist_from_clean": 0.002539,
+          "step_dist": 0.000219
+        }
+      ],
+      "L3": [
+        {
+          "severity": 0.0,
+          "dist_from_clean": 0.0,
+          "step_dist": 0.0
+        },
+        {
+          "severity": 0.05,
+          "dist_from_clean": 2.7e-05,
+          "step_dist": 2.7e-05
+        },
+        {
+          "severity": 0.1,
+          "dist_from_clean": 7.5e-05,
+          "step_dist": 1.9e-05
+        },
+        {
+          "severity": 0.15,
+          "dist_from_clean": 0.000149,
+          "step_dist": 2.5e-05
+        },
+        {
+          "severity": 0.2,
+          "dist_from_clean": 0.000293,
+          "step_dist": 4.4e-05
+        },
+        {
+          "severity": 0.3,
+          "dist_from_clean": 0.000572,
+          "step_dist": 8.3e-05
+        },
+        {
+          "severity": 0.4,
+          "dist_from_clean": 0.000891,
+          "step_dist": 8.2e-05
+        },
+        {
+          "severity": 0.5,
+          "dist_from_clean": 0.001297,
+          "step_dist": 9.7e-05
+        },
+        {
+          "severity": 0.6,
+          "dist_from_clean": 0.001644,
+          "step_dist": 7e-05
+        },
+        {
+          "severity": 0.7,
+          "dist_from_clean": 0.002193,
+          "step_dist": 8.4e-05
+        },
+        {
+          "severity": 0.8,
+          "dist_from_clean": 0.002721,
+          "step_dist": 7.5e-05
+        },
+        {
+          "severity": 0.9,
+          "dist_from_clean": 0.003123,
+          "step_dist": 0.00022
+        },
+        {
+          "severity": 1.0,
+          "dist_from_clean": 0.00405,
+          "step_dist": 0.000367
+        }
+      ]
+    },
+    "blur": {
+      "L1": [
+        {
+          "severity": 0.0,
+          "dist_from_clean": -0.0,
+          "step_dist": -0.0
+        },
+        {
+          "severity": 0.05,
+          "dist_from_clean": 1.9e-05,
+          "step_dist": 1.9e-05
+        },
+        {
+          "severity": 0.1,
+          "dist_from_clean": 3.7e-05,
+          "step_dist": 7e-06
+        },
+        {
+          "severity": 0.15,
+          "dist_from_clean": 6.8e-05,
+          "step_dist": 2.3e-05
+        },
+        {
+          "severity": 0.2,
+          "dist_from_clean": 0.000195,
+          "step_dist": 6.6e-05
+        },
+        {
+          "severity": 0.3,
+          "dist_from_clean": 0.000459,
+          "step_dist": 0.000112
+        },
+        {
+          "severity": 0.4,
+          "dist_from_clean": 0.000515,
+          "step_dist": 2.8e-05
+        },
+        {
+          "severity": 0.5,
+          "dist_from_clean": 0.000547,
+          "step_dist": 1.3e-05
+        },
+        {
+          "severity": 0.6,
+          "dist_from_clean": 0.000575,
+          "step_dist": 1.2e-05
+        },
+        {
+          "severity": 0.7,
+          "dist_from_clean": 0.000575,
+          "step_dist": 6e-06
+        },
+        {
+          "severity": 0.8,
+          "dist_from_clean": 0.000582,
+          "step_dist": 9e-06
+        },
+        {
+          "severity": 0.9,
+          "dist_from_clean": 0.000552,
+          "step_dist": 6e-06
+        },
+        {
+          "severity": 1.0,
+          "dist_from_clean": 0.000513,
+          "step_dist": 1.3e-05
+        }
+      ],
+      "L3": [
+        {
+          "severity": 0.0,
+          "dist_from_clean": 0.0,
+          "step_dist": 0.0
+        },
+        {
+          "severity": 0.05,
+          "dist_from_clean": 3.5e-05,
+          "step_dist": 3.5e-05
+        },
+        {
+          "severity": 0.1,
+          "dist_from_clean": 6.6e-05,
+          "step_dist": 1.4e-05
+        },
+        {
+          "severity": 0.15,
+          "dist_from_clean": 0.000148,
+          "step_dist": 3.5e-05
+        },
+        {
+          "severity": 0.2,
+          "dist_from_clean": 0.000341,
+          "step_dist": 9.2e-05
+        },
+        {
+          "severity": 0.3,
+          "dist_from_clean": 0.000755,
+          "step_dist": 0.000208
+        },
+        {
+          "severity": 0.4,
+          "dist_from_clean": 0.000999,
+          "step_dist": 9.8e-05
+        },
+        {
+          "severity": 0.5,
+          "dist_from_clean": 0.001107,
+          "step_dist": 1.8e-05
+        },
+        {
+          "severity": 0.6,
+          "dist_from_clean": 0.001055,
+          "step_dist": 2.4e-05
+        },
+        {
+          "severity": 0.7,
+          "dist_from_clean": 0.000953,
+          "step_dist": 3e-05
+        },
+        {
+          "severity": 0.8,
+          "dist_from_clean": 0.000886,
+          "step_dist": 1.8e-05
+        },
+        {
+          "severity": 0.9,
+          "dist_from_clean": 0.000912,
+          "step_dist": 1e-05
+        },
+        {
+          "severity": 1.0,
+          "dist_from_clean": 0.00084,
+          "step_dist": 2.6e-05
+        }
+      ]
+    },
+    "noise": {
+      "L1": [
+        {
+          "severity": 0.0,
+          "dist_from_clean": -0.0,
+          "step_dist": -0.0
+        },
+        {
+          "severity": 0.05,
+          "dist_from_clean": 7.6e-05,
+          "step_dist": 7.6e-05
+        },
+        {
+          "severity": 0.1,
+          "dist_from_clean": 0.000155,
+          "step_dist": 3.1e-05
+        },
+        {
+          "severity": 0.15,
+          "dist_from_clean": 0.000249,
+          "step_dist": 2.3e-05
+        },
+        {
+          "severity": 0.2,
+          "dist_from_clean": 0.000389,
+          "step_dist": 3.4e-05
+        },
+        {
+          "severity": 0.3,
+          "dist_from_clean": 0.000823,
+          "step_dist": 0.000143
+        },
+        {
+          "severity": 0.4,
+          "dist_from_clean": 0.00136,
+          "step_dist": 9.5e-05
+        },
+        {
+          "severity": 0.5,
+          "dist_from_clean": 0.00181,
+          "step_dist": 4.5e-05
+        },
+        {
+          "severity": 0.6,
+          "dist_from_clean": 0.002079,
+          "step_dist": 2e-05
+        },
+        {
+          "severity": 0.7,
+          "dist_from_clean": 0.002292,
+          "step_dist": 1.4e-05
+        },
+        {
+          "severity": 0.8,
+          "dist_from_clean": 0.002431,
+          "step_dist": 8e-06
+        },
+        {
+          "severity": 0.9,
+          "dist_from_clean": 0.002509,
+          "step_dist": 5e-06
+        },
+        {
+          "severity": 1.0,
+          "dist_from_clean": 0.002594,
+          "step_dist": 6e-06
+        }
+      ],
+      "L3": [
+        {
+          "severity": 0.0,
+          "dist_from_clean": 0.0,
+          "step_dist": 0.0
+        },
+        {
+          "severity": 0.05,
+          "dist_from_clean": 0.000164,
+          "step_dist": 0.000164
+        },
+        {
+          "severity": 0.1,
+          "dist_from_clean": 0.000287,
+          "step_dist": 5.1e-05
+        },
+        {
+          "severity": 0.15,
+          "dist_from_clean": 0.000448,
+          "step_dist": 4.4e-05
+        },
+        {
+          "severity": 0.2,
+          "dist_from_clean": 0.000625,
+          "step_dist": 4.6e-05
+        },
+        {
+          "severity": 0.3,
+          "dist_from_clean": 0.001194,
+          "step_dist": 0.000183
+        },
+        {
+          "severity": 0.4,
+          "dist_from_clean": 0.002005,
+          "step_dist": 0.000164
+        },
+        {
+          "severity": 0.5,
+          "dist_from_clean": 0.002883,
+          "step_dist": 0.00013
+        },
+        {
+          "severity": 0.6,
+          "dist_from_clean": 0.003585,
+          "step_dist": 6.8e-05
+        },
+        {
+          "severity": 0.7,
+          "dist_from_clean": 0.004204,
+          "step_dist": 5.2e-05
+        },
+        {
+          "severity": 0.8,
+          "dist_from_clean": 0.004701,
+          "step_dist": 3.7e-05
+        },
+        {
+          "severity": 0.9,
+          "dist_from_clean": 0.004996,
+          "step_dist": 2.9e-05
+        },
+        {
+          "severity": 1.0,
+          "dist_from_clean": 0.005206,
+          "step_dist": 4e-05
+        }
+      ]
+    }
+  },
+  "properties": {
+    "fog": {
+      "L1": {
+        "max_dist": 0.000668,
+        "threshold_severity": 0.4,
+        "linearity": 0.9817
+      },
+      "L3": {
+        "max_dist": 0.001205,
+        "threshold_severity": 0.3,
+        "linearity": 0.978
+      }
+    },
+    "night": {
+      "L1": {
+        "max_dist": 0.002539,
+        "threshold_severity": 0.2,
+        "linearity": 0.9398
+      },
+      "L3": {
+        "max_dist": 0.00405,
+        "threshold_severity": 0.15,
+        "linearity": 0.981
+      }
+    },
+    "blur": {
+      "L1": {
+        "max_dist": 0.000582,
+        "threshold_severity": 0.2,
+        "linearity": 0.857
+      },
+      "L3": {
+        "max_dist": 0.001107,
+        "threshold_severity": 0.15,
+        "linearity": 0.7967
+      }
+    },
+    "noise": {
+      "L1": {
+        "max_dist": 0.002594,
+        "threshold_severity": 0.1,
+        "linearity": 0.9786
+      },
+      "L3": {
+        "max_dist": 0.005206,
+        "threshold_severity": 0.05,
+        "linearity": 0.9917
+      }
+    }
+  }
+}
