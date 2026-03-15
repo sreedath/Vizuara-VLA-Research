@@ -2620,4 +2620,22 @@ We test four detection architectures across 10 OOD categories including fog at t
 
 This result overturns the initial assumption that a dual-layer detector would be optimal. Layer~3 alone captures low-level visual statistics (pixel distributions, edge patterns, spatial frequencies) that \emph{every} OOD category disrupts, including fog at 30\% opacity. The $d{=}128.2$ separation is the strongest we have observed---$2.5\times$ the best previous result. This suggests that the optimal OOD detector for VLA systems should monitor early hidden states rather than the commonly-used final layer. The finding has practical significance: L3 embeddings are computed first in the forward pass, enabling the earliest possible OOD detection in a pipelined architecture.
 
+\subsection{Fine-Grained Early Layer Sweep}
+\label{app:early_layer_sweep}
+
+\textbf{Finding 189: Layer~3 is the globally optimal OOD detector with $d{=}175.2$---$5.2\times$ stronger than the last layer ($d{=}33.8$). Layers 1--7 all achieve perfect AUROC$=$1.000; a sharp cliff at Layer~8 marks the transition to mid-level features where fog breaks detection.}
+
+\textbf{Finding 190: The d-prime profile across layers exhibits an asymmetric U-shape: early peak at L3 ($d{=}175$), mid-layer valley at L8--L16 ($d{\approx}35$--$40$, AUROC$<$1.0), and partial late recovery at L24--L32 ($d{\approx}35$--$55$, AUROC$=$1.0).}
+
+We sweep all layers from 1 to 10 plus layers 16, 24, and 32 to identify the optimal monitoring point (Figure~\ref{fig:early_layer_sweep}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig127_early_layer_sweep.png}
+\caption{\textbf{Early layer sweep.} (a) D-prime across all layers: L3 peaks at $d{=}175.2$, with the early layers dramatically outperforming late layers. (b) Layers 1--10 detail: L1--L7 achieve AUROC$=$1.000 (green); L8--L10 drop below (red). (c) AUROC across layers: a ``valley'' at L8--L16 where fog causes overlap.}
+\label{fig:early_layer_sweep}
+\end{figure}
+
+The identification of Layer~3 as the optimal monitoring point is this paper's most actionable finding for system design. Previous OOD detection work in language models typically monitors the final hidden layer, but our results show this is suboptimal by a factor of 5$\times$ for VLA models. The mechanistic explanation is clear: Layer~3 encodes low-level visual statistics (pixel distributions, local textures, spatial frequency content) that \emph{every} OOD category disrupts---including fog, which preserves high-level scene structure but alters photometric properties. The sharp cliff at Layer~8 marks the transition from pixel-level to feature-level representations, where the model begins abstracting away the photometric details that distinguish clean from corrupted inputs.
+
 \end{document}

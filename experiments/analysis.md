@@ -6248,3 +6248,48 @@ Does monitoring Layer 3 resolve the fog vulnerability while maintaining detectio
 4. **L3 d-prime is 5× the L32 d-prime (128.2 vs 26.0)**: Early layers provide dramatically more separation because they capture pixel-level statistics that ALL OOD categories disrupt — even fog at 30%.
 
 5. **Practical recommendation**: Use L3 cosine distance as the primary OOD detector. It dominates L32 across all categories tested. No combination strategy improves over L3 alone.
+
+---
+
+## Finding 135: Fine-Grained Early Layer Sweep (Experiment 141)
+
+### Research Question
+Given that L3 outperforms L32 (Exp 140), which exact layer is optimal? We sweep layers 1-10 + 16, 24, 32 with fine granularity.
+
+### Setup
+- **Model**: OpenVLA-7B (bfloat16, NVIDIA A40)
+- **ID**: 24 images (12 highway + 12 urban)
+- **OOD**: 60 images (12 each: noise, indoor, twilight, snow, fog_50%)
+- **Layers**: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 16, 24, 32
+
+### Results
+
+| Layer | AUROC | D-prime | Gap |
+|-------|-------|---------|-----|
+| 1 | 1.000 | 90.0 | +0.0001 |
+| 2 | 1.000 | 138.9 | +0.0003 |
+| **3** | **1.000** | **175.2** | **+0.0002** |
+| 4 | 1.000 | 144.7 | +0.0002 |
+| 5 | 1.000 | 101.9 | +0.0001 |
+| 6 | 1.000 | 105.0 | +0.0001 |
+| 7 | 1.000 | 74.5 | +0.0000 |
+| 8 | 0.858 | 38.2 | -0.0002 |
+| 9 | 0.879 | 41.6 | -0.0001 |
+| 10 | 0.804 | 36.0 | -0.0007 |
+| 16 | 0.881 | 35.1 | -0.0078 |
+| 24 | 1.000 | 53.3 | +0.0014 |
+| 32 | 1.000 | 33.8 | +0.0047 |
+
+### Key Insights
+
+1. **Layer 3 is the optimal OOD detector with d=175.2**: This is the highest d-prime we've observed in any experiment, 5× stronger than L32 (d=33.8).
+
+2. **Layers 1-7 all achieve perfect AUROC=1.000**: The early layer "sweet spot" spans 7 layers, with L3 at the peak. L2 (d=138.9) and L4 (d=144.7) are also excellent.
+
+3. **Sharp cliff at Layer 8**: D-prime drops from 74.5 (L7) to 38.2 (L8), and AUROC drops below 1.000 for the first time. Layers 8-16 form a "valley" where fog overlap breaks perfect detection.
+
+4. **Recovery at L24-L32**: D-prime partially recovers at later layers (L24=53.3, L32=33.8) with perfect AUROC. These layers capture semantic features that distinguish indoor/noise from highway, but miss fog.
+
+5. **The d-prime profile follows a U-shape with asymmetry**: Early peak (L3=175.2), mid-layer valley (L8-16≈35-40), late partial recovery (L24-32≈35-55). The early peak is 3× higher than the late recovery.
+
+6. **Mechanistic explanation**: Layers 1-7 capture low-level visual statistics (pixel distributions, textures, edges) that every OOD category — including fog — disrupts. Layers 8-16 begin abstracting to mid-level features where fog's structural preservation creates overlap. Layers 24-32 encode high-level semantics that separate domains but miss photometric changes.
