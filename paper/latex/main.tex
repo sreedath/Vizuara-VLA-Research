@@ -2602,4 +2602,22 @@ We sweep fog opacity from 10\% to 90\% and compare detection across 5 transforme
 
 The layer-dependent sensitivity to fog reveals a fundamental architectural insight. Early layers (L3) encode \emph{photometric} features---brightness, contrast, edge sharpness---that fog directly disrupts. Late layers (L32) encode \emph{semantic} features---scene layout, object categories---that fog preserves. This complementarity motivates a practical dual-layer detection architecture: monitor L3 cosine distance for photometric corruptions (fog, low-light, glare) and L32 cosine distance for semantic domain shifts (indoor, underwater, construction). The combined detector would flag any input that is anomalous at either level, achieving the union of both detection capabilities at negligible additional cost (both hidden states are already computed).
 
+\subsection{Dual-Layer Detector}
+\label{app:dual_layer}
+
+\textbf{Finding 187: Layer~3 alone achieves AUROC$=$1.000 with $d{=}128.2$ across all 10 categories including fog---$2.5\times$ the separation of the Layer~32 detector ($d{=}52$). L3 subsumes L32 for OOD detection.}
+
+\textbf{Finding 188: Combining L3 and L32 (via max or mean) \emph{degrades} performance to AUROC$=$0.986 because L32's weak fog scores dilute L3's strong signal. The optimal detector uses L3 alone.}
+
+We test four detection architectures across 10 OOD categories including fog at two opacity levels (Figure~\ref{fig:dual_layer}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig126_dual_layer_detector.png}
+\caption{\textbf{Dual-layer detector.} (a) L3 achieves perfect AUROC$=$1.000; all other methods are 0.986. (b) Per-category scores: L3 distances are small but consistently separate ID from OOD; L32 distances are large but overlap for fog. (c) Per-category AUROC: all categories detected at 0.918+ including fog.}
+\label{fig:dual_layer}
+\end{figure}
+
+This result overturns the initial assumption that a dual-layer detector would be optimal. Layer~3 alone captures low-level visual statistics (pixel distributions, edge patterns, spatial frequencies) that \emph{every} OOD category disrupts, including fog at 30\% opacity. The $d{=}128.2$ separation is the strongest we have observed---$2.5\times$ the best previous result. This suggests that the optimal OOD detector for VLA systems should monitor early hidden states rather than the commonly-used final layer. The finding has practical significance: L3 embeddings are computed first in the forward pass, enabling the earliest possible OOD detection in a pipelined architecture.
+
 \end{document}
