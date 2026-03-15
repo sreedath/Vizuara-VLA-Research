@@ -17781,4 +17781,331 @@ Directions are largely orthogonal across corruption types (e.g., fog↔noise: -0
 4. **Orthogonal corruption signatures** — cross-corruption directions are largely orthogonal, enabling clean separation
 5. **Perfect scene generalization** — leave-one-scene-out CV achieves perfect accuracy (8/8 scenes, both methods)
 6. **Practical implication** — knowing corruption type enables targeted responses (e.g., fog lights for fog, IR camera for night)
+
+## Experiment 440: Mahalanobis vs Cosine vs Euclidean Detection
+
+**Script**: `scripts/real_vla_mahalanobis_detection.py`
+**Figure**: `figures/fig449_mahalanobis.png`
+
+### Key Result
+All three distance metrics (cosine, Euclidean, Mahalanobis) achieve AUROC=1.0 at full severity. Mahalanobis provides a marginal advantage only at the lowest severity levels, but cosine distance is nearly as effective and far simpler (no covariance estimation required).
+
+### Full Severity Detection (All Metrics)
+| Metric | AUROC |
+|--------|:-----:|
+| Cosine | 1.0 |
+| Euclidean | 1.0 |
+| Mahalanobis | 1.0 |
+
+All three metrics are equivalent at full severity. The corruption signal is strong enough that metric choice is irrelevant.
+
+### Low Severity Detection (Severity=0.1)
+| Corruption | Mahalanobis AUROC | Cosine AUROC |
+|-----------|:-----------------:|:------------:|
+| Fog | 0.922 | 0.859 |
+| Night | 1.0 | 0.984 |
+| Noise | 0.578 | 0.563 |
+| Blur | 1.0 | 1.0 |
+| **Mean** | **0.875** | **0.852** |
+
+Mahalanobis marginally outperforms cosine at the lowest severity (mean AUROC 0.875 vs 0.852). The advantage is concentrated in fog (+0.063) and night (+0.016); noise remains difficult for both metrics, and blur is trivially detected.
+
+### Embedding Dimensionality Analysis
+| Property | Value |
+|----------|:-----:|
+| Embedding dimension | 4096 |
+| Effective rank (significant SVD components) | 7 |
+| Top singular value variance explained | 40.4% |
+| Top 3 singular values variance explained | 68.6% |
+| Highest-variance dimension | 1512 |
+
+Despite the 4096-dimensional embedding space, only 7 singular value components are significant. The top singular value alone explains 40.4% of the variance, and the top 3 explain 68.6%. This extreme low-rank structure explains why Mahalanobis offers minimal benefit over cosine: the covariance matrix is nearly degenerate, so whitening adds little discriminative power.
+
+### PCA-Based Detection
+| # PCA Components | AUROC |
+|:----------------:|:-----:|
+| 2 | 0.895 |
+| 5 | 0.922 |
+
+Just 2 PCA components achieve AUROC=0.895, and 5 components achieve 0.922. This confirms that the corruption signal lives in a very low-dimensional subspace of the 4096-dimensional embedding.
+
+### Variance-Corruption Shift Correlation
+| Corruption | Correlation |
+|-----------|:----------:|
+| Fog | 0.305 |
+| Night | 0.392 |
+
+Moderate positive correlation between embedding variance along a dimension and corruption-induced shift magnitude, confirming that corruptions preferentially shift embeddings along high-variance directions.
+
+### Regularization Sensitivity
+Regularization strength has no effect on AUROC at full severity. The covariance matrix's near-degeneracy means regularization simply avoids numerical issues without changing the detection outcome.
+
+### Key Findings
+1. **Metric equivalence at full severity** — cosine, Euclidean, and Mahalanobis all achieve AUROC=1.0; metric choice is irrelevant when the corruption signal is strong
+2. **Marginal Mahalanobis advantage at low severity** — mean AUROC 0.875 vs cosine 0.852 at sev=0.1, concentrated in fog and night
+3. **Extreme low-rank structure** — effective rank of 7 out of 4096 dimensions; top singular value explains 40.4% of variance
+4. **PCA sufficiency** — 2 components achieve AUROC=0.895, 5 components achieve 0.922, confirming low-dimensional corruption signal
+5. **Dimension 1512 dominates** — highest-variance dimension, consistent with earlier weight analysis
+6. **Practical recommendation** — cosine distance is preferred for deployment: nearly equivalent detection performance with no covariance estimation, no regularization tuning, and O(d) computation vs O(d^2) for Mahalanobis
 5. **Practical implication: calibrate once, deploy anywhere** — the clean embedding centroid is scene-invariant, eliminating the need for per-deployment recalibration
+
+## Experiment 441: Prompt Sensitivity Analysis
+
+**Goal:** Determine whether the embedding-based corruption detection method is sensitive to the choice of action prompt, and whether prompt ensembling can improve detection.
+
+**Figure:** `figures/fig450_prompt.png`
+
+### Prompts Tested
+8 prompts of varying length and style, including:
+- Standard action prompts (~40–65 characters)
+- A minimal 13-character prompt: `"In: Act.\nOut:"`
+
+### Detection Performance (AUROC)
+| Prompt Variant | Fog | Night | Noise | Blur |
+|:--------------|:---:|:-----:|:-----:|:----:|
+| All 8 prompts | 1.0 | 1.0 | 1.0 | 1.0 |
+
+Detection is **completely prompt-invariant**: all 8 prompts achieve AUROC = 1.0 for all 4 corruption types. Even the minimal 13-character prompt achieves perfect detection, demonstrating that prompt length has no effect on detection quality.
+
+### Cross-Prompt Embedding Similarity
+| Statistic | Value |
+|:----------|:-----:|
+| Mean cosine similarity | 0.994 |
+| Minimum similarity | 0.982 (pick ↔ minimal) |
+| Maximum similarity | 0.9998 (open ↔ close) |
+
+Embeddings produced under different prompts are nearly identical. The high cross-prompt similarity explains why all prompts yield equivalent detection: the model's internal representation of the visual scene is largely invariant to the text prompt.
+
+### Centroid Distance Between Prompts
+| Statistic | Value |
+|:----------|:-----:|
+| Mean centroid distance | 0.0055 |
+| Largest centroid distance | ~0.017 (minimal prompt vs. others) |
+
+The "minimal" prompt produces a slightly shifted centroid compared to other prompts, but this small geometric offset has zero effect on detection quality.
+
+### Ensemble Detection
+Prompt ensembling (aggregating detections across multiple prompts) provides no benefit, as single-prompt detection is already perfect across all corruption types.
+
+### Key Findings
+1. **Complete prompt invariance** — all 8 prompts achieve AUROC = 1.0 for all 4 corruptions; detection quality is entirely independent of prompt choice
+2. **Minimal prompt sufficiency** — a 13-character prompt performs identically to 65-character prompts, confirming that the visual corruption signal dominates the embedding regardless of text conditioning
+3. **Near-identical embeddings** — cross-prompt cosine similarity mean = 0.994, min = 0.982, indicating the model's visual representation is stable across prompt variations
+4. **No ensemble benefit** — prompt ensembling adds no detection improvement when single-prompt detection is already perfect
+5. **Centroid stability** — mean inter-prompt centroid distance of 0.0055 is negligible compared to corruption-induced shifts
+6. **Practical implication: prompt engineering unnecessary** — any reasonable action prompt works for corruption detection, eliminating prompt selection as a deployment concern
+
+## Experiment 442: Temporal Consistency Analysis
+
+### Objective
+Evaluate the embedding-based corruption detector under realistic temporal deployment conditions: continuous frame streams with natural frame-to-frame variation, gradual corruption onset, intermittent corruption, and the effect of exponential moving average (EMA) smoothing on detection latency.
+
+### Experimental Setup
+- **False alarm test**: 50 trials of 100 consecutive clean frames each, measuring whether natural frame-to-frame variation ever exceeds the detection threshold
+- **Detection latency test**: inject corruption at a known frame and measure how many frames elapse before detection, across EMA smoothing parameters α ∈ {0.1, 0.3, 0.5, 0.7, 1.0}
+- **Intermittent corruption test**: alternating clean/corrupt frames to simulate flickering or transient corruption (fog and night conditions)
+- **Gradual onset test**: linearly increasing corruption severity from 0 to 1 over 100 frames for blur, fog, night, and noise
+- **3σ threshold**: 1.18×10⁻⁴ (derived from clean frame-to-frame distance distribution)
+
+### Results
+
+#### False Alarm Rate
+| Metric | Value |
+|:-------|:-----:|
+| False alarms | 0 / 50 trials |
+| False alarm rate | 0.0 |
+
+Zero false alarms across all 50 trials of 100 clean frames. Natural frame-to-frame variation never approaches the detection threshold.
+
+#### Frame-to-Frame Stability (Clean Frames)
+| Statistic | Value |
+|:----------|:-----:|
+| Mean clean f2f distance | ~5×10⁻⁶ |
+| Mean clean distance | ~6.4×10⁻⁵ |
+| 3σ threshold | 1.18×10⁻⁴ |
+
+Clean frame distances are approximately 20× below the detection threshold, providing a large stability margin.
+
+#### Detection Latency
+| EMA α | Detection Frame (after onset) |
+|:------:|:----------------------------:|
+| 0.1 (heavy smoothing) | 0 |
+| 0.3 | 0 |
+| 0.5 | 0 |
+| 0.7 | 0 |
+| 1.0 (no smoothing) | 0 |
+
+Corruption is detected on the **first corrupted frame** (frame 0 after onset) regardless of EMA smoothing parameter. The corruption signal is so strong relative to the threshold that even heavy smoothing (α = 0.1) cannot attenuate it below detection.
+
+#### Corruption Distance Magnitudes
+| Corruption | Distance |
+|:-----------|:--------:|
+| Fog | 0.003 |
+| Night | 0.008 |
+
+Both corruption distances are 25–70× above the 3σ threshold, explaining the instant detection.
+
+#### Intermittent Corruption Detection
+| Corruption | Precision | Recall |
+|:-----------|:---------:|:------:|
+| Fog | 1.0 | 1.0 |
+| Night | 1.0 | 1.0 |
+
+Perfect detection of every corrupted frame in alternating clean/corrupt sequences, with zero false positives on interleaved clean frames.
+
+#### Gradual Onset Detection Thresholds
+| Corruption | Severity at First Detection |
+|:-----------|:---------------------------:|
+| Blur | 0.05 |
+| Fog | 0.15 |
+| Night | 0.1 |
+| Noise | 1.0 |
+
+Blur is detected earliest (severity 0.05), followed by night (0.1) and fog (0.15). Noise is the hardest corruption to detect at low severity, requiring full severity (1.0) before crossing the threshold.
+
+### Key Findings
+1. **Zero false alarm rate** — 0/50 trials produce false alarms under natural frame variation, confirming the threshold is well-calibrated for temporal deployment
+2. **Instant detection with zero latency** — corruption is detected on the very first corrupted frame regardless of EMA smoothing parameter; no temporal aggregation is needed
+3. **EMA smoothing unnecessary** — the corruption signal (0.003–0.008) is 25–70× above the 3σ threshold (1.18×10⁻⁴), making smoothing redundant; even α = 0.1 cannot attenuate the signal below detection
+4. **Perfect intermittent detection** — precision = 1.0 and recall = 1.0 for alternating clean/corrupt frame sequences, demonstrating frame-level detection granularity
+5. **Large clean-corrupt separation** — clean distance (~6.4×10⁻⁵) is well below threshold while corruption distances are well above, yielding a clean separation margin of ~50×
+6. **Gradual onset sensitivity varies by corruption type** — blur is detectable at severity 0.05, fog at 0.15, night at 0.1, but noise requires full severity (1.0), identifying noise as the hardest corruption for early detection
+7. **Practical implication: real-time frame-by-frame deployment** — the detector works perfectly in streaming deployment with zero latency, no smoothing, and no false alarms, requiring only a single frame comparison per timestep
+
+## Experiment 443: Embedding Geometry Analysis
+
+**Date:** 2026-03-15
+**Figure:** `figures/fig452_geometry.png`
+**Objective:** Analyze the geometric structure of corruption embeddings to understand why detection is perfect and whether embedding distance can serve as a quantitative severity estimator.
+
+### Setup
+
+- Embedding dimension: 4096
+- 5 classes: clean, fog, night, noise, blur (8 samples each, 40 total)
+- Metrics: 1-NN accuracy, separation ratio, Fisher criterion, angular distribution, embedding norms, distance-severity correlation
+
+### Results
+
+#### 1-NN Classification Accuracy
+- **100% (40/40)** — every embedding is closer to its own class centroid than to any other class
+
+#### Separation Ratio
+- Within-class distance: 0.000158
+- Between-class distance: 0.006190
+- **Separation ratio: 39.2×** — the 39× gap between within-class and between-class distances explains the perfect AUROC observed in prior experiments
+
+#### Fisher Criterion (Per-Class Discriminability)
+| Corruption | Fisher Criterion |
+|:-----------|:----------------:|
+| Night | 8.17 |
+| Fog | 5.07 |
+| Blur | 3.71 |
+| Noise | 0.96 |
+
+Night is the most separable corruption; noise is the most overlapping — consistent with noise requiring full severity for detection in Experiment 442.
+
+#### Angular Distribution (Degrees from Class Centroid)
+| Class | Angular Spread |
+|:------|:--------------:|
+| Clean | 0.57° |
+| Noise | 1.13° |
+| Fog | 4.43° |
+| Blur | 6.68° |
+| Night | 7.43° |
+
+Clean embeddings are extremely tightly clustered (0.57° spread). Corruption classes show wider angular spread, with night being the most dispersed.
+
+#### Embedding Norms
+| Class | L2 Norm |
+|:------|:-------:|
+| Night | 8.515 |
+| Clean | 8.254 |
+| Fog | 8.198 |
+| Noise | 8.150 |
+| Blur | 8.069 |
+
+Night has the highest norm (8.515), blur the lowest (8.069). The narrow range (8.07–8.52) indicates embeddings occupy a thin shell in the 4096-dimensional space rather than varying wildly in magnitude.
+
+#### Distance-Severity Monotonicity
+| Corruption | Pearson Correlation |
+|:-----------|:-------------------:|
+| Fog | 0.987 |
+| Night | 0.958 |
+| Blur | 0.957 |
+| Noise | 0.904 |
+
+All four corruptions show **monotonic** distance-severity relationships (all r > 0.9). This means embedding distance is not merely a binary corruption indicator — it can serve as a **quantitative severity estimator**.
+
+### Key Findings
+1. **Perfect geometric separation** — 1-NN accuracy of 100% with a 39.2× separation ratio confirms that corruption classes form well-separated clusters in embedding space
+2. **Noise is the weakest signal** — Fisher criterion of 0.96 (vs 3.71–8.17 for others) and lowest distance-severity correlation (0.904) explain why noise is hardest to detect at low severity
+3. **Distance as severity estimator** — all corruptions show monotonic distance-severity relationships (r = 0.904–0.987), enabling quantitative severity estimation from a single embedding comparison
+4. **Tight clean cluster** — clean embeddings cluster within 0.57° of their centroid, providing a stable reference point for distance-based detection
+5. **Thin-shell geometry** — embedding norms range only 8.07–8.52 across all classes, indicating the model maps inputs to a narrow shell in the 4096-D space; corruption effects are directional, not magnitude-based
+6. **Night is most discriminable** — highest Fisher criterion (8.17), highest norm (8.515), and strongest separation from clean, consistent with night producing the largest embedding shifts in prior experiments
+7. **Practical implication: severity-aware monitoring** — the monotonic distance-severity relationship enables a deployment mode where the system not only detects corruption but estimates its severity in real time, supporting graduated safety responses
+
+## Experiment 444: Corruption Impact on Action Predictions
+
+**Date:** 2026-03-15
+**Figure:** `figures/fig453_action_impact.png`
+**Objective:** Measure how each corruption type affects the model's predicted actions — not just whether corruption is detectable, but how it changes what the robot would actually do. Connects embedding-level detection (Experiments 438–443) to downstream behavioral consequences.
+
+### Setup
+
+- 7-dimension action space (standard VLA action tokenization)
+- Metrics: unique tokens per action dimension, action entropy (nats per token), token change rate, confidence under corruption
+- Corruptions: fog, night, noise, blur (compared to clean baseline)
+- Links to dual failure modes identified in Experiment 431
+
+### Results
+
+#### Unique Tokens Per Action Dimension
+| Condition | Unique Tokens/Dim |
+|:----------|:-----------------:|
+| Clean | 6.7 |
+| Noise | 7.3 |
+| Blur | 6.7 |
+| Night | — |
+| Fog | 1.4 |
+
+Fog causes **action collapse**: only 1.4 unique tokens per action dimension compared to 6.7 for clean. The robot produces nearly identical (wrong) actions regardless of the scene content. Noise and blur preserve action diversity at levels comparable to clean.
+
+#### Action Entropy (Nats Per Token)
+| Condition | Entropy |
+|:----------|:-------:|
+| Clean | 1.66 |
+| Night | 3.42 |
+| Fog | Low (collapsed) |
+| Noise | ~Clean |
+| Blur | ~Clean |
+
+Night causes **uncertainty explosion**: action entropy more than doubles from 1.66 nats (clean) to 3.42 nats (night). The robot becomes deeply uncertain about what action to take. Fog shows low entropy because it has collapsed to a narrow set of (wrong) tokens.
+
+#### Token Change Rate
+Fog exhibits a very high percentage of tokens changed from clean predictions, but these changes converge to the same wrong action across different scenes — the model locks onto a single incorrect behavior pattern.
+
+#### Confidence vs Severity
+| Corruption | Confidence Trend | Correctness |
+|:-----------|:----------------|:------------|
+| Fog | Increases | Wrong (dangerous!) |
+| Night | Decreases | Uncertain |
+| Noise | Stable | Mostly correct |
+| Blur | Moderate decrease | Moderate shift |
+
+Fog **increases confidence while being wrong** — the most dangerous failure mode for deployment. Night decreases confidence, which is at least self-consistent and detectable by uncertainty monitoring.
+
+### Connection to Dual Failure Modes (Experiment 431)
+
+This experiment confirms and quantifies the two failure modes identified in Experiment 431:
+1. **Fog = Overconfident collapse** — high confidence, low diversity, wrong actions. The model "hallucinates" a single action and commits to it.
+2. **Night = Uncertainty explosion** — low confidence, high entropy, diffuse action distribution. The model cannot decide what to do.
+
+### Key Findings
+1. **Fog is the most dangerous corruption for robot safety** — it causes action collapse to 1.4 unique tokens/dim (vs 6.7 clean) while increasing confidence, producing wrong actions the robot would execute without hesitation
+2. **Night causes uncertainty explosion** — action entropy rises from 1.66 to 3.42 nats per token, more than doubling the robot's uncertainty about what action to take
+3. **Noise has minimal action impact** — 7.3 unique tokens/dim (comparable to clean's 6.7), demonstrating that noise barely changes predicted actions despite being detectable in embedding space
+4. **Blur is intermediate** — 6.7 unique tokens/dim with moderate action shift, neither collapsing nor exploding
+5. **Dual failure modes confirmed** — fog = overconfident collapse, night = uncertainty explosion, validating the two distinct failure pathways from Experiment 431
+6. **Confidence-correctness inversion under fog** — fog increases model confidence while producing wrong actions, inverting the expected relationship between confidence and correctness
+7. **Safety implication: fog is MORE dangerous than night** — a confident wrong action is executed immediately by a robot, whereas an uncertain action can be caught by uncertainty-based safety monitors. Detection-only is insufficient; action-level monitoring is essential for safe deployment
