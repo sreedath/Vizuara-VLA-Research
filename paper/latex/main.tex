@@ -4638,4 +4638,18 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 487}: Embedding-based detection is strictly superior to output-based detection: cosine distance achieves AUROC=1.0 for all corruptions regardless of how they affect output confidence. The embedding captures the corruption signal \textit{before} it propagates to (potentially misleading) output distributions.
 
+\subsection{Corruption Recovery}
+
+\textbf{Experiment 239: Recovery Detection.} We test whether the detector correctly identifies when corruption disappears, simulating a stream: 5 clean $\rightarrow$ 10 corrupt $\rightarrow$ 5 gradual recovery $\rightarrow$ 10 recovered.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig248_recovery.png}
+\caption{The detector tracks corruption onset AND recovery. Distance decreases monotonically during the recovery phase, returning to near-clean levels. All three corruption types show the same pattern.}
+\end{figure}
+
+\textbf{Finding 488}: The detector provides \textbf{bidirectional corruption tracking}: it detects both corruption onset (0--1 frame latency, Experiment 237) and corruption removal (gradual decrease during recovery). This enables dynamic safety monitoring in deployment.
+
+\textbf{Finding 489}: Recovery is tracked in real-time: distance decreases \textbf{monotonically} during the recovery phase, mirroring the severity reduction. Night distance drops from 0.00348 to 0.00011 over 5 recovery frames.
+
 \end{document}
