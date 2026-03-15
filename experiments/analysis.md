@@ -11786,3 +11786,54 @@ Blending between corruption types reveals cancellation effects:
 **Finding 420**: **Detection boundary is sharp for night/noise, gradual for fog/blur** — night and noise produce nonzero distance at α=0.001 (0.1%), while fog first appears at α=0.01 (1%) and blur at α=0.015 (1.5%). This matches the minimum severity results from Exp 305 and confirms that multiplicative corruptions (night) and additive corruptions (noise) are detected earlier than uniform (fog) or spatial (blur) corruptions.
 
 **Finding 421**: **Blur changes actions earliest (α=0.05)** despite being detected later (α=0.02), giving the smallest safety margin (2.5×). This makes blur the corruption requiring the fastest detector response time. Night has the safest profile: detected early (α=0.01) but actions robust until α=0.15.
+
+---
+
+## Experiment 308: Ensemble & Voting Detection
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_ensemble_detection.py`
+**Results**: `experiments/ensemble_20260315_111945.json`
+**Figure**: `fig317_ensemble.png`
+
+### Methodology
+
+Tests whether combining multiple detection signals improves detection:
+1. **Multi-layer voting**: 5 layers (L1, L3, L7, L15, L31) with mean/max/vote aggregation
+2. **Multi-metric ensemble**: 4 metrics (cosine, euclidean, norm_diff, correlation)
+3. **Multi-token ensemble**: 4 sequence positions (last, 1/4, 1/2, 3/4)
+4. **Full ensemble**: Layers × metrics combined
+5. **Separation margins**: Single vs ensemble margin comparison
+
+### Results
+
+#### Multi-Layer Voting
+
+ALL 5 individual layers AND all 3 ensemble strategies achieve AUROC=1.0 on all 4 corruptions.
+
+#### Multi-Metric Ensemble
+
+ALL 4 individual metrics AND the normalized ensemble achieve AUROC=1.0 on all 4 corruptions.
+
+#### Multi-Token Ensemble
+
+ALL 4 token positions AND the mean ensemble achieve AUROC=1.0 on all 4 corruptions.
+
+#### Separation Margin Amplification
+
+| Corruption | Single Margin | Ensemble Margin | Amplification |
+|-----------|--------------|----------------|---------------|
+| Fog | 0.00271 | 0.04008 | **14.8×** |
+| Night | 0.00799 | 0.09551 | **12.0×** |
+| Blur | 0.00626 | 0.09695 | **15.5×** |
+| Noise | 0.000512 | 0.01858 | **36.3×** |
+
+### Key Findings
+
+**Finding 422**: **Every individual detector and every ensemble achieves AUROC=1.0** — across 5 layers × 4 corruptions = 20 combinations, 4 metrics × 4 corruptions = 16 combinations, and 4 token positions × 4 corruptions = 16 combinations, there is not a single failure. All 52 individual tests and all ensemble strategies return perfect AUROC=1.0.
+
+**Finding 423**: **Ensemble amplifies separation margin by 12-36×** — while AUROC cannot improve beyond 1.0, the ensemble (5 layers × 2 metrics) increases the gap between ID and OOD scores by 12-36×. This makes the detector more robust to edge cases and adversarial perturbations. Noise benefits most (36× amplification) because its individual margin is smallest.
+
+**Finding 424**: **The simplest detector is already optimal** — since a single cosine distance at layer 3 achieves AUROC=1.0, there is no benefit to ensemble complexity for standard detection. The ensemble's 12-36× margin amplification would only matter in adversarial or extremely low-severity scenarios. For deployment, the single-detector approach (0.22ms overhead) is recommended.
+
+**Finding 425**: **All 4 token positions independently achieve AUROC=1.0** at L3 — positions at 1/4, 1/2, and 3/4 of the sequence all carry the full OOD signal. This extends Exp 305's finding (last/mean/mid = 1.0) by showing that image tokens throughout the sequence independently detect corruption, not just aggregated or final positions.

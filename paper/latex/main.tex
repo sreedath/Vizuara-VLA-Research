@@ -5718,4 +5718,20 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 683}: \textbf{Detection boundary is sharp for night/noise, gradual for fog/blur} --- night and noise produce nonzero distance at $\alpha = 0.001$ (0.1\%), while fog requires $\alpha = 0.01$ (1\%) and blur requires $\alpha = 0.015$ (1.5\%). Multiplicative (night) and additive (noise) corruptions create embedding shifts at 10$\times$ lower intensity than uniform (fog) or spatial (blur) corruptions.
 
+\subsection{Ensemble Detection Strategies}
+
+\textbf{Experiment 308: Multi-Signal Ensemble.} We test whether combining multiple detection signals --- across 5 layers (L1, L3, L7, L15, L31), 4 distance metrics (cosine, Euclidean, norm difference, correlation), and 4 token positions --- improves detection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig317_ensemble.png}
+\caption{Ensemble detection analysis (Experiment 308). (a--c) All individual layers, metrics, and token positions achieve AUROC=1.0. (d) Ensemble amplifies separation margins by 12--36$\times$. (e) All strategies achieve perfect detection. (f) Ensemble provides margin amplification but the simplest single-detector approach is already optimal.}
+\end{figure}
+
+\textbf{Finding 684}: \textbf{Every individual detector achieves AUROC=1.0} --- across 5 layers $\times$ 4 corruptions, 4 metrics $\times$ 4 corruptions, and 4 token positions $\times$ 4 corruptions (52 individual tests total), there is not a single failure. The detection signal is so strong that any reasonable extraction point, any distance metric, and any sequence position independently achieves perfect separation.
+
+\textbf{Finding 685}: \textbf{Ensemble amplifies separation margin by $12$--$36\times$} while AUROC remains at 1.0. The multi-layer ensemble (5 layers $\times$ 2 metrics) increases the ID/OOD gap from $d = 0.0005$--$0.008$ (single L3 cosine) to $d = 0.02$--$0.10$ (ensemble). Noise benefits most ($36\times$ amplification) because its single-detector margin is smallest. This margin amplification would strengthen robustness against adversarial attacks.
+
+\textbf{Finding 686}: \textbf{The simplest detector is already optimal.} Since a single cosine distance at L3 achieves AUROC=1.0, ensemble complexity adds no detection benefit. The ensemble's margin amplification only matters in adversarial scenarios (Experiment~275 showed $84\times$ safety margin against evasion). For deployment, the single-detector approach with 0.22ms overhead (Experiment~288) is the recommended configuration.
+
 \end{document}

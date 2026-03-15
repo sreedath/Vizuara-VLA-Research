@@ -1,184 +1,297 @@
 #!/usr/bin/env python3
-"""Experiment 157: Embedding space visualization.
-
-Projects ID and OOD embeddings to 2D via PCA to visualize cluster structure
-at L3 and L32. Also computes inter-cluster distances and angular separation.
+"""Experiment 309: Embedding Space Visualization & t-SNE/UMAP Analysis
+Provides comprehensive embedding space characterization:
+1. PCA projection with severity gradient
+2. t-SNE clustering quality
+3. Corruption centroid geometry (angles, distances)
+4. Embedding variance analysis across conditions
+5. Nearest-neighbor classification accuracy
 """
 
-import json, os, sys, datetime
-import numpy as np
 import torch
-from pathlib import Path
+import numpy as np
+import json
+from datetime import datetime
 from PIL import Image, ImageFilter
+from transformers import AutoModelForVision2Seq, AutoProcessor
+from scipy.spatial.distance import cosine, pdist, squareform
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 
-SCRIPT_DIR = Path(__file__).parent
-REPO_DIR = SCRIPT_DIR.parent
-EXPERIMENTS_DIR = REPO_DIR / "experiments"
-EXPERIMENTS_DIR.mkdir(exist_ok=True)
-RESULTS_DIR = str(EXPERIMENTS_DIR)
+def apply_corruption(image, ctype, severity=1.0):
+    arr = np.array(image).astype(np.float32) / 255.0
+    if ctype == 'fog':
+        arr = arr * (1 - 0.6 * severity) + 0.6 * severity
+    elif ctype == 'night':
+        arr = arr * max(0.01, 1.0 - 0.95 * severity)
+    elif ctype == 'noise':
+        arr = arr + np.random.RandomState(42).randn(*arr.shape) * 0.3 * severity
+        arr = np.clip(arr, 0, 1)
+    elif ctype == 'blur':
+        return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
+    return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
-SIZE = (256, 256)
-rng = np.random.RandomState(42)
-
-def create_highway(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]; img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
-
-def create_urban(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]; img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]; img[SIZE[0]//2:] = [60, 60, 60]
-    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
-
-def create_rural(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [100, 180, 255]; img[SIZE[0]//3:SIZE[0]*2//3] = [34, 139, 34]; img[SIZE[0]*2//3:] = [90, 90, 90]
-    return np.clip(img.astype(np.int16) + rng.randint(-8, 9, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
-
-def apply_fog(a, alpha):
-    return np.clip(a*(1-alpha)+np.full_like(a,[200,200,210])*alpha, 0, 255).astype(np.uint8)
-def apply_night(a): return np.clip(a*0.15, 0, 255).astype(np.uint8)
-def apply_blur(a, r=8): return np.array(Image.fromarray(a).filter(ImageFilter.GaussianBlur(radius=r)))
-def apply_noise(a, s=50): return np.clip(a.astype(np.float32)+np.random.normal(0,s,a.shape), 0, 255).astype(np.uint8)
-def apply_occlusion(a):
-    o=a.copy(); h,w=o.shape[:2]; o[h//4:3*h//4, w//4:3*w//4]=128; return o
-
-def extract_hidden(model, processor, image, prompt, layers):
+def extract_hidden(model, processor, image, prompt, layer=3):
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
     with torch.no_grad():
         fwd = model(**inputs, output_hidden_states=True)
-    return {l: fwd.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
+    return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
 
-def cosine_distance(a, b):
-    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
+def compute_auroc(id_scores, ood_scores):
+    id_s = np.asarray(id_scores)
+    ood_s = np.asarray(ood_scores)
+    n_id, n_ood = len(id_s), len(ood_s)
+    if n_id == 0 or n_ood == 0: return 0.5
+    count = sum(float(np.sum(o > id_s) + 0.5 * np.sum(o == id_s)) for o in ood_s)
+    return count / (n_id * n_ood)
 
 def main():
-    print("=" * 60)
-    print("Experiment 157: Embedding Space Visualization")
-    print("=" * 60, flush=True)
-
-    from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading OpenVLA-7B...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
         device_map="auto", trust_remote_code=True)
     processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
-    layers = [3, 32]
+    prompt = "In: What action should the robot take to pick up the object?\nOut:"
+    np.random.seed(42)
+    pixels = np.random.randint(50, 200, (224, 224, 3), dtype=np.uint8)
+    base_img = Image.fromarray(pixels)
 
-    creators = [create_highway, create_urban, create_rural]
-    n_id = 12
-
-    # ID embeddings
-    print("\n--- Extracting ID embeddings ---", flush=True)
-    id_embeddings = {l: [] for l in layers}
-    id_labels = []
-    scene_names = ["highway", "urban", "rural"]
-    for i in range(n_id):
-        arr = creators[i % 3](i)
-        h = extract_hidden(model, processor, Image.fromarray(arr), prompt, layers)
-        for l in layers:
-            id_embeddings[l].append(h[l])
-        id_labels.append(scene_names[i % 3])
-        print(f"  ID image {i} ({scene_names[i%3]})", flush=True)
-
-    # OOD embeddings
-    ood_transforms = {
-        "fog_30": lambda a: apply_fog(a, 0.3),
-        "fog_60": lambda a: apply_fog(a, 0.6),
-        "night": apply_night,
-        "blur": apply_blur,
-        "noise": apply_noise,
-        "occlusion": apply_occlusion,
-    }
-    n_ood_per = 4
-
-    ood_embeddings = {l: [] for l in layers}
-    ood_labels = []
-    print("\n--- Extracting OOD embeddings ---", flush=True)
-    for cat, tfn in ood_transforms.items():
-        for j in range(n_ood_per):
-            arr = tfn(creators[j % 3](j))
-            h = extract_hidden(model, processor, Image.fromarray(arr), prompt, layers)
-            for l in layers:
-                ood_embeddings[l].append(h[l])
-            ood_labels.append(cat)
-            print(f"  OOD {cat} image {j}", flush=True)
-
-    # PCA projection for each layer
-    results = {}
-    for l in layers:
-        id_embs = np.array(id_embeddings[l])
-        ood_embs = np.array(ood_embeddings[l])
-        all_embs = np.vstack([id_embs, ood_embs])
-
-        # Center on ID mean
-        center = id_embs.mean(axis=0)
-        centered = all_embs - center
-
-        # SVD for PCA
-        U, S, Vt = np.linalg.svd(centered, full_matrices=False)
-        pca_2d = centered @ Vt[:2].T  # project onto first 2 PCs
-        var_explained = (S[:2]**2) / (S**2).sum()
-
-        n_id_total = len(id_embs)
-        n_ood_total = len(ood_embs)
-
-        id_2d = pca_2d[:n_id_total]
-        ood_2d = pca_2d[n_id_total:]
-
-        # Inter-cluster distances in 2D
-        id_centroid_2d = id_2d.mean(axis=0)
-        id_radius_2d = float(np.max(np.linalg.norm(id_2d - id_centroid_2d, axis=1)))
-
-        # Per-category OOD centroids in 2D
-        ood_cat_centroids = {}
-        idx = 0
-        for cat in ood_transforms:
-            cat_pts = ood_2d[idx:idx+n_ood_per]
-            ood_cat_centroids[cat] = {
-                "centroid": cat_pts.mean(axis=0).tolist(),
-                "distance_from_id": float(np.linalg.norm(cat_pts.mean(axis=0) - id_centroid_2d)),
-                "spread": float(np.std(np.linalg.norm(cat_pts - cat_pts.mean(axis=0), axis=1))),
-            }
-            idx += n_ood_per
-
-        results[f"L{l}"] = {
-            "var_explained_pc1": float(var_explained[0]),
-            "var_explained_pc2": float(var_explained[1]),
-            "var_explained_total": float(var_explained.sum()),
-            "id_centroid_2d": id_centroid_2d.tolist(),
-            "id_radius_2d": id_radius_2d,
-            "id_points_2d": id_2d.tolist(),
-            "id_labels": id_labels,
-            "ood_points_2d": ood_2d.tolist(),
-            "ood_labels": ood_labels,
-            "ood_category_centroids": ood_cat_centroids,
-            "singular_values_top10": S[:10].tolist(),
-        }
-        print(f"\n  L{l}: PC1={var_explained[0]:.3f}, PC2={var_explained[1]:.3f}, "
-              f"total={var_explained.sum():.3f}", flush=True)
-        print(f"  ID radius (2D): {id_radius_2d:.4f}", flush=True)
-        for cat, info in ood_cat_centroids.items():
-            print(f"  {cat}: dist_from_id={info['distance_from_id']:.4f}", flush=True)
-
-    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    output = {
+    results = {
         "experiment": "embedding_visualization",
-        "experiment_number": 157,
-        "timestamp": ts,
-        "n_id": n_id, "n_ood_per_cat": n_ood_per,
-        "ood_categories": list(ood_transforms.keys()),
-        "layers": layers,
-        "results": results,
+        "experiment_number": 309,
+        "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
     }
-    path = os.path.join(RESULTS_DIR, f"embedding_viz_{ts}.json")
-    with open(path, "w") as f:
-        json.dump(output, f, indent=2)
-    print(f"\nSaved: {path}")
+
+    corruptions = ['fog', 'night', 'blur', 'noise']
+    severities = [0.1, 0.2, 0.3, 0.5, 0.7, 1.0]
+
+    # Collect embeddings across all conditions
+    print("Collecting embeddings...")
+    embeddings = []
+    labels = []
+    severity_vals = []
+
+    # Clean samples
+    for _ in range(5):
+        emb = extract_hidden(model, processor, base_img, prompt)
+        embeddings.append(emb)
+        labels.append('clean')
+        severity_vals.append(0.0)
+
+    # Corrupted samples
+    for c in corruptions:
+        for sev in severities:
+            corrupted = apply_corruption(base_img, c, sev)
+            emb = extract_hidden(model, processor, corrupted, prompt)
+            embeddings.append(emb)
+            labels.append(c)
+            severity_vals.append(sev)
+
+    embeddings = np.array(embeddings)
+    print(f"  Collected {len(embeddings)} embeddings (shape: {embeddings.shape})")
+
+    # Part 1: PCA analysis
+    print("\n=== Part 1: PCA Analysis ===")
+    pca = PCA(n_components=10)
+    pca_coords = pca.fit_transform(embeddings)
+
+    pca_by_condition = {}
+    for condition in ['clean'] + corruptions:
+        mask = [l == condition for l in labels]
+        coords = pca_coords[mask]
+        sevs = [severity_vals[i] for i, m in enumerate(mask) if m]
+        pca_by_condition[condition] = {
+            "coords": [{"pc1": float(coords[j, 0]), "pc2": float(coords[j, 1]),
+                        "pc3": float(coords[j, 2]), "severity": sevs[j]}
+                       for j in range(len(coords))]
+        }
+
+    results["pca"] = {
+        "explained_variance_ratio": pca.explained_variance_ratio_.tolist(),
+        "cumulative_variance": np.cumsum(pca.explained_variance_ratio_).tolist(),
+        "by_condition": pca_by_condition,
+    }
+
+    for condition in ['clean'] + corruptions:
+        mask = [l == condition for l in labels]
+        coords = pca_coords[mask]
+        print(f"  {condition}: PC1 range [{coords[:, 0].min():.4f}, {coords[:, 0].max():.4f}], "
+              f"PC2 range [{coords[:, 1].min():.4f}, {coords[:, 1].max():.4f}]")
+
+    print(f"  Explained variance: PC1={pca.explained_variance_ratio_[0]*100:.1f}%, "
+          f"PC2={pca.explained_variance_ratio_[1]*100:.1f}%, "
+          f"PC3={pca.explained_variance_ratio_[2]*100:.1f}%")
+
+    # Part 2: t-SNE clustering
+    print("\n=== Part 2: t-SNE Clustering ===")
+    tsne = TSNE(n_components=2, random_state=42, perplexity=min(5, len(embeddings)-1))
+    tsne_coords = tsne.fit_transform(embeddings)
+
+    condition_centroids_tsne = {}
+    for condition in ['clean'] + corruptions:
+        mask = [l == condition for l in labels]
+        condition_centroids_tsne[condition] = tsne_coords[mask].mean(axis=0)
+
+    intra_distances = {}
+    inter_distances = {}
+    for condition in ['clean'] + corruptions:
+        mask = [l == condition for l in labels]
+        pts = tsne_coords[mask]
+        centroid = condition_centroids_tsne[condition]
+        intra_distances[condition] = float(np.mean(np.linalg.norm(pts - centroid, axis=1)))
+
+        other_centroids = [condition_centroids_tsne[c2] for c2 in condition_centroids_tsne if c2 != condition]
+        if other_centroids:
+            inter_distances[condition] = float(np.min([np.linalg.norm(centroid - oc)
+                                                        for oc in other_centroids]))
+
+    results["tsne"] = {
+        "intra_distances": intra_distances,
+        "inter_distances": inter_distances,
+    }
+
+    for condition in ['clean'] + corruptions:
+        print(f"  {condition}: intra={intra_distances[condition]:.2f}, "
+              f"inter={inter_distances.get(condition, 0):.2f}")
+
+    # Part 3: Corruption centroid geometry
+    print("\n=== Part 3: Centroid Geometry ===")
+    clean_emb = embeddings[0]
+
+    corruption_centroids = {}
+    for c in corruptions:
+        mask = [l == c for l in labels]
+        corruption_centroids[c] = embeddings[mask].mean(axis=0)
+
+    directions = {}
+    for c in corruptions:
+        diff = corruption_centroids[c] - clean_emb
+        diff_norm = np.linalg.norm(diff)
+        if diff_norm > 0:
+            directions[c] = diff / diff_norm
+
+    angle_matrix = {}
+    for c1 in corruptions:
+        for c2 in corruptions:
+            if c1 < c2:
+                cos_sim = float(np.dot(directions[c1], directions[c2]))
+                angle_rad = np.arccos(np.clip(cos_sim, -1, 1))
+                angle_deg = float(np.degrees(angle_rad))
+                angle_matrix[f"{c1}_vs_{c2}"] = {
+                    "angle_degrees": angle_deg,
+                    "cosine_similarity": cos_sim,
+                }
+
+    centroid_distances = {c: float(cosine(clean_emb, corruption_centroids[c])) for c in corruptions}
+
+    results["centroid_geometry"] = {
+        "angles": angle_matrix,
+        "distances": centroid_distances,
+    }
+
+    for pair, info in angle_matrix.items():
+        print(f"  {pair}: {info['angle_degrees']:.1f}° (cos_sim={info['cosine_similarity']:.4f})")
+    for c, d in centroid_distances.items():
+        print(f"  {c} centroid distance: {d:.6f}")
+
+    # Part 4: Within-condition variance
+    print("\n=== Part 4: Within-Condition Variance ===")
+    variance_analysis = {}
+
+    for condition in ['clean'] + corruptions:
+        mask = [l == condition for l in labels]
+        pts = embeddings[mask]
+
+        if len(pts) > 1:
+            pairwise = []
+            for i in range(len(pts)):
+                for j in range(i+1, len(pts)):
+                    pairwise.append(float(cosine(pts[i], pts[j])))
+            variance_analysis[condition] = {
+                "n_samples": len(pts),
+                "mean_pairwise_cosine": float(np.mean(pairwise)),
+                "max_pairwise_cosine": float(np.max(pairwise)),
+                "std_pairwise_cosine": float(np.std(pairwise)),
+            }
+        else:
+            variance_analysis[condition] = {"n_samples": len(pts), "mean_pairwise_cosine": 0}
+
+        v = variance_analysis[condition]
+        print(f"  {condition}: n={v['n_samples']}, "
+              f"mean_dist={v.get('mean_pairwise_cosine', 0):.8f}")
+
+    results["variance"] = variance_analysis
+
+    # Part 5: Nearest-neighbor classification
+    print("\n=== Part 5: Nearest-Neighbor Classification ===")
+    correct = 0
+    total = 0
+    per_class = {c: {"correct": 0, "total": 0} for c in ['clean'] + corruptions}
+
+    for i in range(len(embeddings)):
+        min_dist = float('inf')
+        nn_label = None
+        for j in range(len(embeddings)):
+            if i == j:
+                continue
+            d = float(cosine(embeddings[i], embeddings[j]))
+            if d < min_dist:
+                min_dist = d
+                nn_label = labels[j]
+
+        true_label = labels[i]
+        is_correct = nn_label == true_label
+        if is_correct:
+            correct += 1
+        total += 1
+        per_class[true_label]["total"] += 1
+        if is_correct:
+            per_class[true_label]["correct"] += 1
+
+    accuracy = correct / total
+    nn_results = {
+        "overall_accuracy": accuracy,
+        "per_class": {c: v["correct"] / v["total"] if v["total"] > 0 else 0
+                      for c, v in per_class.items()},
+    }
+    results["nn_classification"] = nn_results
+
+    print(f"  Overall 1-NN accuracy: {accuracy*100:.1f}%")
+    for c, acc in nn_results["per_class"].items():
+        print(f"  {c}: {acc*100:.1f}%")
+
+    # Part 6: Embedding norm distribution
+    print("\n=== Part 6: Norm Distribution ===")
+    norm_dist = {}
+    for condition in ['clean'] + corruptions:
+        mask = [l == condition for l in labels]
+        norms = [float(np.linalg.norm(embeddings[i])) for i, m in enumerate(mask) if m]
+        norm_dist[condition] = {
+            "mean": float(np.mean(norms)),
+            "std": float(np.std(norms)),
+            "min": float(min(norms)),
+            "max": float(max(norms)),
+        }
+        print(f"  {condition}: norm={np.mean(norms):.2f}±{np.std(norms):.2f}")
+
+    results["norm_distribution"] = norm_dist
+
+    # Save
+    def convert(obj):
+        if isinstance(obj, (np.integer,)): return int(obj)
+        if isinstance(obj, (np.floating,)): return float(obj)
+        if isinstance(obj, np.ndarray): return obj.tolist()
+        if isinstance(obj, dict): return {k: convert(v) for k, v in obj.items()}
+        if isinstance(obj, list): return [convert(v) for v in obj]
+        return obj
+
+    ts = results["timestamp"]
+    out_path = f"experiments/embedding_viz_{ts}.json"
+    with open(out_path, 'w') as f:
+        json.dump(convert(results), f, indent=2)
+    print(f"\nSaved to {out_path}")
 
 if __name__ == "__main__":
     main()

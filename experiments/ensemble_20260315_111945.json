@@ -1,0 +1,175 @@
+{
+  "experiment": "ensemble_detection",
+  "experiment_number": 308,
+  "timestamp": "20260315_111945",
+  "layer_voting": {
+    "fog": {
+      "individual": {
+        "L1": 1.0,
+        "L3": 1.0,
+        "L7": 1.0,
+        "L15": 1.0,
+        "L31": 1.0
+      },
+      "mean_ensemble": 1.0,
+      "max_ensemble": 1.0,
+      "vote_ensemble": 1.0
+    },
+    "night": {
+      "individual": {
+        "L1": 1.0,
+        "L3": 1.0,
+        "L7": 1.0,
+        "L15": 1.0,
+        "L31": 1.0
+      },
+      "mean_ensemble": 1.0,
+      "max_ensemble": 1.0,
+      "vote_ensemble": 1.0
+    },
+    "blur": {
+      "individual": {
+        "L1": 1.0,
+        "L3": 1.0,
+        "L7": 1.0,
+        "L15": 1.0,
+        "L31": 1.0
+      },
+      "mean_ensemble": 1.0,
+      "max_ensemble": 1.0,
+      "vote_ensemble": 1.0
+    },
+    "noise": {
+      "individual": {
+        "L1": 1.0,
+        "L3": 1.0,
+        "L7": 1.0,
+        "L15": 1.0,
+        "L31": 1.0
+      },
+      "mean_ensemble": 1.0,
+      "max_ensemble": 1.0,
+      "vote_ensemble": 1.0
+    }
+  },
+  "metric_ensemble": {
+    "fog": {
+      "individual": {
+        "cosine": 1.0,
+        "euclidean": 1.0,
+        "norm_diff": 1.0,
+        "correlation": 1.0
+      },
+      "ensemble": 1.0
+    },
+    "night": {
+      "individual": {
+        "cosine": 1.0,
+        "euclidean": 1.0,
+        "norm_diff": 1.0,
+        "correlation": 1.0
+      },
+      "ensemble": 1.0
+    },
+    "blur": {
+      "individual": {
+        "cosine": 1.0,
+        "euclidean": 1.0,
+        "norm_diff": 1.0,
+        "correlation": 1.0
+      },
+      "ensemble": 1.0
+    },
+    "noise": {
+      "individual": {
+        "cosine": 1.0,
+        "euclidean": 1.0,
+        "norm_diff": 1.0,
+        "correlation": 1.0
+      },
+      "ensemble": 1.0
+    }
+  },
+  "token_ensemble": {
+    "fog": {
+      "individual": {
+        "last": 1.0,
+        "pos68": 1.0,
+        "pos137": 1.0,
+        "pos205": 1.0
+      },
+      "ensemble": 1.0
+    },
+    "night": {
+      "individual": {
+        "last": 1.0,
+        "pos68": 1.0,
+        "pos137": 1.0,
+        "pos205": 1.0
+      },
+      "ensemble": 1.0
+    },
+    "blur": {
+      "individual": {
+        "last": 1.0,
+        "pos68": 1.0,
+        "pos137": 1.0,
+        "pos205": 1.0
+      },
+      "ensemble": 1.0
+    },
+    "noise": {
+      "individual": {
+        "last": 1.0,
+        "pos68": 1.0,
+        "pos137": 1.0,
+        "pos205": 1.0
+      },
+      "ensemble": 1.0
+    }
+  },
+  "full_ensemble": {
+    "fog": 1.0,
+    "night": 1.0,
+    "blur": 1.0,
+    "noise": 1.0
+  },
+  "separation_margins": {
+    "fog": {
+      "single_id": 0.0,
+      "single_ood": 0.0027054548263549805,
+      "single_margin": 0.0027054548263549805,
+      "ensemble_id": 0.0,
+      "ensemble_ood": 0.04008264541625976,
+      "ensemble_margin": 0.04008264541625976,
+      "margin_ratio": 14.815492399206873
+    },
+    "night": {
+      "single_id": 0.0,
+      "single_ood": 0.007991313934326172,
+      "single_margin": 0.007991313934326172,
+      "ensemble_id": 0.0,
+      "ensemble_ood": 0.0955125093460083,
+      "ensemble_margin": 0.0955125093460083,
+      "margin_ratio": 11.952040694552181
+    },
+    "blur": {
+      "single_id": 0.0,
+      "single_ood": 0.006263315677642822,
+      "single_margin": 0.006263315677642822,
+      "ensemble_id": 0.0,
+      "ensemble_ood": 0.09695286750793457,
+      "ensemble_margin": 0.09695286750793457,
+      "margin_ratio": 15.479479639516182
+    },
+    "noise": {
+      "single_id": 0.0,
+      "single_ood": 0.0005123615264892578,
+      "single_margin": 0.0005123615264892578,
+      "ensemble_id": 0.0,
+      "ensemble_ood": 0.018577766418457032,
+      "ensemble_margin": 0.018577766418457032,
+      "margin_ratio": 36.259097254537
+    }
+  }
+}
