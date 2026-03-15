@@ -5676,4 +5676,26 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 672}: \textbf{Only 2 of 5 components are critical} --- ablation reveals that calibration image and token position are the only design choices that matter. Distance metric (5/5 work), embedding dimension (4D--4096D all work), and aggregation strategy (last/mean/mid all work) are completely irrelevant. This radical simplicity strengthens the deployment case: the method works with \emph{any} reasonable implementation.
 
+\subsection{Input Attribution Analysis}
+
+\textbf{Experiment 306: Gradient-Based Input Attribution.} We analyze which input regions, spatial frequencies, and color channels most influence the OOD detection signal using patch occlusion (7$\times$7 grid), frequency decomposition, regional corruption, progressive spatial spread, and channel-specific corruption.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig315_attribution.png}
+\caption{Input attribution analysis (Experiment 306). (a) Night/blur: single patch carries 46--50\% of signal. (b) Fog is low-frequency (65\%), noise is high-frequency (86\%). (c) Center region most important for fog/night/blur. (d) All corruptions detected at 12.5\% coverage; noise shows anti-additive spread. (e) Cross-channel interactions amplify signal 8--36\%. (f) Summary of key findings.}
+\end{figure}
+
+\textbf{Finding 673}: \textbf{Night and blur have highly localized sensitivity} --- a single 32$\times$32 patch (2\% of image) accounts for 46--50\% of the OOD signal. These corruptions exhibit 17--19$\times$ super-additivity: restoring individual patches to clean reduces distance by far more than their proportional area. Fog and noise are sub-additive (patches cancel each other), consistent with their global/random nature.
+
+\textbf{Finding 674}: \textbf{Corruption type determines frequency domain} --- fog is primarily low-frequency (65\%) while noise is primarily high-frequency (86\%). Night has mixed content (54\% low, 58\% high, totaling $>100\%$ from cross-frequency interactions). This explains why smoothing-based preprocessing fails for noise detection and why fog appears as a rank-1 perturbation in PCA (Experiment~296).
+
+\textbf{Finding 675}: \textbf{Center region dominates for fog/night/blur}, while noise is most sensitive at the periphery. This reflects SigLIP's center-biased spatial attention: corruptions in attended regions have outsized impact on the final embedding. Importantly, ALL regions are independently detectable ($d > 0$) --- there are no spatial blind spots.
+
+\textbf{Finding 676}: \textbf{12.5\% corruption is always detectable} --- corrupting just the top 28 rows (one-eighth of the 224$\times$224 image) produces nonzero distance for all corruption types. This means partial corruptions (dirty lens, rain drops, partial occlusion) are caught by the detector even when most of the image is clean.
+
+\textbf{Finding 677}: \textbf{Cross-channel interactions amplify signal} --- individual R/G/B channels sum to only 64\% (noise) to 92\% (night) of the full 3-channel distance. The remaining 8--36\% arises from cross-channel interactions in SigLIP's vision encoder, meaning the detector benefits from the model's color processing beyond simple per-channel differences.
+
+\textbf{Finding 678}: \textbf{Noise shows anti-additive spatial spread} --- as more rows are corrupted from top to bottom, the cosine distance \emph{decreases} from peak at 37.5\% coverage ($d = 0.00163$) to minimum at 100\% ($d = 0.000512$). Noise at different spatial locations partially cancels in embedding space, a unique property not shared by fog, night, or blur which all show monotonic distance growth.
+
 \end{document}
