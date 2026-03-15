@@ -1,12 +1,12 @@
 """
-Threshold Sensitivity Analysis.
+Threshold Selection and Operating Points.
 
-Determines the optimal detection threshold and maps the full
-ROC curve with detailed FPR/TPR trade-offs. Tests multiple
-threshold selection strategies: Youden's J, FPR<1%, FPR<5%,
-equal error rate (EER).
+Detailed analysis of the ROC curve, optimal threshold selection,
+and precision/recall/F1 at various operating points. This is the
+deployment-critical analysis: given a desired false-positive or
+false-negative rate, what threshold should be used?
 
-Experiment 84 in the CalibDrive series.
+Experiment 130 in the CalibDrive series.
 """
 import os
 import json
@@ -14,7 +14,7 @@ import datetime
 import numpy as np
 import torch
 from PIL import Image
-from sklearn.metrics import roc_auc_score, roc_curve
+from sklearn.metrics import roc_auc_score, roc_curve, precision_recall_curve
 
 RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
 os.makedirs(RESULTS_DIR, exist_ok=True)
@@ -22,7 +22,7 @@ SIZE = (256, 256)
 
 
 def create_highway(idx):
-    rng = np.random.default_rng(idx * 5001)
+    rng = np.random.default_rng(idx * 23001)
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
     img[:SIZE[0]//2] = [135, 206, 235]
     img[SIZE[0]//2:] = [80, 80, 80]
@@ -31,7 +31,7 @@ def create_highway(idx):
     return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
 def create_urban(idx):
-    rng = np.random.default_rng(idx * 5002)
+    rng = np.random.default_rng(idx * 23002)
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
     img[:SIZE[0]//3] = [135, 206, 235]
     img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]
@@ -40,11 +40,11 @@ def create_urban(idx):
     return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
 def create_noise(idx):
-    rng = np.random.default_rng(idx * 5003)
+    rng = np.random.default_rng(idx * 23003)
     return rng.integers(0, 256, (*SIZE, 3), dtype=np.uint8)
 
 def create_indoor(idx):
-    rng = np.random.default_rng(idx * 5004)
+    rng = np.random.default_rng(idx * 23004)
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
     img[:] = [200, 180, 160]
     img[SIZE[0]//2:, :] = [100, 80, 60]
@@ -53,7 +53,7 @@ def create_indoor(idx):
     return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
 def create_twilight_highway(idx):
-    rng = np.random.default_rng(idx * 5010)
+    rng = np.random.default_rng(idx * 23010)
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
     img[:SIZE[0]//2] = [70, 50, 80]
     img[SIZE[0]//2:] = [60, 60, 60]
@@ -62,7 +62,7 @@ def create_twilight_highway(idx):
     return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
 def create_snow(idx):
-    rng = np.random.default_rng(idx * 5014)
+    rng = np.random.default_rng(idx * 23014)
     img = np.zeros((*SIZE, 3), dtype=np.uint8)
     img[:SIZE[0]//2] = [200, 200, 210]
     img[SIZE[0]//2:] = [220, 220, 230]
@@ -70,31 +70,32 @@ def create_snow(idx):
     noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
     return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
-def create_blackout(idx):
-    return np.zeros((*SIZE, 3), dtype=np.uint8)
-
-def create_inverted(idx):
-    img = create_highway(idx + 3000)
-    return (255 - img).astype(np.uint8)
+def create_fog_highway(idx):
+    rng = np.random.default_rng(idx * 23022)
+    img = np.zeros((*SIZE, 3), dtype=np.uint8)
+    img[:SIZE[0]//2] = [180, 185, 190]
+    img[SIZE[0]//2:] = [140, 140, 145]
+    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [160, 160, 165]
+    noise = rng.integers(-15, 16, img.shape, dtype=np.int16)
+    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
 
 def extract_hidden(model, processor, image, prompt):
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
     with torch.no_grad():
         fwd = model(**inputs, output_hidden_states=True)
-    if hasattr(fwd, 'hidden_states') and fwd.hidden_states:
-        return fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
-    return None
+    if not hasattr(fwd, 'hidden_states') or not fwd.hidden_states:
+        return None
+    return fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
 
 
 def cosine_dist(a, b):
-    return 1.0 - float(np.dot(a / (np.linalg.norm(a) + 1e-10),
-                               b / (np.linalg.norm(b) + 1e-10)))
+    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
 
 
 def main():
     print("=" * 70, flush=True)
-    print("THRESHOLD SENSITIVITY ANALYSIS", flush=True)
+    print("THRESHOLD SELECTION AND OPERATING POINTS", flush=True)
     print("=" * 70, flush=True)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
@@ -111,178 +112,160 @@ def main():
 
     prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
 
-    # Calibrate
-    print("\nCalibrating...", flush=True)
-    cal_hidden = []
-    for fn in [create_highway, create_urban]:
-        for i in range(15):
-            h = extract_hidden(model, processor,
-                               Image.fromarray(fn(i + 9000)), prompt)
-            if h is not None:
-                cal_hidden.append(h)
-    centroid = np.mean(cal_hidden, axis=0)
-    cal_dists = [cosine_dist(h, centroid) for h in cal_hidden]
-    print(f"  {len(cal_hidden)} calibration samples", flush=True)
-    print(f"  Cal dist range: [{min(cal_dists):.4f}, {max(cal_dists):.4f}]", flush=True)
-
-    # Larger test set for better ROC curve
-    print("\nCollecting test data...", flush=True)
-    id_scores = []
-    id_scenarios = []
-    for fn in [create_highway, create_urban]:
-        for i in range(20):
-            h = extract_hidden(model, processor,
-                               Image.fromarray(fn(i + 500)), prompt)
-            if h is not None:
-                id_scores.append(cosine_dist(h, centroid))
-                id_scenarios.append('highway' if fn == create_highway else 'urban')
-
-    ood_scores = []
-    ood_scenarios = []
-    ood_fns = {
-        'noise': (create_noise, 10),
-        'indoor': (create_indoor, 10),
-        'twilight': (create_twilight_highway, 10),
-        'snow': (create_snow, 10),
-        'blackout': (create_blackout, 6),
-        'inverted': (create_inverted, 8),
+    categories = {
+        'highway': (create_highway, 'ID'),
+        'urban': (create_urban, 'ID'),
+        'noise': (create_noise, 'OOD'),
+        'indoor': (create_indoor, 'OOD'),
+        'twilight': (create_twilight_highway, 'OOD'),
+        'snow': (create_snow, 'OOD'),
+        'fog': (create_fog_highway, 'OOD'),
     }
 
-    cnt = 0
-    total_ood = sum(v[1] for v in ood_fns.values())
-    for cat, (fn, n) in ood_fns.items():
-        for i in range(n):
-            cnt += 1
-            h = extract_hidden(model, processor,
-                               Image.fromarray(fn(i + 500)), prompt)
+    N_CAL = 10
+    N_TEST = 15
+
+    print("\n--- Collecting embeddings ---", flush=True)
+    embeddings = {}
+    for cat_name, (fn, group) in categories.items():
+        print(f"  {cat_name} ({group})...", flush=True)
+        embeds = []
+        for i in range(N_CAL + N_TEST if group == 'ID' else N_TEST):
+            h = extract_hidden(model, processor, Image.fromarray(fn(i + 2900)), prompt)
             if h is not None:
-                ood_scores.append(cosine_dist(h, centroid))
-                ood_scenarios.append(cat)
-            if cnt % 10 == 0:
-                print(f"  [{cnt}/{total_ood}] {cat}", flush=True)
+                embeds.append(h)
+        embeddings[cat_name] = {'embeds': np.array(embeds), 'group': group}
 
-    print(f"  ID: {len(id_scores)}, OOD: {len(ood_scores)}", flush=True)
+    # Build cal/test
+    cal_embeds = []
+    test_embeds = []
+    test_labels = []
+    test_cats = []
 
-    # Full ROC curve
-    labels = [0]*len(id_scores) + [1]*len(ood_scores)
-    scores = id_scores + ood_scores
-    fpr, tpr, thresholds = roc_curve(labels, scores)
-    auroc = roc_auc_score(labels, scores)
+    for cat_name, data in embeddings.items():
+        if data['group'] == 'ID':
+            cal_embeds.extend(data['embeds'][:N_CAL])
+            for e in data['embeds'][N_CAL:]:
+                test_embeds.append(e)
+                test_labels.append(0)
+                test_cats.append(cat_name)
+        else:
+            for e in data['embeds']:
+                test_embeds.append(e)
+                test_labels.append(1)
+                test_cats.append(cat_name)
 
-    # Threshold strategies
-    strategies = {}
+    cal_embeds = np.array(cal_embeds)
+    test_embeds = np.array(test_embeds)
+    test_labels = np.array(test_labels)
+    centroid = np.mean(cal_embeds, axis=0)
 
-    # 1. Youden's J statistic (maximizes TPR - FPR)
+    print(f"\nCal: {len(cal_embeds)}, Test: {len(test_labels)} ({sum(test_labels==0)} ID, {sum(test_labels==1)} OOD)", flush=True)
+
+    # Compute scores
+    scores = np.array([cosine_dist(e, centroid) for e in test_embeds])
+    id_scores = scores[test_labels == 0]
+    ood_scores = scores[test_labels == 1]
+
+    print(f"\nID scores: {np.mean(id_scores):.4f} +/- {np.std(id_scores):.4f} (range: {np.min(id_scores):.4f}-{np.max(id_scores):.4f})", flush=True)
+    print(f"OOD scores: {np.mean(ood_scores):.4f} +/- {np.std(ood_scores):.4f} (range: {np.min(ood_scores):.4f}-{np.max(ood_scores):.4f})", flush=True)
+
+    # ROC analysis
+    auroc = float(roc_auc_score(test_labels, scores))
+    fpr, tpr, thresholds = roc_curve(test_labels, scores)
+    print(f"\nAUROC: {auroc:.4f}", flush=True)
+
+    # Optimal threshold (Youden's J)
     j_scores = tpr - fpr
     best_idx = np.argmax(j_scores)
-    strategies['youden'] = {
-        'threshold': float(thresholds[best_idx]),
-        'fpr': float(fpr[best_idx]),
-        'tpr': float(tpr[best_idx]),
-        'j_score': float(j_scores[best_idx]),
+    optimal_threshold = float(thresholds[best_idx])
+    print(f"Optimal threshold (Youden's J): {optimal_threshold:.4f}", flush=True)
+
+    # Score gap
+    gap = float(np.min(ood_scores) - np.max(id_scores))
+    print(f"Score gap (min OOD - max ID): {gap:.4f}", flush=True)
+
+    # Threshold sweep
+    print("\n--- Threshold Operating Points ---", flush=True)
+    sweep_thresholds = np.linspace(np.min(scores), np.max(scores), 50)
+    operating_points = []
+
+    for t in sweep_thresholds:
+        tp = int(np.sum((scores >= t) & (test_labels == 1)))
+        fp = int(np.sum((scores >= t) & (test_labels == 0)))
+        tn = int(np.sum((scores < t) & (test_labels == 0)))
+        fn = int(np.sum((scores < t) & (test_labels == 1)))
+
+        precision = tp / (tp + fp) if (tp + fp) > 0 else 1.0
+        recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
+        fpr_val = fp / (fp + tn) if (fp + tn) > 0 else 0.0
+        fnr_val = fn / (fn + tp) if (fn + tp) > 0 else 0.0
+
+        operating_points.append({
+            'threshold': float(t),
+            'precision': precision,
+            'recall': recall,
+            'f1': f1,
+            'fpr': fpr_val,
+            'fnr': fnr_val,
+            'tp': tp, 'fp': fp, 'tn': tn, 'fn': fn,
+        })
+
+    # Key operating points
+    print(f"{'Threshold':>10s} {'Prec':>6s} {'Recall':>6s} {'F1':>6s} {'FPR':>6s} {'FNR':>6s}", flush=True)
+    for op in operating_points[::5]:
+        print(f"  {op['threshold']:8.4f}   {op['precision']:5.3f}  {op['recall']:5.3f}  {op['f1']:5.3f}  {op['fpr']:5.3f}  {op['fnr']:5.3f}", flush=True)
+
+    # Per-category scores
+    print("\n--- Per-Category Scores ---", flush=True)
+    per_cat_scores = {}
+    for cat_name in set(test_cats):
+        cat_mask = np.array([c == cat_name for c in test_cats])
+        cat_scores = scores[cat_mask]
+        per_cat_scores[cat_name] = {
+            'mean': float(np.mean(cat_scores)),
+            'std': float(np.std(cat_scores)),
+            'min': float(np.min(cat_scores)),
+            'max': float(np.max(cat_scores)),
+        }
+        print(f"  {cat_name:12s}: {np.mean(cat_scores):.4f} +/- {np.std(cat_scores):.4f} "
+              f"(range: {np.min(cat_scores):.4f}-{np.max(cat_scores):.4f})", flush=True)
+
+    # Recommended thresholds for different safety levels
+    print("\n--- Recommended Thresholds ---", flush=True)
+    id_max = float(np.max(id_scores))
+    id_mean = float(np.mean(id_scores))
+    id_std = float(np.std(id_scores))
+    recommendations = {
+        'conservative (id_mean + 3*std)': id_mean + 3 * id_std,
+        'moderate (id_mean + 5*std)': id_mean + 5 * id_std,
+        'relaxed (midpoint)': (id_max + float(np.min(ood_scores))) / 2,
     }
-
-    # 2. FPR < 1%
-    idx_1pct = np.where(fpr <= 0.01)[0]
-    if len(idx_1pct) > 0:
-        best_1pct = idx_1pct[np.argmax(tpr[idx_1pct])]
-        strategies['fpr_1pct'] = {
-            'threshold': float(thresholds[best_1pct]),
-            'fpr': float(fpr[best_1pct]),
-            'tpr': float(tpr[best_1pct]),
-        }
-
-    # 3. FPR < 5%
-    idx_5pct = np.where(fpr <= 0.05)[0]
-    if len(idx_5pct) > 0:
-        best_5pct = idx_5pct[np.argmax(tpr[idx_5pct])]
-        strategies['fpr_5pct'] = {
-            'threshold': float(thresholds[best_5pct]),
-            'fpr': float(fpr[best_5pct]),
-            'tpr': float(tpr[best_5pct]),
-        }
-
-    # 4. Equal Error Rate (EER)
-    fnr = 1 - tpr
-    eer_idx = np.argmin(np.abs(fpr - fnr))
-    strategies['eer'] = {
-        'threshold': float(thresholds[eer_idx]),
-        'fpr': float(fpr[eer_idx]),
-        'tpr': float(tpr[eer_idx]),
-        'eer': float((fpr[eer_idx] + fnr[eer_idx]) / 2),
-    }
-
-    # 5. Calibration-based: mean + k*std of cal distances
-    cal_mean = float(np.mean(cal_dists))
-    cal_std = float(np.std(cal_dists))
-    for k in [2, 3, 5]:
-        thresh = cal_mean + k * cal_std
-        tp = sum(1 for s in ood_scores if s > thresh)
-        fp = sum(1 for s in id_scores if s > thresh)
-        strategies[f'cal_mean_{k}std'] = {
-            'threshold': thresh,
-            'fpr': fp / len(id_scores),
-            'tpr': tp / len(ood_scores),
-        }
-
-    # Per-category TPR at Youden threshold
-    youden_thresh = strategies['youden']['threshold']
-    per_cat_tpr = {}
-    for cat in set(ood_scenarios):
-        cat_scores = [s for s, sc in zip(ood_scores, ood_scenarios) if sc == cat]
-        tpr_cat = sum(1 for s in cat_scores if s > youden_thresh) / len(cat_scores)
-        per_cat_tpr[cat] = float(tpr_cat)
-
-    # Print results
-    print("\n" + "=" * 70, flush=True)
-    print("THRESHOLD STRATEGIES", flush=True)
-    print("=" * 70, flush=True)
-    for name, s in strategies.items():
-        print(f"  {name:<16}: thresh={s['threshold']:.4f}, "
-              f"FPR={s['fpr']:.3f}, TPR={s['tpr']:.3f}", flush=True)
-
-    print(f"\n  AUROC: {auroc:.4f}", flush=True)
-    print(f"\n  Per-category TPR at Youden ({youden_thresh:.4f}):", flush=True)
-    for cat, t in sorted(per_cat_tpr.items()):
-        print(f"    {cat:<12}: {t:.3f}", flush=True)
-
-    # ID score distribution
-    print(f"\n  ID scores: mean={np.mean(id_scores):.4f}, "
-          f"std={np.std(id_scores):.4f}, "
-          f"range=[{min(id_scores):.4f}, {max(id_scores):.4f}]", flush=True)
-    print(f"  OOD scores: mean={np.mean(ood_scores):.4f}, "
-          f"std={np.std(ood_scores):.4f}, "
-          f"range=[{min(ood_scores):.4f}, {max(ood_scores):.4f}]", flush=True)
+    for name, t in recommendations.items():
+        tp = int(np.sum((scores >= t) & (test_labels == 1)))
+        fp = int(np.sum((scores >= t) & (test_labels == 0)))
+        fn = int(np.sum((scores < t) & (test_labels == 1)))
+        recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        fpr_val = fp / (fp + sum(test_labels == 0))
+        print(f"  {name}: t={t:.4f}, recall={recall:.3f}, FPR={fpr_val:.3f}", flush=True)
 
     # Save
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
         'experiment': 'threshold_analysis',
-        'experiment_number': 84,
+        'experiment_number': 130,
         'timestamp': timestamp,
-        'auroc': float(auroc),
-        'n_id': len(id_scores),
-        'n_ood': len(ood_scores),
-        'n_cal': len(cal_hidden),
-        'strategies': strategies,
-        'per_category_tpr': per_cat_tpr,
-        'id_stats': {
-            'mean': float(np.mean(id_scores)),
-            'std': float(np.std(id_scores)),
-            'min': float(min(id_scores)),
-            'max': float(max(id_scores)),
-        },
-        'ood_stats': {
-            'mean': float(np.mean(ood_scores)),
-            'std': float(np.std(ood_scores)),
-            'min': float(min(ood_scores)),
-            'max': float(max(ood_scores)),
-        },
-        'roc_curve': {
-            'fpr': fpr.tolist()[:50],  # subsample for storage
-            'tpr': tpr.tolist()[:50],
-            'thresholds': thresholds.tolist()[:50],
-        }
+        'auroc': auroc,
+        'optimal_threshold': optimal_threshold,
+        'score_gap': gap,
+        'id_stats': {'mean': float(np.mean(id_scores)), 'std': float(np.std(id_scores)),
+                     'min': float(np.min(id_scores)), 'max': float(np.max(id_scores))},
+        'ood_stats': {'mean': float(np.mean(ood_scores)), 'std': float(np.std(ood_scores)),
+                      'min': float(np.min(ood_scores)), 'max': float(np.max(ood_scores))},
+        'per_category': per_cat_scores,
+        'recommendations': {k: float(v) for k, v in recommendations.items()},
+        'n_operating_points': len(operating_points),
     }
     output_path = os.path.join(RESULTS_DIR, f"threshold_analysis_{timestamp}.json")
     with open(output_path, 'w') as f:

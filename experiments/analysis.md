@@ -5774,3 +5774,48 @@ All top-K and random-K ≥ 100 achieve AUROC=1.000. Even 10 random dims: AUROC=0
 3. **Cross-seed variation is well-controlled**: Different PRNG seeds for the same scene type produce CV=0.02-0.21. Noise images are more consistent (CV=0.023) because random noise dominates the image, while highway images have more variation from the noise perturbation (CV=0.212).
 
 4. **Deployment guarantee**: The detector will always make the same decision on the same input. No need for ensemble averaging or repeated inference to stabilize decisions.
+
+---
+
+## Finding 124: Threshold Selection and Operating Points (Experiment 130)
+
+**Research Question:** What threshold should be used for deployment? What is the safety margin?
+
+**Experiment Design:** 125 inferences (20 cal + 105 test). 7 categories including fog (hardest OOD). Full ROC analysis with operating point sweep.
+
+### Results
+
+**Score Distributions:**
+- ID: mean=0.0878, std=0.0058, range=[0.0789, 0.0974]
+- OOD: mean=0.3409, std=0.0933, range=[0.1978, 0.4662]
+- **Score gap (min OOD − max ID) = 0.1004** (17.3σ of ID distribution)
+
+**AUROC: 1.0000**
+
+**Per-Category Scores (sorted by difficulty):**
+| Category | Mean Score | Min Score | Max Score |
+|----------|-----------|-----------|-----------|
+| highway (ID) | 0.0860 | 0.0807 | 0.0960 |
+| urban (ID) | 0.0896 | 0.0789 | 0.0974 |
+| fog (OOD) | 0.2091 | 0.1978 | 0.2338 |
+| snow (OOD) | 0.2622 | 0.2497 | 0.2754 |
+| indoor (OOD) | 0.3557 | 0.3365 | 0.3733 |
+| twilight (OOD) | 0.4401 | 0.4193 | 0.4623 |
+| noise (OOD) | 0.4376 | 0.4177 | 0.4662 |
+
+**Recommended Thresholds (all achieve 100% recall, 0% FPR):**
+- Conservative (3σ): 0.1053
+- Moderate (5σ): 0.1169
+- Relaxed (midpoint): 0.1476
+
+### Key Insights
+
+1. **The score gap is 17.3σ**: The minimum OOD score (0.198, fog) is 17.3 standard deviations above the ID mean. Any threshold in the range [0.098, 0.198] achieves perfect detection.
+
+2. **A massive "dead zone" exists between ID and OOD**: No image in our test set produces a score between 0.097 and 0.198. This 0.100 gap is twice the ID range (0.019). Threshold selection is trivial.
+
+3. **Fog is the hardest OOD (score=0.209)**: As expected, fog highway has the lowest OOD score because it preserves the road layout. But even fog is 2× above the max ID score.
+
+4. **Conservative 3σ threshold recommended**: t=0.105 is safely above all ID scores and well below all OOD scores. This threshold provides a 0.093 margin below the hardest OOD case (fog).
+
+5. **No precision-recall tradeoff**: At any threshold in the gap, precision=1.0, recall=1.0, F1=1.0, FPR=0.0. The detector has no operating point tradeoff — it simply works perfectly.

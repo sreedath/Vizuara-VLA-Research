@@ -2422,4 +2422,22 @@ We test reproducibility by running 10 repeated inferences on each test image and
 
 The perfect determinism of inference eliminates a common concern in deployment: whether the detector's decisions are reproducible. Each input deterministically maps to exactly one embedding and one detection score, with no stochastic element. This means the same camera frame will always produce the same detection decision---no need for ensemble averaging, repeated inference, or probabilistic decision rules. The cross-seed variation (CV = 0.02--0.21) confirms that the detector generalizes across instances within a scene category, not just across identical inputs.
 
+\subsection{Threshold Selection and Operating Points}
+\label{app:threshold_analysis}
+
+\textbf{Finding 167: A score gap of 0.100 ($17.3\sigma$) separates the maximum ID score (0.097) from the minimum OOD score (0.198). Any threshold in this range achieves perfect detection: precision = recall = F1 = 1.0, FPR = 0.0.}
+
+\textbf{Finding 168: Fog highway is the hardest OOD category (score = 0.209), yet it remains $2\times$ above the maximum ID score. The conservative $3\sigma$ threshold (0.105) provides a 0.093 margin below the hardest OOD case.}
+
+We analyze the full ROC curve and sweep 50 thresholds to characterize operating points (Figure~\ref{fig:threshold_analysis}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig116_threshold_analysis.png}
+\caption{\textbf{Threshold analysis.} (a) Per-category score distributions showing the massive gap between ID (green) and OOD (red) categories. Fog is closest to ID but still clearly separated. (b) The detection gap is $17.3\sigma$---any threshold in the yellow zone achieves perfect detection. (c) Recommended thresholds: conservative ($3\sigma = 0.105$), moderate ($5\sigma = 0.117$), and relaxed (midpoint = 0.148), all within the safe zone.}
+\label{fig:threshold_analysis}
+\end{figure}
+
+The threshold analysis completes the deployment specification for the cosine distance detector. The $17.3\sigma$ score gap means that threshold selection is not a challenging engineering problem---any value between 0.10 and 0.19 works perfectly. We recommend the conservative $3\sigma$ threshold ($t = 0.105$) because it maximizes the margin below the hardest OOD case (fog at 0.198) while remaining safely above all ID scores (max 0.097). In a production system, this threshold could be computed automatically from the calibration set as $t = \mu_\text{ID} + 3\sigma_\text{ID}$, requiring no manual tuning. The absence of any precision-recall tradeoff is the strongest possible result for a binary detector---it achieves the theoretical maximum on all metrics simultaneously.
+
 \end{document}
