@@ -1,0 +1,620 @@
+{
+  "detection_gap": {
+    "0.05": {
+      "max_id": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "min_ood": 1.1682510375976562e-05,
+          "gap": 1.1563301086425781e-05,
+          "ratio": 98.0,
+          "is_separated": true
+        },
+        "night": {
+          "min_ood": 2.396106719970703e-05,
+          "gap": 2.384185791015625e-05,
+          "ratio": 201.0,
+          "is_separated": true
+        },
+        "noise": {
+          "min_ood": 3.635883331298828e-06,
+          "gap": 3.516674041748047e-06,
+          "ratio": 30.5,
+          "is_separated": true
+        },
+        "blur": {
+          "min_ood": 8.308887481689453e-05,
+          "gap": 8.296966552734375e-05,
+          "ratio": 697.0,
+          "is_separated": true
+        }
+      },
+      "all_separated": true
+    },
+    "0.1": {
+      "max_id": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "min_ood": 4.076957702636719e-05,
+          "gap": 4.0650367736816406e-05,
+          "ratio": 342.0,
+          "is_separated": true
+        },
+        "night": {
+          "min_ood": 7.915496826171875e-05,
+          "gap": 7.903575897216797e-05,
+          "ratio": 664.0,
+          "is_separated": true
+        },
+        "noise": {
+          "min_ood": 8.821487426757812e-06,
+          "gap": 8.702278137207031e-06,
+          "ratio": 74.0,
+          "is_separated": true
+        },
+        "blur": {
+          "min_ood": 0.0006238818168640137,
+          "gap": 0.0006237626075744629,
+          "ratio": 5233.5,
+          "is_separated": true
+        }
+      },
+      "all_separated": true
+    },
+    "0.2": {
+      "max_id": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "min_ood": 0.00015211105346679688,
+          "gap": 0.0001519918441772461,
+          "ratio": 1276.0,
+          "is_separated": true
+        },
+        "night": {
+          "min_ood": 0.00031501054763793945,
+          "gap": 0.00031489133834838867,
+          "ratio": 2642.5,
+          "is_separated": true
+        },
+        "noise": {
+          "min_ood": 1.7523765563964844e-05,
+          "gap": 1.7404556274414062e-05,
+          "ratio": 147.0,
+          "is_separated": true
+        },
+        "blur": {
+          "min_ood": 0.0018930435180664062,
+          "gap": 0.0018929243087768555,
+          "ratio": 15880.0,
+          "is_separated": true
+        }
+      },
+      "all_separated": true
+    },
+    "0.3": {
+      "max_id": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "min_ood": 0.00035119056701660156,
+          "gap": 0.0003510713577270508,
+          "ratio": 2946.0,
+          "is_separated": true
+        },
+        "night": {
+          "min_ood": 0.0007387399673461914,
+          "gap": 0.0007386207580566406,
+          "ratio": 6197.0,
+          "is_separated": true
+        },
+        "noise": {
+          "min_ood": 3.2067298889160156e-05,
+          "gap": 3.1948089599609375e-05,
+          "ratio": 269.0,
+          "is_separated": true
+        },
+        "blur": {
+          "min_ood": 0.003190159797668457,
+          "gap": 0.0031900405883789062,
+          "ratio": 26761.0,
+          "is_separated": true
+        }
+      },
+      "all_separated": true
+    },
+    "0.5": {
+      "max_id": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "min_ood": 0.0008383989334106445,
+          "gap": 0.0008382797241210938,
+          "ratio": 7033.0,
+          "is_separated": true
+        },
+        "night": {
+          "min_ood": 0.0017763972282409668,
+          "gap": 0.001776278018951416,
+          "ratio": 14901.5,
+          "is_separated": true
+        },
+        "noise": {
+          "min_ood": 7.43865966796875e-05,
+          "gap": 7.426738739013672e-05,
+          "ratio": 624.0,
+          "is_separated": true
+        },
+        "blur": {
+          "min_ood": 0.004403889179229736,
+          "gap": 0.0044037699699401855,
+          "ratio": 36942.5,
+          "is_separated": true
+        }
+      },
+      "all_separated": true
+    },
+    "0.7": {
+      "max_id": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "min_ood": 0.0014615058898925781,
+          "gap": 0.0014613866806030273,
+          "ratio": 12260.0,
+          "is_separated": true
+        },
+        "night": {
+          "min_ood": 0.0033153891563415527,
+          "gap": 0.003315269947052002,
+          "ratio": 27811.5,
+          "is_separated": true
+        },
+        "noise": {
+          "min_ood": 0.00015753507614135742,
+          "gap": 0.00015741586685180664,
+          "ratio": 1321.5,
+          "is_separated": true
+        },
+        "blur": {
+          "min_ood": 0.004674017429351807,
+          "gap": 0.004673898220062256,
+          "ratio": 39208.5,
+          "is_separated": true
+        }
+      },
+      "all_separated": true
+    },
+    "1.0": {
+      "max_id": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "min_ood": 0.0026720166206359863,
+          "gap": 0.0026718974113464355,
+          "ratio": 22414.5,
+          "is_separated": true
+        },
+        "night": {
+          "min_ood": 0.007649660110473633,
+          "gap": 0.007649540901184082,
+          "ratio": 64170.0,
+          "is_separated": true
+        },
+        "noise": {
+          "min_ood": 0.0003466606140136719,
+          "gap": 0.0003465414047241211,
+          "ratio": 2908.0,
+          "is_separated": true
+        },
+        "blur": {
+          "min_ood": 0.004858732223510742,
+          "gap": 0.004858613014221191,
+          "ratio": 40758.0,
+          "is_separated": true
+        }
+      },
+      "all_separated": true
+    }
+  },
+  "conformal": {
+    "0.01": {
+      "threshold": 1.1930928955078126e-07,
+      "guaranteed_clean_coverage": 0.99,
+      "per_type": {
+        "fog": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "night": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "noise": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "blur": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        }
+      }
+    },
+    "0.05": {
+      "threshold": 1.1930928955078126e-07,
+      "guaranteed_clean_coverage": 0.95,
+      "per_type": {
+        "fog": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "night": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "noise": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "blur": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        }
+      }
+    },
+    "0.1": {
+      "threshold": 1.1920928955078125e-07,
+      "guaranteed_clean_coverage": 0.9,
+      "per_type": {
+        "fog": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "night": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "noise": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "blur": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        }
+      }
+    },
+    "0.2": {
+      "threshold": 1.1920928955078125e-07,
+      "guaranteed_clean_coverage": 0.8,
+      "per_type": {
+        "fog": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "night": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "noise": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        },
+        "blur": {
+          "detected": 25,
+          "total": 25,
+          "coverage": 1.0
+        }
+      }
+    }
+  },
+  "concentration": {
+    "0.01": {
+      "hoeffding_epsilon": 0.32552472614374584,
+      "auroc_lower_bound": 0.6744752738562542,
+      "n": 25
+    },
+    "0.05": {
+      "hoeffding_epsilon": 0.2716203031481239,
+      "auroc_lower_bound": 0.7283796968518761,
+      "n": 25
+    },
+    "0.1": {
+      "hoeffding_epsilon": 0.24477468306808164,
+      "auroc_lower_bound": 0.7552253169319183,
+      "n": 25
+    },
+    "clopper_pearson": {
+      "false_negative_upper_95": 0.1371851715307125,
+      "detection_rate_lower_95": 0.8628148284692875,
+      "n_trials": 25,
+      "n_failures": 0
+    }
+  },
+  "safety_margins": {
+    "0.05": {
+      "fog": {
+        "min_ood": 1.1682510375976562e-05,
+        "mean_ood": 1.6427040100097658e-05,
+        "margin": 1.1563301086425781e-05,
+        "snr": 198.8971677358261
+      },
+      "night": {
+        "min_ood": 2.396106719970703e-05,
+        "mean_ood": 2.992868423461914e-05,
+        "margin": 2.384185791015625e-05,
+        "snr": 362.37389645686864
+      },
+      "noise": {
+        "min_ood": 3.635883331298828e-06,
+        "mean_ood": 8.325576782226563e-06,
+        "margin": 3.516674041748047e-06,
+        "snr": 100.80535700050866
+      },
+      "blur": {
+        "min_ood": 8.308887481689453e-05,
+        "mean_ood": 0.0001237630844116211,
+        "margin": 8.296966552734375e-05,
+        "snr": 1498.5126236816736
+      }
+    },
+    "0.1": {
+      "fog": {
+        "min_ood": 4.076957702636719e-05,
+        "mean_ood": 5.0785541534423826e-05,
+        "margin": 4.0650367736816406e-05,
+        "snr": 614.9069042004108
+      },
+      "night": {
+        "min_ood": 7.915496826171875e-05,
+        "mean_ood": 9.549379348754882e-05,
+        "margin": 7.903575897216797e-05,
+        "snr": 1156.2305165926039
+      },
+      "noise": {
+        "min_ood": 8.821487426757812e-06,
+        "mean_ood": 1.4102458953857422e-05,
+        "margin": 8.702278137207031e-06,
+        "snr": 170.75134211283182
+      },
+      "blur": {
+        "min_ood": 0.0006238818168640137,
+        "mean_ood": 0.0007454204559326172,
+        "margin": 0.0006237626075744629,
+        "snr": 9025.485818133744
+      }
+    },
+    "0.2": {
+      "fog": {
+        "min_ood": 0.00015211105346679688,
+        "mean_ood": 0.00018914222717285157,
+        "margin": 0.0001519918441772461,
+        "snr": 2290.11757776757
+      },
+      "night": {
+        "min_ood": 0.00031501054763793945,
+        "mean_ood": 0.00036794424057006836,
+        "margin": 0.00031489133834838867,
+        "snr": 4455.036749661369
+      },
+      "noise": {
+        "min_ood": 1.7523765563964844e-05,
+        "mean_ood": 3.284931182861328e-05,
+        "margin": 1.7404556274414062e-05,
+        "snr": 397.7366004447332
+      },
+      "blur": {
+        "min_ood": 0.0018930435180664062,
+        "mean_ood": 0.0022975945472717284,
+        "margin": 0.0018929243087768555,
+        "snr": 27819.074238146386
+      }
+    },
+    "0.3": {
+      "fog": {
+        "min_ood": 0.00035119056701660156,
+        "mean_ood": 0.0004041314125061035,
+        "margin": 0.0003510713577270508,
+        "snr": 4893.187868949376
+      },
+      "night": {
+        "min_ood": 0.0007387399673461914,
+        "mean_ood": 0.0008367204666137695,
+        "margin": 0.0007386207580566406,
+        "snr": 10130.93837855112
+      },
+      "noise": {
+        "min_ood": 3.2067298889160156e-05,
+        "mean_ood": 5.475521087646484e-05,
+        "margin": 3.1948089599609375e-05,
+        "snr": 662.9713141104472
+      },
+      "blur": {
+        "min_ood": 0.003190159797668457,
+        "mean_ood": 0.0037050104141235353,
+        "margin": 0.0031900405883789062,
+        "snr": 44859.94271095317
+      }
+    },
+    "0.5": {
+      "fog": {
+        "min_ood": 0.0008383989334106445,
+        "mean_ood": 0.0010149550437927245,
+        "margin": 0.0008382797241210938,
+        "snr": 12288.987082241561
+      },
+      "night": {
+        "min_ood": 0.0017763972282409668,
+        "mean_ood": 0.0020529723167419436,
+        "margin": 0.001776278018951416,
+        "snr": 24857.20962217669
+      },
+      "noise": {
+        "min_ood": 7.43865966796875e-05,
+        "mean_ood": 0.00012080192565917969,
+        "margin": 7.426738739013672e-05,
+        "snr": 1462.659171964998
+      },
+      "blur": {
+        "min_ood": 0.004403889179229736,
+        "mean_ood": 0.005021393299102783,
+        "margin": 0.0044037699699401855,
+        "snr": 60798.591784850025
+      }
+    },
+    "0.7": {
+      "fog": {
+        "min_ood": 0.0014615058898925781,
+        "mean_ood": 0.0017178988456726075,
+        "margin": 0.0014613866806030273,
+        "snr": 20800.169280581187
+      },
+      "night": {
+        "min_ood": 0.0033153891563415527,
+        "mean_ood": 0.0036979794502258303,
+        "margin": 0.003315269947052002,
+        "snr": 44774.81241376116
+      },
+      "noise": {
+        "min_ood": 0.00015753507614135742,
+        "mean_ood": 0.00022158384323120117,
+        "margin": 0.00015741586685180664,
+        "snr": 2682.9178334107314
+      },
+      "blur": {
+        "min_ood": 0.004674017429351807,
+        "mean_ood": 0.0053638100624084474,
+        "margin": 0.004673898220062256,
+        "snr": 64944.54406790073
+      }
+    },
+    "1.0": {
+      "fog": {
+        "min_ood": 0.0026720166206359863,
+        "mean_ood": 0.0030350279808044433,
+        "margin": 0.0026718974113464355,
+        "snr": 36747.85388619087
+      },
+      "night": {
+        "min_ood": 0.007649660110473633,
+        "mean_ood": 0.008326520919799804,
+        "margin": 0.007649540901184082,
+        "snr": 100816.78853583861
+      },
+      "noise": {
+        "min_ood": 0.0003466606140136719,
+        "mean_ood": 0.0004625415802001953,
+        "margin": 0.0003465414047241211,
+        "snr": 5600.413081193207
+      },
+      "blur": {
+        "min_ood": 0.004858732223510742,
+        "mean_ood": 0.005601744651794433,
+        "margin": 0.004858613014221191,
+        "snr": 67825.43530861658
+      }
+    }
+  },
+  "failure_modes": {
+    "fog_on_white": {
+      "distance": 6.753206253051758e-05,
+      "detected": true,
+      "description": "Fog on near-white image (white is fog endpoint)"
+    },
+    "fog_microsev_0.001": {
+      "severity": 0.001,
+      "distance": 0.0,
+      "detected": false
+    },
+    "night_microsev_0.001": {
+      "severity": 0.001,
+      "distance": 2.9385089874267578e-05,
+      "detected": true
+    },
+    "noise_microsev_0.001": {
+      "severity": 0.001,
+      "distance": 2.562999725341797e-06,
+      "detected": true
+    },
+    "blur_microsev_0.001": {
+      "severity": 0.001,
+      "distance": 0.0,
+      "detected": false
+    },
+    "fog_microsev_0.005": {
+      "severity": 0.005,
+      "distance": 0.0,
+      "detected": false
+    },
+    "night_microsev_0.005": {
+      "severity": 0.005,
+      "distance": 2.9385089874267578e-05,
+      "detected": true
+    },
+    "noise_microsev_0.005": {
+      "severity": 0.005,
+      "distance": 2.4437904357910156e-06,
+      "detected": true
+    },
+    "blur_microsev_0.005": {
+      "severity": 0.005,
+      "distance": 0.0,
+      "detected": false
+    },
+    "fog_microsev_0.01": {
+      "severity": 0.01,
+      "distance": 4.231929779052734e-06,
+      "detected": true
+    },
+    "night_microsev_0.01": {
+      "severity": 0.01,
+      "distance": 3.159046173095703e-05,
+      "detected": true
+    },
+    "noise_microsev_0.01": {
+      "severity": 0.01,
+      "distance": 2.3245811462402344e-06,
+      "detected": true
+    },
+    "blur_microsev_0.01": {
+      "severity": 0.01,
+      "distance": 0.0,
+      "detected": false
+    },
+    "fog_on_black": {
+      "distance": 0.002864837646484375,
+      "detected": true
+    },
+    "night_on_black": {
+      "distance": 0.0,
+      "detected": false
+    },
+    "noise_on_black": {
+      "distance": 0.004428565502166748,
+      "detected": true
+    },
+    "blur_on_black": {
+      "distance": 0.0,
+      "detected": false
+    }
+  },
+  "certificate": {
+    "total_ood_tests": 700,
+    "total_detected_above_max_id": 700,
+    "detection_rate": 1.0,
+    "failure_modes_tested": 17,
+    "failure_modes_detected": 10,
+    "max_id_distance": 1.1920928955078125e-07,
+    "min_id_distance": -1.1920928955078125e-07,
+    "n_scenes": 25
+  }
+}
