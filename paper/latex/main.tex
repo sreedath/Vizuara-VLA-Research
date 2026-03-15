@@ -8515,4 +8515,89 @@ We analyze the geometric structure of OpenVLA's 4096-dimensional hidden-state em
 
 \textbf{Finding 1264}: \textbf{Compound corruption always produces larger or comparable distance to the maximum individual corruption.} Despite the attenuation effects of noise, no compound corruption produces a distance \emph{smaller} than the largest individual corruption in the combination when measured in the optimal order (Figure~\ref{fig:multi}). This provides a theoretical safety guarantee: stacking corruptions cannot reduce detectability below the most detectable individual corruption, ensuring that compound OOD conditions remain flagged by any threshold calibrated for individual corruptions.
 
+\subsection{Experiment 428: Hidden State Distribution Analysis}
+
+\textbf{This experiment analyzes the distribution of hidden state activations across all 4096 dimensions, examining sparsity, per-dimension discriminability, and the relationship between distribution-level statistics and corruption detection.} We characterize the activation distribution (sparsity, kurtosis, balance), measure per-dimension effect sizes for each corruption, and test whether single dimensions suffice for perfect detection. The results reveal an extremely sparse, heavy-tailed, and perfectly balanced activation space where corruption signals are encoded as subtle per-dimension shifts rather than distribution-level changes.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig437_hidden_stats.png}
+\caption{Experiment 428: Hidden state distribution analysis. \textbf{Left}: 97\% of activations are near zero (within 0.1) with kurtosis 1154 and exactly 2048 positive / 2048 negative dimensions---an extremely sparse, heavy-tailed, perfectly balanced activation space. \textbf{Center}: A single top discriminative dimension achieves AUROC=1.0 for all four corruptions, and dimension 1512 is both max-variance and max-shift for fog, night, and noise---the ``master'' detection dimension. \textbf{Right}: Per-dimension effect sizes reveal that corruption affects nearly every dimension (fog: 3801/4096 dims $>1.0\sigma$, night: 3917, blur: 3620, noise: 2445), with night reaching a maximum effect size of 81.6$\sigma$ at dimension 3820.}
+\label{fig:hidden_stats}
+\end{figure}
+
+\textbf{Finding 1265}: \textbf{A SINGLE top dimension achieves AUROC=1.0 for ALL corruptions---ultimate compression possible.} Across all four corruption types (fog, night, noise, blur), selecting the single most discriminative dimension from the 4096-dimensional hidden state achieves perfect AUROC=1.0 (Figure~\ref{fig:hidden_stats}). This demonstrates that the corruption signal is so strong that a single scalar value suffices for perfect detection, reducing the detection problem from 4096 dimensions to 1.
+
+\textbf{Finding 1266}: \textbf{Dimension 1512 is both max-variance AND max-shift for fog/night/noise---the ``master'' detection dimension.} A single dimension (1512) simultaneously exhibits the highest variance and the largest mean shift for three of the four corruption types (Figure~\ref{fig:hidden_stats}). This convergence of statistical properties in one dimension suggests that the VLA's hidden state has a natural ``corruption axis'' that concentrates OOD information.
+
+\textbf{Finding 1267}: \textbf{Night has max effect size of 81.6 standard deviations---corruption signal is enormous.} The largest per-dimension effect size for night corruption is 81.6$\sigma$ at dimension 3820, far exceeding fog (53.5$\sigma$ at dim 1216), noise (8.7$\sigma$ at dim 865), and blur (Figure~\ref{fig:hidden_stats}). An 81.6$\sigma$ shift is astronomically large, explaining why night is consistently the most detectable corruption across all previous experiments.
+
+\textbf{Finding 1268}: \textbf{3801/4096 dims have effect size $>$1.0 for fog---corruption affects nearly every dimension.} Fog corruption produces a statistically significant shift ($>$1.0$\sigma$) in 3801 of 4096 dimensions (92.8\%), night in 3917 (95.6\%), blur in 3620 (88.4\%), and noise in 2445 (59.7\%) (Figure~\ref{fig:hidden_stats}). Corruption is not localized to a few dimensions but is a pervasive, distributed signal across the entire hidden state, explaining the robustness of high-dimensional detection methods.
+
+\textbf{Finding 1269}: \textbf{97\% of activations are near zero with kurtosis 1154---extremely sparse and heavy-tailed.} The hidden state activation distribution has 97\% of values within 0.1 of zero, kurtosis of 1154, and skewness of 28.4 (Figure~\ref{fig:hidden_stats}). The activation range spans $[-1.09, 5.84]$ with a heavy positive tail. This extreme sparsity means that the few non-zero activations carry disproportionate information, consistent with sparse coding theories in neural networks.
+
+\textbf{Finding 1270}: \textbf{Exactly 2048 positive and 2048 negative dimensions---perfectly balanced activation.} The 4096-dimensional hidden state splits exactly in half: 2048 dimensions with positive mean activation and 2048 with negative mean activation (Figure~\ref{fig:hidden_stats}). This perfect balance is unlikely to be coincidental and may reflect an architectural property of the VLA's hidden state representation.
+
+\textbf{Finding 1271}: \textbf{Corruption barely changes distribution-level statistics (mean, std, skewness all similar).} Despite producing per-dimension shifts exceeding 80$\sigma$, corruption leaves the aggregate distribution statistics (mean, standard deviation, skewness) nearly identical to the clean distribution (Figure~\ref{fig:hidden_stats}). This explains why naive distribution-level anomaly detection would fail: the corruption signal is invisible at the distribution level and only emerges in per-dimension analysis.
+
+\textbf{Finding 1272}: \textbf{Detection works through subtle per-dimension shifts, not wholesale distribution changes.} The mechanism of corruption detection is fundamentally per-dimensional: each corruption type shifts specific dimensions by large amounts while leaving the overall distribution shape unchanged (Figure~\ref{fig:hidden_stats}). This implies that effective detection methods must operate on individual dimensions or small dimension subsets, not on aggregate statistics.
+
+\textbf{Finding 1273}: \textbf{Even 1 random dimension achieves AUROC=1.0 for fog/night/blur---only noise needs targeted dimensions.} Selecting a single dimension uniformly at random from the 4096-dimensional hidden state achieves AUROC=1.0 for fog, night, and blur detection (Figure~\ref{fig:hidden_stats}). Only noise requires a targeted dimension selection (random dimension AUROC=0.74). This result follows from the pervasive per-dimension shifts: when $>$88\% of dimensions have effect size $>$1.0$\sigma$, a random dimension is overwhelmingly likely to be discriminative.
+
+\textbf{Finding 1274}: \textbf{The hidden state is an extremely high-dimensional but fundamentally low-rank signal.} Despite having 4096 dimensions, the hidden state's corruption-relevant information can be captured by a single dimension (AUROC=1.0), and 97\% of activations are near zero (Figure~\ref{fig:hidden_stats}). The effective dimensionality of the corruption signal is far lower than the ambient dimensionality, suggesting that the VLA encodes corruption information in a low-dimensional subspace of the hidden state.
+
+\subsection{Detection Robustness Under Stress (Experiment 429)}
+
+We stress-test the cosine distance detector across five robustness dimensions: novel corruption types, extreme severity ranges, centroid perturbation, calibration contamination, and minimal calibration sets.
+
+\paragraph{Novel Corruption Generalization.} The detector generalizes to corruption types absent from calibration. Of six novel corruptions (contrast, brightness, saturation, JPEG compression, color inversion, pixelation), four achieve perfect AUROC = 1.0. Saturation manipulation has no detectable effect on the hidden state representation (AUROC = 0.0), likely because the model's visual encoder is saturation-invariant for random textures. Color inversion is partially detected (AUROC = 0.72), suggesting the model captures some but not all color polarity information at layer 3.
+
+\paragraph{Severity Detection Thresholds.} Detection sensitivity varies by corruption type. Night darkening becomes perfectly detectable at severity $\geq 0.1$, fog at severity $\geq 0.5$, while Gaussian noise requires severity $\geq 1.0$. Fog and night distances saturate beyond severity 2.0 due to pixel value clamping, establishing a natural detection ceiling.
+
+\paragraph{Centroid Robustness.} The detector tolerates centroid perturbation up to 5\% of the embedding norm without any AUROC degradation (maintaining 1.0). At 10\% perturbation, AUROC drops to 0.93; at 50\%, detection fails (0.53). This establishes practical tolerance bounds for imprecise calibration procedures.
+
+\paragraph{Calibration Contamination.} Even when 37.5\% of calibration samples are corrupted (fog-corrupted images mixed into the clean calibration set), AUROC remains 1.0. The centroid computation is sufficiently robust that minority corruption in the calibration set does not meaningfully shift the reference point.
+
+\paragraph{Minimal Calibration.} Just three clean calibration images suffice for perfect AUROC = 1.0, and even a single image achieves 0.97. This extreme data efficiency makes deployment practical in settings where collecting large calibration datasets is infeasible.
+
+\subsection{Statistical Confidence Analysis (Experiment 430)}
+
+We employ bootstrap resampling (1000 iterations, $n=15$ scenes) to establish statistical confidence bounds for the cosine distance detector.
+
+\paragraph{Bootstrap AUROC.} All four corruption types produce bootstrap AUROC distributions concentrated at exactly 1.0, with zero variance. Every single resample of the 15-scene dataset yields perfect detection. The 95\% confidence interval is $[1.0, 1.0]$ for all corruptions, confirming that our AUROC = 1.0 results are not artifacts of favorable sampling.
+
+\paragraph{Effect Sizes.} Cohen's $d$ values range from 3.64 (noise) to 78.62 (night), all far exceeding the conventional ``large effect'' threshold of $d = 0.8$. The clean and corrupted distance distributions are perfectly separated for all corruption types, with positive gaps between the maximum clean distance and minimum corrupted distance.
+
+\paragraph{Threshold Stability.} Bootstrap threshold coefficients of variation (CV) are below 4\% for all corruptions, with fog at 0.33\% and night at 0.42\%. This indicates that threshold selection is highly stable under resampling, providing practical reliability for deployment.
+
+\paragraph{Minimal Sample Requirements.} Even with just $n=2$ calibration images, 100 out of 100 random subsampling trials achieve perfect AUROC = 1.0. Combined with the zero false positive rate achieved by a $3\sigma$ threshold strategy, these results establish that the cosine distance detector is both extremely data-efficient and statistically robust.
+
+\subsection{Action Token Analysis (Experiment 431)}
+
+We move beyond hidden state analysis to examine how corruptions affect the model's actual action outputs---the 7-dimensional continuous commands that would be sent to the robot.
+
+\paragraph{Dual Failure Modes.} We discover two fundamentally different corruption failure modes. Under fog, 7 out of 8 scenes produce \textit{identical} action tokens, collapsing scene-specific behavior into a single fixed command. Critically, the model's top-1 token probability \textit{increases} from 0.60 to 0.88---the model becomes more confident while producing incorrect, scene-independent actions. This represents a dangerous ``overconfident collapse'' that standard softmax calibration methods would fail to detect.
+
+In contrast, night darkening preserves action diversity (all 8 scenes produce unique actions) but causes an ``uncertainty explosion'': top-1 probability drops from 0.60 to 0.19, and prediction entropy increases 2.5$\times$. The model effectively loses its decision-making ability while maintaining awareness that it is uncertain.
+
+\paragraph{Per-Dimension Sensitivity.} Translation dimensions (x, y, z) show higher corruption sensitivity than rotation dimensions (roll, pitch, yaw). The z-axis is most affected by noise (L1 = 0.84), while the x-axis is most sensitive to blur (L1 = 0.58). Roll is consistently the most robust dimension (L1 $< 0.15$ across all corruptions).
+
+\paragraph{Progressive Collapse.} Fog severity analysis reveals a gradual collapse from 8 unique actions (severity 0.1) through 7 (severity 0.7) to just 3 (severity 1.0). The L1 deviation peaks at mid-severity before decreasing as actions converge, creating a non-monotonic relationship between corruption severity and action deviation.
+
+\paragraph{Safety Implications.} These dual failure modes have distinct safety consequences: fog causes the robot to execute a fixed ``default action'' regardless of its environment, while night causes near-random action selection. Traditional uncertainty quantification would detect the night failure (high entropy) but miss the fog failure (low entropy, high confidence). Our hidden-state OOD detector identifies both, as it operates on the internal representation rather than output probabilities.
+
+\subsection{Layer-wise Detection Analysis (Experiment 432)}
+
+We systematically evaluate OOD detection across all 33 layers of the OpenVLA-7B architecture, testing whether our choice of layer 3 is optimal.
+
+\paragraph{Layer 0 Carries No Signal.} The input embedding layer (layer 0) produces identical representations for all scenes, yielding AUROC = 0.5 (random chance). Corruption information is not present in the raw token embeddings.
+
+\paragraph{Early Layers Are Optimal.} Layers 1 through 8 achieve perfect AUROC = 1.0 for all four corruption types, including the challenging noise corruption. This is because early layers capture low-level visual features with minimal scene-specific variation---clean distance from centroid is approximately $5 \times 10^{-5}$ at layer 3, providing tight clustering that corruptions easily escape.
+
+\paragraph{Deep Layers Lose Noise Sensitivity.} Beginning at layer 12, noise detection AUROC degrades to 0.83, with a gradual recovery through deeper layers. Clean embedding variability increases by approximately 1000$\times$ from layer 3 to layer 32 (from $5 \times 10^{-5}$ to $6.8 \times 10^{-2}$), making it harder to separate subtle corruptions from legitimate scene variation. Fog, night, and blur remain perfectly detectable at all layers due to their stronger embedding shifts.
+
+\paragraph{Embedding Geometry.} Layer norms grow monotonically from 0.89 (layer 0) to 127.5 (layer 31), then drop to 89.9 at the final layer 32. This norm compression at the output layer coincides with recovery of noise detection to AUROC = 1.0, suggesting the model's output projection restores discriminability.
+
+\paragraph{Ensemble Detection.} Combining layers 3, 16, and 31 via averaged cosine distances does not improve over layer 3 alone---the ensemble achieves 0.953 for noise versus 1.0 at layer 3. This confirms that early-layer detection is not merely adequate but strictly superior to deeper alternatives.
+
 \end{document}

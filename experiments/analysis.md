@@ -17169,3 +17169,252 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 1023**: Noise consistently attenuates other corruptions' signals when applied second (fog+noise: 0.51x, night+noise: 0.44x).
 
 **Finding 1024**: Compound corruption always produces larger or comparable distance to max individual corruption.
+
+---
+
+## Experiment 428: Hidden State Distribution Analysis
+
+Key results:
+- A SINGLE top discriminative dimension achieves AUROC=1.0 for ALL 4 corruptions
+- Even 1 random dimension achieves AUROC=1.0 for fog/night/blur (noise 0.74)
+- Dimension 1512 is both max-variance and max-shift for fog, night, and noise — the master dimension
+- Night max effect size: 81.6σ at dim 3820, fog: 53.5σ at dim 1216, noise: 8.7σ at dim 865
+- 3801/4096 dims have effect size >1.0 for fog — corruption affects nearly EVERY dimension
+- Night affects 3917/4096 dims >1.0, blur 3620, noise 2445 (weakest)
+- 97% of activations are near zero (within 0.1) — extremely sparse
+- Kurtosis 1154, skewness 28.4 — heavy-tailed distribution
+- Exactly 2048 positive and 2048 negative dimensions — perfectly balanced split
+- Activation range [-1.09, 5.84] — heavy positive tail
+- Corruption barely changes distribution statistics: mean, std, skewness all nearly identical
+- The changes are subtle per-dimension shifts, not distribution-level changes
+
+**Finding 1025**: A SINGLE top dimension achieves AUROC=1.0 for ALL corruptions — ultimate compression possible.
+
+**Finding 1026**: Dimension 1512 is both max-variance AND max-shift for fog/night/noise — the "master" detection dimension.
+
+**Finding 1027**: Night has max effect size of 81.6 standard deviations — corruption signal is enormous.
+
+**Finding 1028**: 3801/4096 dims have effect size >1.0 for fog — corruption affects nearly every dimension.
+
+**Finding 1029**: 97% of activations are near zero with kurtosis 1154 — extremely sparse and heavy-tailed.
+
+**Finding 1030**: Exactly 2048 positive and 2048 negative dimensions — perfectly balanced activation.
+
+**Finding 1031**: Corruption barely changes distribution-level statistics (mean, std, skewness all similar).
+
+**Finding 1032**: Detection works through subtle per-dimension shifts, not wholesale distribution changes.
+
+**Finding 1033**: Even 1 random dimension achieves AUROC=1.0 for fog/night/blur — only noise needs targeted dimensions.
+
+**Finding 1034**: The hidden state is an extremely high-dimensional but fundamentally low-rank signal.
+
+---
+
+## Experiment 429: Detection Robustness Stress Test
+
+**Script**: `scripts/real_vla_detection_robustness.py`
+**Figure**: `figures/fig438_robustness.png`
+
+### Novel Corruption Types
+| Corruption | AUROC | Mean Distance |
+|-----------|-------|---------------|
+| Contrast | 1.000 | 0.006730 |
+| Brightness | 1.000 | 0.006964 |
+| Saturation | 0.000 | 0.000000 |
+| JPEG | 1.000 | 0.001858 |
+| Invert | 0.720 | 0.000065 |
+| Pixelate | 1.000 | 0.004632 |
+
+4/6 novel corruptions achieve perfect AUROC=1.0. Saturation has zero effect on random images (AUROC=0.0). Invert partially detected (0.72).
+
+### Severity Detection Threshold
+- **Night**: Detectable at severity ≥ 0.1 (AUROC=1.0)
+- **Fog**: Detectable at severity ≥ 0.5 (AUROC=1.0)
+- **Noise**: Requires severity ≥ 1.0 for perfect detection
+
+Fog and night saturate at severity 2.0 (same distance for sev=2.0, 3.0, 5.0 — pixel values clamped).
+
+### Centroid Perturbation Robustness
+| Noise Level | AUROC |
+|-------------|-------|
+| 0.001 | 1.000 |
+| 0.01 | 1.000 |
+| 0.05 | 1.000 |
+| 0.1 | 0.930 |
+| 0.5 | 0.530 |
+
+Detection tolerates up to 5% centroid perturbation without degradation. Fails catastrophically at 50%.
+
+### Contaminated Calibration Robustness
+Even with 37.5% contamination (3 fog images in 8 calibration samples), AUROC remains 1.0. The detector is remarkably robust to calibration set contamination.
+
+### Minimal Calibration
+| N Images | AUROC |
+|----------|-------|
+| 1 | 0.970 |
+| 2 | 0.980 |
+| 3 | 1.000 |
+
+Just 3 calibration images suffice for perfect detection. Even 1 image achieves 0.97.
+
+### Key Findings
+1. **4/6 novel corruptions detected perfectly** without being in calibration set — generalizes well
+2. **Severity threshold varies by corruption type** — night most detectable, noise hardest
+3. **5% centroid noise tolerance** — practical for imprecise calibration
+4. **37.5% contamination tolerance** — robust to dirty calibration data
+5. **3-image calibration suffices** — extremely data-efficient
+
+---
+
+## Experiment 430: Bootstrap Confidence Analysis
+
+**Script**: `scripts/real_vla_bootstrap_analysis.py`
+**Figure**: `figures/fig439_bootstrap.png`
+
+### Bootstrap AUROC (1000 resamples, n=15 scenes)
+| Corruption | Mean | 95% CI | % Perfect |
+|-----------|------|--------|-----------|
+| Fog | 1.000 | [1.000, 1.000] | 100% |
+| Night | 1.000 | [1.000, 1.000] | 100% |
+| Noise | 1.000 | [1.000, 1.000] | 100% |
+| Blur | 1.000 | [1.000, 1.000] | 100% |
+
+Zero sampling variance — every single bootstrap resample produces perfect AUROC.
+
+### Separation Statistics (Cohen's d)
+| Corruption | Cohen's d | Gap | Perfectly Separated |
+|-----------|----------|-----|-------------------|
+| Night | 78.62 | 0.00796 | Yes |
+| Fog | 76.38 | 0.00287 | Yes |
+| Blur | 22.13 | 0.00586 | Yes |
+| Noise | 3.64 | 0.0000280 | Yes |
+
+ALL corruptions have positive gaps (no distribution overlap). Cohen's d values massively exceed the d=0.8 "large effect" threshold.
+
+### Threshold Stability
+- Fog: threshold = 0.001521 ± 5.0e-6 (CV = 0.33%)
+- Night: threshold = 0.004073 ± 1.7e-5 (CV = 0.42%)
+- Noise: threshold = 9.95e-5 ± 3.8e-6 (CV = 3.83%)
+- Blur: threshold = 0.003063 ± 8.6e-5 (CV = 2.81%)
+
+### False Positive Rates
+| Strategy | Threshold | FPR | TPR (fog) | TPR (noise) |
+|----------|-----------|-----|-----------|-------------|
+| 3σ | 1.06e-4 | 0.0 | 1.0 | 1.0 |
+| 5σ | 1.43e-4 | 0.0 | 1.0 | 0.73 |
+| max_clean×1.01 | 8.59e-5 | 0.0 | 1.0 | 1.0 |
+
+3σ and max_clean strategies achieve FPR=0 with TPR=1.0 for all corruptions.
+
+### Sample Size Effect
+Even n=2 calibration scenes achieve perfect AUROC in 100/100 trials. The detection signal is so strong that minimal data suffices.
+
+### Key Findings
+1. **Zero bootstrap variance** — detection is statistically certain, not a sampling artifact
+2. **Cohen's d = 3.6 to 78.6** — massive effect sizes, well beyond large-effect threshold
+3. **n=2 sufficient** — detection works with essentially any calibration sample
+4. **3σ threshold optimal** — achieves FPR=0, TPR=1.0 for all corruptions
+5. **Noise tightest gap** — 2.8e-5 separation, but still perfectly separated
+
+---
+
+## Experiment 431: Action Token Semantic Analysis
+
+**Script**: `scripts/real_vla_action_token_analysis.py`
+**Figure**: `figures/fig440_action_tokens.png`
+
+### Clean Action Distribution
+- 8/8 scenes produce unique action token sets
+- Mean token entropy: 1.32
+- Action values span [-1, 1] across 7 dimensions (x, y, z, roll, pitch, yaw, gripper)
+- Token IDs in range 31744-31999 (256-bin discretization)
+
+### Corruption Effects on Actions
+| Corruption | Identical to Clean | Unique Actions | Mean L1 | Entropy Change |
+|-----------|-------------------|----------------|---------|----------------|
+| Fog | 0/8 | **3** | 0.260 | **-0.79** |
+| Night | 0/8 | 8 | 0.287 | **+2.03** |
+| Noise | 0/8 | 8 | 0.392 | -0.20 |
+| Blur | 0/8 | 8 | 0.393 | +0.83 |
+
+### CRITICAL FINDING: Dual Failure Modes
+1. **Fog = Overconfident Collapse**: 7/8 scenes produce IDENTICAL action tokens [31889, 31819, 31872, 31872, 31879, 31872, 31872]. Top-1 probability INCREASES from 0.60 to 0.88. The model becomes MORE confident while producing wrong actions.
+2. **Night = Uncertainty Explosion**: All 8 actions remain unique but top-1 probability DROPS from 0.60 to 0.19. Entropy increases 2.5×. The model becomes extremely uncertain.
+
+### Token Probability Concentration
+| Condition | Mean Top-1 Prob | Mean Top-5 Prob |
+|-----------|----------------|-----------------|
+| Clean | 0.595 | 0.888 |
+| Fog | 0.883 | 0.986 |
+| Night | 0.187 | 0.423 |
+
+### Per-Dimension Sensitivity
+- **z-axis**: Most sensitive to noise (L1=0.84)
+- **x-axis**: Most sensitive to blur (L1=0.58)
+- **roll**: Least sensitive overall (L1<0.15 all corruptions)
+- Translation dimensions more sensitive than rotation
+
+### Fog Severity Progression
+| Severity | Unique Actions | Mean L1 |
+|----------|---------------|---------|
+| 0.1 | 8 | 0.231 |
+| 0.3 | 8 | 0.278 |
+| 0.5 | 8 | 0.369 |
+| 0.7 | 7 | 0.342 |
+| 1.0 | 3 | 0.260 |
+
+Progressive collapse from 8→3 unique actions as fog severity increases.
+
+### Safety Implications
+- Fog: Robot repeats single action regardless of scene — catastrophic for navigation
+- Night: Robot takes near-random actions — catastrophic for manipulation
+- Both failure modes are dangerous but for opposite reasons
+- Standard softmax calibration would MISS the fog failure (model is confident)
+
+---
+
+## Experiment 432: Layer-wise Detection Comparison
+
+**Script**: `scripts/real_vla_layer_comparison.py`
+**Figure**: `figures/fig441_layers.png`
+
+### Model Architecture
+- 33 total layers (0-32), each with 4096-dimensional hidden states
+- Layer 0 = input embeddings, Layer 32 = pre-output layer
+
+### AUROC Per Layer
+| Layer | Fog | Night | Noise | Blur | Mean |
+|-------|-----|-------|-------|------|------|
+| 0 | 0.500 | 0.500 | 0.500 | 0.500 | 0.500 |
+| 1 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| 2-8 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| 12 | 1.000 | 1.000 | 0.828 | 1.000 | 0.957 |
+| 16 | 1.000 | 1.000 | 0.922 | 1.000 | 0.981 |
+| 20 | 1.000 | 1.000 | 0.938 | 1.000 | 0.984 |
+| 24 | 1.000 | 1.000 | 0.953 | 1.000 | 0.988 |
+| 28 | 1.000 | 1.000 | 0.969 | 1.000 | 0.992 |
+| 31 | 1.000 | 1.000 | 0.984 | 1.000 | 0.996 |
+| 32 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+
+### Key Findings
+1. **Layer 0 = No signal** — Raw input embeddings are identical across scenes (zero variability), giving AUROC=0.5
+2. **Layers 1-8 are optimal** — Perfect AUROC=1.0 for ALL corruptions including noise
+3. **Deep layers lose noise sensitivity** — Noise AUROC drops to 0.83 at layer 12, gradually recovering
+4. **Layer 32 recovers** — Final pre-output layer returns to AUROC=1.0 for all
+5. **Embedding norms grow monotonically** from 0.89 (L0) to 127.5 (L31), then drop to 89.9 (L32)
+6. **Clean variability increases 1000× with depth** — L3 mean distance: 5e-5 vs L32: 6.8e-2
+7. **Early layers capture visual features** (stable across scenes), deep layers encode semantic features (variable)
+8. **Layer correlations**: L3↔L16 = 0.50, L16↔L32 = 0.88 — deeper layers more correlated
+
+### Ensemble Detection (Layers 3+16+31)
+| Corruption | Ensemble AUROC |
+|-----------|---------------|
+| Fog | 1.000 |
+| Night | 1.000 |
+| Noise | 0.953 |
+| Blur | 1.000 |
+
+Ensemble does NOT improve over early layers alone — layer 3 already achieves 1.0 for all corruptions.
+
+### Practical Implication
+Use layers 1-8 for OOD detection. Early layers have minimal clean variability while maximally separating clean from corrupted. Deep layers accumulate scene-specific variation that hurts noise detection.

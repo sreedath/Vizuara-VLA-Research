@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""Experiment 333: Comprehensive Layer Profiling (Real OpenVLA-7B)
+"""Experiment 432: Layer-wise Detection Comparison
 
-Deep analysis across ALL layers to characterize:
-1. Per-layer detection AUROC for each corruption type
-2. Per-layer sensitivity ranking
-3. Layer-to-layer embedding similarity
-4. Signal amplification profile
-5. Optimal layer selection strategy
-6. Layer ensemble analysis
+Systematically compares OOD detection performance across ALL model layers.
+Previous experiments used layer 3 — is this optimal? What happens at deeper
+layers closer to the action output?
+
+Tests:
+1. AUROC per layer for each corruption
+2. Cosine distance magnitude per layer
+3. Layer correlation (do different layers agree?)
+4. Ensemble detection (combining multiple layers)
+5. Layer-specific discriminative dimensions
 """
 
 import json, time, os, sys
@@ -15,18 +18,6 @@ import numpy as np
 import torch
 from PIL import Image, ImageFilter
 from transformers import AutoModelForVision2Seq, AutoProcessor
-
-def extract_hidden_all_layers(model, processor, image, prompt, layers=None):
-    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-    with torch.no_grad():
-        fwd = model(**inputs, output_hidden_states=True)
-    if layers is None:
-        layers = list(range(len(fwd.hidden_states)))
-    result = {}
-    for l in layers:
-        if l < len(fwd.hidden_states):
-            result[l] = fwd.hidden_states[l][0, -1, :].float().cpu().numpy()
-    return result
 
 def apply_corruption(image, ctype, severity=1.0):
     arr = np.array(image).astype(np.float32) / 255.0
@@ -41,22 +32,25 @@ def apply_corruption(image, ctype, severity=1.0):
         return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
     return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
-def cosine_dist(a, b):
-    dot = np.dot(a, b)
-    na, nb = np.linalg.norm(a), np.linalg.norm(b)
-    if na < 1e-10 or nb < 1e-10:
-        return 0.0
-    return 1.0 - dot / (na * nb)
+def extract_all_hidden(model, processor, image, prompt):
+    """Extract hidden states from ALL layers."""
+    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    with torch.no_grad():
+        fwd = model(**inputs, output_hidden_states=True)
+    # Return last token embedding from each layer
+    return [fwd.hidden_states[i][0, -1, :].float().cpu().numpy()
+            for i in range(len(fwd.hidden_states))]
 
-def cosine_sim(a, b):
+def cosine_dist(a, b):
+    a, b = np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64)
     na, nb = np.linalg.norm(a), np.linalg.norm(b)
-    if na < 1e-10 or nb < 1e-10:
-        return 0.0
-    return np.dot(a, b) / (na * nb)
+    if na < 1e-12 or nb < 1e-12:
+        return 1.0
+    return 1.0 - np.dot(a, b) / (na * nb)
 
 def compute_auroc(id_scores, ood_scores):
-    id_s = np.asarray(id_scores)
-    ood_s = np.asarray(ood_scores)
+    id_s = np.asarray(id_scores, dtype=np.float64)
+    ood_s = np.asarray(ood_scores, dtype=np.float64)
     n_id, n_ood = len(id_s), len(ood_s)
     if n_id == 0 or n_ood == 0:
         return 0.5
@@ -72,193 +66,143 @@ def main():
     model.eval()
 
     prompt = "In: What action should the robot take to pick up the object?\nOut:"
-    results = {}
+    corruptions = ['fog', 'night', 'noise', 'blur']
 
-    # Sample layers across the full range (33 layers: 0-32)
-    test_layers = [0, 1, 2, 3, 4, 5, 8, 12, 16, 20, 24, 28, 31, 32]
+    seeds = [42, 123, 456, 789, 999, 1234, 5678, 9999]
+    scenes = [Image.fromarray(np.random.RandomState(s).randint(0, 255, (224, 224, 3), dtype=np.uint8)) for s in seeds]
 
-    # Create images
-    np.random.seed(42)
-    pixels = np.random.randint(50, 200, (224, 224, 3), dtype=np.uint8)
-    base_img = Image.fromarray(pixels)
+    # Extract all layers for first scene to determine n_layers
+    print("Probing layer count...")
+    probe = extract_all_hidden(model, processor, scenes[0], prompt)
+    n_layers = len(probe)
+    hidden_dim = probe[0].shape[0]
+    print(f"  {n_layers} layers, {hidden_dim} dims each")
 
-    # Also test with a second scene for cross-scene analysis
-    rng2 = np.random.RandomState(99)
-    pixels2 = rng2.randint(50, 200, (224, 224, 3), dtype=np.uint8)
-    scene2_img = Image.fromarray(pixels2)
+    # Extract all layers for all clean scenes
+    print(f"Extracting all layers for {len(scenes)} clean scenes...")
+    clean_all = []  # [scene][layer] = embedding
+    for i, s in enumerate(scenes):
+        embs = extract_all_hidden(model, processor, s, prompt)
+        clean_all.append(embs)
+        print(f"  Scene {i} done")
 
-    ctypes = ['fog', 'night', 'noise', 'blur']
-    sevs = [0.25, 0.5, 1.0]
+    # Compute per-layer centroids
+    centroids = []
+    for layer in range(n_layers):
+        layer_embs = [clean_all[i][layer] for i in range(len(scenes))]
+        centroids.append(np.mean(layer_embs, axis=0))
 
-    # ========== 1. Collect all-layer embeddings ==========
-    print("\n=== Collecting All-Layer Embeddings ===")
+    # Per-layer clean distances
+    clean_dists_per_layer = []
+    for layer in range(n_layers):
+        dists = [cosine_dist(clean_all[i][layer], centroids[layer]) for i in range(len(scenes))]
+        clean_dists_per_layer.append(dists)
 
-    clean1_all = extract_hidden_all_layers(model, processor, base_img, prompt, test_layers)
-    clean2_all = extract_hidden_all_layers(model, processor, scene2_img, prompt, test_layers)
+    results = {"n_scenes": len(scenes), "n_layers": n_layers, "hidden_dim": hidden_dim}
 
-    corrupt_all = {}
-    for ct in ctypes:
-        for sev in sevs:
-            img = apply_corruption(base_img, ct, sev)
-            embs = extract_hidden_all_layers(model, processor, img, prompt, test_layers)
-            corrupt_all[f"{ct}_{sev}"] = embs
-            print(f"  Collected {ct}@{sev}")
+    # === Test 1: AUROC per layer ===
+    print("\n=== AUROC Per Layer ===")
+    # Sample layers to keep runtime reasonable
+    sample_layers = sorted(set([0, 1, 2, 3, 4, 5, 8, 12, 16, 20, 24, 28, 31,
+                                n_layers // 4, n_layers // 2, 3 * n_layers // 4,
+                                n_layers - 2, n_layers - 1]))
+    sample_layers = [l for l in sample_layers if l < n_layers]
 
-    # Also for scene 2
-    corrupt2_all = {}
-    for ct in ctypes:
-        img = apply_corruption(scene2_img, ct, 0.5)
-        embs = extract_hidden_all_layers(model, processor, img, prompt, test_layers)
-        corrupt2_all[ct] = embs
-
-    # ========== 2. Per-layer AUROC ==========
-    print("\n=== Per-Layer AUROC ===")
     layer_auroc = {}
-
-    for layer in test_layers:
-        clean_d = cosine_dist(clean1_all[layer], clean2_all[layer])
-        per_ct_auroc = {}
-        for ct in ctypes:
+    for layer in sample_layers:
+        print(f"  Layer {layer}...")
+        per_corr = {}
+        for c in corruptions:
             ood_dists = []
-            for sev in sevs:
-                d = cosine_dist(clean1_all[layer], corrupt_all[f"{ct}_{sev}"][layer])
+            for s in scenes:
+                embs = extract_all_hidden(model, processor, apply_corruption(s, c), prompt)
+                d = cosine_dist(embs[layer], centroids[layer])
                 ood_dists.append(float(d))
-            auroc = compute_auroc([clean_d], ood_dists)
-            per_ct_auroc[ct] = float(auroc)
+            auroc = float(compute_auroc(clean_dists_per_layer[layer], ood_dists))
+            per_corr[c] = auroc
+        layer_auroc[str(layer)] = per_corr
+        mean_auroc = np.mean(list(per_corr.values()))
+        print(f"    mean={mean_auroc:.4f} | fog={per_corr['fog']:.4f}, night={per_corr['night']:.4f}, "
+              f"noise={per_corr['noise']:.4f}, blur={per_corr['blur']:.4f}")
+    results["layer_auroc"] = layer_auroc
 
-        # Overall AUROC
-        all_ood = []
-        for ct in ctypes:
-            for sev in sevs:
-                all_ood.append(float(cosine_dist(clean1_all[layer], corrupt_all[f"{ct}_{sev}"][layer])))
-        overall_auroc = compute_auroc([clean_d], all_ood)
-
-        layer_auroc[str(layer)] = {
-            'per_corruption': per_ct_auroc,
-            'overall': float(overall_auroc),
-            'clean_dist': float(clean_d),
+    # === Test 2: Distance magnitude per layer ===
+    print("\n=== Distance Magnitude Per Layer ===")
+    dist_magnitude = {}
+    for layer in sample_layers:
+        clean_mean = float(np.mean(clean_dists_per_layer[layer]))
+        clean_max = float(np.max(clean_dists_per_layer[layer]))
+        dist_magnitude[str(layer)] = {
+            "clean_mean": clean_mean,
+            "clean_max": clean_max,
         }
-        print(f"  L{layer}: AUROC={overall_auroc:.3f}, clean_d={clean_d:.6f}, per_ct={per_ct_auroc}")
+    results["distance_magnitude"] = dist_magnitude
 
-    results['layer_auroc'] = layer_auroc
+    # === Test 3: Layer correlation ===
+    print("\n=== Layer Correlation ===")
+    correlation_results = {}
+    fog_dists_per_layer = {}
+    for layer in [0, 3, n_layers // 2, n_layers - 1]:
+        if layer >= n_layers:
+            continue
+        dists = []
+        for s in scenes:
+            embs = extract_all_hidden(model, processor, apply_corruption(s, 'fog'), prompt)
+            dists.append(float(cosine_dist(embs[layer], centroids[layer])))
+        fog_dists_per_layer[layer] = dists
 
-    # ========== 3. Signal amplification ==========
-    print("\n=== Signal Amplification Profile ===")
-    amplification = {}
+    layers_used = sorted(fog_dists_per_layer.keys())
+    for i, l1 in enumerate(layers_used):
+        for l2 in layers_used[i+1:]:
+            d1, d2 = fog_dists_per_layer[l1], fog_dists_per_layer[l2]
+            corr = float(np.corrcoef(d1, d2)[0, 1])
+            correlation_results[f"{l1}_vs_{l2}"] = corr
+            print(f"  Layer {l1} vs {l2}: r={corr:.4f}")
+    results["layer_correlation"] = correlation_results
 
-    for ct in ctypes:
-        dists_by_layer = {}
-        for layer in test_layers:
-            d = cosine_dist(clean1_all[layer], corrupt_all[f"{ct}_1.0"][layer])
-            dists_by_layer[str(layer)] = float(d)
+    # === Test 4: Ensemble detection ===
+    print("\n=== Ensemble Detection ===")
+    ensemble_results = {}
+    ensemble_layers = [3, min(n_layers // 2, n_layers - 1), min(n_layers - 2, n_layers - 1)]
+    ensemble_layers = sorted(set(l for l in ensemble_layers if l < n_layers))
 
-        # Amplification relative to L0
-        if dists_by_layer.get('0', 0) > 0:
-            amp = {k: v / dists_by_layer['0'] for k, v in dists_by_layer.items()}
-        else:
-            amp = {k: 0.0 for k in dists_by_layer}
+    for c in corruptions:
+        ensemble_scores_clean = []
+        ensemble_scores_ood = []
 
-        amplification[ct] = {
-            'distances': dists_by_layer,
-            'amplification_vs_L0': amp,
+        for s_idx in range(len(scenes)):
+            layer_dists_clean = [clean_dists_per_layer[l][s_idx] for l in ensemble_layers]
+            ensemble_scores_clean.append(float(np.mean(layer_dists_clean)))
+
+        for s in scenes:
+            embs = extract_all_hidden(model, processor, apply_corruption(s, c), prompt)
+            layer_dists_ood = [float(cosine_dist(embs[l], centroids[l])) for l in ensemble_layers]
+            ensemble_scores_ood.append(float(np.mean(layer_dists_ood)))
+
+        ensemble_auroc = float(compute_auroc(ensemble_scores_clean, ensemble_scores_ood))
+        ensemble_results[c] = {
+            "ensemble_auroc": ensemble_auroc,
+            "ensemble_layers": ensemble_layers,
         }
-        print(f"  {ct}: L0={dists_by_layer.get('0', 0):.6f} → L32={dists_by_layer.get('32', 0):.6f}")
+        print(f"  {c}: ensemble AUROC={ensemble_auroc:.4f} (layers {ensemble_layers})")
+    results["ensemble_detection"] = ensemble_results
 
-    results['amplification'] = amplification
-
-    # ========== 4. Layer-to-layer similarity ==========
-    print("\n=== Layer Similarity (for fog@1.0 shift) ===")
-    layer_sim = {}
-
-    # Compute shift vectors per layer
-    shift_vectors = {}
-    for layer in test_layers:
-        shift_vectors[layer] = corrupt_all["fog_1.0"][layer] - clean1_all[layer]
-
-    for i, l1 in enumerate(test_layers):
-        for l2 in test_layers[i+1:]:
-            sim = cosine_sim(shift_vectors[l1], shift_vectors[l2])
-            layer_sim[f"L{l1}_L{l2}"] = float(sim)
-
-    results['layer_shift_similarity'] = layer_sim
-
-    # ========== 5. Cross-scene per-layer ==========
-    print("\n=== Cross-Scene Per-Layer ===")
-    cross_scene = {}
-
-    for layer in test_layers:
-        # Direction consistency: is shift vector same for both scenes?
-        shift1 = corrupt_all["fog_1.0"][layer] - clean1_all[layer]
-        shift2 = corrupt2_all["fog"][layer] - clean2_all[layer]
-        sim = cosine_sim(shift1, shift2)
-        cross_scene[str(layer)] = {
-            'direction_sim': float(sim),
-            'scene1_dist': float(cosine_dist(clean1_all[layer], corrupt_all["fog_1.0"][layer])),
-            'scene2_dist': float(cosine_dist(clean2_all[layer], corrupt2_all["fog"][layer])),
+    # === Test 5: Clean embedding norm per layer ===
+    print("\n=== Embedding Norms Per Layer ===")
+    norm_results = {}
+    for layer in sample_layers:
+        norms = [float(np.linalg.norm(clean_all[i][layer])) for i in range(len(scenes))]
+        norm_results[str(layer)] = {
+            "mean_norm": float(np.mean(norms)),
+            "std_norm": float(np.std(norms)),
         }
-        print(f"  L{layer}: dir_sim={sim:.4f}")
+        print(f"  Layer {layer}: norm={np.mean(norms):.4f} ± {np.std(norms):.4f}")
+    results["embedding_norms"] = norm_results
 
-    results['cross_scene_layers'] = cross_scene
-
-    # ========== 6. Embedding norm profile ==========
-    print("\n=== Embedding Norm Profile ===")
-    norm_profile = {}
-
-    for layer in test_layers:
-        clean_norm = float(np.linalg.norm(clean1_all[layer]))
-        norms = {'clean': clean_norm}
-        for ct in ctypes:
-            corrupt_norm = float(np.linalg.norm(corrupt_all[f"{ct}_1.0"][layer]))
-            norms[ct] = corrupt_norm
-            norms[f"{ct}_change_pct"] = float((corrupt_norm - clean_norm) / clean_norm * 100)
-
-        norm_profile[str(layer)] = norms
-        print(f"  L{layer}: clean_norm={clean_norm:.2f}, fog_change={norms.get('fog_change_pct', 0):.2f}%")
-
-    results['norm_profile'] = norm_profile
-
-    # ========== 7. Optimal layer strategy ==========
-    print("\n=== Optimal Layer Strategy ===")
-    # Compute margin (min OOD - max clean) per layer
-    strategy_results = {}
-    for layer in test_layers:
-        clean_d = cosine_dist(clean1_all[layer], clean2_all[layer])
-        min_ood = float('inf')
-        max_ood = 0
-        for ct in ctypes:
-            for sev in sevs:
-                d = cosine_dist(clean1_all[layer], corrupt_all[f"{ct}_{sev}"][layer])
-                min_ood = min(min_ood, d)
-                max_ood = max(max_ood, d)
-
-        margin = min_ood - clean_d
-        strategy_results[str(layer)] = {
-            'clean_dist': float(clean_d),
-            'min_ood': float(min_ood),
-            'max_ood': float(max_ood),
-            'margin': float(margin),
-            'margin_ratio': float(min_ood / clean_d) if clean_d > 0 else float('inf'),
-        }
-        print(f"  L{layer}: margin={margin:.6f}, ratio={strategy_results[str(layer)]['margin_ratio']:.1f}x")
-
-    results['layer_strategy'] = strategy_results
-
-    # Save
-    ts = time.strftime("%Y%m%d_%H%M%S")
-    out_path = f"experiments/layer_comparison_{ts}.json"
-    def convert(obj):
-        if isinstance(obj, (np.floating, np.float32, np.float64)): return float(obj)
-        if isinstance(obj, (np.integer, np.int32, np.int64)): return int(obj)
-        if isinstance(obj, np.ndarray): return obj.tolist()
-        if isinstance(obj, np.bool_): return bool(obj)
-        return obj
-    def recursive_convert(d):
-        if isinstance(d, dict): return {k: recursive_convert(v) for k, v in d.items()}
-        if isinstance(d, list): return [recursive_convert(x) for x in d]
-        return convert(d)
-    results = recursive_convert(results)
+    out_path = "/workspace/Vizuara-VLA-Research/experiments/layer_comparison_" + \
+               time.strftime("%Y%m%d_%H%M%S") + ".json"
     with open(out_path, 'w') as f:
-        json.dump(results, f, indent=2, default=convert)
+        json.dump(results, f, indent=2)
     print(f"\nResults saved to {out_path}")
 
 if __name__ == "__main__":

@@ -1,0 +1,171 @@
+{
+  "n_scenes": 15,
+  "bootstrap_auroc": {
+    "fog": {
+      "mean": 1.0,
+      "std": 0.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "pct_perfect": 100.0
+    },
+    "night": {
+      "mean": 1.0,
+      "std": 0.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "pct_perfect": 100.0
+    },
+    "noise": {
+      "mean": 1.0,
+      "std": 0.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "pct_perfect": 100.0
+    },
+    "blur": {
+      "mean": 1.0,
+      "std": 0.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "pct_perfect": 100.0
+    }
+  },
+  "threshold_stability": {
+    "fog": {
+      "mean_threshold": 0.0015207716770114477,
+      "std_threshold": 4.997277425374911e-06,
+      "ci_lower": 0.001514675028021495,
+      "ci_upper": 0.001533390620987618,
+      "actual_gap": 0.002869468469731684,
+      "gap_positive": true
+    },
+    "night": {
+      "mean_threshold": 0.004072532596923445,
+      "std_threshold": 1.695002622328089e-05,
+      "ci_lower": 0.004058710221805317,
+      "ci_upper": 0.004123300300666766,
+      "actual_gap": 0.007958402643809648,
+      "gap_positive": true
+    },
+    "noise": {
+      "mean_threshold": 9.95046673513853e-05,
+      "std_threshold": 3.808894920944476e-06,
+      "ci_lower": 9.395950577639756e-05,
+      "ci_upper": 0.00010761356087679586,
+      "actual_gap": 2.8037425241489444e-05,
+      "gap_positive": true
+    },
+    "blur": {
+      "mean_threshold": 0.0030632258655598887,
+      "std_threshold": 8.599327894614867e-05,
+      "ci_lower": 0.0030085452743070507,
+      "ci_upper": 0.003339630083476375,
+      "actual_gap": 0.005857208962302796,
+      "gap_positive": true
+    }
+  },
+  "false_positive_rates": {
+    "3sigma": {
+      "threshold": 0.00010617807382644782,
+      "fpr": 0.0,
+      "tpr": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "5sigma": {
+      "threshold": 0.00014322223369021524,
+      "fpr": 0.0,
+      "tpr": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.7333333333333333,
+        "blur": 1.0
+      }
+    },
+    "max_clean": {
+      "threshold": 8.588882393550934e-05,
+      "fpr": 0.0,
+      "tpr": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    }
+  },
+  "separation": {
+    "fog": {
+      "cohens_d": 76.3779826959987,
+      "clean_max": 8.503843954010826e-05,
+      "corrupt_min": 0.0029545069092717924,
+      "gap": 0.002869468469731684,
+      "overlap": 0.0,
+      "perfectly_separated": true
+    },
+    "night": {
+      "cohens_d": 78.61979917104574,
+      "clean_max": 8.503843954010826e-05,
+      "corrupt_min": 0.008043441083349756,
+      "gap": 0.007958402643809648,
+      "overlap": 0.0,
+      "perfectly_separated": true
+    },
+    "noise": {
+      "cohens_d": 3.6363694006606337,
+      "clean_max": 8.503843954010826e-05,
+      "corrupt_min": 0.0001130758647815977,
+      "gap": 2.8037425241489444e-05,
+      "overlap": 0.0,
+      "perfectly_separated": true
+    },
+    "blur": {
+      "cohens_d": 22.130558649803337,
+      "clean_max": 8.503843954010826e-05,
+      "corrupt_min": 0.005942247401842904,
+      "gap": 0.005857208962302796,
+      "overlap": 0.0,
+      "perfectly_separated": true
+    }
+  },
+  "sample_size_effect": {
+    "2": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "min_auroc": 1.0,
+      "pct_perfect": 100.0
+    },
+    "3": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "min_auroc": 1.0,
+      "pct_perfect": 100.0
+    },
+    "5": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "min_auroc": 1.0,
+      "pct_perfect": 100.0
+    },
+    "7": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "min_auroc": 1.0,
+      "pct_perfect": 100.0
+    },
+    "10": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "min_auroc": 1.0,
+      "pct_perfect": 100.0
+    },
+    "15": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "min_auroc": 1.0,
+      "pct_perfect": 100.0
+    }
+  }
+}
