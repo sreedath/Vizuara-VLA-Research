@@ -5336,4 +5336,32 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 612}: Feature norm is the only competitive baseline (AUROC = 0.960) but fails on noise (0.840). Noise corruption produces directional shifts in embedding space with minimal magnitude change, which norm-based detection misses. \textbf{Cosine distance captures directionality}, giving it perfect detection where magnitude-based methods fail.
 
+\subsection{Temperature Invariance}
+
+\textbf{Experiment 284: Temperature Scaling Effects.} We test 6 temperatures ($T$ = 0.1--5.0) to verify detection independence from generation parameters and evaluate whether temperature-based calibration can improve output-space detection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig293_temperature.png}
+\caption{Temperature effects. (a) Detection distances are identical at all temperatures --- hidden states are computed before generation. (b) Output entropy vs.\ temperature: clean and night converge at high $T$. (c) Top-1 probability: at $T$=0.1, both clean (1.000) and night (0.995) are near-deterministic --- temperature cannot separate them.}
+\end{figure}
+
+\textbf{Finding 613}: The cosine distance detector is \textbf{temperature-invariant by design}: it operates on hidden states computed in a single forward pass before autoregressive generation. Temperature, which only controls the sampling distribution over the vocabulary, has zero effect on detection. This architectural advantage means our detector works identically regardless of the generation configuration.
+
+\textbf{Finding 614}: \textbf{Temperature scaling cannot fix output-space OOD detection}. At $T = 0.1$, both clean (top-1 = 1.000) and corrupted (top-1 = 0.995) inputs produce near-deterministic outputs. At $T = 5.0$, both converge to maximum entropy (10.1 vs.\ 10.2). No temperature setting creates a discriminative gap between clean and corrupted outputs --- the model's overconfidence on wrong tokens is inherent, not temperature-dependent.
+
+\subsection{Multi-Token Action Sequence}
+
+\textbf{Experiment 285: Detection During Generation.} We generate 7 action tokens autoregressively, extracting L3 hidden states at each step to track how the OOD signal evolves during the generation process.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig294_multitoken.png}
+\caption{Multi-token action sequence analysis. (a) Cosine distance amplifies 57--1,336$\times$ from step 0 (pre-generation, $d$=0.001--0.008) to step 4 ($d$=0.41--0.68). Signal is non-monotonic, peaking at step 4--5. (b) Night changes all 7/7 tokens; blur changes 5/7. (c) Step 0 is already sufficient (AUROC=1.0); later steps provide massive bonus signal.}
+\end{figure}
+
+\textbf{Finding 615}: The OOD signal amplifies \textbf{57--1,336$\times$ during autoregressive generation}: from $d = 0.001$--$0.008$ at step 0 to $d = 0.41$--$0.68$ at step 4. Each generation step compounds the divergence as corrupted inputs produce different tokens, which condition increasingly different hidden states. Noise shows the strongest amplification (1,336$\times$) because its initially small step-0 signal ($d = 0.001$) produces maximally wrong tokens that cascade through generation.
+
+\textbf{Finding 616}: Step 0 (pre-generation) is already \textbf{sufficient for perfect detection} with AUROC=1.0. The massive signal amplification during generation (up to $d = 0.68$ at step 4) demonstrates that multi-step detection is possible but unnecessary --- our single forward pass detector captures the corruption before any dangerous tokens are produced.
+
 \end{document}
