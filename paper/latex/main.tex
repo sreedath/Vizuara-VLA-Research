@@ -7661,4 +7661,25 @@ We investigate whether the 4096-dimensional hidden state embeddings can be compr
 
 \textbf{Finding 1046}: \textbf{Centroid alignment at $k=2$ is 0.012 (nearly zero) yet detection is perfect.} The absolute centroid position is irrelevant---only the relative clean-vs-corrupt separation geometry matters. Random projection preserves this separation even when the projected centroid bears almost no resemblance to the full-dimensional centroid.
 
+\subsection{Experiment 390: Multi-Scene Robustness Validation}
+
+We validate the detector across 5 structurally different synthetic driving scenes (urban, highway, parking lot, rural, random) to test generalization. We measure per-scene calibration, cross-scene transfer, shift consistency, and threshold portability.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig399_multiscene.png}
+\caption{Multi-scene robustness. (A) Per-scene calibration achieves AUROC=1.0 across all scenes. (B) Cross-scene transfer is corruption-dependent: night perfect, noise near-random. (C) Noise transfer matrix shows scene-specific failures. (D) Shift consistency is lower than expected. (E) Inter-scene centroid distances. (F) Threshold portability fails completely---100\% FPR cross-scene.}
+\label{fig:multiscene}
+\end{figure}
+
+\textbf{Finding 1047}: \textbf{Per-scene calibration achieves AUROC=1.0 for ALL 5 scenes $\times$ ALL 4 corruptions (20/20 perfect).} The centroid-based detector generalizes to arbitrary scene content when calibrated per-deployment.
+
+\textbf{Finding 1048}: \textbf{Cross-scene transfer is corruption-hierarchical: night transfers perfectly (1.0), noise fails (0.50 mean, near random).} Corruptions with larger embedding shifts (night, fog) transfer better because the shift magnitude dominates scene-specific variation. Noise, with its minimal shift, is overwhelmed by inter-scene differences.
+
+\textbf{Finding 1049}: \textbf{Corruption shift consistency across scenes is 0.49--0.77, well below the >0.96 observed for same-scene replication.} Shift directions are partially scene-dependent, meaning the corruption ``fingerprint'' in embedding space changes with scene content. This limits universal corruption detectors.
+
+\textbf{Finding 1050}: \textbf{Threshold portability fails completely: 100\% FPR on all cross-scene transfers.} Thresholds are calibrated at $10^{-6}$ scale, so even the smallest centroid shift (0.00007) exceeds them. Per-scene calibration is non-negotiable for deployment.
+
+\textbf{Finding 1051}: \textbf{Near-identical centroids (distance=0.00007) do not guarantee transfer success.} Scenes 3 and 4 share nearly identical centroid positions yet show different transfer patterns, confirming that shift direction alignment---not just centroid proximity---determines transferability.
+
 \end{document}
