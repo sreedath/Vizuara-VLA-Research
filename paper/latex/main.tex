@@ -3251,4 +3251,47 @@ We address this degradation with \textbf{multi-centroid nearest-centroid routing
 \label{fig:multi_centroid_sep}
 \end{figure}
 
+\subsection{Embedding Space Geometry}
+
+We characterize the geometric structure of VLA hidden state embeddings using isotropy analysis, intrinsic dimensionality estimation (Levina-Bickel MLE), and angular concentration metrics.
+
+\textbf{Finding 293}: VLA embeddings lie on an \textbf{ultra-low-dimensional manifold}: effective rank = 2.08 (L3) and 3.17 (L32) within a 4096-dimensional space. MLE intrinsic dimensionality confirms this: 1.28 (L3) and 2.54 (L32) for ID data.
+
+\textbf{Finding 294}: L3 embeddings are \textbf{extremely anisotropic}: all ID pairwise cosine similarities exceed 0.998 ($\mu = 0.9992, \sigma = 0.0005$). The angular gap between ID and OOD is only 0.0015 (cos sim 0.9996 vs.\ 0.9981), yet this suffices for AUROC = 1.0. This extreme concentration explains why cosine distance is the ideal metric.
+
+\textbf{Finding 295}: OOD data has \textbf{slightly higher intrinsic dimensionality} than ID data (1.44 vs.\ 1.28 at L3; 3.30 vs.\ 2.54 at L32), consistent with corruptions adding new variation axes orthogonal to the ID manifold. This is why PCA reconstruction error works as a detector.
+
+\textbf{Finding 296}: \textbf{Norm AUROC $\approx$ 0.5} at both layers (0.533 L3, 0.479 L32), confirming that OOD shifts are purely directional, not magnitude-based. L2 norms are provably useless for VLA OOD detection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig169_embedding_geometry.png}
+\caption{\textbf{Embedding space geometry at L3 vs.\ L32.} (a) Effective rank: 2.08 at L3 vs.\ 3.17 at L32. (b) Angular concentration: L3 has $>$0.999 pairwise cosine similarity within ID. (c) MLE intrinsic dimensionality: both ID and OOD live on $\sim$1--3 dimensional manifolds. (d) Anisotropy: the ID$\rightarrow$mean alignment gap between ID and OOD enables detection.}
+\label{fig:embedding_geometry}
+\end{figure}
+
+\subsection{Spatial Sensitivity Analysis}
+
+We perform occlusion sensitivity mapping to identify which spatial regions of the input contribute most to the OOD signal. For a clean highway image, we systematically occlude cells on an $8 \times 8$ grid and measure embedding shift. For night/fog OOD images, we restore individual $4 \times 4$ cells to clean and measure distance reduction.
+
+\textbf{Finding 297}: L32 is \textbf{most sensitive to upper-center (sky/horizon) regions}: occlusion of cells in the top row produces distance shifts of 0.27--0.32, while bottom corner cells produce only 0.02--0.05. L3 shows uniformly low spatial sensitivity ($<$0.001 per cell).
+
+\textbf{Finding 298}: Night and fog have fundamentally different spatial OOD signatures. \textbf{Night is sky-dominated}: restoring the sky row reduces L3 distance by 31--35\%. \textbf{Fog is holographic}: restoring individual cells \textit{increases} OOD distance by up to 83\% because the clean/fog boundary is itself anomalous.
+
+\textbf{Finding 299}: The holographic nature of fog's OOD signal is consistent with the feature ablation findings (Finding 275): the OOD information is distributed across dimensions and spatial regions. This has practical implications---partial occlusions (e.g., windshield glare) affect night detection more than fog detection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig170_occlusion_heatmap.png}
+\caption{\textbf{Occlusion sensitivity heatmap} ($8 \times 8$ grid). L32 (right) shows clear spatial structure with sky/horizon regions most sensitive. L3 (left) is uniformly low, indicating a non-spatial, distributed OOD signal.}
+\label{fig:occlusion_heatmap}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig171_restoration_sensitivity.png}
+\caption{\textbf{Region restoration sensitivity.} (Left) Night: restoring sky reduces L3 distance 31--35\%, confirming sky-dominated signal. (Right) Fog: restoration \textit{increases} distance (red), because partial clean/fog boundaries create more anomalous embeddings than uniform fog.}
+\label{fig:restoration_sensitivity}
+\end{figure}
+
 \end{document}

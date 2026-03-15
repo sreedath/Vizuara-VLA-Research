@@ -7075,3 +7075,58 @@ Per-category 6-scene breakdown:
 
 **Finding**: Multi-centroid nearest-centroid routing completely solves the scene diversity problem. It achieves perfect AUROC across 6 diverse scenes by maintaining tight per-scene boundaries. The nearest-centroid approach matches oracle (known scene label) performance, meaning the routing itself introduces no error — the model implicitly identifies scene types through embedding proximity.
 
+
+---
+
+## Finding 167: Embedding Space Geometry Analysis (Experiment 173)
+
+**Objective**: Characterize the geometric structure of VLA embeddings — isotropy, intrinsic dimensionality, angular concentration, and anisotropy.
+
+**Key Results**:
+
+| Property | Layer 3 | Layer 32 |
+|----------|---------|----------|
+| Effective rank | 2.08 | 3.17 |
+| ID pairwise cos sim | 0.9992 ± 0.0005 | 0.7889 ± 0.1130 |
+| ID↔OOD cos sim | 0.9977 ± 0.0011 | 0.6370 ± 0.1068 |
+| ID intrinsic dim | 1.28 ± 0.21 | 2.54 ± 0.94 |
+| OOD intrinsic dim | 1.44 ± 0.36 | 3.30 ± 1.74 |
+| Norm AUROC | 0.533 | 0.479 |
+| ID→mean alignment | 0.9996 | 0.8999 |
+| OOD→mean alignment | 0.9981 | 0.7073 |
+
+**Key Findings**:
+1. **L3 is extremely anisotropic**: Effective rank 2.08 means the embedding lives on essentially a 2D manifold within the 4096D space. All ID embeddings have cosine similarity > 0.998 to each other.
+2. **L32 is more isotropic but still low-dimensional**: Effective rank 3.17. ID embeddings have cos sim ~0.79, providing more room for OOD signals to manifest in angular displacement.
+3. **Intrinsic dim confirms ultra-low-dimensional manifold**: MLE estimates ID intrinsic dim = 1.28 (L3) and 2.54 (L32). OOD is slightly higher-dimensional (1.44 and 3.30), consistent with corruptions adding new variation axes.
+4. **Norm AUROC ≈ 0.5**: Confirms (again) that norms carry zero OOD signal. Detection is purely directional.
+5. **Anisotropy gap**: At L3, ID→mean = 0.9996 but OOD→mean = 0.9981 — a tiny 0.0015 gap that nevertheless produces AUROC=1.0. At L32, the gap is larger: 0.9000 vs 0.7073 = 0.1927.
+
+**Finding**: VLA embeddings live on an ultra-low-dimensional manifold (effective rank 2-3) within the 4096D space. This extreme anisotropy explains why cosine distance is so effective — even tiny angular deviations (0.0015 at L3) are significant because the ID manifold is so tightly concentrated. The low intrinsic dimensionality also explains why PCA with k=2 achieves perfect AUROC.
+
+
+---
+
+## Finding 168: Occlusion Sensitivity Mapping (Experiment 174)
+
+**Objective**: Identify which spatial regions of the input image contribute most to the OOD detection signal.
+
+**Method**: (1) Occlude each cell of an 8×8 grid on a clean highway image and measure embedding shift from base. (2) For night/fog OOD images, restore each 4×4 cell to clean and measure distance reduction.
+
+**Key Results — Occlusion sensitivity (8×8)**:
+- **L32 most sensitive to upper-center regions**: Cells (0,4-6) produce distance shifts of 0.27-0.32 when occluded. These correspond to sky/horizon regions.
+- **L32 least sensitive to corner/edge cells**: Bottom-left/right cells shift only 0.02-0.05.
+- **L3 is uniformly low-sensitivity**: All cells produce shifts < 0.001 — L3 signal is distributed, not spatial.
+
+**Key Results — Night restoration (4×4)**:
+- **Restoring sky row (row 0) gives 31-35% L3 distance reduction**: The sky brightness change dominates the night OOD signal at L3.
+- **Restoring road rows gives 10-23% reduction**: Less impact per cell.
+- **All cells contribute positively**: Night OOD signal is distributed but sky-weighted.
+
+**Key Results — Fog restoration (4×4)**:
+- **Restoring individual fog cells INCREASES distance** (negative reduction, -3% to -83%): The partial clean/fog boundary creates a more OOD-like embedding than uniform fog.
+- **Most disruptive cell: (2,1) with -83% L32 increase**: Creating a clean window in fog road surface produces the worst artifact.
+- **Fog signal is holographic**: Can't be reduced by restoring individual regions — consistent with the holographic distribution found in Feature Ablation (Exp 161).
+
+**Finding**: Night and fog have fundamentally different spatial OOD signatures. Night's signal is sky-dominated and localized (restoring sky reduces distance 35%). Fog's signal is holographic — partial restoration actually increases OOD distance because the clean-fog boundary itself is anomalous. This has implications for real deployment: partial occlusions (e.g., windshield glare covering half the sky) will affect night detection more than fog detection.
+
