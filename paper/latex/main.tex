@@ -3022,4 +3022,40 @@ Three response levels above NORMAL are defined using calibration statistics: \te
 \label{fig:deployment_metrics}
 \end{figure}
 
+\subsection{Feature Ablation: OOD Signal Localization}
+
+We investigate \emph{where} in the 4096-dimensional embedding space the OOD signal resides.
+
+\textbf{Finding 254}: Projecting embeddings onto the top-$k$ PCA directions of the ID calibration data yields AUROC $< 0.5$ (L3: 0.16--0.44, L32: 0.00--0.13). The OOD-discriminative signal is \textbf{orthogonal to the principal components of ID variance}, meaning the model's representations of OOD inputs differ from ID in dimensions that carry minimal ID variation.
+
+\textbf{Finding 255}: Zeroing out blocks of 64--512 raw dimensions produces \textbf{zero AUROC change} from the baseline of 1.000. The OOD signal is holographically distributed across all dimensions, not concentrated in any localized feature subset.
+
+\textbf{Finding 256}: These two findings together explain why \textbf{PCA reconstruction error is an effective OOD detector}: it measures exactly the embedding energy in the orthogonal complement of the low-dimensional ID manifold, which is precisely where the OOD signal resides. They also explain why cosine distance outperforms Euclidean distance --- cosine measures angular deviation in the full space, while Euclidean distance can be dominated by high-variance ID dimensions that carry no OOD information.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig153_feature_ablation.png}
+\caption{\textbf{Feature ablation.} Left: PCA subspace detection fails (AUROC $< 0.5$) because the OOD signal is orthogonal to ID variance directions. Center: Rapid singular value decay confirms low-dimensional ID manifold. Right: L3 needs only 2 components for 95\% variance; L32 needs 4.}
+\label{fig:feature_ablation}
+\end{figure}
+
+\subsection{Sample Efficiency with Confidence Intervals}
+
+We systematically measure how detection performance scales with calibration set size using bootstrapped 95\% confidence intervals.
+
+\textbf{Finding 257}: The detector is remarkably sample-efficient: \textbf{5 calibration images} achieve AUROC $= 0.90$ (95\% CI: 0.83--0.96) at L3, sufficient for practical deployment. Even $n = 2$ gives AUROC $= 0.78$.
+
+\textbf{Finding 258}: Performance plateaus around $n = 10$--15, with L3 reaching AUROC $= 0.94$ (CI: 0.89--1.00) at $n = 15$. The diminishing returns curve follows a characteristic logarithmic scaling, consistent with centroid estimation converging as $O(1/\sqrt{n})$.
+
+\textbf{Finding 259}: L3 consistently outperforms L32 across all calibration sizes, with tighter confidence intervals (CI width 0.10 vs 0.13 at $n = 20$). This reinforces L3 as the primary detection layer, with L32 providing complementary coverage via the OR-gate.
+
+\textbf{Finding 260}: Bootstrap variance decreases monotonically from $\sigma = 0.12$ at $n = 2$ to $\sigma = 0.03$ at $n = 20$, confirming that the centroid becomes increasingly stable with more calibration samples. For safety-critical deployment, $n \geq 10$ provides acceptably tight confidence bounds.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig154_sample_efficiency.png}
+\caption{\textbf{Sample efficiency curve.} AUROC vs calibration set size with 95\% bootstrap CIs (20 resamples each). L3 (left) reaches 0.90 AUROC at $n = 5$ and plateaus at $n \geq 15$. L32 (right) follows a similar curve with slightly wider CIs.}
+\label{fig:sample_efficiency}
+\end{figure}
+
 \end{document}
