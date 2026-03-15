@@ -1,0 +1,164 @@
+{
+  "experiment": "multi_layer_fusion",
+  "experiment_number": 255,
+  "timestamp": "20260315_080906",
+  "layers": [
+    3,
+    7,
+    15,
+    23,
+    31
+  ],
+  "results": {
+    "fog": {
+      "per_layer": {
+        "3": {
+          "distance": 0.00020617,
+          "auroc": 0.9
+        },
+        "7": {
+          "distance": 0.00012982,
+          "auroc": 0.9
+        },
+        "15": {
+          "distance": 0.00466466,
+          "auroc": 0.0
+        },
+        "23": {
+          "distance": 0.01204628,
+          "auroc": 0.0
+        },
+        "31": {
+          "distance": 0.01800042,
+          "auroc": 0.0
+        }
+      },
+      "fused_sum": {
+        "value": 0.03504735,
+        "auroc": 0.0
+      },
+      "fused_max": {
+        "value": 0.01800042,
+        "auroc": 0.0
+      }
+    },
+    "night": {
+      "per_layer": {
+        "3": {
+          "distance": 0.00644326,
+          "auroc": 1.0
+        },
+        "7": {
+          "distance": 0.0045926,
+          "auroc": 1.0
+        },
+        "15": {
+          "distance": 0.15977198,
+          "auroc": 1.0
+        },
+        "23": {
+          "distance": 0.3020097,
+          "auroc": 1.0
+        },
+        "31": {
+          "distance": 0.25787032,
+          "auroc": 1.0
+        }
+      },
+      "fused_sum": {
+        "value": 0.73068786,
+        "auroc": 1.0
+      },
+      "fused_max": {
+        "value": 0.3020097,
+        "auroc": 1.0
+      }
+    },
+    "noise": {
+      "per_layer": {
+        "3": {
+          "distance": 5.168e-05,
+          "auroc": 0.0
+        },
+        "7": {
+          "distance": 6.282e-05,
+          "auroc": 0.0
+        },
+        "15": {
+          "distance": 0.00929976,
+          "auroc": 0.0
+        },
+        "23": {
+          "distance": 0.02288789,
+          "auroc": 0.0
+        },
+        "31": {
+          "distance": 0.03328627,
+          "auroc": 0.0
+        }
+      },
+      "fused_sum": {
+        "value": 0.06558841,
+        "auroc": 0.0
+      },
+      "fused_max": {
+        "value": 0.03328627,
+        "auroc": 0.0
+      }
+    },
+    "blur": {
+      "per_layer": {
+        "3": {
+          "distance": 0.00454754,
+          "auroc": 1.0
+        },
+        "7": {
+          "distance": 0.00336885,
+          "auroc": 1.0
+        },
+        "15": {
+          "distance": 0.10375774,
+          "auroc": 1.0
+        },
+        "23": {
+          "distance": 0.21934044,
+          "auroc": 1.0
+        },
+        "31": {
+          "distance": 0.19629937,
+          "auroc": 1.0
+        }
+      },
+      "fused_sum": {
+        "value": 0.52731395,
+        "auroc": 1.0
+      },
+      "fused_max": {
+        "value": 0.21934044,
+        "auroc": 1.0
+      }
+    }
+  },
+  "id_stats": {
+    "3": {
+      "mean": 0.00010389,
+      "max": 0.00031543
+    },
+    "7": {
+      "mean": 0.00010456,
+      "max": 0.00021392
+    },
+    "15": {
+      "mean": 0.01462424,
+      "max": 0.02000564
+    },
+    "23": {
+      "mean": 0.04573193,
+      "max": 0.05424964
+    },
+    "31": {
+      "mean": 0.05834365,
+      "max": 0.06577086
+    }
+  }
+}

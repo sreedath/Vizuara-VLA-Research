@@ -4870,4 +4870,28 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 528}: Cross-corruption threshold transfer is \textbf{asymmetric}: weak corruptions (fog, noise) yield small thresholds that detect all stronger corruptions, while strong corruption thresholds (night, blur) miss weaker signals. The safest deployment uses the minimum corruption as calibration reference.
 
+\subsection{Token Aggregation and Multi-Layer Fusion}
+
+\textbf{Experiment 254: Image Token Aggregation.} We compare last-token detection with mean-of-image-tokens and max-of-image-tokens aggregation, testing whether the 100$\times$ larger signal at image positions improves diverse-calibration detection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig263_token_agg.png}
+\caption{Left: mean-image-token aggregation amplifies distances 25--29$\times$ over last-token. Center: AUROC remains unchanged because natural variation also increases proportionally. Right: signal amplification ratios by corruption type.}
+\end{figure}
+
+\textbf{Finding 529}: Mean-image-token aggregation amplifies OOD distance \textbf{25--29$\times$} (night: 0.006$\rightarrow$0.184) but also amplifies natural variation 18$\times$ (0.000315$\rightarrow$0.0058), leaving AUROC unchanged. No token aggregation strategy recovers noise detection at L3.
+
+\textbf{Experiment 255: Multi-Layer Fusion.} We test whether combining distances from 5 layers (L3, L7, L15, L23, L31) via SUM or MAX fusion improves diverse-calibration detection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig264_multi_layer.png}
+\caption{Left: per-layer AUROC with diverse calibration. Fog degrades at deeper layers; noise is invisible at all. Center: multi-layer fusion provides no improvement. Right: same-image vs diverse calibration --- the zero ID variance property is the critical enabler.}
+\end{figure}
+
+\textbf{Finding 530}: Multi-layer fusion (SUM/MAX of 5 layers) provides \textbf{no improvement} over single-layer detection with diverse calibration. Natural variation scales proportionally across layers, maintaining identical AUROC. The zero in-distribution variance from same-image calibration is \textbf{irreplaceable}.
+
+\textbf{Finding 531}: This establishes a clear \textbf{deployment recommendation}: per-scene calibration with a single clean reference image is essential. The detector's perfect performance depends on the remarkable property that the model produces identical embeddings for the same scene, eliminating ID variance entirely.
+
 \end{document}

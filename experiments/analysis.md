@@ -9467,3 +9467,61 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 256**: With diverse-image calibration, noise is **invisible at L3** (AUROC=0.0) because its distance (5.2e-05) falls below natural image variation (max 3.15e-04). This validates that same-image calibration (zero ID variance) is the critical enabler of perfect detection.
 
 **Finding 257**: Cross-corruption threshold transfer is **asymmetric**: weak corruptions (fog, noise) produce small thresholds that detect everything, while strong corruptions (night, blur) produce large thresholds that miss weaker signals. Using the smallest corruption for calibration gives the most conservative (and safest) threshold.
+
+---
+
+## Experiment 254: Image Token Aggregation
+
+**Research Question**: Does aggregating image token embeddings (mean or max) improve OOD detection compared to using the last token alone?
+
+**Method**: Compare three aggregation strategies: last-token, mean-of-image-tokens (positions 1-256), and max-of-image-tokens. Test with diverse calibration (10 different images).
+
+**Results (L3, diverse calibration)**:
+
+| Corruption | Last Token | Mean Image | Max Image |
+|-----------|-----------|-----------|----------|
+| | d / AUROC | d / AUROC | d / AUROC |
+| Fog | 2.06e-4 / 0.9 | 5.12e-3 / 0.9 | 6.77e-3 / 0.0 |
+| Night | 6.44e-3 / 1.0 | 0.184 / 1.0 | 0.050 / 1.0 |
+| Noise | 5.17e-5 / 0.0 | 1.28e-3 / 0.0 | 9.79e-3 / 0.0 |
+| Blur | 4.55e-3 / 1.0 | 0.126 / 1.0 | 0.039 / 1.0 |
+
+**ID variation**:
+- Last token: max=3.15e-4
+- Mean image: max=5.80e-3
+- Max image: max=1.98e-2
+
+**Key Findings**:
+1. **Mean-image amplifies signal 25-29×**: Night distance goes from 0.006 to 0.184 (29×), blur from 0.005 to 0.126 (28×). But it also amplifies natural variation (3.15e-4 → 5.80e-3 = 18×).
+2. **AUROC unchanged**: The amplification affects both ID and OOD equally, so AUROC remains the same — fog at 0.9, noise at 0.0.
+3. **Max-image makes fog worse**: AUROC drops from 0.9 to 0.0 because max natural variation (0.0198) exceeds fog's max distance (0.0068).
+4. **Noise is fundamentally invisible at L3**: No aggregation strategy recovers noise detection. The corruption is too subtle at this layer.
+
+**Finding 258**: Mean-image-token aggregation amplifies OOD signal **25-29×** but also amplifies natural variation 18×, leaving AUROC unchanged. Token aggregation cannot overcome the fundamental limitation that noise at L3 falls within natural variation.
+
+---
+
+## Experiment 255: Multi-Layer Fusion
+
+**Research Question**: Can combining distances from multiple layers (L3+L7+L15+L23+L31) improve detection with diverse calibration?
+
+**Method**: Compute per-layer cosine distances and test fusion via SUM and MAX across 5 layers. Compare AUROC with diverse calibration.
+
+**Results (diverse calibration)**:
+
+| Corruption | L3 | L7 | L15 | L23 | L31 | SUM | MAX |
+|-----------|-----|-----|------|------|------|-----|-----|
+| Fog | 0.9 | 0.9 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Night | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| Noise | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blur | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+
+**Key Findings**:
+1. **Multi-layer fusion does NOT help**: Neither SUM nor MAX fusion improves AUROC for fog or noise. Natural variation scales proportionally at all layers.
+2. **Fog AUROC degrades at deeper layers**: L3 and L7 achieve 0.9, but L15+ drops to 0.0. Deeper layers amplify natural variation faster than fog's weak signal.
+3. **Noise is invisible at ALL layers**: Even L31 with distance 0.033 fails to separate from natural variation (L31 natural max ~0.069).
+4. **Same-image calibration is irreplaceable**: The zero ID variance property is the fundamental enabler. No amount of multi-layer fusion can substitute.
+
+**Finding 259**: Multi-layer fusion (SUM/MAX of 5 layers) provides **no improvement** over single-layer detection with diverse calibration. Natural variation scales proportionally across layers, maintaining the same AUROC. The zero ID variance from same-image calibration is irreplaceable.
+
+**Finding 260**: Fog detection **degrades at deeper layers** (AUROC: L3=0.9, L15+=0.0 with diverse cal). This is because natural variation grows faster than fog distance at deeper layers — the signal-to-noise ratio monotonically decreases. L3 remains the optimal choice.

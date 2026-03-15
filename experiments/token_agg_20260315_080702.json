@@ -1,0 +1,79 @@
+{
+  "experiment": "token_aggregation",
+  "experiment_number": 254,
+  "timestamp": "20260315_080702",
+  "layer": 3,
+  "n_tokens": 274,
+  "id_stats": {
+    "last_token": {
+      "mean": 0.00010389,
+      "max": 0.00031543
+    },
+    "mean_image": {
+      "mean": 0.00243103,
+      "max": 0.00580138
+    },
+    "max_image": {
+      "mean": 0.01463405,
+      "max": 0.01978678
+    }
+  },
+  "results": {
+    "fog": {
+      "last_token": {
+        "distance": 0.00020617,
+        "auroc_diverse": 0.9
+      },
+      "mean_image": {
+        "distance": 0.00511807,
+        "auroc_diverse": 0.9
+      },
+      "max_image": {
+        "distance": 0.0067656,
+        "auroc_diverse": 0.0
+      }
+    },
+    "night": {
+      "last_token": {
+        "distance": 0.00644326,
+        "auroc_diverse": 1.0
+      },
+      "mean_image": {
+        "distance": 0.18430501,
+        "auroc_diverse": 1.0
+      },
+      "max_image": {
+        "distance": 0.05012316,
+        "auroc_diverse": 1.0
+      }
+    },
+    "noise": {
+      "last_token": {
+        "distance": 5.168e-05,
+        "auroc_diverse": 0.0
+      },
+      "mean_image": {
+        "distance": 0.0012821,
+        "auroc_diverse": 0.0
+      },
+      "max_image": {
+        "distance": 0.00978708,
+        "auroc_diverse": 0.0
+      }
+    },
+    "blur": {
+      "last_token": {
+        "distance": 0.00454754,
+        "auroc_diverse": 1.0
+      },
+      "mean_image": {
+        "distance": 0.12564331,
+        "auroc_diverse": 1.0
+      },
+      "max_image": {
+        "distance": 0.03943348,
+        "auroc_diverse": 1.0
+      }
+    }
+  }
+}
