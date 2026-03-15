@@ -1,0 +1,320 @@
+{
+  "full_dim": 4096,
+  "n_clean": 10,
+  "n_ood": 10,
+  "full_aurocs": {
+    "fog": 1.0,
+    "night": 1.0,
+    "noise": 1.0,
+    "blur": 1.0
+  },
+  "random_projection": {
+    "2": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "centroid_alignment": 0.01218198300107054
+    },
+    "4": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "centroid_alignment": 0.022219617494493415
+    },
+    "8": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "centroid_alignment": 0.04742439718150637
+    },
+    "16": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "centroid_alignment": 0.05582943557584241
+    },
+    "32": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "centroid_alignment": 0.09183211202927666
+    },
+    "64": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "centroid_alignment": 0.1280563233399683
+    },
+    "128": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "centroid_alignment": 0.15577222622051634
+    },
+    "256": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "centroid_alignment": 0.22387827600530352
+    },
+    "512": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "centroid_alignment": 0.33364710706422684
+    },
+    "1024": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "centroid_alignment": 0.45926916673931384
+    },
+    "2048": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "centroid_alignment": 0.5802022621221142
+    }
+  },
+  "pca_projection": {
+    "2": {
+      "aurocs": {
+        "fog": 0.2,
+        "night": 0.66,
+        "noise": 0.2,
+        "blur": 0.0
+      },
+      "cumvar": 0.6973686814308167
+    },
+    "4": {
+      "aurocs": {
+        "fog": 0.2,
+        "night": 0.4,
+        "noise": 0.2,
+        "blur": 0.13
+      },
+      "cumvar": 0.8248893022537231
+    },
+    "8": {
+      "aurocs": {
+        "fog": 0.2,
+        "night": 0.39,
+        "noise": 0.2,
+        "blur": 0.2
+      },
+      "cumvar": 0.9705333113670349
+    }
+  },
+  "top_k_truncation": {
+    "2": {
+      "aurocs": {
+        "fog": 0.95,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "4": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "8": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "16": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "32": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "64": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "128": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "256": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "512": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "1024": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "2048": {
+      "aurocs": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    }
+  },
+  "centroid_stability": {
+    "4": {
+      "mean_dist": 0.8883660017419284,
+      "max_dist": 1.8395196873760056,
+      "min_dist": 0.14494995443525238
+    },
+    "16": {
+      "mean_dist": 0.9808182961521483,
+      "max_dist": 1.5404187882886513,
+      "min_dist": 0.5355304545639379
+    },
+    "64": {
+      "mean_dist": 1.0118069845014734,
+      "max_dist": 1.2121175346044024,
+      "min_dist": 0.7484463868981706
+    },
+    "256": {
+      "mean_dist": 1.003087514054457,
+      "max_dist": 1.198014699948153,
+      "min_dist": 0.8829434584199795
+    },
+    "1024": {
+      "mean_dist": 0.9992601983889603,
+      "max_dist": 1.0624800392965166,
+      "min_dist": 0.937175254926347
+    }
+  },
+  "latency": {
+    "4": {
+      "projection_plus_cosine_us": 99.52139854431152,
+      "cosine_only_us": 3.6306381225585938,
+      "full_dim_cosine_us": 20.310163497924805,
+      "speedup_cosine": 5.594102968216443
+    },
+    "16": {
+      "projection_plus_cosine_us": 12.15362548828125,
+      "cosine_only_us": 3.586292266845703,
+      "full_dim_cosine_us": 20.310163497924805,
+      "speedup_cosine": 5.663276160085095
+    },
+    "64": {
+      "projection_plus_cosine_us": 80.42263984680176,
+      "cosine_only_us": 3.7305355072021484,
+      "full_dim_cosine_us": 20.310163497924805,
+      "speedup_cosine": 5.444302422189557
+    },
+    "256": {
+      "projection_plus_cosine_us": 2061.8157386779785,
+      "cosine_only_us": 6.872653961181641,
+      "full_dim_cosine_us": 20.310163497924805,
+      "speedup_cosine": 2.9552140428779574
+    },
+    "1024": {
+      "projection_plus_cosine_us": 3603.1432151794434,
+      "cosine_only_us": 7.258176803588867,
+      "full_dim_cosine_us": 20.310163497924805,
+      "speedup_cosine": 2.7982459021778405
+    }
+  },
+  "pca_explained_variance": [
+    0.6189648509025574,
+    0.07840383797883987,
+    0.07041733711957932,
+    0.057103294879198074,
+    0.040017228573560715,
+    0.03776376694440842,
+    0.035538993775844574,
+    0.03232400864362717,
+    0.029466746374964714,
+    2.352355983614718e-11
+  ],
+  "pca_cumulative_variance": [
+    0.6189648509025574,
+    0.6973686814308167,
+    0.7677860260009766,
+    0.8248893022537231,
+    0.8649065494537354,
+    0.9026703238487244,
+    0.9382092952728271,
+    0.9705333113670349,
+    1.0,
+    1.0
+  ],
+  "min_k_perfect": {
+    "fog": 2,
+    "night": 2,
+    "noise": 2,
+    "blur": 2
+  }
+}
