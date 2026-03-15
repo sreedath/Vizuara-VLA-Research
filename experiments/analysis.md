@@ -16129,3 +16129,53 @@ Cosine is ALWAYS ≥ euclidean. Metric ensemble doesn't help — cosine alone is
 
 **Finding 779**: No ensemble method outperforms the SINGLE best configuration (L3, standard prompt, cosine distance = all AUROC=1.0). Ensembles are valuable for ROBUSTNESS, not peak performance.
 
+---
+
+## Experiment 387: Online Calibration Adaptation
+
+**Objective**: Can the detector adapt its calibration during deployment? Tests expanding calibration, contamination tolerance, rolling centroids, and convergence.
+
+**Setup**: 30 scenes split into calibration (10), validation (10), and test (10). Various calibration strategies evaluated on held-out data.
+
+### Results
+
+**Expanding Calibration**:
+| N (cal size) | FPR | Noise AUROC | All AUROC=1.0? |
+|-------------|-----|-------------|---------------|
+| 1 | 1.00 | 1.00 | Yes |
+| 2 | 1.00 | 1.00 | Yes |
+| 3 | 0.30 | 1.00 | Yes |
+| 5 | 0.40 | 1.00 | Yes |
+| 7 | 0.20 | 1.00 | Yes |
+| 10 | 0.00 | 1.00 | Yes |
+
+AUROC=1.0 at ALL calibration sizes (even N=1), but FPR only reaches 0% at N=10.
+
+**Contaminated Calibration** (fog corruption mixed in):
+| Contamination | FPR | Fog AUROC | Night | Noise | Blur |
+|--------------|-----|-----------|-------|-------|------|
+| 0% | 0.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| 10% | 0.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| 20% | 0.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| 30% | 0.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| 50% | 0.30 | **0.08** | 1.00 | 1.00 | 1.00 |
+| 70% | 0.30 | **0.00** | 1.00 | 1.00 | 1.00 |
+
+Calibration tolerates up to 30% contamination! At 50%, fog detection collapses (AUROC=0.08) but other corruptions remain perfect.
+
+**Rolling Centroid**: All window sizes (3, 5, 10, full) achieve AUROC=1.0 for all corruptions. Window size doesn't matter.
+
+**Centroid Stability**: Converges (drift < 1e-6) at N=8. Max drift = 5.25e-06, mean drift = 8.7e-07.
+
+### Findings
+
+**Finding 780**: AUROC=1.0 at ALL calibration sizes (N=1 through N=10) for ALL corruptions. The detector's discrimination power is size-independent, but threshold calibration (for FPR control) requires N≥10.
+
+**Finding 781**: Calibration tolerates up to 30% contamination with zero degradation. At 50% fog contamination, fog detection collapses to AUROC=0.08 (the centroid shifts toward the corruption), but other corruptions remain AUROC=1.0. Contamination only blinds the detector to the specific contaminating corruption.
+
+**Finding 782**: Rolling centroid window size is irrelevant — even window=3 achieves AUROC=1.0 for all corruptions. The centroid converges so rapidly (N=8 for drift < 1e-6) that any reasonable window suffices.
+
+**Finding 783**: FPR requires N≥10 calibration samples to reach 0%. With N<3, the threshold is set too tight, causing 100% false positives on unseen clean data. This establishes the minimum calibration requirement for deployment.
+
+**Finding 784**: Contamination creates a SELECTIVE blind spot: 50% fog contamination blinds the detector to fog (AUROC=0.08) but night/noise/blur remain AUROC=1.0. The centroid shifts in the fog direction, absorbing the fog signal while other corruption directions remain detectable.
+

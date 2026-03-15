@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Experiment 369: Corruption Interpolation Analysis
+"""Experiment 388: Corruption Interpolation in Embedding Space
 
-How do embeddings behave when smoothly transitioning between corruptions?
-1. Linear interpolation between clean and corrupted images
-2. Embedding path linearity (geodesic vs straight-line)
-3. Detection threshold crossing point
-4. Inter-corruption interpolation paths
-5. Convexity of the detection boundary
+How do embeddings transition between corruption types?
+1. Linear interpolation between two corruption types (fog→night, etc)
+2. Path straightness: is the embedding path linear or curved?
+3. Detection along interpolation paths
+4. Midpoint corruption identity: what does 50/50 look like?
+5. Interpolation in pixel space vs embedding space
 """
 
 import json, time, os, sys
@@ -37,16 +37,18 @@ def apply_corruption(image, ctype, severity=1.0):
 def cosine_dist(a, b):
     dot = np.dot(a, b)
     na, nb = np.linalg.norm(a), np.linalg.norm(b)
-    if na < 1e-10 or nb < 1e-10:
-        return 0.0
+    if na < 1e-10 or nb < 1e-10: return 0.0
     return 1.0 - dot / (na * nb)
 
-def interpolate_images(img1, img2, alpha):
-    """Pixel-level linear interpolation between two images."""
-    arr1 = np.array(img1).astype(np.float32)
-    arr2 = np.array(img2).astype(np.float32)
-    blended = (1 - alpha) * arr1 + alpha * arr2
-    return Image.fromarray(np.clip(blended, 0, 255).astype(np.uint8))
+def cosine_sim(a, b):
+    return 1.0 - cosine_dist(a, b)
+
+def compute_auroc(id_scores, ood_scores):
+    id_s, ood_s = np.asarray(id_scores), np.asarray(ood_scores)
+    n_id, n_ood = len(id_s), len(ood_s)
+    if n_id == 0 or n_ood == 0: return 0.5
+    count = sum(float(np.sum(o > id_s) + 0.5 * np.sum(o == id_s)) for o in ood_s)
+    return count / (n_id * n_ood)
 
 def main():
     print("Loading model...")
@@ -60,9 +62,8 @@ def main():
     results = {}
     ctypes = ['fog', 'night', 'noise', 'blur']
 
-    # Generate test images
     print("Generating images...")
-    seeds = list(range(0, 500, 100))[:5]
+    seeds = list(range(0, 1000, 100))[:10]
     images = {}
     clean_embs = {}
     for seed in seeds:
@@ -72,189 +73,128 @@ def main():
         clean_embs[seed] = extract_hidden(model, processor, images[seed], prompt)
 
     centroid = np.mean(list(clean_embs.values()), axis=0)
+    clean_dists = [cosine_dist(centroid, clean_embs[s]) for s in seeds]
 
-    # ========== 1. Clean-to-Corrupt Interpolation ==========
-    print("\n=== Clean-to-Corrupt Interpolation ===")
+    # Get pure corruption embeddings
+    corrupt_embs = {}
+    for ct in ctypes:
+        corrupt_embs[ct] = extract_hidden(model, processor,
+            apply_corruption(images[seeds[0]], ct, 0.5), prompt)
 
-    interp_results = {}
+    # ========== 1. Pixel-Space Interpolation ==========
+    print("\n=== Pixel-Space Interpolation ===")
+
+    pairs = [('fog', 'night'), ('fog', 'blur'), ('fog', 'noise'),
+             ('night', 'blur'), ('night', 'noise'), ('noise', 'blur')]
     alphas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
-    for ct in ctypes:
-        per_alpha = {}
+    interpolation = {}
+    for ct1, ct2 in pairs:
+        path_data = {'dists': [], 'detection_dists': []}
+
         for alpha in alphas:
-            dists = []
-            for seed in seeds[:3]:
-                corrupt_img = apply_corruption(images[seed], ct, 1.0)
-                interp_img = interpolate_images(images[seed], corrupt_img, alpha)
-                emb = extract_hidden(model, processor, interp_img, prompt)
-                d = cosine_dist(emb, centroid)
-                dists.append(d)
+            # Interpolate in pixel space
+            arr1 = np.array(apply_corruption(images[seeds[0]], ct1, 0.5)).astype(np.float32)
+            arr2 = np.array(apply_corruption(images[seeds[0]], ct2, 0.5)).astype(np.float32)
+            interp_arr = (1 - alpha) * arr1 + alpha * arr2
+            interp_img = Image.fromarray(interp_arr.astype(np.uint8))
 
-            per_alpha[str(alpha)] = {
-                'mean_dist': float(np.mean(dists)),
-                'std_dist': float(np.std(dists)),
-            }
+            emb = extract_hidden(model, processor, interp_img, prompt)
+            dist = cosine_dist(emb, centroid)
+            path_data['dists'].append(float(dist))
+            path_data['detection_dists'].append(float(dist))
 
-        interp_results[ct] = per_alpha
+        # Path straightness
+        emb_start = extract_hidden(model, processor,
+            apply_corruption(images[seeds[0]], ct1, 0.5), prompt)
+        emb_end = extract_hidden(model, processor,
+            apply_corruption(images[seeds[0]], ct2, 0.5), prompt)
 
-        # Report linearity
-        dists_at = [per_alpha[str(a)]['mean_dist'] for a in alphas]
-        d0, d1 = dists_at[0], dists_at[-1]
-        linear_pred = [d0 + (d1 - d0) * a for a in alphas]
-        residuals = [abs(dists_at[i] - linear_pred[i]) for i in range(len(alphas))]
-        max_residual = max(residuals)
-        linearity = 1 - max_residual / (abs(d1 - d0) + 1e-10)
-        print(f"  {ct}: dist@0={d0:.6f}, dist@1={d1:.6f}, linearity={linearity:.4f}")
+        # Measure deviation from straight line in embedding space
+        deviations = []
+        for i, alpha in enumerate(alphas[1:-1], 1):
+            expected = (1 - alpha) * emb_start + alpha * emb_end
+            arr1 = np.array(apply_corruption(images[seeds[0]], ct1, 0.5)).astype(np.float32)
+            arr2 = np.array(apply_corruption(images[seeds[0]], ct2, 0.5)).astype(np.float32)
+            interp_arr = (1 - alpha) * arr1 + alpha * arr2
+            actual = extract_hidden(model, processor,
+                Image.fromarray(interp_arr.astype(np.uint8)), prompt)
+            dev = cosine_dist(expected, actual)
+            deviations.append(float(dev))
 
-    results['clean_corrupt_interp'] = interp_results
+        path_data['straightness'] = 1.0 - float(np.mean(deviations))
+        path_data['max_deviation'] = float(max(deviations)) if deviations else 0
+        path_data['endpoint_dist'] = float(cosine_dist(emb_start, emb_end))
 
-    # ========== 2. Embedding Path Linearity ==========
-    print("\n=== Embedding Path Linearity ===")
+        interpolation[f'{ct1}_to_{ct2}'] = path_data
+        print(f"  {ct1}→{ct2}: straightness={path_data['straightness']:.4f}, "
+              f"endpoint_dist={path_data['endpoint_dist']:.6f}")
 
-    linearity_results = {}
-    for ct in ctypes:
-        path_lengths = []
-        straight_lengths = []
+    results['interpolation'] = interpolation
 
-        for seed in seeds[:3]:
-            # Get embeddings along interpolation path
-            path_embs = []
-            for alpha in alphas:
-                corrupt_img = apply_corruption(images[seed], ct, 1.0)
-                interp_img = interpolate_images(images[seed], corrupt_img, alpha)
-                emb = extract_hidden(model, processor, interp_img, prompt)
-                path_embs.append(emb)
+    # ========== 2. Midpoint Analysis ==========
+    print("\n=== Midpoint Analysis ===")
 
-            # Path length (sum of consecutive L2 distances)
-            path_len = sum(np.linalg.norm(path_embs[i+1] - path_embs[i])
-                          for i in range(len(path_embs)-1))
+    midpoints = {}
+    for ct1, ct2 in pairs:
+        arr1 = np.array(apply_corruption(images[seeds[0]], ct1, 0.5)).astype(np.float32)
+        arr2 = np.array(apply_corruption(images[seeds[0]], ct2, 0.5)).astype(np.float32)
+        mid_arr = 0.5 * arr1 + 0.5 * arr2
+        mid_emb = extract_hidden(model, processor,
+            Image.fromarray(mid_arr.astype(np.uint8)), prompt)
 
-            # Straight-line distance
-            straight_len = float(np.linalg.norm(path_embs[-1] - path_embs[0]))
+        # Which corruption is the midpoint closer to?
+        sims = {ct: float(cosine_sim(mid_emb, corrupt_embs[ct])) for ct in ctypes}
+        closest = max(sims, key=sims.get)
 
-            path_lengths.append(path_len)
-            straight_lengths.append(straight_len)
-
-        ratio = np.mean(path_lengths) / (np.mean(straight_lengths) + 1e-10)
-        linearity_results[ct] = {
-            'mean_path_length': float(np.mean(path_lengths)),
-            'mean_straight_length': float(np.mean(straight_lengths)),
-            'path_to_straight_ratio': float(ratio),
-            'is_nearly_linear': float(ratio) < 1.05,
+        midpoints[f'{ct1}_to_{ct2}'] = {
+            'closest_corruption': closest,
+            'similarities': sims,
+            'dist_to_centroid': float(cosine_dist(mid_emb, centroid)),
         }
-        print(f"  {ct}: path/straight={ratio:.4f} ({'linear' if ratio < 1.05 else 'curved'})")
+        print(f"  {ct1}+{ct2} midpoint closest to: {closest} "
+              f"(sim={sims[closest]:.4f})")
 
-    results['path_linearity'] = linearity_results
+    results['midpoints'] = midpoints
 
-    # ========== 3. Detection Threshold Crossing ==========
-    print("\n=== Detection Threshold Crossing ===")
+    # ========== 3. Detection Along Paths ==========
+    print("\n=== Detection Along Paths ===")
 
-    # Threshold = max clean distance to centroid
-    clean_dists = [cosine_dist(clean_embs[s], centroid) for s in seeds]
-    threshold = max(clean_dists)
+    # Are all interpolation points detected?
+    for key, data_path in interpolation.items():
+        all_detected = all(d > max(clean_dists) for d in data_path['dists'])
+        min_dist = min(data_path['dists'])
+        results[f'path_{key}_all_detected'] = all_detected
+        results[f'path_{key}_min_dist'] = float(min_dist)
+        results[f'path_{key}_min_vs_threshold'] = float(min_dist / max(max(clean_dists), 1e-10))
 
-    crossing_results = {}
+    # ========== 4. Severity Interpolation ==========
+    print("\n=== Severity Interpolation ===")
+
+    severity_interp = {}
     for ct in ctypes:
-        crossing_alphas = []
-        for seed in seeds[:3]:
-            corrupt_img = apply_corruption(images[seed], ct, 1.0)
-            prev_below = True
-            for alpha in np.linspace(0, 1, 21):
-                interp_img = interpolate_images(images[seed], corrupt_img, alpha)
-                emb = extract_hidden(model, processor, interp_img, prompt)
-                d = cosine_dist(emb, centroid)
-                if d > threshold and prev_below:
-                    crossing_alphas.append(float(alpha))
-                    break
-                prev_below = d <= threshold
+        path_dists = []
+        for sev in np.linspace(0, 1, 11):
+            if sev == 0:
+                emb = clean_embs[seeds[0]]
+            else:
+                emb = extract_hidden(model, processor,
+                    apply_corruption(images[seeds[0]], ct, sev), prompt)
+            path_dists.append(float(cosine_dist(emb, centroid)))
 
-            if len(crossing_alphas) < len(seeds[:3]):
-                # Might not cross for noise
-                pass
+        # Check monotonicity
+        diffs = [path_dists[i+1] - path_dists[i] for i in range(len(path_dists)-1)]
+        monotonic = all(d >= -1e-8 for d in diffs)
 
-        crossing_results[ct] = {
-            'mean_crossing_alpha': float(np.mean(crossing_alphas)) if crossing_alphas else None,
-            'min_crossing_alpha': float(min(crossing_alphas)) if crossing_alphas else None,
-            'n_crossed': len(crossing_alphas),
-            'threshold': float(threshold),
+        severity_interp[ct] = {
+            'dists': path_dists,
+            'monotonic': monotonic,
+            'n_decreases': sum(1 for d in diffs if d < -1e-8),
         }
-        if crossing_alphas:
-            print(f"  {ct}: crosses at alpha={np.mean(crossing_alphas):.3f} "
-                  f"(min={min(crossing_alphas):.3f})")
-        else:
-            print(f"  {ct}: never crosses threshold")
+        print(f"  {ct}: monotonic={monotonic}, min_dist={min(path_dists):.6f}, "
+              f"max_dist={max(path_dists):.6f}")
 
-    results['threshold_crossing'] = crossing_results
-
-    # ========== 4. Inter-Corruption Interpolation ==========
-    print("\n=== Inter-Corruption Interpolation ===")
-
-    inter_corrupt = {}
-    seed = seeds[0]
-    for i, ct1 in enumerate(ctypes):
-        for ct2 in ctypes[i+1:]:
-            corrupt1 = apply_corruption(images[seed], ct1, 0.5)
-            corrupt2 = apply_corruption(images[seed], ct2, 0.5)
-            emb1 = extract_hidden(model, processor, corrupt1, prompt)
-            emb2 = extract_hidden(model, processor, corrupt2, prompt)
-
-            interp_dists = []
-            for alpha in [0.0, 0.25, 0.5, 0.75, 1.0]:
-                interp_img = interpolate_images(corrupt1, corrupt2, alpha)
-                emb = extract_hidden(model, processor, interp_img, prompt)
-                d = cosine_dist(emb, centroid)
-                interp_dists.append(float(d))
-
-            # Check if midpoint is closer or farther than endpoints
-            endpoint_mean = (interp_dists[0] + interp_dists[-1]) / 2
-            midpoint = interp_dists[2]
-            convexity = midpoint - endpoint_mean
-
-            key = f"{ct1}_to_{ct2}"
-            inter_corrupt[key] = {
-                'distances': interp_dists,
-                'midpoint_dist': midpoint,
-                'endpoint_mean': endpoint_mean,
-                'convexity': float(convexity),
-            }
-            print(f"  {ct1}↔{ct2}: midpoint={midpoint:.6f}, "
-                  f"endpoint_mean={endpoint_mean:.6f}, "
-                  f"{'concave' if convexity < 0 else 'convex'}")
-
-    results['inter_corruption_interp'] = inter_corrupt
-
-    # ========== 5. Monotonicity of Severity ==========
-    print("\n=== Severity Monotonicity ===")
-
-    monotonicity = {}
-    for ct in ctypes:
-        for seed in seeds[:3]:
-            sevs = np.linspace(0, 1, 21)
-            dists = []
-            for sev in sevs:
-                corrupt_img = apply_corruption(images[seed], ct, sev)
-                emb = extract_hidden(model, processor, corrupt_img, prompt)
-                d = cosine_dist(emb, centroid)
-                dists.append(float(d))
-
-            # Check monotonicity
-            n_increases = sum(1 for i in range(len(dists)-1) if dists[i+1] > dists[i])
-            n_decreases = sum(1 for i in range(len(dists)-1) if dists[i+1] < dists[i])
-            is_monotone = n_decreases == 0
-
-            key = f"{ct}_seed{seed}"
-            monotonicity[key] = {
-                'n_increases': n_increases,
-                'n_decreases': n_decreases,
-                'is_monotone': is_monotone,
-                'dists': dists,
-            }
-
-        mono_count = sum(1 for s in seeds[:3]
-                        if monotonicity[f"{ct}_seed{s}"]['is_monotone'])
-        print(f"  {ct}: {mono_count}/3 seeds monotonically increasing")
-
-    results['monotonicity'] = monotonicity
+    results['severity_interpolation'] = severity_interp
 
     # Save
     ts = time.strftime("%Y%m%d_%H%M%S")

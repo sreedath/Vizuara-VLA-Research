@@ -7574,4 +7574,37 @@ We investigate whether combining multiple detection signals via ensembling can i
 
 \textbf{Finding 1031}: \textbf{Multi-prompt averaging achieves AUROC=1.0 for all corruptions}, recovering from individual prompt weaknesses. For maximum robustness in deployment, average detection scores across 3--5 prompts.
 
+% ============================================================
+% EXPERIMENT 387: Online Calibration Adaptation
+% ============================================================
+
+\subsection{Experiment 387: Online Calibration Adaptation}
+
+We investigate the detector's behavior under realistic deployment conditions: growing calibration sets, contaminated calibration, rolling centroids, and centroid convergence dynamics.
+
+\textbf{AUROC Is Calibration-Size-Independent.} All 4 corruptions achieve AUROC = 1.0 at \emph{every} calibration size from $N = 1$ through $N = 10$. The detector's discrimination power does not depend on calibration size. However, FPR control requires $N \geq 10$ samples to properly set the threshold.
+
+\textbf{30\% Contamination Tolerance.} Up to 30\% fog contamination in the calibration set produces zero degradation. At 50\%, fog detection collapses (AUROC = 0.08) as the centroid shifts toward the fog direction, but night, noise, and blur detection remain perfect. Contamination creates a \emph{selective} blind spot only for the contaminating corruption type.
+
+\textbf{Rapid Centroid Convergence.} The centroid converges (drift $< 10^{-6}$) at just $N = 8$ samples. Mean inter-step drift is $8.7 \times 10^{-7}$, confirming the near-zero in-distribution variance established in earlier experiments.
+
+\textbf{Rolling Centroids Are Unnecessary.} All window sizes (3, 5, 10, full) achieve identical AUROC = 1.0. The centroid is so stable that temporal windowing provides no benefit over maintaining the full history.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig396_online.png}
+\caption{\textbf{Experiment 387}: Online adaptation. FPR reaches 0\% at N=10 but AUROC=1.0 at all sizes. Contamination tolerated up to 30\% before fog detection collapses. All rolling windows achieve AUROC=1.0. Centroid converges at N=8.}
+\label{fig:online}
+\end{figure}
+
+\textbf{Finding 1032}: \textbf{AUROC = 1.0 at all calibration sizes ($N = 1$ to $N = 10$).} Discrimination is size-independent, but FPR control requires $N \geq 10$ for proper threshold estimation.
+
+\textbf{Finding 1033}: \textbf{30\% contamination is tolerated with zero degradation.} At 50\%, only the contaminating corruption's detection fails (fog: AUROC = 0.08) while other corruptions remain perfect. Contamination creates selective, not global, blind spots.
+
+\textbf{Finding 1034}: \textbf{Centroid converges at $N = 8$ (drift $< 10^{-6}$).} The near-zero in-distribution variance means the centroid stabilizes almost immediately, requiring minimal calibration effort.
+
+\textbf{Finding 1035}: \textbf{Rolling windows provide no benefit over full history.} Window = 3 achieves identical AUROC to window = full. The centroid is so stable that temporal adaptation mechanisms are unnecessary.
+
+\textbf{Finding 1036}: \textbf{FPR requires $N \geq 10$ for 0\% on held-out data.} With $N < 3$, the threshold is too tight (100\% FPR on unseen clean data). This establishes the minimum practical calibration requirement as 10 diverse clean images.
+
 \end{document}
