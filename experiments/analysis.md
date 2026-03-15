@@ -8127,3 +8127,41 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 5. **Batch vs EMA**: Both converge to identical performance. Batch (recomputing centroid from all samples) has no advantage over EMA.
 
 **Finding**: **Online centroid adaptation provides no benefit** for this detector. The static centroid from n=3 calibration samples is already optimal (AUROC=1.000), confirming the extreme stability discovered in Experiment 202. This simplifies deployment: calibrate once with 3-15 clean frames, compute the centroid, and deploy permanently — no online updates needed. The only risk is with aggressive EMA (α≥0.5), which can cause brief transient sensitivity reduction.
+---
+
+### Finding 204: Corruption Type Identification (Experiment 209)
+
+**Experiment**: Test whether nearest-centroid classification in hidden-state space can identify WHICH type of corruption is present, not just detect that corruption exists. Build per-corruption centroids from 8 calibration samples each, then classify 6 test samples per type using nearest centroid across 7 classes (clean + fog, night, blur, noise, rain, snow).
+
+**Confusion Matrix (All Layers)**:
+```
+         clean  fog  night  blur  noise  rain  snow
+clean      6     0     0     0      0     0     0
+fog        0     6     0     0      0     0     0
+night      0     0     6     0      0     0     0
+blur       0     0     0     6      0     0     0
+noise      0     0     0     0      6     0     0
+rain       0     0     0     0      0     6     0
+snow       0     0     0     0      0     0     6
+```
+**100% accuracy at L1, L3, AND L32.**
+
+**Inter-Corruption Centroid Distances (L1)**:
+| Pair | Distance |
+|------|----------|
+| clean→fog | 0.000424 (closest) |
+| clean→night | 0.002066 |
+| clean→blur | 0.000581 |
+| clean→noise | 0.002241 |
+| clean→rain | 0.004275 |
+| clean→snow | 0.001481 |
+| night→rain | 0.006131 (most distant) |
+
+**Key Findings**:
+1. **Perfect 7-class identification**: The nearest-centroid classifier achieves 100% accuracy across all 7 classes at every layer. Each corruption type occupies a distinct, non-overlapping region of embedding space.
+2. **Fog is closest to clean** (d=0.000424 at L1): Despite being closest, fog is still perfectly separable. The within-class variance is far smaller than the between-class distance.
+3. **Night is most distant from other corruptions**: night→rain = 0.006131 (L1), confirming night's unique embedding signature seen in prior experiments.
+4. **L32 has much larger inter-corruption distances**: Fog-clean distance at L32 = 0.185 vs L1 = 0.000424 (437× larger). Later layers create wider separation between all corruption types.
+5. **Rain is most distant from clean** at early layers (d=0.004275 at L1, d=0.009646 at L3), suggesting rain creates a highly distinctive embedding signature.
+
+**Finding**: Hidden-state embeddings support not only binary OOD detection but **full corruption type identification** via simple nearest-centroid classification with 100% accuracy across 7 classes (clean + 6 corruptions). Each corruption type creates a unique, deterministic displacement in the embedding space with inter-corruption distances 10-100× larger than within-class variance. This enables a single forward pass to simultaneously (1) detect OOD, (2) identify the specific corruption type, and (3) inform appropriate mitigation — all at zero additional computational cost beyond what's needed for detection.

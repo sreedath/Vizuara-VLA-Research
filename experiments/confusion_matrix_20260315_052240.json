@@ -1,0 +1,337 @@
+{
+  "experiment": "corruption_identification",
+  "experiment_number": 209,
+  "timestamp": "20260315_052240",
+  "n_id_cal": 10,
+  "n_corr_cal": 8,
+  "n_test": 6,
+  "corruption_types": [
+    "fog",
+    "night",
+    "blur",
+    "noise",
+    "rain",
+    "snow"
+  ],
+  "classification": {
+    "L1": {
+      "confusion": {
+        "clean": {
+          "clean": 6,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "fog": {
+          "clean": 0,
+          "fog": 6,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "night": {
+          "clean": 0,
+          "fog": 0,
+          "night": 6,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "blur": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 6,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "noise": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 6,
+          "rain": 0,
+          "snow": 0
+        },
+        "rain": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 6,
+          "snow": 0
+        },
+        "snow": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 6
+        }
+      },
+      "overall_accuracy": 1.0,
+      "per_class_accuracy": {
+        "clean": 1.0,
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0,
+        "rain": 1.0,
+        "snow": 1.0
+      }
+    },
+    "L3": {
+      "confusion": {
+        "clean": {
+          "clean": 6,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "fog": {
+          "clean": 0,
+          "fog": 6,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "night": {
+          "clean": 0,
+          "fog": 0,
+          "night": 6,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "blur": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 6,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "noise": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 6,
+          "rain": 0,
+          "snow": 0
+        },
+        "rain": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 6,
+          "snow": 0
+        },
+        "snow": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 6
+        }
+      },
+      "overall_accuracy": 1.0,
+      "per_class_accuracy": {
+        "clean": 1.0,
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0,
+        "rain": 1.0,
+        "snow": 1.0
+      }
+    },
+    "L32": {
+      "confusion": {
+        "clean": {
+          "clean": 6,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "fog": {
+          "clean": 0,
+          "fog": 6,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "night": {
+          "clean": 0,
+          "fog": 0,
+          "night": 6,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "blur": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 6,
+          "noise": 0,
+          "rain": 0,
+          "snow": 0
+        },
+        "noise": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 6,
+          "rain": 0,
+          "snow": 0
+        },
+        "rain": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 6,
+          "snow": 0
+        },
+        "snow": {
+          "clean": 0,
+          "fog": 0,
+          "night": 0,
+          "blur": 0,
+          "noise": 0,
+          "rain": 0,
+          "snow": 6
+        }
+      },
+      "overall_accuracy": 1.0,
+      "per_class_accuracy": {
+        "clean": 1.0,
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0,
+        "rain": 1.0,
+        "snow": 1.0
+      }
+    }
+  },
+  "binary_detection": {
+    "L1": {
+      "auroc": 1.0,
+      "id_mean": -0.0,
+      "ood_mean": 0.001908
+    },
+    "L3": {
+      "auroc": 1.0,
+      "id_mean": 0.0,
+      "ood_mean": 0.003942
+    },
+    "L32": {
+      "auroc": 1.0,
+      "id_mean": 0.0,
+      "ood_mean": 0.405576
+    }
+  },
+  "inter_corruption_distances": {
+    "L1": {
+      "clean_vs_fog": 0.000424,
+      "clean_vs_night": 0.002066,
+      "clean_vs_blur": 0.000581,
+      "clean_vs_noise": 0.002241,
+      "clean_vs_rain": 0.004275,
+      "clean_vs_snow": 0.001481,
+      "fog_vs_night": 0.002602,
+      "fog_vs_blur": 0.000787,
+      "fog_vs_noise": 0.002718,
+      "fog_vs_rain": 0.004503,
+      "fog_vs_snow": 0.0014,
+      "night_vs_blur": 0.002067,
+      "night_vs_noise": 0.004709,
+      "night_vs_rain": 0.006131,
+      "night_vs_snow": 0.004562,
+      "blur_vs_noise": 0.002762,
+      "blur_vs_rain": 0.004134,
+      "blur_vs_snow": 0.002027,
+      "noise_vs_rain": 0.00226,
+      "noise_vs_snow": 0.00092,
+      "rain_vs_snow": 0.002219
+    },
+    "L3": {
+      "clean_vs_fog": 0.000698,
+      "clean_vs_night": 0.003403,
+      "clean_vs_blur": 0.001068,
+      "clean_vs_noise": 0.004291,
+      "clean_vs_rain": 0.009646,
+      "clean_vs_snow": 0.003993,
+      "fog_vs_night": 0.004391,
+      "fog_vs_blur": 0.001729,
+      "fog_vs_noise": 0.004951,
+      "fog_vs_rain": 0.010371,
+      "fog_vs_snow": 0.003473,
+      "night_vs_blur": 0.003855,
+      "night_vs_noise": 0.007976,
+      "night_vs_rain": 0.01277,
+      "night_vs_snow": 0.008748,
+      "blur_vs_noise": 0.00462,
+      "blur_vs_rain": 0.010212,
+      "blur_vs_snow": 0.005161,
+      "noise_vs_rain": 0.005348,
+      "noise_vs_snow": 0.002264,
+      "rain_vs_snow": 0.004686
+    },
+    "L32": {
+      "clean_vs_fog": 0.185259,
+      "clean_vs_night": 0.480469,
+      "clean_vs_blur": 0.270134,
+      "clean_vs_noise": 0.423346,
+      "clean_vs_rain": 0.472819,
+      "clean_vs_snow": 0.481281,
+      "fog_vs_night": 0.500808,
+      "fog_vs_blur": 0.304187,
+      "fog_vs_noise": 0.476057,
+      "fog_vs_rain": 0.55124,
+      "fog_vs_snow": 0.487468,
+      "night_vs_blur": 0.425095,
+      "night_vs_noise": 0.581579,
+      "night_vs_rain": 0.563214,
+      "night_vs_snow": 0.628218,
+      "blur_vs_noise": 0.433573,
+      "blur_vs_rain": 0.52116,
+      "blur_vs_snow": 0.522111,
+      "noise_vs_rain": 0.396471,
+      "noise_vs_snow": 0.317202,
+      "rain_vs_snow": 0.27814
+    }
+  }
+}

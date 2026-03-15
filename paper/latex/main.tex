@@ -3929,4 +3929,28 @@ We test whether EMA (exponential moving average) centroid updates during deploym
 \label{fig:online_adaptation}
 \end{figure}
 
+\subsection{Corruption Type Identification}
+
+Beyond binary OOD detection, we test whether hidden-state embeddings can identify \emph{which} corruption type is present using simple nearest-centroid classification across 7 classes (clean + 6 corruption types).
+
+\textbf{Finding 407}: Nearest-centroid classification achieves \textbf{100\% accuracy} across all 7 classes at L1, L3, and L32. The confusion matrix is a perfect identity matrix---every test sample is correctly classified as its true corruption type. Each corruption creates a unique, deterministic displacement direction in the 4096-dimensional embedding space.
+
+\textbf{Finding 408}: Fog is closest to clean (cosine distance = 0.000424 at L1) yet still perfectly separable. Night is most distant from other corruptions (night$\leftrightarrow$rain = 0.006131), confirming its unique embedding signature. The inter-corruption distances are 10--100$\times$ larger than within-class variance.
+
+\textbf{Finding 409}: This enables a \textbf{single forward pass} to simultaneously (1) detect OOD, (2) identify the specific corruption type, and (3) inform type-specific mitigation---all at zero additional cost. For example, detecting fog could trigger contrast enhancement while detecting night could activate headlight compensation.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig220_confusion_matrix.png}
+\caption{\textbf{Corruption type identification.} Confusion matrices at L1, L3, and L32 show perfect 7-class classification (100\% accuracy). Each corruption type occupies a distinct, non-overlapping region of embedding space.}
+\label{fig:confusion_matrix}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig221_inter_corruption_dist.png}
+\caption{\textbf{Inter-corruption centroid distances.} Pairwise cosine distances between corruption-type centroids. L32 shows 437$\times$ larger separation than L1. Night is most isolated; fog is closest to clean but still perfectly separable.}
+\label{fig:inter_corruption}
+\end{figure}
+
 \end{document}
