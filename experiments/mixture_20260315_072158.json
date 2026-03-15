@@ -1,0 +1,105 @@
+{
+  "experiment": "mixture_decomposition",
+  "experiment_number": 240,
+  "timestamp": "20260315_072158",
+  "layer": 3,
+  "corruption_types": [
+    "fog",
+    "night",
+    "noise",
+    "blur"
+  ],
+  "results": {
+    "fog+night": {
+      "dist_to_clean": 0.003427,
+      "dist_to_types": {
+        "fog": 0.004319,
+        "night": 6.7e-05,
+        "noise": 0.006459,
+        "blur": 0.003794
+      },
+      "closest_type": "night",
+      "top2_types": [
+        "night",
+        "blur"
+      ],
+      "components_in_top2": false
+    },
+    "fog+noise": {
+      "dist_to_clean": 0.003399,
+      "dist_to_types": {
+        "fog": 0.002816,
+        "night": 0.008266,
+        "noise": 0.001002,
+        "blur": 0.004174
+      },
+      "closest_type": "noise",
+      "top2_types": [
+        "noise",
+        "fog"
+      ],
+      "components_in_top2": true
+    },
+    "fog+blur": {
+      "dist_to_clean": 0.001138,
+      "dist_to_types": {
+        "fog": 0.000519,
+        "night": 0.004931,
+        "noise": 0.003526,
+        "blur": 0.001009
+      },
+      "closest_type": "fog",
+      "top2_types": [
+        "fog",
+        "blur"
+      ],
+      "components_in_top2": true
+    },
+    "night+noise": {
+      "dist_to_clean": 0.0049,
+      "dist_to_types": {
+        "fog": 0.006408,
+        "night": 0.00265,
+        "noise": 0.004833,
+        "blur": 0.005714
+      },
+      "closest_type": "night",
+      "top2_types": [
+        "night",
+        "noise"
+      ],
+      "components_in_top2": true
+    },
+    "night+blur": {
+      "dist_to_clean": 0.003495,
+      "dist_to_types": {
+        "fog": 0.004688,
+        "night": 0.000303,
+        "noise": 0.006793,
+        "blur": 0.003762
+      },
+      "closest_type": "night",
+      "top2_types": [
+        "night",
+        "blur"
+      ],
+      "components_in_top2": true
+    },
+    "noise+blur": {
+      "dist_to_clean": 0.005609,
+      "dist_to_types": {
+        "fog": 0.00622,
+        "night": 0.006759,
+        "noise": 0.006189,
+        "blur": 0.002961
+      },
+      "closest_type": "blur",
+      "top2_types": [
+        "blur",
+        "noise"
+      ],
+      "components_in_top2": true
+    }
+  },
+  "top2_accuracy": 0.8333
+}

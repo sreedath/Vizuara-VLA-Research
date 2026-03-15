@@ -8996,3 +8996,32 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **The detector correctly differentiates all four phases**: Clean ≪ recovered ≪ corrupt, with clear separation between phases.
 
 **Finding 234**: The detector provides **real-time corruption recovery tracking**. Distance decreases monotonically during recovery, and recovered frames return to near-clean levels. The system can detect both corruption onset and corruption removal, enabling dynamic safety monitoring.
+
+---
+
+## Experiment 240: Corruption Mixture Decomposition
+
+**Research Question**: When two corruptions are applied simultaneously, can the detector identify the component types from the embedding? Tests all 6 pairwise combinations of fog, night, noise, blur.
+
+**Method**: Apply two corruptions sequentially. Classify the mixture by finding the 2 nearest single-corruption centroids. Evaluate whether the top-2 match the actual components.
+
+**Results**:
+
+| Mixture | Distance | Closest | Top-2 | Match? |
+|---------|---------|---------|-------|--------|
+| fog+night | 0.003427 | night | night, blur | No |
+| fog+noise | 0.003399 | noise | noise, fog | Yes |
+| fog+blur | 0.001138 | fog | fog, blur | Yes |
+| night+noise | 0.004900 | night | night, noise | Yes |
+| night+blur | 0.003495 | night | night, blur | Yes |
+| noise+blur | 0.005609 | blur | blur, noise | Yes |
+
+**Top-2 identification accuracy: 5/6 (83.3%)**
+
+**Key Findings**:
+1. **5/6 mixtures correctly decomposed**: Top-2 nearest centroids identify both component types in most cases.
+2. **fog+night fails**: Fog's small shift (0.000698) is dominated by night's large shift (0.003403), making the mixture look like pure night + blur instead of night + fog.
+3. **noise+blur produces largest mixture shift**: 0.005609, larger than either component alone (noise: 0.002883, blur: 0.001068). Corruption effects are approximately additive.
+4. **Mixtures are always detected**: All mixture distances far exceed the clean threshold. Even when decomposition fails, binary OOD detection succeeds.
+
+**Finding 235**: Corruption mixture decomposition achieves **83.3% accuracy** (5/6 pairwise mixtures correctly identified). The single failure case (fog+night) occurs when a weak corruption (fog) is dominated by a strong one (night). Mixture detection (binary) remains 100%.
