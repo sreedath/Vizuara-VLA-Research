@@ -6348,4 +6348,27 @@ We perform deep forensic analysis of the embedding shift structure: magnitude di
 
 \textbf{Finding 803}: \textbf{Night--blur sign agreement 72\%, fog--noise only 33\% --- matching directional anti-correlation.} Corruption pairs sharing sign structure (night--blur: both suppress visual detail) align directionally. The fog--noise 33\% sign agreement matches their 118.5$^\circ$ anti-correlation, confirming that sign patterns encode the corruption algebra structure.
 
+%% ============================================================
+\subsection{Experiment 338: Robustness Limits}
+\label{sec:exp338}
+
+We systematically probe the detector's limits: minimum detectable severity, edge-case images, JPEG compression sensitivity, resolution scaling, and combined drift+corruption stress.
+
+\textbf{Setup.} We use binary search for minimum detectable severity (10 iterations), test 8 edge-case images (solid colors, gradients, checkerboards), sweep JPEG quality (Q=5--95), test 5 resolutions (32--448), and combine scene drift (0--20\%) with corruption (fog/blur at 0.1/0.5).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig347_limits.png}
+\caption{\textbf{Figure~347: Robustness limits.} (A)~Night/noise detected at 0.001\% severity. (B)~Fog on white is undetectable (principled limitation). (C)~JPEG Q=95 produces $d>0$ (potential FP). (D)~All non-224 resolutions detected. (E)~10\% drift masks fog@10\% but not blur@50\%. (F)~Summary of limitations and strengths.}
+\label{fig:limits}
+\end{figure}
+
+\textbf{Finding 804}: \textbf{Night/noise detected at 0.001\% severity (sub-pixel level).} Binary search reveals detection thresholds of $\sim 10^{-5}$ severity for night and noise --- the equivalent of changing one pixel in a million by a single intensity level. This extreme sensitivity derives from the zero in-distribution variance.
+
+\textbf{Finding 805}: \textbf{Fog on pure white is undetectable ($d=0$) --- a principled, not accidental, limitation.} Fog pushes pixels toward white ($\alpha$-blend with 1.0). A white image is already at the fog endpoint; corrupting it has no effect. This is 7/8 edge cases detected, with the lone failure being physically meaningful rather than a detector flaw.
+
+\textbf{Finding 806}: \textbf{JPEG Q=95 produces $d = 4.5 \times 10^{-5}$ --- deployment must account for compression artifacts.} Even high-quality JPEG introduces detectable embedding shifts. Practical deployment should either calibrate using JPEG-compressed images (matching the camera pipeline) or apply a threshold $\tau > 5 \times 10^{-5}$ that exceeds expected JPEG distortion.
+
+\textbf{Finding 807}: \textbf{10\% drift masks fog@10\% but not blur@50\% --- quantifying the drift$\times$corruption interaction.} Scene drift can overwhelm weak corruption signals: fog at 10\% severity has net signal $\approx 0$ under 10\% drift. However, moderate-to-strong corruptions (blur@50\%: $5\times$ net signal survives) remain reliably detected even under substantial scene evolution.
+
 \end{document}

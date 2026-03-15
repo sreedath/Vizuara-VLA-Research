@@ -1,0 +1,256 @@
+{
+  "min_detection": {
+    "fog": {
+      "min_severity": 0.008134765625,
+      "distance_at_min": 1.7881393432617188e-06
+    },
+    "night": {
+      "min_severity": 9.765625e-06,
+      "distance_at_min": 2.9385089874267578e-05
+    },
+    "noise": {
+      "min_severity": 9.765625e-06,
+      "distance_at_min": 2.0265579223632812e-06
+    },
+    "blur": {
+      "min_severity": 0.010039062500000001,
+      "distance_at_min": 1.0132789611816406e-06
+    }
+  },
+  "edge_cases": {
+    "black": {
+      "dist_from_random_scene": 0.00899583101272583,
+      "fog_detection_dist": 0.005350768566131592,
+      "fog_detectable": true
+    },
+    "white": {
+      "dist_from_random_scene": 0.005598187446594238,
+      "fog_detection_dist": 0.0,
+      "fog_detectable": false
+    },
+    "gray": {
+      "dist_from_random_scene": 0.005626380443572998,
+      "fog_detection_dist": 0.0018758177757263184,
+      "fog_detectable": true
+    },
+    "red": {
+      "dist_from_random_scene": 0.004285037517547607,
+      "fog_detection_dist": 0.006379663944244385,
+      "fog_detectable": true
+    },
+    "green": {
+      "dist_from_random_scene": 0.004489004611968994,
+      "fog_detection_dist": 0.004971981048583984,
+      "fog_detectable": true
+    },
+    "blue": {
+      "dist_from_random_scene": 0.00526350736618042,
+      "fog_detection_dist": 0.004698455333709717,
+      "fog_detectable": true
+    },
+    "gradient": {
+      "dist_from_random_scene": 0.004895627498626709,
+      "fog_detection_dist": 0.0015211105346679688,
+      "fog_detectable": true
+    },
+    "checkerboard": {
+      "dist_from_random_scene": 0.006684005260467529,
+      "fog_detection_dist": 0.0041814446449279785,
+      "fog_detectable": true
+    }
+  },
+  "jpeg_compression": {
+    "q95": {
+      "distance": 4.5418739318847656e-05,
+      "detected": true
+    },
+    "q80": {
+      "distance": 3.921985626220703e-05,
+      "detected": true
+    },
+    "q60": {
+      "distance": 0.00012636184692382812,
+      "detected": true
+    },
+    "q40": {
+      "distance": 0.0002861618995666504,
+      "detected": true
+    },
+    "q20": {
+      "distance": 0.0005105137825012207,
+      "detected": true
+    },
+    "q5": {
+      "distance": 0.0034623146057128906,
+      "detected": true
+    }
+  },
+  "resolution": {
+    "32x32": {
+      "distance": 0.003983438014984131,
+      "detected": true
+    },
+    "64x64": {
+      "distance": 0.0021341443061828613,
+      "detected": true
+    },
+    "112x112": {
+      "distance": 0.0009309649467468262,
+      "detected": true
+    },
+    "224x224": {
+      "distance": 0.0,
+      "detected": false
+    },
+    "448x448": {
+      "distance": 0.00035321712493896484,
+      "detected": true
+    }
+  },
+  "combined_stress": {
+    "drift0_fog_0.1": {
+      "drift_pct": 0,
+      "corruption": "fog",
+      "severity": 0.1,
+      "total_distance": 6.240606307983398e-05,
+      "drift_only_distance": 0.0,
+      "net_corruption_signal": 6.240606307983398e-05,
+      "detected_vs_cal": true
+    },
+    "drift0_fog_0.5": {
+      "drift_pct": 0,
+      "corruption": "fog",
+      "severity": 0.5,
+      "total_distance": 0.0008426308631896973,
+      "drift_only_distance": 0.0,
+      "net_corruption_signal": 0.0008426308631896973,
+      "detected_vs_cal": true
+    },
+    "drift0_blur_0.1": {
+      "drift_pct": 0,
+      "corruption": "blur",
+      "severity": 0.1,
+      "total_distance": 0.0007543563842773438,
+      "drift_only_distance": 0.0,
+      "net_corruption_signal": 0.0007543563842773438,
+      "detected_vs_cal": true
+    },
+    "drift0_blur_0.5": {
+      "drift_pct": 0,
+      "corruption": "blur",
+      "severity": 0.5,
+      "total_distance": 0.005036652088165283,
+      "drift_only_distance": 0.0,
+      "net_corruption_signal": 0.005036652088165283,
+      "detected_vs_cal": true
+    },
+    "drift5_fog_0.1": {
+      "drift_pct": 5,
+      "corruption": "fog",
+      "severity": 0.1,
+      "total_distance": 4.017353057861328e-05,
+      "drift_only_distance": 1.3232231140136719e-05,
+      "net_corruption_signal": 2.6941299438476562e-05,
+      "detected_vs_cal": true
+    },
+    "drift5_fog_0.5": {
+      "drift_pct": 5,
+      "corruption": "fog",
+      "severity": 0.5,
+      "total_distance": 0.0007920265197753906,
+      "drift_only_distance": 1.3232231140136719e-05,
+      "net_corruption_signal": 0.0007787942886352539,
+      "detected_vs_cal": true
+    },
+    "drift5_blur_0.1": {
+      "drift_pct": 5,
+      "corruption": "blur",
+      "severity": 0.1,
+      "total_distance": 0.0007274746894836426,
+      "drift_only_distance": 1.3232231140136719e-05,
+      "net_corruption_signal": 0.0007142424583435059,
+      "detected_vs_cal": true
+    },
+    "drift5_blur_0.5": {
+      "drift_pct": 5,
+      "corruption": "blur",
+      "severity": 0.5,
+      "total_distance": 0.005210578441619873,
+      "drift_only_distance": 1.3232231140136719e-05,
+      "net_corruption_signal": 0.005197346210479736,
+      "detected_vs_cal": true
+    },
+    "drift10_fog_0.1": {
+      "drift_pct": 10,
+      "corruption": "fog",
+      "severity": 0.1,
+      "total_distance": 4.947185516357422e-05,
+      "drift_only_distance": 5.161762237548828e-05,
+      "net_corruption_signal": -2.1457672119140625e-06,
+      "detected_vs_cal": true
+    },
+    "drift10_fog_0.5": {
+      "drift_pct": 10,
+      "corruption": "fog",
+      "severity": 0.5,
+      "total_distance": 0.0006821155548095703,
+      "drift_only_distance": 5.161762237548828e-05,
+      "net_corruption_signal": 0.000630497932434082,
+      "detected_vs_cal": true
+    },
+    "drift10_blur_0.1": {
+      "drift_pct": 10,
+      "corruption": "blur",
+      "severity": 0.1,
+      "total_distance": 0.000777125358581543,
+      "drift_only_distance": 5.161762237548828e-05,
+      "net_corruption_signal": 0.0007255077362060547,
+      "detected_vs_cal": true
+    },
+    "drift10_blur_0.5": {
+      "drift_pct": 10,
+      "corruption": "blur",
+      "severity": 0.5,
+      "total_distance": 0.00526881217956543,
+      "drift_only_distance": 5.161762237548828e-05,
+      "net_corruption_signal": 0.005217194557189941,
+      "detected_vs_cal": true
+    },
+    "drift20_fog_0.1": {
+      "drift_pct": 20,
+      "corruption": "fog",
+      "severity": 0.1,
+      "total_distance": 0.00016003847122192383,
+      "drift_only_distance": 0.0002663731575012207,
+      "net_corruption_signal": -0.00010633468627929688,
+      "detected_vs_cal": true
+    },
+    "drift20_fog_0.5": {
+      "drift_pct": 20,
+      "corruption": "fog",
+      "severity": 0.5,
+      "total_distance": 0.0005415081977844238,
+      "drift_only_distance": 0.0002663731575012207,
+      "net_corruption_signal": 0.0002751350402832031,
+      "detected_vs_cal": true
+    },
+    "drift20_blur_0.1": {
+      "drift_pct": 20,
+      "corruption": "blur",
+      "severity": 0.1,
+      "total_distance": 0.0008662939071655273,
+      "drift_only_distance": 0.0002663731575012207,
+      "net_corruption_signal": 0.0005999207496643066,
+      "detected_vs_cal": true
+    },
+    "drift20_blur_0.5": {
+      "drift_pct": 20,
+      "corruption": "blur",
+      "severity": 0.5,
+      "total_distance": 0.005342960357666016,
+      "drift_only_distance": 0.0002663731575012207,
+      "net_corruption_signal": 0.005076587200164795,
+      "detected_vs_cal": true
+    }
+  }
+}

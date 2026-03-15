@@ -13721,3 +13721,51 @@ Blur has the most distributed signal (941 effective dims, top-5 carry only 23%).
 **Finding 550**: **Night-blur sign agreement is 72%; fog-noise is only 33%.** Corruption pairs that share more sign structure are those that act on similar image features (night-blur both suppress detail). Fog-noise anti-correlation in signs matches their 118.5° directional anti-correlation found in Experiment 323.
 
 **Finding 551**: **Night has the most stable cross-scene fingerprint (3690/4096 dims stable, sign consistency 0.960).** Night's shift vector is the most invariant to scene content — nearly the same 4096D direction regardless of what's in the image. This is because night uniformly suppresses all pixel values, creating a scene-independent transformation.
+
+---
+
+## Experiment 338: Robustness Limits (Real OpenVLA-7B)
+
+**Date:** 2025-03-15
+**Script:** `scripts/real_vla_robustness_limits.py`
+**Results:** `experiments/robustness_limits_20260315_132331.json`
+**Figure:** `paper/latex/fig347_limits.png`
+
+Systematically probes the detector's limits: minimum detectable perturbation, edge cases, JPEG compression, resolution scaling, and combined stress.
+
+### Minimum Detection Threshold
+
+| Corruption | Min Severity | Distance |
+|-----------|-------------|----------|
+| Night | 0.001% | 2.94e-5 |
+| Noise | 0.001% | 2.03e-6 |
+| Fog | 0.81% | 1.79e-6 |
+| Blur | 1.0% | 1.01e-6 |
+
+Night and noise detectable at 0.001% severity (sub-pixel level). Blur has the highest threshold (1%).
+
+### Edge Cases
+
+Fog on a WHITE image is UNDETECTABLE (d=0.0). This is because fog pushes pixel values toward white, and a pure white image is already at the fog corruption endpoint. All other edge cases (black, gray, colors, gradient, checkerboard) have fog detectable.
+
+### JPEG Compression
+
+ALL quality levels produce d>0, even Q=95 (d=4.54e-5). This means JPEG artifacts are detected as anomalies — a potential source of false positives if the deployment uses JPEG cameras. Q=5 produces d=3.46e-3, equivalent to moderate corruption.
+
+### Resolution Scaling
+
+All non-224×224 resolutions produce d>0. Resize artifacts from downscaling/upscaling are detected. This means the detector requires exact resolution matching between calibration and test time.
+
+### Combined Stress
+
+Drift + weak corruption: fog@0.1 with 10% drift has net signal ≈ 0 (d=0.049 vs drift-only d=0.051). Strong corruptions (blur@0.5) survive 20% drift with >5× net signal.
+
+### Key Findings
+
+**Finding 552**: **Night and noise detectable at 0.001% severity — sub-pixel perturbation level.** Binary search finds the minimum detectable severity is ~10^{-5} for night and noise. This extreme sensitivity comes from the zero-variance property: ANY deviation from the identical clean embedding is detected.
+
+**Finding 553**: **Fog on pure white image is undetectable (d=0.0) — a principled limitation.** White pixels cannot be pushed further toward white by fog corruption, so the corrupted image is identical to the clean one. This is not a detector failure but a fundamental physical constraint: the corruption has no effect.
+
+**Finding 554**: **JPEG compression (even Q=95) produces d>0 — potential false positive source.** JPEG artifacts are indistinguishable from corruption in embedding space. Deployment must either calibrate with JPEG images or use a threshold that accounts for expected JPEG distortion (~5e-5 at Q=95).
+
+**Finding 555**: **Combined drift+corruption: 10% drift masks fog@10% (net signal ≈ 0) but not blur@50% (5× net signal survives).** Weak corruptions can be masked by scene drift, while strong corruptions remain detectable. This quantifies the interaction between the two failure modes identified in Experiment 330.
