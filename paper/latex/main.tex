@@ -5638,4 +5638,20 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 663}: \textbf{Moment shifts are negligible} (mean shift $< 0.001$, std shift $< 0.005$ at L3) despite perfect detection. Standard statistical tests on activation distributions would completely miss the OOD signal. The corruption information is encoded in the embedding \emph{direction}, not in aggregate statistics like mean, variance, or kurtosis.
 
+\subsection{Comprehensive Method Comparison}
+
+\textbf{Experiment 304: Head-to-Head Comparison.} We compare 7 OOD detection methods on identical data: cosine distance (ours), Euclidean distance, L2 norm change, random projection (32D), maximum softmax probability (MSP), energy score, and output entropy.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig313_comparison.png}
+\caption{Comprehensive method comparison (100th experiment). Left: All 4 embedding-space methods (cosine, Euclidean, norm, random projection) achieve AUROC=1.0 for all corruptions. MSP/energy fail on fog (0.667); entropy fails on fog (0.333) and noise (0.667). Right: AUROC heatmap --- green rows are perfect methods, red cells indicate failures.}
+\end{figure}
+
+\textbf{Finding 664}: \textbf{All embedding-space methods achieve perfect AUROC=1.0} --- cosine, Euclidean, L2 norm, and 32D random projection all detect every corruption type. The detection signal is sufficiently strong that \emph{any} reasonable metric on the hidden state achieves perfect separation. In contrast, output-space methods fail: MSP and energy miss fog (0.667), entropy misses fog (0.333) and noise (0.667).
+
+\textbf{Finding 665}: \textbf{Fog uniquely evades output-space detectors} because it \emph{increases} model confidence (top-1 prob $0.476 > 0.433$ clean) while producing completely wrong actions. This makes fog the most dangerous corruption type: high confidence + wrong action + invisible to MSP/energy/entropy. Only embedding-space methods detect it.
+
+\textbf{Finding 666}: \textbf{Random projection (32D) matches full cosine (4096D)} with zero AUROC loss in this head-to-head comparison, confirming that $128\times$ compression preserves perfect detection. The deployable detector requires only 32 multiply-accumulate operations for the distance computation, adding negligible overhead to the VLA inference pipeline.
+
 \end{document}

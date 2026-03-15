@@ -1,0 +1,122 @@
+{
+  "experiment": "method_comparison",
+  "experiment_number": 304,
+  "timestamp": "20260315_110308",
+  "method_aurocs": {
+    "fog": {
+      "cosine": 1.0,
+      "euclidean": 1.0,
+      "norm": 1.0,
+      "msp": 0.6666666666666666,
+      "energy": 0.6666666666666666,
+      "entropy": 0.3333333333333333,
+      "proj_cosine": 1.0
+    },
+    "night": {
+      "cosine": 1.0,
+      "euclidean": 1.0,
+      "norm": 1.0,
+      "msp": 1.0,
+      "energy": 1.0,
+      "entropy": 1.0,
+      "proj_cosine": 1.0
+    },
+    "blur": {
+      "cosine": 1.0,
+      "euclidean": 1.0,
+      "norm": 1.0,
+      "msp": 1.0,
+      "energy": 1.0,
+      "entropy": 1.0,
+      "proj_cosine": 1.0
+    },
+    "noise": {
+      "cosine": 1.0,
+      "euclidean": 1.0,
+      "norm": 1.0,
+      "msp": 1.0,
+      "energy": 1.0,
+      "entropy": 0.6666666666666666,
+      "proj_cosine": 1.0
+    }
+  },
+  "overall": {
+    "cosine": {
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      }
+    },
+    "euclidean": {
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      }
+    },
+    "norm": {
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      }
+    },
+    "msp": {
+      "mean": 0.9166666666666666,
+      "min": 0.6666666666666666,
+      "max": 1.0,
+      "per_corruption": {
+        "fog": 0.6666666666666666,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      }
+    },
+    "energy": {
+      "mean": 0.9166666666666666,
+      "min": 0.6666666666666666,
+      "max": 1.0,
+      "per_corruption": {
+        "fog": 0.6666666666666666,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      }
+    },
+    "entropy": {
+      "mean": 0.7499999999999999,
+      "min": 0.3333333333333333,
+      "max": 1.0,
+      "per_corruption": {
+        "fog": 0.3333333333333333,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 0.6666666666666666
+      }
+    },
+    "proj_cosine": {
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      }
+    }
+  }
+}
