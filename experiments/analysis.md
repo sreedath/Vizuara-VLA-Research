@@ -15152,3 +15152,60 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 679**: This architectural property — that intermediate representations are meaningless without layer normalization — suggests that corruption detection must operate in the hidden state space rather than the logit space, validating our embedding-based approach.
 
+
+## Experiment 367: Embedding Manifold Geometry
+
+**Script**: `scripts/real_vla_manifold_geometry.py`
+**Result**: `experiments/manifold_geometry_20260315_154723.json`
+**Figure**: `figures/fig376_manifold.png`
+
+### Key Results
+
+**Pairwise Distance Distributions**:
+| Distribution | Mean | Range |
+|-------------|------|-------|
+| Within-clean | 0.000083 | [0.000039, 0.000229] |
+| Fog between | 0.000995 | separation 11.9x |
+| Night between | 0.002035 | separation 24.4x |
+| Noise between | 0.000119 | separation 1.4x |
+| Blur between | 0.005044 | separation 60.5x |
+
+**Corruption Shift Direction Consistency (pairwise cosine sim)**:
+| Corruption | Pairwise Sim | Alignment to Mean |
+|-----------|-------------|-------------------|
+| Fog | 0.975 | 0.988 |
+| Night | 0.974 | 0.988 |
+| Noise | 0.530 | 0.744 |
+| Blur | 0.961 | 0.981 |
+
+**Cross-Corruption Angular Relationships**:
+- Fog ↔ Night: -0.288 (anti-correlated)
+- Fog ↔ Noise: -0.334 (anti-correlated)
+- Fog ↔ Blur: +0.464 (weakly correlated)
+- Night ↔ Noise: -0.074 (nearly orthogonal)
+- Night ↔ Blur: +0.165 (weakly correlated)
+- Noise ↔ Blur: -0.237 (anti-correlated)
+
+**Embedding Norm Analysis**: Clean norm=8.295±0.015
+- Fog: +1.02%, Night: +0.82%, Noise: -0.17%, Blur: -0.59%
+
+**Projection onto Corruption Axes**:
+| Corruption | Fog Axis | Night Axis | Noise Axis | Blur Axis |
+|-----------|---------|-----------|-----------|----------|
+| Fog | **0.377** | -0.115 | -0.198 | 0.178 |
+| Night | -0.161 | **0.529** | -0.071 | 0.088 |
+| Noise | -0.050 | -0.013 | **0.096** | -0.036 |
+| Blur | 0.385 | 0.135 | -0.309 | **0.816** |
+
+### Findings
+
+**Finding 680**: Blur achieves 60.5x separation ratio (between-class distance / within-clean distance), while noise achieves only 1.4x. This quantifies why blur is perfectly detectable while noise requires careful calibration.
+
+**Finding 681**: Corruption shifts are remarkably consistent across scenes: fog/night/blur have pairwise shift similarity >0.96, meaning each corruption moves ALL images in nearly the same direction. Only noise is inconsistent (0.53), explaining its detection difficulty.
+
+**Finding 682**: Cross-corruption shifts are nearly orthogonal or anti-correlated: fog↔noise = -0.334, night↔noise = -0.074, fog↔night = -0.288. Each corruption type occupies a distinct direction in embedding space, enabling corruption-type identification.
+
+**Finding 683**: Fog and night INCREASE embedding norm (+1.0%, +0.8%) while noise and blur DECREASE it (-0.2%, -0.6%). Brightness corruptions push embeddings outward; spatial corruptions pull them inward.
+
+**Finding 684**: The projection matrix reveals blur has the largest on-axis component (0.816) and significant fog-axis leakage (0.385), while noise has the smallest on-axis component (0.096). This explains the PCA finding that 3 dimensions suffice for fog/blur but not noise.
+

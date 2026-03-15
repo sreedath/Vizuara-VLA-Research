@@ -1,0 +1,212 @@
+{
+  "distance_distributions": {
+    "within_clean": {
+      "mean": 8.33410958875902e-05,
+      "std": 2.8345950340735726e-05,
+      "min": 3.9458274841308594e-05,
+      "max": 0.0002289414405822754
+    },
+    "fog": {
+      "within_corrupt_mean": 4.036897007608786e-05,
+      "within_corrupt_std": 9.25333188206423e-06,
+      "between_mean": 0.0009952366817742586,
+      "between_std": 7.742709567537531e-05,
+      "between_min": 0.0008383989334106445,
+      "between_max": 0.0011276602745056152,
+      "separation_ratio": 11.941727638244629
+    },
+    "night": {
+      "within_corrupt_mean": 0.00011026388528989628,
+      "within_corrupt_std": 3.564458165783435e-05,
+      "between_mean": 0.002035477664321661,
+      "between_std": 0.00012600286572705954,
+      "between_min": 0.0017763972282409668,
+      "between_max": 0.002361893653869629,
+      "separation_ratio": 24.4234561920166
+    },
+    "noise": {
+      "within_corrupt_mean": 8.253361011156812e-05,
+      "within_corrupt_std": 2.379326178925112e-05,
+      "between_mean": 0.0001189112663269043,
+      "between_std": 3.1979776395019144e-05,
+      "between_min": 7.43865966796875e-05,
+      "between_max": 0.00019663572311401367,
+      "separation_ratio": 1.4268022775650024
+    },
+    "blur": {
+      "within_corrupt_mean": 0.00034007776412181556,
+      "within_corrupt_std": 0.00013263414439279586,
+      "between_mean": 0.005044335033744574,
+      "between_std": 0.00036393271875567734,
+      "between_min": 0.004403889179229736,
+      "between_max": 0.0058097243309021,
+      "separation_ratio": 60.52638244628906
+    }
+  },
+  "shift_consistency": {
+    "fog": {
+      "mean_pairwise_sim": 0.9749624217811383,
+      "min_pairwise_sim": 0.9450963139533997,
+      "std_pairwise_sim": 0.008236001821523564,
+      "mean_alignment": 0.9880331099033356,
+      "min_alignment": 0.9759085178375244,
+      "mean_shift_norm": 0.3769504725933075
+    },
+    "night": {
+      "mean_pairwise_sim": 0.9744289056250923,
+      "min_pairwise_sim": 0.9498432278633118,
+      "std_pairwise_sim": 0.006400634486291816,
+      "mean_alignment": 0.9877784073352813,
+      "min_alignment": 0.9810423851013184,
+      "mean_shift_norm": 0.5294249057769775
+    },
+    "noise": {
+      "mean_pairwise_sim": 0.5304214215592334,
+      "min_pairwise_sim": 0.1508832424879074,
+      "std_pairwise_sim": 0.12034137037679545,
+      "mean_alignment": 0.7437826633453369,
+      "min_alignment": 0.5207322239875793,
+      "mean_shift_norm": 0.09599185734987259
+    },
+    "blur": {
+      "mean_pairwise_sim": 0.9604619951624619,
+      "min_pairwise_sim": 0.915738582611084,
+      "std_pairwise_sim": 0.014009764003622218,
+      "mean_alignment": 0.9810384005308151,
+      "min_alignment": 0.9572627544403076,
+      "mean_shift_norm": 0.816292405128479
+    }
+  },
+  "cross_angular": {
+    "fog_vs_night": {
+      "mean_sim": -0.2876554235816002,
+      "std_sim": 0.050129040071441505
+    },
+    "fog_vs_noise": {
+      "mean_sim": -0.3341169201768935,
+      "std_sim": 0.14833812198511218
+    },
+    "fog_vs_blur": {
+      "mean_sim": 0.4639560654759407,
+      "std_sim": 0.040454840029824676
+    },
+    "night_vs_noise": {
+      "mean_sim": -0.07348562139086426,
+      "std_sim": 0.05391207201147207
+    },
+    "night_vs_blur": {
+      "mean_sim": 0.16451984085142612,
+      "std_sim": 0.04882016315819476
+    },
+    "noise_vs_blur": {
+      "mean_sim": -0.23726434563286602,
+      "std_sim": 0.12501766151340113
+    }
+  },
+  "norm_analysis": {
+    "clean": {
+      "mean_norm": 8.29500412940979,
+      "std_norm": 0.015440668428797443,
+      "min_norm": 8.272475242614746,
+      "max_norm": 8.33073902130127
+    },
+    "fog": {
+      "mean_norm": 8.379975938796997,
+      "std_norm": 0.015252033610643288,
+      "mean_change_pct": 1.0245210648418512,
+      "max_change_pct": 1.377552065626041
+    },
+    "night": {
+      "mean_norm": 8.363376331329345,
+      "std_norm": 0.01992734032518336,
+      "mean_change_pct": 0.8244883118841495,
+      "max_change_pct": 1.3324017067595255
+    },
+    "noise": {
+      "mean_norm": 8.280941200256347,
+      "std_norm": 0.013911542831129177,
+      "mean_change_pct": -0.1693445757807605,
+      "max_change_pct": 0.5812696204711973
+    },
+    "blur": {
+      "mean_norm": 8.2461332321167,
+      "std_norm": 0.023875758349180494,
+      "mean_change_pct": -0.5889042580201738,
+      "max_change_pct": 1.342990561774781
+    }
+  },
+  "projection": {
+    "fog": {
+      "fog": {
+        "mean_proj": 0.3769504576921463,
+        "std_proj": 0.016107085070592227
+      },
+      "night": {
+        "mean_proj": -0.11477348320186138,
+        "std_proj": 0.0062358450531858544
+      },
+      "noise": {
+        "mean_proj": -0.19807571768760682,
+        "std_proj": 0.011107583922139416
+      },
+      "blur": {
+        "mean_proj": 0.1775347352027893,
+        "std_proj": 0.013533193401812638
+      }
+    },
+    "night": {
+      "fog": {
+        "mean_proj": -0.161198740452528,
+        "std_proj": 0.021820019615509553
+      },
+      "night": {
+        "mean_proj": 0.5294249385595322,
+        "std_proj": 0.015653543413252664
+      },
+      "noise": {
+        "mean_proj": -0.07136631142348052,
+        "std_proj": 0.014347392462323473
+      },
+      "blur": {
+        "mean_proj": 0.0876884100958705,
+        "std_proj": 0.016706654307081386
+      }
+    },
+    "noise": {
+      "fog": {
+        "mean_proj": -0.05044072801247239,
+        "std_proj": 0.023341298960747922
+      },
+      "night": {
+        "mean_proj": -0.012939672544598579,
+        "std_proj": 0.007598420532188544
+      },
+      "noise": {
+        "mean_proj": 0.09599186554551124,
+        "std_proj": 0.019158341688203056
+      },
+      "blur": {
+        "mean_proj": -0.03638602519349661,
+        "std_proj": 0.021487484058191002
+      }
+    },
+    "blur": {
+      "fog": {
+        "mean_proj": 0.3844543695449829,
+        "std_proj": 0.028397621306578833
+      },
+      "night": {
+        "mean_proj": 0.1352021422237158,
+        "std_proj": 0.026968393415875595
+      },
+      "noise": {
+        "mean_proj": -0.3094182923436165,
+        "std_proj": 0.025052365971869887
+      },
+      "blur": {
+        "mean_proj": 0.8162924498319626,
+        "std_proj": 0.03112767108682767
+      }
+    }
+  }
+}
