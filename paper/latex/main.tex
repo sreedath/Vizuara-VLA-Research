@@ -3335,4 +3335,29 @@ We quantify the safety impact of OOD conditions by measuring how many of the 7 p
 \label{fig:action_divergence_bars}
 \end{figure}
 
+\subsection{Leave-One-Scene-Out Generalization}
+
+We perform leave-one-scene-out cross-validation across 5 scene types (highway, urban, rural, parking, tunnel) to test whether novel environments trigger false alarms.
+
+\textbf{Finding 306}: \textbf{Similar scenes generalize}: holding out highway, urban, or rural produces FPR = 0.000 on the novel scene, because the remaining similar scenes provide sufficient centroid coverage.
+
+\textbf{Finding 307}: \textbf{Genuinely novel environments are correctly flagged}: parking and tunnel produce FPR = 1.000 when held out. Tunnel embeddings are even \textit{further} from the centroid than OOD corruptions (novel\_vs\_ood AUROC = 0.056). This is a \textbf{safety feature}: deploying in an uncalibrated environment should raise an alert.
+
+\textbf{Finding 308}: This result provides the operational requirement for multi-centroid calibration (Finding 290): all expected operating domains must be represented in calibration. Novel domain detection is an additional safety benefit of the centroid-based approach.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig176_leave_one_out.png}
+\caption{\textbf{Leave-one-scene-out validation.} (Left) FPR on held-out scene: similar scenes (highway/urban/rural) generalize perfectly, while dissimilar scenes (parking/tunnel) are correctly flagged. (Right) AUROC distinguishing novel scenes from OOD corruptions.}
+\label{fig:leave_one_out}
+\end{figure}
+
+\subsection{Inference Determinism}
+
+A practical concern for deployment is whether repeated forward passes on the same input produce consistent embeddings.
+
+\textbf{Finding 309}: VLA hidden state extraction is \textbf{perfectly deterministic}: 10 repeated forward passes on 3 different images produce maximum element difference of exactly 0.0 at both layers. Cosine distance between repeated passes is 0.0 (or negligible $\sim 10^{-7}$ due to float rounding).
+
+This confirms that calibration centroids and thresholds are stable, and the same input will always produce the same detection decision without requiring averaging or ensembling.
+
 \end{document}

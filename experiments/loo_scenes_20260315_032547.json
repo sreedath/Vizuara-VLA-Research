@@ -1,0 +1,109 @@
+{
+  "experiment": "loo_scenes",
+  "experiment_number": 177,
+  "timestamp": "20260315_032547",
+  "n_cal_per": 3,
+  "n_test_per": 3,
+  "scenes": [
+    "highway",
+    "urban",
+    "rural",
+    "parking",
+    "tunnel"
+  ],
+  "ood_categories": [
+    "fog_60",
+    "night"
+  ],
+  "layers": [
+    3,
+    32
+  ],
+  "results": {
+    "highway": {
+      "L3": {
+        "novel_mean_dist": 0.000896592934926351,
+        "same_mean_dist": 0.0013601432243982952,
+        "ood_mean_dist": 0.002423487603664398,
+        "auroc_novel_as_id_vs_ood": 1.0,
+        "auroc_novel_vs_same": 0.25
+      },
+      "L32": {
+        "novel_mean_dist": 0.23737913370132446,
+        "same_mean_dist": 0.1636367291212082,
+        "ood_mean_dist": 0.2865377143025398,
+        "auroc_novel_as_id_vs_ood": 0.5,
+        "auroc_novel_vs_same": 1.0
+      },
+      "fpr_on_novel": 0.0
+    },
+    "urban": {
+      "L3": {
+        "novel_mean_dist": 0.0013446211814880371,
+        "same_mean_dist": 0.0012684961160024006,
+        "ood_mean_dist": 0.0024794613321622214,
+        "auroc_novel_as_id_vs_ood": 0.875,
+        "auroc_novel_vs_same": 0.75
+      },
+      "L32": {
+        "novel_mean_dist": 0.19275389115015665,
+        "same_mean_dist": 0.17221967379252115,
+        "ood_mean_dist": 0.28622258206208545,
+        "auroc_novel_as_id_vs_ood": 0.8333333333333334,
+        "auroc_novel_vs_same": 0.75
+      },
+      "fpr_on_novel": 0.0
+    },
+    "rural": {
+      "L3": {
+        "novel_mean_dist": 0.0012184580167134602,
+        "same_mean_dist": 0.001297314961751302,
+        "ood_mean_dist": 0.0023600483934084573,
+        "auroc_novel_as_id_vs_ood": 0.9722222222222222,
+        "auroc_novel_vs_same": 0.6666666666666666
+      },
+      "L32": {
+        "novel_mean_dist": 0.22075003385543823,
+        "same_mean_dist": 0.16838549574216208,
+        "ood_mean_dist": 0.274037703871727,
+        "auroc_novel_as_id_vs_ood": 0.5277777777777778,
+        "auroc_novel_vs_same": 1.0
+      },
+      "fpr_on_novel": 0.0
+    },
+    "parking": {
+      "L3": {
+        "novel_mean_dist": 0.002225041389465332,
+        "same_mean_dist": 0.0010969291130701702,
+        "ood_mean_dist": 0.002273609240849813,
+        "auroc_novel_as_id_vs_ood": 0.5,
+        "auroc_novel_vs_same": 0.75
+      },
+      "L32": {
+        "novel_mean_dist": 0.2961573600769043,
+        "same_mean_dist": 0.1513757904370626,
+        "ood_mean_dist": 0.28982529789209366,
+        "auroc_novel_as_id_vs_ood": 0.5,
+        "auroc_novel_vs_same": 1.0
+      },
+      "fpr_on_novel": 1.0
+    },
+    "tunnel": {
+      "L3": {
+        "novel_mean_dist": 0.0038963953653971353,
+        "same_mean_dist": 0.0007571776707967123,
+        "ood_mean_dist": 0.002394037942091624,
+        "auroc_novel_as_id_vs_ood": 0.05555555555555555,
+        "auroc_novel_vs_same": 1.0
+      },
+      "L32": {
+        "novel_mean_dist": 0.33855946858723956,
+        "same_mean_dist": 0.1435349633296331,
+        "ood_mean_dist": 0.28826820105314255,
+        "auroc_novel_as_id_vs_ood": 0.4583333333333333,
+        "auroc_novel_vs_same": 1.0
+      },
+      "fpr_on_novel": 1.0
+    }
+  }
+}

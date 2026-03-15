@@ -1,0 +1,103 @@
+{
+  "experiment": "determinism",
+  "experiment_number": 178,
+  "timestamp": "20260315_032625",
+  "n_images": 3,
+  "n_repeats": 10,
+  "layers": [
+    3,
+    32
+  ],
+  "results": {
+    "image_0": {
+      "L3": {
+        "max_element_diff": 0.0,
+        "mean_element_diff": 0.0,
+        "all_identical": true,
+        "pairwise_cosine_dist": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "l2_between_passes": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "embedding_norm": 7.997500896453857
+      },
+      "L32": {
+        "max_element_diff": 0.0,
+        "mean_element_diff": 0.0,
+        "all_identical": true,
+        "pairwise_cosine_dist": {
+          "mean": 5.960464477539063e-08,
+          "max": 5.960464477539063e-08
+        },
+        "l2_between_passes": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "embedding_norm": 74.82862854003906
+      }
+    },
+    "image_1": {
+      "L3": {
+        "max_element_diff": 0.0,
+        "mean_element_diff": 0.0,
+        "all_identical": true,
+        "pairwise_cosine_dist": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "l2_between_passes": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "embedding_norm": 8.003684997558594
+      },
+      "L32": {
+        "max_element_diff": 0.0,
+        "mean_element_diff": 0.0,
+        "all_identical": true,
+        "pairwise_cosine_dist": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "l2_between_passes": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "embedding_norm": 72.02079010009766
+      }
+    },
+    "image_2": {
+      "L3": {
+        "max_element_diff": 0.0,
+        "mean_element_diff": 0.0,
+        "all_identical": true,
+        "pairwise_cosine_dist": {
+          "mean": -1.1920928955078125e-07,
+          "max": -1.1920928955078125e-07
+        },
+        "l2_between_passes": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "embedding_norm": 8.01009464263916
+      },
+      "L32": {
+        "max_element_diff": 0.0,
+        "mean_element_diff": 0.0,
+        "all_identical": true,
+        "pairwise_cosine_dist": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "l2_between_passes": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "embedding_norm": 77.79354095458984
+      }
+    }
+  }
+}
