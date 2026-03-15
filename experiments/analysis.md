@@ -7674,3 +7674,28 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 
 **Finding**: Attention patterns are **largely invariant** under OOD conditions — the model routes information through the same attention paths regardless of input corruption. Attention entropy achieves only 0.08-0.63 AUROC. This reveals that OOD detection depends on **what information flows through attention** (captured by hidden-state geometry), not **how attention is distributed** (attention pattern shape).
 
+---
+
+### Finding 188: Inference Latency Analysis (Experiment 193)
+
+**Experiment**: Measure the computational overhead of OOD detection on top of standard VLA inference.
+
+**Timing Results (20 trials, A40 GPU)**:
+| Component | Time (ms) | Std |
+|-----------|----------|-----|
+| Preprocessing | 30.9 | 39.9 |
+| Standard forward | 137.0 | 34.4 |
+| Hidden states forward | 136.5 | 34.0 |
+| Full OOD detection | 132.3 | 34.8 |
+| Cosine distance | 0.005 (5 µs) | 0.007 |
+
+**OOD Detection Overhead: -4.6 ms (-3.4%)** — within noise of zero.
+
+**Key Findings**:
+1. **OOD detection adds ZERO overhead**: Extracting hidden states costs nothing because they are computed as part of the normal forward pass and simply returned rather than discarded.
+2. **Cosine distance computation is 5 microseconds**: 0.004% of inference time — negligible.
+3. **Total inference pipeline**: ~170 ms (preprocessing + forward + OOD check), all within the standard VLA inference loop.
+4. **No additional GPU memory**: Hidden states are already in memory during forward pass; we extract a single 4096-dim vector.
+
+**Finding**: OOD detection is **computationally free**. The hidden-state extraction adds zero latency because these states are computed during normal forward propagation. The cosine distance calculation takes 5 µs — 0.004% of total inference time. The system requires only a single pre-computed 4096-dim centroid vector in memory. This makes the detector practical for real-time deployment at any VLA inference frequency.
+

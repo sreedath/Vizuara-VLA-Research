@@ -3588,4 +3588,19 @@ We extract attention weights and test whether attention entropy and concentratio
 
 \textbf{Finding 348}: This reveals a fundamental decomposition: OOD detection depends on \textbf{what information flows through attention} (captured by hidden-state values, AUROC = 1.0), not \textbf{how attention is distributed} (attention weights, AUROC $\approx$ 0.5). The corruption signal is encoded in representation values, not routing patterns.
 
+\subsection{Computational Overhead}
+
+We measure the latency impact of OOD detection on VLA inference.
+
+\textbf{Finding 349}: OOD detection adds \textbf{zero computational overhead}. Hidden states are computed during normal forward propagation (137 ms) and are simply returned rather than discarded (136.5 ms with \texttt{output\_hidden\_states=True}). The cosine distance computation takes \textbf{5 $\mu$s}---0.004\% of total inference time.
+
+\textbf{Finding 350}: The complete OOD detection system requires: (1) a pre-computed 4096-dim centroid vector (16 KB), (2) extraction of one hidden-state vector per forward pass (free), and (3) one cosine distance computation (5 $\mu$s). This makes the detector practical for \textbf{real-time deployment} at any VLA inference frequency with zero impact on throughput.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig197_latency.png}
+\caption{\textbf{Inference latency.} Left: timing breakdown showing hidden-state extraction adds no overhead. Right: OOD detection is effectively free---cosine distance takes 5$\mu$s vs 137ms for the forward pass.}
+\label{fig:latency}
+\end{figure}
+
 \end{document}

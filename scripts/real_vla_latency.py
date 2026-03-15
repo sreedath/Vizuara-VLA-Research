@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Experiment 166: Detection latency measurement.
+"""Experiment 193: Inference latency analysis — how much overhead does
+OOD detection add to VLA inference?
 
-Measures computational overhead of OOD detection: forward pass time with
-and without output_hidden_states, embedding extraction time, distance
-computation time.
+Measures forward pass time with and without hidden state extraction,
+and the computation time for centroid calibration and distance calculation.
 """
 
 import json, os, sys, datetime, time
 import numpy as np
 import torch
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageFilter
 
 SCRIPT_DIR = Path(__file__).parent
 REPO_DIR = SCRIPT_DIR.parent
@@ -32,7 +32,7 @@ def cosine_distance(a, b):
 
 def main():
     print("=" * 60)
-    print("Experiment 166: Detection Latency Measurement")
+    print("Experiment 193: Inference Latency Analysis")
     print("=" * 60, flush=True)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
@@ -44,145 +44,127 @@ def main():
     model.eval()
 
     prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
-    layers = [3, 32]
-    n_warmup = 3
-    n_bench = 10
-
-    img_arr = create_highway(0)
-    image = Image.fromarray(img_arr)
+    img = Image.fromarray(create_highway(0))
 
     # Warmup
     print("\n--- Warmup ---", flush=True)
-    for _ in range(n_warmup):
-        inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    for _ in range(3):
+        inputs = processor(prompt, img).to(model.device, dtype=torch.bfloat16)
         with torch.no_grad():
-            model(**inputs, output_hidden_states=True)
+            _ = model(**inputs)
     torch.cuda.synchronize()
-    print("  Warmup done.", flush=True)
 
-    # Benchmark 1: Forward pass WITHOUT hidden states
-    print("\n--- Benchmark: Forward pass (no hidden states) ---", flush=True)
-    times_no_hs = []
-    for i in range(n_bench):
-        inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    n_trials = 20
+
+    # 1. Standard forward pass (no hidden states)
+    print("--- Standard forward pass ---", flush=True)
+    times_standard = []
+    for i in range(n_trials):
+        inputs = processor(prompt, img).to(model.device, dtype=torch.bfloat16)
         torch.cuda.synchronize()
         t0 = time.perf_counter()
         with torch.no_grad():
-            out = model(**inputs, output_hidden_states=False)
+            _ = model(**inputs)
         torch.cuda.synchronize()
         t1 = time.perf_counter()
-        times_no_hs.append(t1 - t0)
-        print(f"  Run {i}: {(t1-t0)*1000:.1f} ms", flush=True)
+        times_standard.append(t1 - t0)
 
-    # Benchmark 2: Forward pass WITH hidden states
-    print("\n--- Benchmark: Forward pass (with hidden states) ---", flush=True)
-    times_with_hs = []
-    for i in range(n_bench):
-        inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    # 2. Forward pass with hidden states
+    print("--- Forward pass with hidden states ---", flush=True)
+    times_hidden = []
+    for i in range(n_trials):
+        inputs = processor(prompt, img).to(model.device, dtype=torch.bfloat16)
         torch.cuda.synchronize()
         t0 = time.perf_counter()
         with torch.no_grad():
-            out = model(**inputs, output_hidden_states=True)
+            fwd = model(**inputs, output_hidden_states=True)
         torch.cuda.synchronize()
         t1 = time.perf_counter()
-        times_with_hs.append(t1 - t0)
-        print(f"  Run {i}: {(t1-t0)*1000:.1f} ms", flush=True)
+        times_hidden.append(t1 - t0)
 
-    # Benchmark 3: Hidden state extraction time
-    print("\n--- Benchmark: Embedding extraction ---", flush=True)
-    times_extract = []
-    centroid = np.random.randn(4096).astype(np.float32)
-    for i in range(n_bench):
-        inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-        with torch.no_grad():
-            out = model(**inputs, output_hidden_states=True)
+    # 3. Hidden state extraction + cosine distance computation
+    print("--- OOD detection overhead ---", flush=True)
+    centroid = np.random.randn(4096).astype(np.float32)  # dummy centroid
+    times_ood = []
+    for i in range(n_trials):
+        inputs = processor(prompt, img).to(model.device, dtype=torch.bfloat16)
         torch.cuda.synchronize()
         t0 = time.perf_counter()
-        embs = {l: out.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
+        with torch.no_grad():
+            fwd = model(**inputs, output_hidden_states=True)
+        # Extract and compute distance
+        emb = fwd.hidden_states[3][0, -1, :].float().cpu().numpy()
+        dist = cosine_distance(emb, centroid)
+        torch.cuda.synchronize()
         t1 = time.perf_counter()
-        times_extract.append(t1 - t0)
+        times_ood.append(t1 - t0)
 
-    # Benchmark 4: Distance computation time
-    print("\n--- Benchmark: Distance computation ---", flush=True)
-    times_dist = []
+    # 4. Just the cosine distance computation
+    print("--- Pure cosine distance time ---", flush=True)
     emb = np.random.randn(4096).astype(np.float32)
-    for i in range(n_bench * 100):
+    times_cosine = []
+    for i in range(1000):
         t0 = time.perf_counter()
-        d = cosine_distance(emb, centroid)
+        _ = cosine_distance(emb, centroid)
         t1 = time.perf_counter()
-        times_dist.append(t1 - t0)
+        times_cosine.append(t1 - t0)
 
-    # Benchmark 5: Full pipeline (processor + forward + extract + distance)
-    print("\n--- Benchmark: Full detection pipeline ---", flush=True)
-    times_full = []
-    for i in range(n_bench):
+    # 5. Preprocessing time
+    print("--- Preprocessing time ---", flush=True)
+    times_preproc = []
+    for i in range(n_trials):
         t0 = time.perf_counter()
-        inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-        with torch.no_grad():
-            out = model(**inputs, output_hidden_states=True)
-        torch.cuda.synchronize()
-        embs = {l: out.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
-        d3 = cosine_distance(embs[3], centroid)
-        d32 = cosine_distance(embs[32], centroid)
-        is_ood = d3 > 0.001 or d32 > 0.15
+        _ = processor(prompt, img)
         t1 = time.perf_counter()
-        times_full.append(t1 - t0)
-        print(f"  Run {i}: {(t1-t0)*1000:.1f} ms", flush=True)
-
-    # Benchmark 6: Generate (7 action tokens)
-    print("\n--- Benchmark: Action generation (7 tokens) ---", flush=True)
-    times_gen = []
-    for i in range(n_bench):
-        inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-        input_len = inputs["input_ids"].shape[1]
-        torch.cuda.synchronize()
-        t0 = time.perf_counter()
-        with torch.no_grad():
-            out = model.generate(**inputs, max_new_tokens=7, do_sample=False)
-        torch.cuda.synchronize()
-        t1 = time.perf_counter()
-        times_gen.append(t1 - t0)
-        print(f"  Run {i}: {(t1-t0)*1000:.1f} ms", flush=True)
+        times_preproc.append(t1 - t0)
 
     results = {
-        "forward_no_hs_ms": {"mean": float(np.mean(times_no_hs))*1000, "std": float(np.std(times_no_hs))*1000},
-        "forward_with_hs_ms": {"mean": float(np.mean(times_with_hs))*1000, "std": float(np.std(times_with_hs))*1000},
-        "extract_ms": {"mean": float(np.mean(times_extract))*1000, "std": float(np.std(times_extract))*1000},
-        "distance_us": {"mean": float(np.mean(times_dist))*1e6, "std": float(np.std(times_dist))*1e6},
-        "full_pipeline_ms": {"mean": float(np.mean(times_full))*1000, "std": float(np.std(times_full))*1000},
-        "generate_7tok_ms": {"mean": float(np.mean(times_gen))*1000, "std": float(np.std(times_gen))*1000},
+        "standard_forward_ms": {
+            "mean": float(np.mean(times_standard) * 1000),
+            "std": float(np.std(times_standard) * 1000),
+            "min": float(np.min(times_standard) * 1000),
+            "max": float(np.max(times_standard) * 1000),
+        },
+        "hidden_states_forward_ms": {
+            "mean": float(np.mean(times_hidden) * 1000),
+            "std": float(np.std(times_hidden) * 1000),
+            "min": float(np.min(times_hidden) * 1000),
+            "max": float(np.max(times_hidden) * 1000),
+        },
+        "full_ood_detection_ms": {
+            "mean": float(np.mean(times_ood) * 1000),
+            "std": float(np.std(times_ood) * 1000),
+            "min": float(np.min(times_ood) * 1000),
+            "max": float(np.max(times_ood) * 1000),
+        },
+        "cosine_distance_us": {
+            "mean": float(np.mean(times_cosine) * 1e6),
+            "std": float(np.std(times_cosine) * 1e6),
+        },
+        "preprocessing_ms": {
+            "mean": float(np.mean(times_preproc) * 1000),
+            "std": float(np.std(times_preproc) * 1000),
+        },
+        "overhead_ms": float((np.mean(times_ood) - np.mean(times_standard)) * 1000),
+        "overhead_pct": float((np.mean(times_ood) - np.mean(times_standard)) / np.mean(times_standard) * 100),
+        "n_trials": n_trials,
     }
 
-    overhead_ms = results["forward_with_hs_ms"]["mean"] - results["forward_no_hs_ms"]["mean"]
-    overhead_pct = overhead_ms / results["forward_no_hs_ms"]["mean"] * 100
-    results["hs_overhead_ms"] = overhead_ms
-    results["hs_overhead_pct"] = overhead_pct
-
-    detection_overhead = results["full_pipeline_ms"]["mean"] - results["forward_no_hs_ms"]["mean"]
-    results["detection_overhead_ms"] = detection_overhead
-
-    print("\n" + "=" * 80)
-    print("LATENCY SUMMARY")
-    print(f"  Forward (no HS):   {results['forward_no_hs_ms']['mean']:.1f} ± {results['forward_no_hs_ms']['std']:.1f} ms")
-    print(f"  Forward (with HS): {results['forward_with_hs_ms']['mean']:.1f} ± {results['forward_with_hs_ms']['std']:.1f} ms")
-    print(f"  HS overhead:       {overhead_ms:.1f} ms ({overhead_pct:.1f}%)")
-    print(f"  Embedding extract: {results['extract_ms']['mean']:.3f} ± {results['extract_ms']['std']:.3f} ms")
-    print(f"  Distance compute:  {results['distance_us']['mean']:.1f} ± {results['distance_us']['std']:.1f} μs")
-    print(f"  Full pipeline:     {results['full_pipeline_ms']['mean']:.1f} ± {results['full_pipeline_ms']['std']:.1f} ms")
-    print(f"  Generate (7 tok):  {results['generate_7tok_ms']['mean']:.1f} ± {results['generate_7tok_ms']['std']:.1f} ms")
-    print(f"  Detection overhead: {detection_overhead:.1f} ms over baseline forward pass")
+    print(f"\n  Standard forward:    {results['standard_forward_ms']['mean']:.1f} ± {results['standard_forward_ms']['std']:.1f} ms", flush=True)
+    print(f"  Hidden states:       {results['hidden_states_forward_ms']['mean']:.1f} ± {results['hidden_states_forward_ms']['std']:.1f} ms", flush=True)
+    print(f"  Full OOD detection:  {results['full_ood_detection_ms']['mean']:.1f} ± {results['full_ood_detection_ms']['std']:.1f} ms", flush=True)
+    print(f"  Cosine distance:     {results['cosine_distance_us']['mean']:.1f} ± {results['cosine_distance_us']['std']:.1f} µs", flush=True)
+    print(f"  Preprocessing:       {results['preprocessing_ms']['mean']:.1f} ± {results['preprocessing_ms']['std']:.1f} ms", flush=True)
+    print(f"  OOD overhead:        {results['overhead_ms']:.1f} ms ({results['overhead_pct']:.1f}%)", flush=True)
 
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
-        "experiment": "detection_latency",
-        "experiment_number": 166,
+        "experiment": "latency_analysis",
+        "experiment_number": 193,
         "timestamp": ts,
-        "n_warmup": n_warmup, "n_bench": n_bench,
-        "gpu": "A40 48GB",
-        "model": "openvla-7b",
         "results": results,
     }
-    path = os.path.join(RESULTS_DIR, f"latency_{ts}.json")
+    path = os.path.join(RESULTS_DIR, f"latency_analysis_{ts}.json")
     with open(path, "w") as f:
         json.dump(output, f, indent=2)
     print(f"\nSaved: {path}")
