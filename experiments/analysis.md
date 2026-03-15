@@ -15470,3 +15470,53 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 714**: Night corruption distance increases monotonically with severity (R²≈1.0), while fog and noise show non-monotonic behavior at very low severities. This non-monotonicity at severity <0.1 reflects the discrete nature of pixel value quantization.
 
+---
+
+## Experiment 374: Embedding Space Topology and Cluster Geometry
+
+**Objective**: Detailed analysis of embedding space structure: clean cluster shape, inter/intra-cluster distances, decision boundary margins, k-NN classification, and distance metric comparison.
+
+**Setup**: 20 scenes, 4 corruptions at severity 0.5, layer 3, multiple distance metrics compared.
+
+### Results
+
+**Clean Cluster Properties (N=20)**:
+- Embedding dim: 4096, Effective dim (95% variance): 16
+- Mean pairwise cosine dist: 8.33e-5, Max: 2.29e-4
+- All 4096 dims have nonzero variance
+- NOT all identical (max dist > 0)
+
+**Cluster Separation Ratios (inter/intra)**:
+| Corruption | Inter-Cluster | Intra-Corrupt | Separation Ratio |
+|-----------|--------------|---------------|-----------------|
+| Fog | 9.70e-4 | 4.04e-5 | 24.0x |
+| Night | 1.99e-3 | 1.10e-4 | 18.0x |
+| Noise | 6.57e-5 | 8.25e-5 | 0.80x (OVERLAP!) |
+| Blur | 4.85e-3 | 3.40e-4 | 14.3x |
+
+**Decision Boundary Margins**:
+| Corruption | Gap | Relative Margin | Z-Score | AUROC |
+|-----------|-----|----------------|---------|-------|
+| Fog | 8.02e-4 | 8.9x | 16.3 | 1.000 |
+| Night | 1.79e-3 | 19.8x | 13.3 | 1.000 |
+| Noise | -1.6e-5 | -0.18x | -0.60 | 0.980 |
+| Blur | 4.37e-3 | 48.4x | 15.0 | 1.000 |
+
+**k-NN Classification**: 100% accuracy at k=1,3,5,10 for ALL classes
+
+**Distance Metrics**: Cosine=Euclidean=Manhattan AUROC ≥ 0.977, Chebyshev degrades to 0.62 for noise
+
+**100% Detection Severity**: fog=0.2, night=0.1, noise=0.7, blur=0.05
+
+### Findings
+
+**Finding 715**: With 20 scenes, clean embeddings are NOT perfectly identical — effective dimensionality is 16 (out of 4096), with max pairwise cosine distance of 2.29e-4. The zero-variance finding from smaller samples was an artifact of limited scene diversity.
+
+**Finding 716**: Noise corruption has a cluster separation ratio of 0.80 (<1), meaning noise-corrupted and clean clusters OVERLAP in embedding space. This explains why noise AUROC is 0.98 rather than 1.0 — it's a fundamental geometric limitation, not a calibration issue.
+
+**Finding 717**: Blur achieves the largest decision boundary margin (48.4x threshold), while noise has a NEGATIVE margin (-0.18x). The z-score for noise is only -0.60, meaning some noise-corrupted embeddings fall within 0.6 standard deviations of the clean distribution.
+
+**Finding 718**: k-NN classification achieves 100% accuracy at all k values (1-10) despite noise cluster overlap. This succeeds because k-NN considers cluster STRUCTURE rather than just centroid distance — noise embeddings cluster with other noise, not with clean samples.
+
+**Finding 719**: Chebyshev (L-inf) distance degrades catastrophically for noise detection (AUROC=0.62 vs 0.98 for cosine). The L-inf norm is dominated by a single dimension, making it vulnerable to the small, distributed shifts that characterize noise corruption.
+

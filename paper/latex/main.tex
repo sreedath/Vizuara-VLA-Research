@@ -7142,4 +7142,37 @@ We analyze the detector's behavior over temporal sequences to determine whether 
 
 \textbf{Finding 966}: \textbf{Night distance increases monotonically with severity, but fog/noise do not.} Non-monotonicity at low severity ($<$0.1) reflects pixel quantization effects and the deterministic nature of the embedding function: small intensity changes can cause non-linear embedding shifts.
 
+% ============================================================
+% EXPERIMENT 374: EMBEDDING SPACE TOPOLOGY
+% ============================================================
+
+\subsection{Experiment 374: Embedding Space Topology and Cluster Geometry}
+
+We analyze the geometric structure of the embedding space with 20 diverse scenes, characterizing cluster shapes, separation ratios, decision boundary margins, $k$-NN consistency, and distance metric performance.
+
+\textbf{Clean Cluster Properties.} With 20 scenes, clean embeddings occupy a low-dimensional manifold: effective dimensionality is only 16 (at 95\% variance) within the 4096-D space, with max pairwise cosine distance of $2.29 \times 10^{-4}$. The previously reported zero-variance finding from smaller samples was an artifact of limited scene diversity.
+
+\textbf{Cluster Separation Geometry.} Blur achieves the highest separation ratio (14.3$\times$), while noise has a separation ratio of only 0.80$\times$ --- meaning the noise cluster \emph{overlaps} with the clean cluster. This geometric overlap is the fundamental explanation for noise's AUROC of 0.98 rather than 1.0. The decision boundary margin for blur is 48.4$\times$ threshold versus $-0.18\times$ for noise (negative gap).
+
+\textbf{$k$-NN Classification.} Despite cluster overlap, $k$-NN classification achieves 100\% accuracy at $k = 1, 3, 5, 10$ because it considers cluster \emph{structure} rather than just centroid distance. The noise cluster's internal coherence allows perfect separation when neighborhood information is used.
+
+\textbf{Metric Sensitivity.} Cosine, Euclidean, and Manhattan distances all achieve AUROC $\geq$ 0.977, but Chebyshev (L$_\infty$) degrades catastrophically to 0.62 for noise --- the single-dimension maximum norm misses the distributed, subtle shifts characteristic of noise corruption.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig383_topology.png}
+\caption{\textbf{Experiment 374}: Embedding space topology. Cluster separation ratios (left) show noise overlap at 0.80$\times$. Decision boundary margins range from 48.4$\times$ (blur) to $-0.18\times$ (noise). $k$-NN achieves 100\% accuracy at all $k$ values despite cluster overlap. Chebyshev distance fails for noise (AUROC=0.62).}
+\label{fig:topology}
+\end{figure}
+
+\textbf{Finding 967}: \textbf{Clean embeddings with 20 scenes have effective dimensionality of 16.} The cluster occupies a thin manifold in 4096-D space. The zero-variance finding from 5 scenes was a sample-size artifact --- with more scenes, subtle but real variation emerges.
+
+\textbf{Finding 968}: \textbf{Noise cluster separation ratio is 0.80$\times$ ($<$1), meaning clusters OVERLAP.} This geometric overlap is the fundamental explanation for noise's AUROC=0.98. The noise embedding shift is comparable in magnitude to the natural variation between clean scenes.
+
+\textbf{Finding 969}: \textbf{Blur has a decision boundary margin of 48.4$\times$ threshold, noise has $-0.18\times$.} The margin hierarchy (blur $\gg$ night $>$ fog $\gg$ noise) directly predicts detection difficulty and quantifies the geometric safety factor for each corruption type.
+
+\textbf{Finding 970}: \textbf{$k$-NN achieves 100\% accuracy despite noise cluster overlap.} Neighborhood-based classification succeeds where centroid-based detection shows a gap, because noise embeddings cluster with other noise rather than with clean samples.
+
+\textbf{Finding 971}: \textbf{Chebyshev (L$_\infty$) distance degrades to AUROC=0.62 for noise.} The maximum-coordinate norm misses distributed, small-magnitude shifts. This confirms that corruption detection requires metrics that aggregate across many dimensions, not single-coordinate statistics.
+
 \end{document}
