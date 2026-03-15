@@ -14301,3 +14301,54 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 **Finding 594**: **Embeddings encode ~4 bits of severity information for fog/night (all 6 severity levels distinguishable) and ~3.6 bits for blur.** Spearman ρ = 0.94-0.98 between severity and cosine distance. The OOD signal is not just binary but quantitative — severity can be estimated from the embedding.
 
 **Finding 595**: **Only 2 PCA dimensions suffice for perfect detection of all 4 types — a 2048× compression from 4096D.** The detection signal is essentially 2-dimensional. At k=1, fog and blur are detected but night and noise are missed (they project orthogonally to PC1).
+
+---
+
+## Experiment 349: Action Space Topology Under Corruption
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_action_topology.py`
+**Status**: Complete
+
+### Setup
+- 20 scenes, 4 corruption types at severity 0.5
+- Per-dimension sensitivity analysis (7 action dims)
+- Severity-action trajectories (21 severity levels, Hamming + L1)
+- Cross-corruption action convergence
+- Action entropy across scenes
+
+### Results
+
+#### Per-Dimension Sensitivity
+- Dim 7 (last) is LEAST changed: freq 0.35-0.70 across types
+- Dims 2,3,5,6 are most sensitive: freq 0.90-1.00
+- Blur changes ALL dims with freq ≥ 0.90 (except dim 7 at 0.35)
+- Night changes dim 5 in 100% of scenes
+
+#### Severity-Action Trajectory
+- **Blur**: Most aggressive — all 7 dims change by severity 0.10, 70 reversals (chaotic)
+- **Night**: Most gradual — 7th dim at severity 0.65, only 24 reversals
+- **Fog/Noise**: Intermediate — 7 dims by severity 0.40, 8 reversals each
+- Final L1 distances: blur (463) > night (393) > fog (309) > noise (283)
+
+#### Action Convergence
+- **At severity 0.3: fog and night produce IDENTICAL actions (Hamming=0, L1=0)!**
+- At severity 0.5+: all pairs diverge (Hamming=5-7)
+- Different corruptions do NOT converge to the same wrong action at high severity
+- Mean inter-corruption Hamming: 5.0-7.0 (near-maximum for 7 dimensions)
+
+#### Action Entropy
+- Clean: mean 2.61 bits per dimension
+- Fog: 3.31 bits, Night: 3.51 bits, Noise: 2.82 bits, Blur: 3.53 bits
+- Corruption INCREASES action diversity by 0.2-0.9 bits
+- Blur has highest entropy — most randomized action output
+
+### Key Findings
+
+**Finding 596**: **Blur causes the most chaotic action trajectories — 70 reversals vs 8 for fog/noise, with all 7 dims changing by severity 0.10.** The blur-corrupted action output is highly non-monotone, with frequent direction changes as severity increases. This makes blur the most dangerous corruption for action planning.
+
+**Finding 597**: **Fog and night produce IDENTICAL corrupted actions at severity 0.3 despite different embedding signatures.** Both corruptions map to the same 7-dim action vector, yet diverge at higher severities. This demonstrates action-level degeneracy — different visual corruptions can cause the same dangerous robot behavior.
+
+**Finding 598**: **Dim 7 (gripper) is the most corruption-resistant action dimension, changing in only 35-70% of scenes.** The last action dimension (typically gripper open/close) is least affected by visual corruption, while dims 2-3 (y/z position) are most sensitive (90-100%).
+
+**Finding 599**: **Corruption increases action entropy by 0.2-0.9 bits, with blur at 3.53 vs clean at 2.61 bits.** Corrupted images produce more diverse actions across scenes — the model's action predictions become less consistent and more random under visual degradation.

@@ -6595,4 +6595,25 @@ We characterize the detection signal using information-theoretic measures: mutua
 
 \textbf{Finding 847}: \textbf{Only 2 PCA dimensions suffice for detection --- a $2048\times$ compression from 4096D.} At $k=1$ (57\% variance), only fog and blur are detected; at $k=2$ (88\% variance), all 4 types are captured. The detection manifold is essentially 2-dimensional.
 
+%% ============================================================
+\subsection{Experiment 349: Action Space Topology Under Corruption}
+\label{sec:exp349}
+
+We analyze the structure of OpenVLA's 7-dimensional action token output under corruption, studying per-dimension sensitivity, severity trajectories, cross-corruption convergence, and action entropy.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig358_action_topology.png}
+\caption{\textbf{Experiment 349}: Action space topology. Top-left: per-dimension change frequency (dim 7 most resistant). Top-right: Hamming distance vs severity (blur changes all 7 dims by sev=0.10). Bottom-left: L1 distance with blur showing 70 reversals. Bottom-right: corruption increases action entropy by 0.2--0.9 bits.}
+\label{fig:exp349}
+\end{figure}
+
+\textbf{Finding 848}: \textbf{Blur causes the most chaotic action trajectories --- 70 reversals vs 8 for fog/noise, all 7 dims changed by severity 0.10.} The action output under blur is highly non-monotone with frequent direction changes, making it the most dangerous corruption for action planning.
+
+\textbf{Finding 849}: \textbf{Fog and night produce identical actions at severity 0.3 ($H=0, L_1=0$) despite distinct embeddings.} Action-level degeneracy means different corruptions can cause the same dangerous behavior. The divergence only appears at severity $\geq 0.5$.
+
+\textbf{Finding 850}: \textbf{Dim 7 (gripper) is the most corruption-resistant, changing in only 35--70\% of scenes.} Dims 2--3 ($y/z$ position) are most sensitive (90--100\%). The model has learned partial invariance for gripper actions.
+
+\textbf{Finding 851}: \textbf{Corruption increases action entropy by 0.2--0.9 bits (clean 2.61 $\to$ blur 3.53).} The model's action predictions become more random under visual degradation, with blur causing the greatest variance.
+
 \end{document}
