@@ -8292,3 +8292,35 @@ snow       0     0     0     0      0     0     6
 5. **Constant overhead**: The OOD detection overhead (4.33 ms) is constant regardless of image content or corruption severity. It does not scale with the number of corruption types monitored.
 
 **Finding**: End-to-end OOD detection adds only **4.33 ms (3.09%) overhead** to VLA inference. The cosine distance computation is 4.76 µs — essentially free. The primary overhead comes from enabling hidden state output (`output_hidden_states=True`), which could be further reduced by extracting only the needed layers. The system is **real-time feasible** at ~6.8 Hz on an A40 GPU, meeting the latency requirements for autonomous driving applications.
+---
+
+### Finding 210: Calibration Set Diversity (Experiment 215)
+
+**Experiment**: Test OOD detection when calibration images come from a different scene type than test images. 5 scene types (highway, urban, rural, parking, tunnel), 6 images each. Tests same-scene, cross-scene, and mixed calibration strategies.
+
+**Cross-Scene AUROC Matrix (L1)**:
+| Cal\Test | Highway | Urban | Rural | Parking | Tunnel |
+|----------|---------|-------|-------|---------|--------|
+| Highway | **1.000** | 0.625 | 0.750 | 1.000 | 0.625 |
+| Urban | 1.000 | **1.000** | 0.750 | 1.000 | 0.375 |
+| Rural | 0.750 | 1.000 | **1.000** | 0.750 | 0.375 |
+| Parking | 1.000 | 0.750 | 0.750 | **1.000** | 0.625 |
+| Tunnel | 0.750 | 0.500 | 0.500 | 0.500 | **0.875** |
+
+**Mixed Calibration (1 image per scene type, L1)**:
+| Test Scene | AUROC |
+|------------|-------|
+| Highway | 1.000 |
+| Urban | 1.000 |
+| Rural | 1.000 |
+| Parking | 1.000 |
+| Tunnel | 0.625 |
+
+**Key Findings**:
+1. **Same-scene calibration is near-perfect**: Diagonal entries are 0.875-1.0. When calibration matches the deployment environment, detection works excellently.
+2. **Cross-scene calibration can fail badly**: Tunnel→Urban/Rural drops to 0.5 (random). Urban→Tunnel drops to 0.375 (worse than random). The centroid from one scene doesn't generalize to dissimilar scenes.
+3. **Mixed calibration dramatically improves generalization**: Using 1 image from each of 5 scene types achieves AUROC=1.0 on 4/5 scenes. Only tunnel (0.625) remains challenging.
+4. **Tunnel is the hardest scene**: Dark, uniform scenes are most different from other driving environments. Tunnel calibration generalizes poorly, and other calibrations generalize poorly to tunnel.
+5. **Scene diversity > sample size**: 5 diverse samples (1 per scene) outperform 4 homogeneous samples from a single scene type. Diversity matters more than quantity.
+
+**Finding**: **Calibration set diversity is critical** for cross-scene generalization. Same-scene calibration achieves near-perfect detection, but cross-scene calibration can drop to random-chance (AUROC=0.5). Mixed calibration with 1 image per scene type recovers most performance. The practical recommendation is to **calibrate with diverse scene samples** rather than many samples from a single environment. Tunnel/dark scenes are the most challenging and require explicit representation in the calibration set.

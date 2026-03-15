@@ -4023,4 +4023,21 @@ We measure the wall-clock overhead of OOD detection on an A40 GPU with OpenVLA-7
 \label{fig:latency}
 \end{figure}
 
+\subsection{Calibration Set Diversity}
+
+We test the critical practical question: what happens when calibration images come from a different scene type (highway, urban, rural, parking, tunnel) than the deployment environment?
+
+\textbf{Finding 421}: Same-scene calibration achieves near-perfect detection (AUROC 0.875--1.0), but \textbf{cross-scene calibration can fail catastrophically}---tunnel$\to$urban drops to AUROC=0.5 (random chance). The centroid from one scene does not generalize to dissimilar scenes.
+
+\textbf{Finding 422}: \textbf{Mixed calibration with 1 image per scene type} dramatically improves generalization, achieving AUROC=1.0 on 4/5 scene types with only 5 total calibration samples. Scene diversity matters more than sample size---5 diverse samples outperform 4 homogeneous ones.
+
+\textbf{Finding 423}: Tunnel/dark scenes are the \textbf{most challenging} for cross-scene transfer. They require explicit representation in the calibration set. The practical recommendation is to calibrate with a diverse sample of deployment environments rather than many images from a single environment.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig227_cal_diversity.png}
+\caption{\textbf{Calibration set diversity.} Left: cross-scene AUROC matrix shows same-scene calibration is near-perfect but cross-scene transfer can fail (0.375--0.625). Right: mixed calibration (1 image per scene) recovers most performance.}
+\label{fig:cal_diversity}
+\end{figure}
+
 \end{document}
