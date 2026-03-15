@@ -14833,3 +14833,44 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 
 **Finding 644**: PCA d=1 is entirely uninformative (AUROC=0.5 for all types), confirming that the first principal component captures inter-scene variance, not corruption information. The corruption signal begins at PC2-3.
 
+
+## Experiment 360: Formal Robustness Certification
+
+**Script**: `scripts/real_vla_robustness_certification.py`
+**Result**: `experiments/robustness_certification_20260315_151555.json`
+**Figure**: `figures/fig369_certification.png`
+
+### Key Results
+
+**Leave-One-Out CV (30 folds)**:
+| Corruption | Mean AUROC | Min AUROC | Min Gap |
+|-----------|-----------|-----------|---------|
+| Fog | 1.000 | 1.000 | 0.000812 |
+| Night | 1.000 | 1.000 | 0.001792 |
+| Noise | 0.976 | 0.900 | -0.000030 |
+| Blur | 1.000 | 1.000 | 0.004402 |
+
+**Bootstrap CI (1000 resamples)**:
+| Corruption | AUROC CI | Gap Positive |
+|-----------|----------|-------------|
+| Fog | [1.000, 1.000] | 100% |
+| Night | [1.000, 1.000] | 100% |
+| Noise | [0.929, 1.000] | 5.8% |
+| Blur | [1.000, 1.000] | 100% |
+
+**Worst-Case Margins**: blur=44.5×, night=18.7×, fog=9.0×, noise=0.70×
+
+**Certified Severity**: blur≥0.1, night≥0.15, fog≥0.2, noise=NONE
+
+### Findings
+
+**Finding 645**: LOO CV confirms fog/night/blur detection at AUROC=1.0 across all 30 held-out scenes. The detector generalizes perfectly across novel scenes for 3/4 corruption types.
+
+**Finding 646**: Noise certification FAILS: worst-case gap is negative (-3.0e-5), meaning some noise-corrupted embeddings are CLOSER to centroid than some clean embeddings. Bootstrap shows only 5.8% of resamples have positive gap.
+
+**Finding 647**: Worst-case margins span 63× range: blur (44.5×) to noise (0.70×). Blur has massive safety margin; noise is below the detection threshold.
+
+**Finding 648**: Certified detection radii are corruption-specific: blur≥0.1, night≥0.15, fog≥0.2. These provide formal guarantees that ALL scenes in the test set will be detected at these severities.
+
+**Finding 649**: The noise detection gap is scene-dependent: median gap is essentially zero (0.000001) while worst case is negative. Noise detection fundamentally requires per-scene calibration, not centroid-based detection.
+
