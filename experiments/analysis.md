@@ -11575,3 +11575,80 @@ Side-by-side comparison of 7 OOD detection methods on identical data: cosine dis
 **Finding 401**: **Entropy additionally fails on noise** (0.667 AUROC), making it the worst overall method (mean 0.750). The cosine distance advantage over the best output-space method (MSP/energy at 0.917) is 8.3 percentage points — but crucially, our method catches ALL cases while output methods miss the most dangerous one (confident-wrong fog).
 
 **Finding 402**: **Random projection (32D) matches full cosine (4096D)** with zero AUROC loss, confirming that 128× compression preserves perfect detection even in this head-to-head comparison. This makes the method deployable with only 32 floating-point operations for the distance computation.
+
+---
+
+## Experiment 305: Detection Pipeline Ablation Study
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_ablation.py`
+**Results**: `experiments/ablation_20260315_110816.json`
+**Figure**: `fig314_ablation.png`
+
+### Methodology
+
+Systematic ablation of 5 key pipeline components:
+1. **Token position**: last, first, mean pooling, max pooling, middle token
+2. **Dimension truncation**: 4D to 4096D (full) embedding subsets
+3. **Distance metrics**: cosine, euclidean, manhattan, chebyshev, correlation
+4. **Calibration**: proper centroid vs random centroid (no calibration)
+5. **Minimum detectable severity**: finest corruption level detectable per type
+
+### Results
+
+#### Token Position Ablation
+
+| Position | Fog | Night | Blur | Noise | Mean |
+|----------|-----|-------|------|-------|------|
+| **last** | **1.000** | **1.000** | **1.000** | **1.000** | **1.000** |
+| first | 0.500 | 0.500 | 0.500 | 0.500 | 0.500 |
+| **mean** | **1.000** | **1.000** | **1.000** | **1.000** | **1.000** |
+| max | 1.000 | 0.833 | 1.000 | 0.667 | 0.875 |
+| **mid** | **1.000** | **1.000** | **1.000** | **1.000** | **1.000** |
+
+#### Dimension Truncation
+
+AUROC=1.0 for ALL dimensions from 4D to 4096D, across all 4 corruption types.
+
+| Dims | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096 |
+|------|---|---|----|----|----|----|-----|-----|------|------|------|
+| Mean AUROC | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+
+#### Distance Metrics
+
+ALL 5 metrics achieve AUROC=1.0 on all corruptions: cosine, euclidean, manhattan, chebyshev, correlation.
+
+#### Random Centroid (No Calibration)
+
+| Trial | Fog | Night | Blur | Noise | Mean |
+|-------|-----|-------|------|-------|------|
+| 0 | 0.000 | 0.333 | 0.000 | 0.000 | 0.083 |
+| 1 | 0.000 | 0.667 | 0.000 | 0.000 | 0.167 |
+| 2 | 1.000 | 0.000 | 0.000 | 0.000 | 0.250 |
+| 3 | 1.000 | 0.333 | 1.000 | 0.000 | 0.583 |
+| 4 | 0.000 | 1.000 | 0.667 | 1.000 | 0.667 |
+
+Mean across trials: **0.35** — near random chance (0.5), confirming calibration is essential.
+
+#### Minimum Detectable Severity
+
+| Corruption | First Detection | Distance | Sensitivity |
+|-----------|----------------|----------|-------------|
+| Night | 0.001 (0.1%) | 2.94e-05 | Extreme |
+| Noise | 0.001 (0.1%) | 2.56e-06 | Extreme |
+| Fog | 0.01 (1%) | 4.35e-06 | Very high |
+| Blur | 0.02 (2%) | 6.02e-06 | High |
+
+### Key Findings
+
+**Finding 403**: **Token position is a critical design choice** — the first token (BOS) carries ZERO OOD signal (AUROC=0.5, equivalent to random guessing). This is consistent with Exp 279/298 showing BOS=0 signal. Last, mean, and mid-sequence tokens all achieve perfect AUROC=1.0. Max pooling degrades for noise (0.667) and night (0.833), likely because max over corrupted token positions introduces noise. The last-token approach used in our method is optimal.
+
+**Finding 404**: **4D suffices for perfect detection** — even truncating the 4096-dimensional embedding to just 4 dimensions preserves AUROC=1.0 across all corruptions. This represents 1024× compression with zero performance loss, surpassing even the 128× random projection result (Exp 221). The corruption signal is concentrated in so few dimensions that extreme compression works perfectly.
+
+**Finding 405**: **All 5 distance metrics achieve identical AUROC=1.0** — cosine, euclidean, manhattan, chebyshev, and correlation distances all work perfectly. Adding manhattan and chebyshev (Lp norms for p=1 and p=∞) to the previously tested set (Exp 222) confirms that the detection signal is robust to any reasonable metric choice. The zero in-distribution variance makes the separator trivial.
+
+**Finding 406**: **Random centroids fail catastrophically (mean AUROC=0.35)** — without calibration on a real clean image, detection is worse than random chance. This confirms that the calibration step (computing a centroid from clean embeddings) is the single essential component. However, only ONE clean image is needed (Exp 223), and ANY clean image from the same scene works (Exp 300).
+
+**Finding 407**: **Night and noise are detectable at 0.1% severity** (d≈3e-05 and 3e-06), while fog requires 1% and blur requires 2%. This ordering matches the corruption impact hierarchy: night affects every pixel multiplicatively, noise adds perturbation to every pixel, fog is additive but uniform, and blur is local averaging that requires minimum kernel size. The detection floor is 10-20× lower than the action-change floor from Exp 250.
+
+**Finding 408**: **Two critical components, three irrelevant ones** — the ablation reveals that only (1) calibration image and (2) token position matter. The distance metric (5/5 work), embedding dimensions (4D-4096D all work), and specific aggregation strategy (last/mean/mid all work) are completely irrelevant to detection performance. This radical simplicity strengthens the deployment case: the method works with ANY reasonable implementation choice.

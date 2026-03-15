@@ -1,0 +1,299 @@
+{
+  "experiment": "ablation_study",
+  "experiment_number": 305,
+  "timestamp": "20260315_110816",
+  "token_ablation": {
+    "last": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "first": {
+      "fog": 0.5,
+      "night": 0.5,
+      "blur": 0.5,
+      "noise": 0.5
+    },
+    "mean": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "max": {
+      "fog": 1.0,
+      "night": 0.8333333333333334,
+      "blur": 1.0,
+      "noise": 0.6666666666666666
+    },
+    "mid": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    }
+  },
+  "dim_ablation": {
+    "4": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "8": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "16": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "32": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "64": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "128": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "256": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "512": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "1024": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "2048": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "4096": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    }
+  },
+  "metric_ablation": {
+    "cosine": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "euclidean": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "manhattan": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "chebyshev": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    },
+    "correlation": {
+      "fog": 1.0,
+      "night": 1.0,
+      "blur": 1.0,
+      "noise": 1.0
+    }
+  },
+  "random_centroid_ablation": {
+    "trial_0": {
+      "fog": 0.0,
+      "night": 0.3333333333333333,
+      "blur": 0.0,
+      "noise": 0.0
+    },
+    "trial_1": {
+      "fog": 0.0,
+      "night": 0.6666666666666666,
+      "blur": 0.0,
+      "noise": 0.0
+    },
+    "trial_2": {
+      "fog": 1.0,
+      "night": 0.0,
+      "blur": 0.0,
+      "noise": 0.0
+    },
+    "trial_3": {
+      "fog": 1.0,
+      "night": 0.3333333333333333,
+      "blur": 1.0,
+      "noise": 0.0
+    },
+    "trial_4": {
+      "fog": 0.0,
+      "night": 1.0,
+      "blur": 0.6666666666666666,
+      "noise": 1.0
+    }
+  },
+  "min_severity": {
+    "fog": [
+      {
+        "severity": 0.001,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "severity": 0.005,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "severity": 0.01,
+        "distance": 4.351139068603516e-06,
+        "detected": true
+      },
+      {
+        "severity": 0.02,
+        "distance": 3.5762786865234375e-06,
+        "detected": true
+      },
+      {
+        "severity": 0.05,
+        "distance": 1.2934207916259766e-05,
+        "detected": true
+      },
+      {
+        "severity": 0.1,
+        "distance": 6.252527236938477e-05,
+        "detected": true
+      }
+    ],
+    "night": [
+      {
+        "severity": 0.001,
+        "distance": 2.9385089874267578e-05,
+        "detected": true
+      },
+      {
+        "severity": 0.005,
+        "distance": 2.9385089874267578e-05,
+        "detected": true
+      },
+      {
+        "severity": 0.01,
+        "distance": 3.159046173095703e-05,
+        "detected": true
+      },
+      {
+        "severity": 0.02,
+        "distance": 3.701448440551758e-05,
+        "detected": true
+      },
+      {
+        "severity": 0.05,
+        "distance": 3.1828880310058594e-05,
+        "detected": true
+      },
+      {
+        "severity": 0.1,
+        "distance": 0.00013381242752075195,
+        "detected": true
+      }
+    ],
+    "blur": [
+      {
+        "severity": 0.001,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "severity": 0.005,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "severity": 0.01,
+        "distance": 0.0,
+        "detected": false
+      },
+      {
+        "severity": 0.02,
+        "distance": 6.020069122314453e-06,
+        "detected": true
+      },
+      {
+        "severity": 0.05,
+        "distance": 0.0001379847526550293,
+        "detected": true
+      },
+      {
+        "severity": 0.1,
+        "distance": 0.0007543563842773438,
+        "detected": true
+      }
+    ],
+    "noise": [
+      {
+        "severity": 0.001,
+        "distance": 2.562999725341797e-06,
+        "detected": true
+      },
+      {
+        "severity": 0.005,
+        "distance": 2.4437904357910156e-06,
+        "detected": true
+      },
+      {
+        "severity": 0.01,
+        "distance": 2.4437904357910156e-06,
+        "detected": true
+      },
+      {
+        "severity": 0.02,
+        "distance": 3.5762786865234375e-06,
+        "detected": true
+      },
+      {
+        "severity": 0.05,
+        "distance": 4.231929779052734e-06,
+        "detected": true
+      },
+      {
+        "severity": 0.1,
+        "distance": 2.7835369110107422e-05,
+        "detected": true
+      }
+    ]
+  }
+}

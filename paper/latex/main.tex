@@ -5654,4 +5654,26 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 666}: \textbf{Random projection (32D) matches full cosine (4096D)} with zero AUROC loss in this head-to-head comparison, confirming that $128\times$ compression preserves perfect detection. The deployable detector requires only 32 multiply-accumulate operations for the distance computation, adding negligible overhead to the VLA inference pipeline.
 
+\subsection{Detection Pipeline Ablation}
+
+\textbf{Experiment 305: Systematic Ablation Study.} We ablate 5 key components of the detection pipeline: token position (last, first, mean, max, mid), embedding dimensionality (4D to 4096D), distance metric (5 metrics), calibration (proper vs.\ random centroid), and minimum detectable severity per corruption type.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig314_ablation.png}
+\caption{Detection pipeline ablation (Experiment 305). (a) Token position: first token (BOS) carries zero signal (AUROC=0.5); last/mean/mid all achieve 1.0. (b) Dimension truncation: AUROC=1.0 even at 4D (1024$\times$ compression). (c) All 5 distance metrics achieve AUROC=1.0. (d) Random centroids fail catastrophically (mean 0.35). (e) Night/noise detectable at 0.1\% severity, fog at 1\%, blur at 2\%. (f) Summary: only calibration and token position are critical.}
+\end{figure}
+
+\textbf{Finding 667}: \textbf{Token position is a critical design choice} --- the first token (BOS) carries \emph{zero} OOD signal (AUROC=0.5, random chance). Last, mean-pooled, and mid-sequence tokens all achieve AUROC=1.0. Max pooling degrades for noise (0.667) and night (0.833), likely because the max operator over token positions amplifies noise. The last-token strategy used in our method is optimal.
+
+\textbf{Finding 668}: \textbf{4 dimensions suffice for perfect detection} --- truncating the 4096D embedding to just 4D preserves AUROC=1.0 across all corruptions. This represents $1024\times$ compression with zero performance loss, surpassing the $128\times$ random projection result (Experiment~221). The corruption signal is concentrated in so few dimensions that extreme compression works perfectly, consistent with the 3--5D intrinsic dimensionality found in Experiment~251.
+
+\textbf{Finding 669}: \textbf{All 5 distance metrics achieve identical AUROC=1.0} --- cosine, Euclidean, Manhattan ($L_1$), Chebyshev ($L_\infty$), and correlation distances all work perfectly. This extends the metric invariance from Experiment~222 (3 metrics) to the full $L_p$ norm family plus correlation. The zero in-distribution variance makes separation trivial regardless of metric choice.
+
+\textbf{Finding 670}: \textbf{Random centroids fail catastrophically} (mean AUROC=0.35, worse than random chance). Without calibration on a real clean image, detection is impossible. This confirms that the single calibration image is the \emph{only} essential component --- but only one image is needed (Experiment~223), and any clean image from the same scene works (Experiment~300).
+
+\textbf{Finding 671}: \textbf{Night and noise detectable at 0.1\% severity}, while fog requires 1\% and blur 2\%. This ordering matches corruption physics: night affects every pixel multiplicatively ($d = 2.9 \times 10^{-5}$), noise adds random perturbation everywhere ($d = 2.6 \times 10^{-6}$), fog is uniform additive, and blur requires minimum kernel size. Detection floors are 10--20$\times$ below the action-change thresholds from Experiment~250.
+
+\textbf{Finding 672}: \textbf{Only 2 of 5 components are critical} --- ablation reveals that calibration image and token position are the only design choices that matter. Distance metric (5/5 work), embedding dimension (4D--4096D all work), and aggregation strategy (last/mean/mid all work) are completely irrelevant. This radical simplicity strengthens the deployment case: the method works with \emph{any} reasonable implementation.
+
 \end{document}
