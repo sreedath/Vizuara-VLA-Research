@@ -6210,4 +6210,27 @@ We perform comprehensive geometric analysis of the embedding space using 105 emb
 
 \textbf{Finding 779}: \textbf{ALL corruption manifolds are 100\% convex (180/180 tests).} The midpoint between any two corrupt embeddings of the same type is always closer to clean than the average of the endpoints. This convexity guarantees well-posed severity estimation: there are no non-monotonic surprises in the embedding landscape.
 
+%% ============================================================
+\subsection{Experiment 332: Feature Attribution Deep Dive}
+\label{sec:exp332}
+
+We probe which specific image features drive the OOD embedding signal by isolating color channels, frequency bands, spatial structure, and photometric transforms.
+
+\textbf{Setup.} We apply targeted manipulations: (1)~single-channel corruption (R/G/B separately), (2)~frequency band removal via FFT, (3)~edge vs texture noise, (4)~brightness/contrast/hue/grayscale/inversion, (5)~spatial destruction (pixel/patch shuffle, flip, rotation), and (6)~fine-grained severity sweeps (0.001--1.0).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig341_features.png}
+\caption{\textbf{Figure~341: Feature attribution.} (A)~Green channel dominates for night (37\%). (B)~Low frequencies 15$\times$ more important. (C)~Brightness $\approx$ fog; color changes tiny. (D)~Destroying spatial structure = only 3\% of fog. (E)~Direction consistency 87--99\% across scenes. (F)~Night/noise detectable at 0.1\% severity.}
+\label{fig:features}
+\end{figure}
+
+\textbf{Finding 780}: \textbf{Low frequencies carry 15$\times$ more embedding signal than mid/high frequencies.} Removing the lowest frequency band (0--20 cycles) shifts the embedding by $d=4.83 \times 10^{-3}$, while removing mid or high bands produces $d \approx 3 \times 10^{-4}$. The detector's corruption sensitivity is fundamentally a low-frequency phenomenon.
+
+\textbf{Finding 781}: \textbf{Brightness changes dominate: $d(\text{brightness} - 0.3) \approx d(\text{fog@1.0})$, while color inversion is 42$\times$ smaller.} The embedding is overwhelmingly sensitive to luminance, not chrominance. Brightness $-0.3$ produces $d=2.68 \times 10^{-3}$, nearly identical to fog at full severity ($d=2.71 \times 10^{-3}$). Color inversion produces only $d=6.35 \times 10^{-5}$. Fog \emph{is} essentially a brightness corruption.
+
+\textbf{Finding 782}: \textbf{Spatial structure is irrelevant: shuffling ALL pixels produces only 3\% of fog's signal.} Completely destroying spatial layout via pixel permutation creates $d=8.67 \times 10^{-5}$, while fog produces $d=2.71 \times 10^{-3}$ --- a 31$\times$ gap. The embedding captures \emph{pixel statistics} (mean brightness, variance, color distribution), not spatial relationships.
+
+\textbf{Finding 783}: \textbf{Corruption directions are $>$87\% consistent across scenes.} The shift vectors point in nearly identical directions regardless of scene: night=99.4\%, fog=98.8\%, blur=92.7\%, noise=87.2\%. This scene-invariant directionality is what enables the corruption-type identification results in Experiment~331.
+
 \end{document}

@@ -13343,3 +13343,72 @@ ALL 4 corruption types show 100% convexity (180/180 tests). The midpoint between
 **Finding 526**: **1-NN correctly classifies corruption type at 80-100% accuracy (noise=80%, blur/night=100%).** Without any training, just nearest-neighbor in embedding space identifies the corruption type. Noise is hardest to classify (80%) because its embedding shift is smallest and overlaps with clean at low severities.
 
 **Finding 527**: **ALL corruption manifolds are 100% convex (180/180 midpoint tests).** Interpolating between any two corrupt embeddings of the same type always produces an embedding closer to clean than the average of the endpoints. This convexity guarantees that severity estimation is well-posed: there are no non-monotonic surprises in the embedding space.
+
+---
+
+## Experiment 332: Feature Attribution Deep Dive (Real OpenVLA-7B)
+
+**Date:** 2025-03-15
+**Script:** `scripts/real_vla_feature_attribution.py`
+**Results:** `experiments/feature_attribution_20260315_125746.json`
+**Figure:** `paper/latex/fig341_features.png`
+
+Probes which specific image features drive the OOD embedding signal.
+
+### Color Channel Isolation
+
+Corrupting individual color channels produces 12-37% of the full corruption signal:
+- Green dominates for night (37% of full signal) and noise (35%)
+- Red leads for fog (32%) and night (33%)
+- Blue contributes least across all corruption types (12-22%)
+- Sum of single-channel contributions < 100% → nonlinear interactions between channels
+
+### Frequency Band Analysis
+
+Removing low frequencies (0-20 cycles) causes 15× more embedding shift (d=4.83e-3) than removing mid (d=3.09e-4) or high frequencies (d=3.34e-4). The model's embedding is overwhelmingly sensitive to low-frequency image content (global brightness, large-scale structure).
+
+### Edge vs Texture
+
+Edge noise produces 2.2× more signal than texture noise (d=1.03e-4 vs 4.58e-5). However, both are small fractions of full noise (20% and 9%). The remaining 71% comes from the interaction between edge and texture corruption.
+
+### Brightness/Contrast/Hue Decomposition
+
+- Brightness -0.3: d=2.68e-3 (nearly equivalent to fog@1.0!)
+- Contrast 0.3: d=2.02e-3 (strong signal)
+- Grayscale: d=1.17e-3 (moderate)
+- Color inversion: d=6.35e-5 (TINY — 42× less than brightness)
+- Hue shift: d=7.1e-5 (TINY)
+
+KEY INSIGHT: The embedding is overwhelmingly sensitive to BRIGHTNESS and CONTRAST, not color. This explains why fog (brightness shift) and night (extreme darkening) are so strongly detected.
+
+### Spatial Structure Attribution
+
+- Pixel shuffle (destroy ALL structure): d=8.67e-5
+- Patch shuffle: d=1.01e-4
+- Horizontal flip: d=5.08e-5
+- 90° rotation: d=7.46e-5
+- Fog reference: d=2.71e-3
+
+STRIKING: Destroying all spatial structure produces only 3% of fog's signal. The embedding captures pixel STATISTICS (brightness, contrast, color distribution), NOT spatial layout.
+
+### Cross-Scene Direction Consistency
+
+Corruption shift directions are highly consistent across scenes:
+- Night: 0.994 mean similarity (most consistent)
+- Fog: 0.988
+- Blur: 0.927
+- Noise: 0.872 (least consistent, but still high)
+
+### Fine-Grained Severity Gradient
+
+Minimum detectable severity: Night=0.1%, Noise=0.1%, Fog=1%, Blur=2%.
+
+### Key Findings
+
+**Finding 528**: **Low frequencies carry 15× more embedding signal than mid/high frequencies.** Removing low-frequency content (0-20 cycles) shifts the embedding 15× more than removing mid or high frequencies. The model's corruption sensitivity is fundamentally a low-frequency phenomenon, explaining why fog (uniform brightness shift) produces strong signals.
+
+**Finding 529**: **Brightness dominates: d(-0.3 brightness) ≈ d(fog@1.0), while color inversion is 42× smaller.** The embedding is overwhelmingly sensitive to luminance changes, not chrominance. Fog is essentially a brightness corruption, which explains its strong detectability. Color manipulations (hue shift, inversion) barely register.
+
+**Finding 530**: **Spatial structure is irrelevant: shuffling ALL pixels produces only 3% of fog's signal.** Completely destroying spatial layout (pixel shuffle) creates d=8.67e-5, while fog produces d=2.71e-3. The embedding captures statistical properties of the pixel distribution (mean, variance, color histogram), not spatial relationships.
+
+**Finding 531**: **Corruption directions are >87% consistent across scenes (night: 99.4%).** The embedding shift vector for each corruption type points in nearly the same direction regardless of scene content. Night is most directionally stable (0.994), noise least (0.872). This scene-invariant direction is what enables per-scene calibration to transfer.
