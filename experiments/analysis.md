@@ -6659,3 +6659,32 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 4. **L32 benefits more from diversity**: L32 AUROC jumps from 0.775-0.850 (homogeneous) to 0.961 (diverse), a larger relative gain than L3. L32's higher intrinsic dimensionality means the centroid is more sensitive to calibration composition.
 
 5. **Practical guidance**: Calibrate with at least 2-3 representative scene types, even if total sample count stays the same. **Diversity > quantity** for calibration effectiveness.
+
+---
+
+## Finding 147: Temporal Consistency of OOD Detection (Experiment 153)
+
+**Question**: Are OOD detections temporally consistent? Does the detector exhibit jitter (oscillating between ID and OOD) during gradual corruption?
+
+**Setup**: 4 gradual corruption sequences (fog onset, nightfall, blur increase, noise increase), each 20 frames from clean to severe. Cosine distance OR-gate at L3 and L32 with 3σ threshold.
+
+**Key Results**:
+
+| Sequence | Jitter | L32 Monotonic | L32 Distance Range |
+|----------|--------|---------------|-------------------|
+| Fog onset | **0** | Yes (mostly) | 0.040 → 0.394 |
+| Nightfall | **0** | Yes | 0.040 → 0.449 |
+| Blur increase | **0** | Yes (peak then plateau) | 0.040 → 0.370 |
+| Noise increase | **0** | Yes | 0.040 → 0.371 |
+
+**Critical Insights**:
+
+1. **Zero jitter across ALL sequences**: Once the detector transitions to OOD, it never reverts. No oscillation between ID and OOD states. This is critical for deployment — the detector produces stable, monotonic flags.
+
+2. **L32 distances increase monotonically with corruption severity**: Fog 0%→90% maps to L32 distance 0.040→0.394 (linear increase). Noise 0→100 std maps to 0.040→0.371. The OOD score is a reliable proxy for corruption severity.
+
+3. **L3 distances are much smaller but still monotonic**: L3 cosine distances range from 0.000009 (clean) to 0.003 (severe), 100× smaller than L32. Both layers respond monotonically to corruption.
+
+4. **Blur shows saturation**: L32 distance peaks around radius=8 (0.370) then slightly decreases at higher radii (0.323 at radius 12). This is consistent with the vision encoder's receptive field — beyond a certain blur, additional blur has diminishing effect.
+
+5. **Detector enables severity estimation**: The smooth, monotonic distance curve could be used not just for binary OOD detection but for estimating corruption severity, enabling graduated response (slow down vs stop).

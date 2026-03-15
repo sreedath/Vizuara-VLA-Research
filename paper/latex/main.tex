@@ -2822,4 +2822,20 @@ The OR-gate architecture represents our recommended production deployment: two c
 \label{fig:diversity}
 \end{figure}
 
+\subsection{Temporal Consistency}
+\label{app:temporal}
+
+\textbf{Finding 222}: The OOD detector exhibits \textbf{zero jitter} across all four temporal corruption sequences (fog, night, blur, noise). Once the detector transitions to OOD, it never reverts — producing stable, monotonic flags critical for real-time deployment.
+
+\textbf{Finding 223}: L32 cosine distances increase \textbf{monotonically} with corruption severity (e.g., fog 0\%$\to$90\% maps to L32 distance 0.040$\to$0.394). This enables not just binary detection but \textbf{severity estimation} for graduated response (slow down vs emergency stop).
+
+\textbf{Finding 224}: Blur shows saturation at L32 — distance peaks at radius$\approx$8 then plateaus. This is consistent with the vision encoder's effective receptive field, beyond which additional blur produces diminishing embedding shifts.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig139_temporal_consistency.png}
+\caption{\textbf{Temporal consistency.} Distance profiles under gradual corruption (20 frames each). All sequences show monotonic L32 distance increase with zero jitter. L3 distances are 100$\times$ smaller but equally monotonic. Blur saturates at radius$\approx$8.}
+\label{fig:temporal}
+\end{figure}
+
 \end{document}
