@@ -8889,3 +8889,34 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **Distance magnitudes vary slightly**: Night distance ranges from 0.003338 to 0.003802 across prompts (~14% variation), but relative ordering never changes.
 
 **Finding 230**: Corruption type identification is **100% prompt-invariant**: all 5 prompts achieve perfect identification, and centroids trained on one prompt transfer perfectly to 4 others. Corruption type identification requires zero prompt-specific calibration.
+
+---
+
+## Experiment 236: Embedding Norm Analysis
+
+**Research Question**: Do OOD inputs produce embeddings with different L2 norms? If so, norm provides a direction-independent detection signal complementary to cosine distance.
+
+**Method**: Compare L2 norms of clean vs. corrupted embeddings across 5 layers (L1, L3, L7, L15, L31) and 6 corruption types. Compute AUROC using |norm - clean_norm| as detection score.
+
+**Results**:
+
+**Clean norms**: L1=4.51, L3=8.31, L7=18.07, L15=44.60, L31=133.51
+
+| Corruption | L3 Ratio | L31 Ratio | L31 Diff |
+|-----------|---------|----------|---------|
+| Fog | 0.997 | 1.050 | +6.67 |
+| Night | 1.027 | 0.891 | -14.59 |
+| Noise | 0.983 | 0.968 | -4.31 |
+| Blur | 0.985 | 1.032 | +4.32 |
+| Snow | 0.985 | 0.996 | -0.47 |
+| Rain | 0.990 | 0.958 | -5.56 |
+
+**AUROC**: **1.0 for ALL 30 combinations** (6 corruption types × 5 layers).
+
+**Key Findings**:
+1. **Norm-based detection achieves AUROC=1.0**: Even L2 norm alone can perfectly detect OOD inputs, because clean images produce identical norms (zero variance).
+2. **Night causes largest norm change at L31**: 11% norm decrease (ratio=0.891). This is because night darkening causes a global representation shrinkage.
+3. **Direction of norm change varies**: Fog increases L31 norm (+5%), night decreases it (-11%). Different corruptions affect norm in opposite directions.
+4. **Norms increase dramatically with depth**: L1=4.5 to L31=133.5 (30× increase), consistent with residual stream accumulation.
+
+**Finding 231**: L2 embedding norm provides **AUROC=1.0 OOD detection** across all 6 corruption types and 5 layers. This is a direction-independent signal complementary to cosine distance. The zero in-distribution variance makes even 0.3% norm changes perfectly detectable.

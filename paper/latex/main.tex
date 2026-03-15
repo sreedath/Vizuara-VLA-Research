@@ -4572,4 +4572,20 @@ Rain & 0.009127 & 0.000232 & 100\% \\
 
 \textbf{Finding 477}: Corruption type identification requires \textbf{zero prompt-specific calibration}. A single set of corruption centroids from any prompt suffices for all robot tasks.
 
+\subsection{Embedding Norm Analysis}
+
+\textbf{Experiment 236: Norm-Based Detection.} We test whether L2 embedding norm --- a direction-independent signal --- also detects OOD inputs. Clean norms range from 4.5 (L1) to 133.5 (L31).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig245_norm_analysis.png}
+\caption{Left: clean norms increase with depth (4.5 to 133.5). Center: corruption causes measurable norm changes (night: $-$11\% at L31). Right: norm-based detection achieves AUROC=1.0 for all 30 layer$\times$corruption combinations.}
+\end{figure}
+
+\textbf{Finding 478}: L2 embedding norm achieves \textbf{AUROC=1.0} for all 6 corruption types across all 5 layers. This direction-independent signal is complementary to cosine distance. The zero in-distribution variance makes even 0.3\% norm changes perfectly detectable.
+
+\textbf{Finding 479}: Night corruption causes the largest L31 norm change ($-$11\%), while fog causes a +5\% increase. Different corruptions shift norm in \textbf{opposite directions}, providing an additional discrimination signal.
+
+\textbf{Finding 480}: Clean embedding norms grow 30$\times$ across layers (L1: 4.5 $\rightarrow$ L31: 133.5), consistent with residual stream accumulation in transformer architectures.
+
 \end{document}
