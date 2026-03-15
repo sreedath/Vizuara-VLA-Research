@@ -1,0 +1,304 @@
+{
+  "experiment": "prompt_sensitivity",
+  "experiment_number": 267,
+  "timestamp": "20260315_084438",
+  "n_prompts": 10,
+  "results": {
+    "3": {
+      "p0": {
+        "prompt": "In: What action should the robot take to pick up the object?",
+        "distances": {
+          "fog": 0.0027054548263549805,
+          "night": 0.007991313934326172,
+          "noise": 0.0005123615264892578,
+          "blur": 0.006263315677642822
+        }
+      },
+      "p1": {
+        "prompt": "In: What action should the robot take to move forward?\nOut:",
+        "distances": {
+          "fog": 0.002917647361755371,
+          "night": 0.008093595504760742,
+          "noise": 0.0005272030830383301,
+          "blur": 0.006504356861114502
+        }
+      },
+      "p2": {
+        "prompt": "In: What action should the robot take to turn left?\nOut:",
+        "distances": {
+          "fog": 0.0030065178871154785,
+          "night": 0.0083082914352417,
+          "noise": 0.0005304813385009766,
+          "blur": 0.006634771823883057
+        }
+      },
+      "p3": {
+        "prompt": "In: What action should the robot take to grasp the cup?\nOut:",
+        "distances": {
+          "fog": 0.0027974843978881836,
+          "night": 0.008228957653045654,
+          "noise": 0.000504612922668457,
+          "blur": 0.0064299702644348145
+        }
+      },
+      "p4": {
+        "prompt": "In: What action should the robot take to open the drawer?\nOu",
+        "distances": {
+          "fog": 0.0027862191200256348,
+          "night": 0.008076488971710205,
+          "noise": 0.0004876852035522461,
+          "blur": 0.006401479244232178
+        }
+      },
+      "p5": {
+        "prompt": "In: What action should the robot take to push the button?\nOu",
+        "distances": {
+          "fog": 0.0028262734413146973,
+          "night": 0.007933199405670166,
+          "noise": 0.0005425214767456055,
+          "blur": 0.00626140832901001
+        }
+      },
+      "p6": {
+        "prompt": "In: What action should the robot take to place the block?\nOu",
+        "distances": {
+          "fog": 0.002757728099822998,
+          "night": 0.00810849666595459,
+          "noise": 0.0004794001579284668,
+          "blur": 0.0063266754150390625
+        }
+      },
+      "p7": {
+        "prompt": "In: What action should the robot take to stack the objects?\n",
+        "distances": {
+          "fog": 0.002649366855621338,
+          "night": 0.007955849170684814,
+          "noise": 0.0005429387092590332,
+          "blur": 0.006182670593261719
+        }
+      },
+      "p8": {
+        "prompt": "In: What action should the robot take to wipe the surface?\nO",
+        "distances": {
+          "fog": 0.002707540988922119,
+          "night": 0.008186817169189453,
+          "noise": 0.0005164742469787598,
+          "blur": 0.006408572196960449
+        }
+      },
+      "p9": {
+        "prompt": "In: What action should the robot take to close the lid?\nOut:",
+        "distances": {
+          "fog": 0.002863943576812744,
+          "night": 0.008059322834014893,
+          "noise": 0.0005125999450683594,
+          "blur": 0.006343185901641846
+        }
+      }
+    },
+    "15": {
+      "p0": {
+        "prompt": "In: What action should the robot take to pick up the object?",
+        "distances": {
+          "fog": 0.05560171604156494,
+          "night": 0.18666261434555054,
+          "noise": 0.02006131410598755,
+          "blur": 0.18194687366485596
+        }
+      },
+      "p1": {
+        "prompt": "In: What action should the robot take to move forward?\nOut:",
+        "distances": {
+          "fog": 0.05401945114135742,
+          "night": 0.21141493320465088,
+          "noise": 0.019657909870147705,
+          "blur": 0.20279425382614136
+        }
+      },
+      "p2": {
+        "prompt": "In: What action should the robot take to turn left?\nOut:",
+        "distances": {
+          "fog": 0.058640122413635254,
+          "night": 0.21833205223083496,
+          "noise": 0.014640629291534424,
+          "blur": 0.19587212800979614
+        }
+      },
+      "p3": {
+        "prompt": "In: What action should the robot take to grasp the cup?\nOut:",
+        "distances": {
+          "fog": 0.05169844627380371,
+          "night": 0.2168673872947693,
+          "noise": 0.01572239398956299,
+          "blur": 0.21306395530700684
+        }
+      },
+      "p4": {
+        "prompt": "In: What action should the robot take to open the drawer?\nOu",
+        "distances": {
+          "fog": 0.06174725294113159,
+          "night": 0.2380627989768982,
+          "noise": 0.019119977951049805,
+          "blur": 0.2474096417427063
+        }
+      },
+      "p5": {
+        "prompt": "In: What action should the robot take to push the button?\nOu",
+        "distances": {
+          "fog": 0.05945169925689697,
+          "night": 0.24069350957870483,
+          "noise": 0.020861566066741943,
+          "blur": 0.22627413272857666
+        }
+      },
+      "p6": {
+        "prompt": "In: What action should the robot take to place the block?\nOu",
+        "distances": {
+          "fog": 0.04417741298675537,
+          "night": 0.2256373167037964,
+          "noise": 0.020213305950164795,
+          "blur": 0.2128562331199646
+        }
+      },
+      "p7": {
+        "prompt": "In: What action should the robot take to stack the objects?\n",
+        "distances": {
+          "fog": 0.05563223361968994,
+          "night": 0.20725232362747192,
+          "noise": 0.02014845609664917,
+          "blur": 0.20692849159240723
+        }
+      },
+      "p8": {
+        "prompt": "In: What action should the robot take to wipe the surface?\nO",
+        "distances": {
+          "fog": 0.08383405208587646,
+          "night": 0.23666054010391235,
+          "noise": 0.019655942916870117,
+          "blur": 0.23500359058380127
+        }
+      },
+      "p9": {
+        "prompt": "In: What action should the robot take to close the lid?\nOut:",
+        "distances": {
+          "fog": 0.05877506732940674,
+          "night": 0.2509222626686096,
+          "noise": 0.01605081558227539,
+          "blur": 0.21551144123077393
+        }
+      }
+    },
+    "31": {
+      "p0": {
+        "prompt": "In: What action should the robot take to pick up the object?",
+        "distances": {
+          "fog": 0.1389613151550293,
+          "night": 0.2715952396392822,
+          "noise": 0.07184040546417236,
+          "blur": 0.2870723605155945
+        }
+      },
+      "p1": {
+        "prompt": "In: What action should the robot take to move forward?\nOut:",
+        "distances": {
+          "fog": 0.11100149154663086,
+          "night": 0.2301139235496521,
+          "noise": 0.0563928484916687,
+          "blur": 0.20547515153884888
+        }
+      },
+      "p2": {
+        "prompt": "In: What action should the robot take to turn left?\nOut:",
+        "distances": {
+          "fog": 0.1289147138595581,
+          "night": 0.24535393714904785,
+          "noise": 0.06293714046478271,
+          "blur": 0.254581093788147
+        }
+      },
+      "p3": {
+        "prompt": "In: What action should the robot take to grasp the cup?\nOut:",
+        "distances": {
+          "fog": 0.10106629133224487,
+          "night": 0.3007829785346985,
+          "noise": 0.04799187183380127,
+          "blur": 0.27684444189071655
+        }
+      },
+      "p4": {
+        "prompt": "In: What action should the robot take to open the drawer?\nOu",
+        "distances": {
+          "fog": 0.1188393235206604,
+          "night": 0.26750868558883667,
+          "noise": 0.0664517879486084,
+          "blur": 0.27662134170532227
+        }
+      },
+      "p5": {
+        "prompt": "In: What action should the robot take to push the button?\nOu",
+        "distances": {
+          "fog": 0.12815111875534058,
+          "night": 0.2752884030342102,
+          "noise": 0.06537497043609619,
+          "blur": 0.2735752463340759
+        }
+      },
+      "p6": {
+        "prompt": "In: What action should the robot take to place the block?\nOu",
+        "distances": {
+          "fog": 0.10945594310760498,
+          "night": 0.28619635105133057,
+          "noise": 0.057956039905548096,
+          "blur": 0.26866817474365234
+        }
+      },
+      "p7": {
+        "prompt": "In: What action should the robot take to stack the objects?\n",
+        "distances": {
+          "fog": 0.11035323143005371,
+          "night": 0.2642403244972229,
+          "noise": 0.055508196353912354,
+          "blur": 0.22890138626098633
+        }
+      },
+      "p8": {
+        "prompt": "In: What action should the robot take to wipe the surface?\nO",
+        "distances": {
+          "fog": 0.15552449226379395,
+          "night": 0.2930627465248108,
+          "noise": 0.06351405382156372,
+          "blur": 0.2865995764732361
+        }
+      },
+      "p9": {
+        "prompt": "In: What action should the robot take to close the lid?\nOut:",
+        "distances": {
+          "fog": 0.11058366298675537,
+          "night": 0.27588582038879395,
+          "noise": 0.059541165828704834,
+          "blur": 0.25757014751434326
+        }
+      }
+    },
+    "cross_prompt": {
+      "cal_p0_test_p0_fog": 0.0027054548263549805,
+      "cal_p0_test_p0_night": 0.007991313934326172,
+      "cal_p0_test_p1_fog": 0.005070984363555908,
+      "cal_p0_test_p1_night": 0.010274946689605713,
+      "cal_p0_test_p2_fog": 0.004916965961456299,
+      "cal_p0_test_p2_night": 0.010632753372192383,
+      "cal_p1_test_p0_fog": 0.006322205066680908,
+      "cal_p1_test_p0_night": 0.011323392391204834,
+      "cal_p1_test_p1_fog": 0.002917647361755371,
+      "cal_p1_test_p1_night": 0.008093595504760742,
+      "cal_p1_test_p2_fog": 0.005163908004760742,
+      "cal_p1_test_p2_night": 0.010679662227630615,
+      "cal_p2_test_p0_fog": 0.006367683410644531,
+      "cal_p2_test_p0_night": 0.011156320571899414,
+      "cal_p2_test_p1_fog": 0.005304813385009766,
+      "cal_p2_test_p1_night": 0.010165512561798096,
+      "cal_p2_test_p2_fog": 0.0030065178871154785,
+      "cal_p2_test_p2_night": 0.0083082914352417
+    }
+  }
+}

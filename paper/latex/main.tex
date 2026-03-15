@@ -5058,4 +5058,20 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 558}: Night \textbf{reduces} image attention at L31 by 35\% (18.2\%$\rightarrow$11.8\%), while blur \textbf{increases} it at L15 by 18\% (16.4\%$\rightarrow$19.3\%). These opposite strategies --- withdrawal from corrupted visual input vs. compensatory over-attention --- produce similarly wrong actions via different computational paths.
 
+\subsection{Prompt Sensitivity Analysis}
+
+\textbf{Experiment 267: 10-Prompt Sensitivity.} We test OOD detection across 10 diverse task prompts (pick up, move forward, turn left, grasp cup, open drawer, etc.) at 3 layers, measuring the coefficient of variation (CV) of detection distances.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig276_prompt.png}
+\caption{(a) Prompt sensitivity by layer: L3 has CV$<$4\%, while L15 and L31 reach 7--17\%. (b) All 10 prompts produce nearly identical distances at L3. (c) Cross-prompt centroid produces only 1.47$\times$ distance inflation, well within detection margin.}
+\end{figure}
+
+\textbf{Finding 559}: L3 OOD distances are \textbf{prompt-invariant} with CV $<$ 4\% across 10 prompts (night: 1.4\%, blur: 2.0\%, fog: 3.6\%, noise: 3.9\%). A single calibration centroid works regardless of which task prompt is used at test time --- no prompt-matching required for deployment.
+
+\textbf{Finding 560}: Later layers (L15, L31) show \textbf{7--17\% prompt sensitivity} because they encode task-specific semantics that interact with the corruption signal. This provides additional evidence that L3 is the optimal detection layer: it captures visual corruption information before task-specific processing contaminates the representation.
+
+\textbf{Finding 561}: Cross-prompt centroid detection at L3 produces only \textbf{1.47$\times$ distance inflation} (using prompt A's centroid with prompt B's corrupted test image). Since corruption distances are orders of magnitude above zero, this inflation is inconsequential for detection accuracy.
+
 \end{document}

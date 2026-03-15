@@ -9910,3 +9910,35 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 286**: At L3 (the optimal detection layer), only **0.9% of attention goes to image tokens**. The OOD signal at L3 propagates through the residual stream, not through direct attention to image positions — explaining why OOD detection works even with minimal direct image attention.
 
 **Finding 287**: Night **reduces** image attention at L31 by 35% (18.2%→11.8%), while blur **increases** it at L15 by 18% (16.4%→19.3%). These opposite attention strategies — withdrawal vs compensation — produce similarly wrong actions but via different computational paths.
+
+---
+
+## Experiment 267: Prompt Sensitivity Analysis
+
+**Research Question**: How much does the OOD detection signal depend on the specific prompt text? Can we use one prompt's centroid to detect corruption with a different prompt?
+
+**Method**: Test 10 diverse prompts (different robot tasks: pick up, move forward, turn left, grasp cup, etc.) across 3 layers and 4 corruptions. Also test cross-prompt centroid detection.
+
+**Results**:
+
+**Coefficient of Variation (%) across 10 prompts**:
+
+| Layer | Fog | Night | Noise | Blur |
+|-------|-----|-------|-------|------|
+| L3 | **3.6%** | **1.4%** | **3.9%** | **2.0%** |
+| L15 | 16.6% | 8.1% | 11.4% | 8.4% |
+| L31 | 13.0% | 7.4% | 10.5% | 9.5% |
+
+**Cross-prompt centroid (L3)**: Using prompt A's centroid with prompt B's test image produces 1.47× the same-prompt distance. Since corruption distances are >>0, this still works for detection.
+
+**Key Findings**:
+1. **L3 is prompt-invariant (CV < 4%)**: OOD distances at L3 vary by only 1.4-3.9% across 10 different prompts. The OOD signal at L3 captures visual corruption information independent of the task specification.
+2. **Later layers are prompt-sensitive (CV 7-17%)**: L15 and L31 distances vary significantly across prompts because these layers encode task-specific semantics that interact with the corruption signal.
+3. **Cross-prompt centroid works**: At L3, using a different prompt's centroid increases distance by only 1.47×, well within the detection margin. Prompt-matching is not required for deployment.
+4. **Night is most prompt-stable**: CV=1.4% at L3, 7.4% at L31. Night's strong visual signal (95% brightness reduction) dominates any prompt-dependent variation.
+
+**Finding 288**: L3 OOD distances are **prompt-invariant** with CV < 4% across 10 prompts. This means a single calibration centroid works regardless of which task prompt is used at test time — no prompt-matching required.
+
+**Finding 289**: Later layers (L15, L31) show **7-17% prompt sensitivity**, making them less suitable for prompt-agnostic deployment. This further supports L3 as the optimal detection layer.
+
+**Finding 290**: Cross-prompt centroid detection at L3 produces only **1.47× distance inflation**, well within the detection margin. The detector is robust to prompt mismatch.
