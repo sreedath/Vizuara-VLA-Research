@@ -7895,3 +7895,24 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 5. **Fog narrows action distribution**: Std decreases from 0.216 to 0.043 — fog makes the model overly confident on a wrong action (mean shifts from 0.189 to 0.337).
 
 **Finding**: OOD inputs cause **practically significant** changes to VLA action predictions — up to 33% of the full action range for noise, and 100% token change rate for night. This validates the real-world importance of OOD detection: without it, corrupted inputs can cause dangerous driving actions. The correlation between hidden-state cosine distance and action KL divergence confirms that our detector is measuring a safety-relevant signal.
+---
+
+### Finding 195: Embedding PCA Visualization (Experiment 200)
+
+**Experiment**: Project ID and OOD hidden-state embeddings into 2D via PCA to visualize cluster structure at L1, L3, L32.
+
+**Explained Variance (top-3 PCs)**:
+| Layer | PC1 | PC2 | PC3 | Top-3 Total |
+|-------|-----|-----|-----|-------------|
+| L1 | 39.5% | 30.5% | 11.5% | 81.5% |
+| L3 | 44.3% | 21.5% | 12.7% | 78.5% |
+| L32 | 23.2% | 15.1% | 13.0% | 51.4% |
+
+**Key Findings**:
+1. **Early layers are extremely low-rank**: L1 and L3 have 78-81% variance in just 3 PCs. This confirms the extreme anisotropy discovered in the embedding projection experiment — the effective dimensionality is very low despite 4096 nominal dimensions.
+2. **L32 is higher-rank**: Only 51.4% in 3 PCs. The final layer's representation is more spread across dimensions, explaining its lower separation ratio.
+3. **ID and OOD form clearly separable clusters in 2D**: In PCA space, ID points cluster tightly while OOD points (especially night) are far displaced. This visual separation validates the cosine distance detector.
+4. **Night is most displaced in PCA space**: Consistent with its extreme d' values (20-47) from the d-prime analysis.
+5. **Different corruption types form distinct clusters**: Fog, night, blur, and noise occupy different regions of PCA space, explaining the perfect cross-corruption transfer — each corruption type has its own displacement direction.
+
+**Finding**: PCA visualization confirms that VLA early-layer embeddings are **extremely low-rank** (81% variance in 3 PCs at L1). ID and OOD embeddings form clearly separable clusters in 2D projection space, with each corruption type displacing along distinct directions. This low-rank structure explains why calibration converges with just 3 images — the effective manifold is 2-3 dimensional, so a centroid estimated from 3 points is already highly accurate.

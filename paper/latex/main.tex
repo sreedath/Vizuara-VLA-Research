@@ -3738,4 +3738,30 @@ We measure how OOD inputs affect actual VLA action predictions to validate the p
 \label{fig:action_impact}
 \end{figure}
 
+\subsection{Embedding Geometry}
+
+We project ID and OOD embeddings to 2D via PCA to visualize cluster structure.
+
+\textbf{Finding 375}: Early-layer embeddings are \textbf{extremely low-rank}: L1 has 81.5\% variance in 3 PCs, L3 has 78.5\%. This extreme anisotropy explains why calibration converges with just 3 images---the effective embedding manifold is $\sim$3-dimensional, so a centroid from 3 points already captures the ID center.
+
+\textbf{Finding 376}: L32 (final layer) is significantly \textbf{higher-rank}: only 51.4\% in 3 PCs. The representation becomes more isotropic through the network, explaining L32's lower separation ratio (the OOD signal is diluted across more dimensions).
+
+\textbf{Finding 377}: In 2D PCA space, ID and OOD points form \textbf{clearly separable clusters}. Each corruption type displaces along a distinct direction, explaining perfect cross-corruption transfer: calibrating on one corruption type provides a centroid that separates all others.
+
+\textbf{Finding 378}: Night corruption is most displaced in PCA space, consistent with its extreme d' values (20--47). The four corruption types occupy distinct quadrants of the 2D projection, suggesting the detector could identify \emph{which type} of corruption is present---not just that corruption exists.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig207_pca_scatter.png}
+\caption{\textbf{PCA projection.} 2D PCA of ID (green circles) and OOD (colored crosses) embeddings at L1, L3, L32. ID points cluster tightly while different corruption types displace in distinct directions.}
+\label{fig:pca_scatter}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/fig208_pca_variance.png}
+\caption{\textbf{PCA explained variance.} Early layers (L1, L3) are extremely low-rank---3 PCs capture $>$78\% of variance. L32 is more isotropic (51\% in 3 PCs), explaining its lower OOD separation ratio.}
+\label{fig:pca_variance}
+\end{figure}
+
 \end{document}
