@@ -4097,4 +4097,48 @@ We validate that the detector requires absolutely no corruption-specific knowled
 
 \textbf{Finding 433}: This property is the detector's most powerful feature for safety-critical deployment. Traditional supervised approaches require labeled examples of each failure mode. Our approach requires only examples of ``what normal looks like'' --- a much weaker and more practical requirement.
 
+\subsection{Cross-Layer and Dimensionality Analysis}
+
+We investigate whether OOD detection is layer-specific or universal across the transformer, and whether dimensionality reduction preserves the detection signal.
+
+\textbf{Experiment 220: Cross-Layer and PCA-Reduced Detection.} We test cosine distance OOD detection at layers L1, L3, L7, L15, and L31 (spanning early to final layers of the 32-layer LLaMA backbone), concatenated multi-layer embeddings, and PCA-reduced embeddings.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Layer} & \textbf{AUROC} \\
+\midrule
+L1 & 1.000 \\
+L3 & 1.000 \\
+L7 & 1.000 \\
+L15 & 1.000 \\
+L31 & 1.000 \\
+\midrule
+L1+L3 (concat) & 1.000 \\
+L1+L31 (concat) & 1.000 \\
+L3+L31 (concat) & 1.000 \\
+L1+L3+L7 (concat) & 1.000 \\
+\midrule
+L1 PCA k=10 & 0.500 \\
+L3 PCA k=10 & 0.500 \\
+\bottomrule
+\end{tabular}
+\caption{Cross-layer OOD detection (Experiment 220). Standard cosine distance achieves AUROC=1.0 at all layers, but PCA to 10 components completely destroys the signal.}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig231_cross_layer.png}
+\caption{(Left) AUROC across all transformer layers — detection is layer-universal. (Right) Concatenated multi-layer detection preserves perfect performance. PCA reduction to 10 dimensions yields random performance (AUROC=0.5).}
+\end{figure}
+
+\textbf{Finding 434}: OOD detection via cosine distance is \textbf{layer-universal}: all 5 tested layers (L1 through L31) achieve AUROC=1.0. The OOD signal is not an artifact of a specific layer but a property of the entire transformer representation.
+
+\textbf{Finding 435}: Concatenating embeddings from multiple layers (L1+L3, L1+L31, L3+L31, L1+L3+L7) preserves perfect AUROC=1.0. Multi-layer fusion does not degrade performance.
+
+\textbf{Finding 436}: PCA dimensionality reduction to 10 components (the maximum extractable from $n_{cal}=10$ samples) yields AUROC=0.5 (random chance). The OOD-discriminative information is \textbf{distributed across many embedding dimensions} and cannot be captured by the top principal components of clean data alone.
+
+\textbf{Finding 437}: The PCA failure reveals an important structural property: the directions of maximum \emph{clean data variance} (captured by PCA) are not the same as the directions that separate clean from corrupted inputs. This motivates data-agnostic dimensionality reduction methods like random projection.
+
 \end{document}

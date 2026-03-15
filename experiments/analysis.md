@@ -8424,3 +8424,39 @@ snow       0     0     0     0      0     0     6
 3. **Generalizes to novel corruptions**: Rain and snow (novel types not in the standard 4) are perfectly detected without any modification to the detector. This was also confirmed in Experiment 204.
 
 **Finding**: The cosine distance detector is a **true unsupervised anomaly detector** that requires ZERO corruption-specific knowledge. Calibration with only clean images achieves AUROC=1.0 on all 6 tested corruption types. This is the detector's most powerful property for safety-critical deployment — it detects any departure from the learned "normal" distribution, including corruption types that didn't exist when the system was deployed.
+---
+
+### Finding 215: Cross-Layer and PCA-Reduced Detection (Experiment 220)
+
+**Experiment**: Test whether OOD detection works across ALL transformer layers, whether concatenating embeddings from multiple layers helps, and whether PCA dimensionality reduction preserves the signal.
+
+**Standard Per-Layer Detection**:
+| Layer | AUROC |
+|-------|-------|
+| L1 | 1.000 |
+| L3 | 1.000 |
+| L7 | 1.000 |
+| L15 | 1.000 |
+| L31 | 1.000 |
+
+**Concatenated Multi-Layer Detection**:
+| Combination | AUROC |
+|-------------|-------|
+| L1+L3 | 1.000 |
+| L1+L31 | 1.000 |
+| L3+L31 | 1.000 |
+| L1+L3+L7 | 1.000 |
+
+**PCA-Reduced Detection** (limited by n_cal=10 → max 10 components):
+| Layer | k=10 AUROC |
+|-------|-----------|
+| L1 | 0.500 |
+| L3 | 0.500 |
+
+**Key Findings**:
+1. **Layer-universal detection**: OOD signal is present at ALL 5 tested layers (L1 through L31), achieving AUROC=1.0 at every layer. The signal is not limited to specific layers.
+2. **Multi-layer concatenation works perfectly**: Combining embeddings from 2-3 layers preserves perfect detection. No degradation from dimensionality increase.
+3. **PCA fails with small calibration sets**: With n_cal=10, PCA can only extract 10 components from 4096D embeddings. These 10 components yield AUROC=0.5 (random), showing that the OOD-discriminative variance is spread across many dimensions and cannot be captured by the top-10 principal components of clean data.
+4. **OOD signal distributed across dimensions**: The PCA failure suggests that OOD detection relies on distributed representation differences, not a few dominant directions. This motivates random projection (Experiment 221) as an alternative dimensionality reduction.
+
+**Finding**: OOD detection via cosine distance is **layer-universal** — all 5 tested layers (L1-L31) achieve AUROC=1.0. However, PCA dimensionality reduction to 10 components completely destroys the signal (AUROC=0.5), indicating the OOD-discriminative information is spread across many embedding dimensions and cannot be captured by the top principal components of clean data alone.

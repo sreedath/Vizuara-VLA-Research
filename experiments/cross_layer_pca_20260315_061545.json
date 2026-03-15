@@ -1,0 +1,35 @@
+{
+  "experiment": "cross_layer_pca",
+  "experiment_number": 220,
+  "timestamp": "20260315_061545",
+  "n_cal": 10,
+  "n_test": 8,
+  "layers": [
+    1,
+    3,
+    7,
+    15,
+    31
+  ],
+  "standard_detection": {
+    "L1": 1.0,
+    "L3": 1.0,
+    "L7": 1.0,
+    "L15": 1.0,
+    "L31": 1.0
+  },
+  "pca_reduced": {
+    "L1": {
+      "k10": 0.5
+    },
+    "L3": {
+      "k10": 0.5
+    }
+  },
+  "concatenated_layers": {
+    "L1+L3": 1.0,
+    "L1+L31": 1.0,
+    "L3+L31": 1.0,
+    "L1+L3+L7": 1.0
+  }
+}
