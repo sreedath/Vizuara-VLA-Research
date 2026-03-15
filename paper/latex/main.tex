@@ -5734,4 +5734,22 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 686}: \textbf{The simplest detector is already optimal.} Since a single cosine distance at L3 achieves AUROC=1.0, ensemble complexity adds no detection benefit. The ensemble's margin amplification only matters in adversarial scenarios (Experiment~275 showed $84\times$ safety margin against evasion). For deployment, the single-detector approach with 0.22ms overhead (Experiment~288) is the recommended configuration.
 
+\subsection{Embedding Space Geometry}
+
+\textbf{Experiment 309: Embedding Visualization \& Clustering.} We characterize the embedding space geometry using 29 embeddings (5 clean passes, 4 corruptions $\times$ 6 severities), analyzing PCA structure, corruption direction angles, within-condition variance, and nearest-neighbor classification accuracy.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig318_embedding.png}
+\caption{Embedding space characterization (Experiment 309). (a) 86\% variance in 3 PCs; corruption is low-dimensional. (b) Corruption directions are near-orthogonal (mean 92.4\textdegree); fog-noise obtuse (123.7\textdegree). (c) Clean variance is exactly zero; night has highest intra-condition spread. (d) 93.1\% 1-NN accuracy; night-blur confused (67\textdegree{} separation). (e) Centroid distances ordered blur $>$ night $>$ fog $>$ noise. (f) Norms stable ($8.26$--$8.38$) across conditions.}
+\end{figure}
+
+\textbf{Finding 687}: \textbf{86\% variance in 3 dimensions} --- PCA reveals PC1=51.6\%, PC2=24.8\%, PC3=9.8\%, totaling 86.2\% in 3D. This confirms the $\sim$3--5D intrinsic dimensionality (Experiments~251, 276) and explains why extreme compression (4D in Experiment~305) preserves perfect detection. The corruption subspace has far lower dimensionality than the 4096D ambient space.
+
+\textbf{Finding 688}: \textbf{Corruption directions are near-orthogonal} with mean pairwise angle 92.4\textdegree. Fog-noise is obtuse (123.7\textdegree, cos\_sim=$-0.554$), explaining their mutual cancellation in interpolation (Experiment~307). Blur-fog (62\textdegree) and blur-night (67\textdegree) are the closest pairs, explaining their t-SNE cluster overlap and night-blur confusion in 1-NN classification (83.3\% vs 100\% for other types).
+
+\textbf{Finding 689}: \textbf{Clean embeddings have exactly zero variance} --- all 5 clean passes produce bit-identical embeddings (mean pairwise cosine distance = 0.0). Corrupted conditions have nonzero intra-condition variance: night (0.00298), blur (0.00199), fog (0.000644), noise (0.000164). This zero clean variance is the fundamental property enabling one-shot calibration.
+
+\textbf{Finding 690}: \textbf{93.1\% 1-NN classification} distinguishes 5 classes (clean + 4 corruptions) with just 29 samples, no training, and no threshold tuning. Clean, fog, and noise achieve 100\%; night and blur achieve 83.3\% with mutual confusion. The corruption-specific structure in embedding space enables not just binary detection but corruption \emph{identification}, opening the door to corruption-specific recovery strategies.
+
 \end{document}
