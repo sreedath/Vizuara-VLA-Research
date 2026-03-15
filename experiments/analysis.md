@@ -8920,3 +8920,27 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **Norms increase dramatically with depth**: L1=4.5 to L31=133.5 (30× increase), consistent with residual stream accumulation.
 
 **Finding 231**: L2 embedding norm provides **AUROC=1.0 OOD detection** across all 6 corruption types and 5 layers. This is a direction-independent signal complementary to cosine distance. The zero in-distribution variance makes even 0.3% norm changes perfectly detectable.
+
+---
+
+## Experiment 237: Online Video Stream Detection
+
+**Research Question**: In a continuous video stream, how quickly does the detector identify corruption onset? Tests with 10 clean frames, 10 transition frames (gradual corruption), and 10 fully corrupted frames.
+
+**Method**: Simulate a 30-frame video stream. Corruption gradually increases during the transition phase (severity 0.1 → 1.0). Use both raw distance and EMA-smoothed score (α=0.3). Threshold set at 2× max clean distance.
+
+**Results**:
+
+| Corruption | Max Clean Dist | Threshold | Raw Detection | EMA Detection |
+|-----------|---------------|----------|--------------|--------------|
+| Fog | 2.65e-5 | 5.31e-5 | Frame 10 (0 latency) | Frame 11 (1 frame) |
+| Night | 2.65e-5 | 5.31e-5 | Frame 11 (1 frame) | Frame 12 (2 frames) |
+| Noise | 2.65e-5 | 5.31e-5 | Frame 10 (0 latency) | Frame 10 (0 latency) |
+
+**Key Findings**:
+1. **Zero-latency detection for fog and noise**: The first corrupted frame (severity=0.1) already exceeds the threshold. Detection is instantaneous.
+2. **1-frame latency for night**: At severity=0.1, night distance is 3.43e-5 which is below threshold. By severity=0.2 (frame 11), it exceeds threshold.
+3. **EMA smoothing adds minimal delay**: At most 1-2 frames of additional latency. The signal is so strong that smoothing barely matters.
+4. **Gradual corruption is fully tracked**: Distance increases monotonically during the transition phase, providing real-time severity monitoring.
+
+**Finding 232**: Online detection detects corruption within **0-1 frames** of onset (raw) and **0-2 frames** with EMA smoothing. Even at 10% severity (earliest transition frame), fog and noise already exceed the 2× threshold. The detector provides **real-time corruption monitoring** in video streams.

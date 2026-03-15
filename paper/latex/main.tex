@@ -4588,4 +4588,20 @@ Rain & 0.009127 & 0.000232 & 100\% \\
 
 \textbf{Finding 480}: Clean embedding norms grow 30$\times$ across layers (L1: 4.5 $\rightarrow$ L31: 133.5), consistent with residual stream accumulation in transformer architectures.
 
+\subsection{Online Video Stream Detection}
+
+\textbf{Experiment 237: Real-Time Detection Latency.} We simulate a 30-frame video stream: 10 clean frames, 10 transition frames (gradual corruption from 10\% to 100\% severity), and 10 fully corrupted frames.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig246_online_detection.png}
+\caption{Online detection in simulated video streams. The detector identifies corruption onset within 0--1 frames. Green: clean phase, orange: transition (gradual corruption), red: full corruption. Dashed red line: detection threshold (2$\times$ max clean distance).}
+\end{figure}
+
+\textbf{Finding 481}: The detector achieves \textbf{0--1 frame detection latency}: fog and noise are detected on the very first corrupted frame (10\% severity), night requires one additional frame (20\% severity). Real-time corruption monitoring is feasible.
+
+\textbf{Finding 482}: EMA smoothing ($\alpha$=0.3) adds at most 1--2 frames of latency. The signal-to-noise ratio is so high that aggressive smoothing is unnecessary --- raw distance already provides reliable frame-by-frame detection.
+
+\textbf{Finding 483}: Distance increases \textbf{monotonically} during the transition phase, providing real-time severity tracking. The system not only detects corruption onset but continuously monitors its progression.
+
 \end{document}
