@@ -8,13 +8,13 @@
 
 Vision-Language-Action (VLA) models like OpenVLA-7B produce confident action predictions even under visual corruption (fog, night, blur, noise) --- silently outputting **wrong and dangerous actions**. We discover that a simple cosine distance metric on the model's hidden-state embeddings achieves **perfect OOD detection (AUROC=1.0)** with just **one clean calibration image**.
 
-## Key Results (612 Findings, 83 Experiments on Real OpenVLA-7B)
+## Key Results (629 Findings, 91 Experiments on Real OpenVLA-7B)
 
 | Property | Result |
 |----------|--------|
 | AUROC | **1.0** on all 6 corruption types |
 | Calibration | **1 clean image** (one-shot) |
-| Latency | **4.33ms** overhead (3.09% of inference) |
+| Latency | **0.22ms** overhead (0.17% of inference) |
 | Compression | **128x** via random projection (32D) |
 | False Positives | **0%** (2x gap between benign and corruption) |
 | Action Safety | **100%** of corrupted actions detected before execution |
@@ -48,9 +48,9 @@ Our detector catches **100% of these** at AUROC=1.0, preventing dangerous robot 
 ## Repository Structure
 
 ```
-scripts/              # 60+ experiment scripts (real OpenVLA-7B on GPU)
-experiments/          # JSON results + analysis.md (342 findings)
-paper/latex/          # NeurIPS-format paper (612 findings, 292 figures)
+scripts/              # 80+ experiment scripts (real OpenVLA-7B on GPU)
+experiments/          # JSON results + analysis.md (358 findings)
+paper/latex/          # NeurIPS-format paper (629 findings, 300 figures)
 ```
 
 ## Experiments Run on Real OpenVLA-7B
@@ -133,6 +133,14 @@ paper/latex/          # NeurIPS-format paper (612 findings, 292 figures)
 | 281 | Novel Corruptions | 49/50 novel corruption instances detected (98%) |
 | 282 | Detection Bounds | 1 pixel detectable; noise floor exactly 0 |
 | 283 | Baseline Comparison | Cosine (1.000) >> MSP (0.615), Energy (0.505) |
+| 284 | Temperature Effect | Detection temperature-invariant; output-space unfixable |
+| 285 | Multi-Token Action | 57-1,336× signal amplification; step 0 sufficient |
+| 286 | Transition Manifold | All 15 paths non-geodesic (1.6-18.2× curvature) |
+| 287 | Concentration Bounds | PAC guarantee: <1.43% error at 90% confidence |
+| 288 | Throughput Benchmark | 0.22ms overhead (0.17%); 7.1-7.3 FPS |
+| 289 | Gradient Sensitivity | Corruption-orthogonal gradients (|cos|<0.04) |
+| 290 | Embedding Topology | Sub-1D manifold; fog purely 1D (PC1=95%) |
+| 291 | Preprocessing Robustness | All transforms 6-85× below corruption threshold |
 
 ## License
 
