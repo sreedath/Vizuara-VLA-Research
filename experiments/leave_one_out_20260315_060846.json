@@ -1,0 +1,103 @@
+{
+  "experiment": "leave_one_out",
+  "experiment_number": 219,
+  "timestamp": "20260315_060846",
+  "n_cal": 10,
+  "n_test": 8,
+  "all_types": [
+    "fog",
+    "night",
+    "blur",
+    "noise",
+    "rain",
+    "snow"
+  ],
+  "baseline_detection": {
+    "fog": {
+      "L1": 1.0,
+      "L3": 1.0
+    },
+    "night": {
+      "L1": 1.0,
+      "L3": 1.0
+    },
+    "blur": {
+      "L1": 1.0,
+      "L3": 1.0
+    },
+    "noise": {
+      "L1": 1.0,
+      "L3": 1.0
+    },
+    "rain": {
+      "L1": 1.0,
+      "L3": 1.0
+    },
+    "snow": {
+      "L1": 1.0,
+      "L3": 1.0
+    }
+  },
+  "leave_one_out_identification": {
+    "fog": {
+      "L1": {
+        "detected_as_ood": 0.0,
+        "n": 4
+      },
+      "L3": {
+        "detected_as_ood": 0.0,
+        "n": 4
+      }
+    },
+    "night": {
+      "L1": {
+        "detected_as_ood": 0.0,
+        "n": 4
+      },
+      "L3": {
+        "detected_as_ood": 0.0,
+        "n": 4
+      }
+    },
+    "blur": {
+      "L1": {
+        "detected_as_ood": 0.0,
+        "n": 4
+      },
+      "L3": {
+        "detected_as_ood": 0.0,
+        "n": 4
+      }
+    },
+    "noise": {
+      "L1": {
+        "detected_as_ood": 1.0,
+        "n": 4
+      },
+      "L3": {
+        "detected_as_ood": 1.0,
+        "n": 4
+      }
+    },
+    "rain": {
+      "L1": {
+        "detected_as_ood": 1.0,
+        "n": 4
+      },
+      "L3": {
+        "detected_as_ood": 1.0,
+        "n": 4
+      }
+    },
+    "snow": {
+      "L1": {
+        "detected_as_ood": 1.0,
+        "n": 4
+      },
+      "L3": {
+        "detected_as_ood": 1.0,
+        "n": 4
+      }
+    }
+  }
+}
