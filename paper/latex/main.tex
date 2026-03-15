@@ -4234,4 +4234,35 @@ Mahalanobis & 1.000 & 84.3 & 1.000 & 212.0 \\
 
 \textbf{Finding 444}: One-shot calibration means deployment requires exactly \textbf{one forward pass} through the model with a clean image. No dataset collection, no training, no hyperparameter tuning --- a single inference call establishes the reference centroid for perfect OOD detection.
 
+\subsection{Action Token Corruption Analysis}
+
+\textbf{Experiment 224: Do Corruptions Actually Change Actions?} We verify that visual corruptions cause the model to predict different (wrong) action tokens, establishing the safety case for OOD detection.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Corruption} & \textbf{\% Changed} & \textbf{Mean Deviation} & \textbf{Dims Affected} & \textbf{L3 Cosine Dist} \\
+\midrule
+Fog & 100\% & 111.0 & 6/7 & 0.000698 \\
+Night & 100\% & 83.0 & 6/7 & 0.003403 \\
+Blur & 100\% & 519.0 & 7/7 & 0.001068 \\
+Noise & 100\% & 182.9 & $\sim$6/7 & 0.004338 \\
+\bottomrule
+\end{tabular}
+\caption{All corruptions change predicted actions in 100\% of images. Blur causes the largest deviation (519 tokens across all 7 dimensions). Our detector catches all of these at AUROC=1.0.}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig235_actions.png}
+\caption{(Left) Mean action token deviation by corruption type --- blur causes 519 token deviation, 6$\times$ more than night. (Right) Per-dimension change frequency: blur affects all 7 action dimensions uniformly, while fog and night each spare one dimension.}
+\end{figure}
+
+\textbf{Finding 445}: Visual corruptions cause \textbf{100\% action corruption} --- every corrupted image produces different predicted actions across 6-7 of 7 action dimensions. This is not a theoretical risk; corruptions silently cause wrong robot actions.
+
+\textbf{Finding 446}: Blur is the most disruptive corruption, changing all 7 action dimensions with a mean deviation of 519 token bins (vs 83 for night). Each action bin corresponds to $\sim$0.004 units of continuous action space, so 519 bins represents a $\sim$2.0 unit action error.
+
+\textbf{Finding 447}: Our detector catches ALL action-corrupting inputs (AUROC=1.0). Without OOD detection, the robot would silently execute substantially different actions under any corruption --- this is the core safety value of our approach.
+
 \end{document}

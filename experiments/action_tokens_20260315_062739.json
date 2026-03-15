@@ -1,0 +1,212 @@
+{
+  "experiment": "action_token_analysis",
+  "experiment_number": 224,
+  "timestamp": "20260315_062739",
+  "n_images": 8,
+  "corruption_types": [
+    "fog",
+    "night",
+    "blur",
+    "noise"
+  ],
+  "action_results": {
+    "fog": {
+      "n_images_with_changed_actions": 8,
+      "fraction_changed": 1.0,
+      "per_dim_change_count": [
+        8,
+        8,
+        8,
+        8,
+        0,
+        8,
+        8
+      ],
+      "mean_total_deviation": 111.0,
+      "sample_clean": [
+        31869,
+        31883,
+        31893,
+        31881,
+        31863,
+        31876,
+        31872
+      ],
+      "sample_corrupted": [
+        31898,
+        31857,
+        31883,
+        31840,
+        31863,
+        31878,
+        31875
+      ]
+    },
+    "night": {
+      "n_images_with_changed_actions": 8,
+      "fraction_changed": 1.0,
+      "per_dim_change_count": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        0,
+        8
+      ],
+      "mean_total_deviation": 83.0,
+      "sample_clean": [
+        31869,
+        31883,
+        31893,
+        31881,
+        31863,
+        31876,
+        31872
+      ],
+      "sample_corrupted": [
+        31860,
+        31861,
+        31889,
+        31876,
+        31903,
+        31876,
+        31869
+      ]
+    },
+    "blur": {
+      "n_images_with_changed_actions": 8,
+      "fraction_changed": 1.0,
+      "per_dim_change_count": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "mean_total_deviation": 519.0,
+      "sample_clean": [
+        31869,
+        31883,
+        31893,
+        31881,
+        31863,
+        31876,
+        31872
+      ],
+      "sample_corrupted": [
+        31919,
+        31825,
+        31922,
+        31767,
+        31790,
+        31809,
+        31744
+      ]
+    },
+    "noise": {
+      "n_images_with_changed_actions": 8,
+      "fraction_changed": 1.0,
+      "per_dim_change_count": [
+        8,
+        8,
+        8,
+        7,
+        8,
+        8,
+        4
+      ],
+      "mean_total_deviation": 182.875,
+      "sample_clean": [
+        31869,
+        31883,
+        31893,
+        31881,
+        31863,
+        31876,
+        31872
+      ],
+      "sample_corrupted": [
+        31860,
+        31880,
+        31946,
+        31894,
+        31876,
+        31856,
+        31744
+      ]
+    }
+  },
+  "hidden_state_distances": {
+    "L1": {
+      "fog": {
+        "distances": [
+          0.000424,
+          0.000424,
+          0.000424
+        ],
+        "mean": 0.000424
+      },
+      "night": {
+        "distances": [
+          0.002066,
+          0.002066,
+          0.002066
+        ],
+        "mean": 0.002066
+      },
+      "blur": {
+        "distances": [
+          0.000581,
+          0.000581,
+          0.000581
+        ],
+        "mean": 0.000581
+      },
+      "noise": {
+        "distances": [
+          0.002002,
+          0.002273,
+          0.002222
+        ],
+        "mean": 0.002166
+      }
+    },
+    "L3": {
+      "fog": {
+        "distances": [
+          0.000698,
+          0.000698,
+          0.000698
+        ],
+        "mean": 0.000698
+      },
+      "night": {
+        "distances": [
+          0.003403,
+          0.003403,
+          0.003403
+        ],
+        "mean": 0.003403
+      },
+      "blur": {
+        "distances": [
+          0.001068,
+          0.001068,
+          0.001068
+        ],
+        "mean": 0.001068
+      },
+      "noise": {
+        "distances": [
+          0.004825,
+          0.004029,
+          0.004159
+        ],
+        "mean": 0.004338
+      }
+    }
+  }
+}
