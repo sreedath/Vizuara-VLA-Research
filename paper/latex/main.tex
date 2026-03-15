@@ -6532,4 +6532,25 @@ We provide rigorous statistical validation: bootstrap confidence intervals for A
 
 \textbf{Finding 835}: \textbf{All $p < 0.002$ survive Bonferroni correction for 4 simultaneous tests ($\alpha_{\text{corrected}} = 0.0125$).} Permutation testing yields the minimum achievable $p$-value ($1/501$). Results are significant under any reasonable multiple testing correction.
 
+%% ============================================================
+\subsection{Experiment 346: Embedding Space Interpolation Analysis}
+\label{sec:exp346}
+
+We perform a detailed study of the paths between clean and corrupted embeddings, analyzing severity interpolation curves, Lipschitz constants, action token boundaries, and cross-corruption interpolation paths.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig355_interpolation.png}
+\caption{\textbf{Experiment 346}: Embedding space interpolation analysis. Top-left: severity-distance curves showing monotone increase for fog/night/blur but non-monotone for noise. Top-right: Lipschitz constants revealing blur is $10\times$ more sensitive. Bottom-left: cross-corruption paths with detection valleys. Bottom-right: action boundaries and path curvature.}
+\label{fig:exp346}
+\end{figure}
+
+\textbf{Finding 836}: \textbf{Noise is the only non-monotone corruption --- its curvature ratio of 2.77 is nearly $2\times$ fog's 1.58.} At severity 0.15, noise distance actually drops below the 0.10 level ($1.5 \times 10^{-5}$ vs $2.8 \times 10^{-5}$). This stochastic embedding response makes noise the hardest corruption to track continuously.
+
+\textbf{Finding 837}: \textbf{Blur has $10\times$ higher Lipschitz constant ($L=0.081$) than fog (0.008), night (0.011), or noise (0.007).} Blur is the most amplified corruption in embedding space per unit pixel change, explaining why it produces the largest cosine distances despite moderate pixel-level perturbations.
+
+\textbf{Finding 838}: \textbf{Night is uniquely action-resilient: first action change at severity 0.15, vs 0.05 for all others.} The robot tolerates $3\times$ more darkening before any action dimension changes, suggesting OpenVLA has learned partial brightness invariance for action prediction.
+
+\textbf{Finding 839}: \textbf{Cross-corruption ``detection valleys'' --- blending fog+noise creates embeddings $14\times$ closer to clean than the fog endpoint.} The fog$\to$noise path minimum ($d = 6.15 \times 10^{-5}$) is far below either endpoint. An adversary could exploit corruption combinations to minimize detection distance.
+
 \end{document}
