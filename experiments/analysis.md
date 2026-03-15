@@ -7611,3 +7611,35 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 
 **Finding**: This is a **core contribution of the paper**. Traditional logit-based OOD detection methods (entropy, MSP, max logit, energy) achieve only 0.65-0.74 AUROC on VLA models, while our hidden-state cosine distance achieves **perfect 1.0 AUROC**. The gap is 0.26-0.35 AUROC points. Logit-based methods fail because VLA action tokenization produces quasi-continuous distributions where the model remains confident under OOD conditions. Hidden-state geometry captures visual corruption signals that are invisible in the output logit distribution.
 
+---
+
+### Finding 186: Logit Distribution Features & L1 Validation (Experiment 191)
+
+**Experiment**: (1) Validate L1 cosine detection per corruption type, (2) test logit distribution features (std, range, top-k gap) as OOD detectors, (3) test combined cosine + logit features.
+
+**L1 Per-Category AUROC**: fog_60=1.0, night=1.0, blur=1.0, noise=1.0 — **perfect for all corruption types**.
+
+**Logit Distribution Features**:
+| Feature | AUROC | ID Mean | OOD Mean |
+|---------|-------|---------|----------|
+| logit_std | 0.576 | 4.19 | 3.72 |
+| logit_range | 0.722 | 23.43 | 19.51 |
+| top_k_gap | 0.656 | 1.45 | 0.90 |
+
+**Combined Cosine + Logit AUROC**:
+| Method | AUROC |
+|--------|-------|
+| Cosine L1 alone | 1.000 |
+| Cosine L3 alone | 1.000 |
+| Combined L1 + logit_std | 0.917 |
+| Combined L3 + logit_std | 0.903 |
+| Combined L32 + logit_std | 0.924 |
+
+**Key Findings**:
+1. **L1 achieves perfect AUROC for ALL corruption types**: Confirming the layer sweep finding that L1 is an excellent detection layer.
+2. **Logit distribution features are weak detectors**: AUROC 0.58-0.72, similar to entropy/MSP from Exp 190.
+3. **Combining cosine + logit features HURTS performance**: Combined AUROC drops to 0.90-0.92 from 1.0. Adding noisy logit signals dilutes the perfect cosine signal.
+4. **Cosine distance is sufficient — no need for feature combination**: The simple single-feature approach is optimal.
+
+**Finding**: L1 cosine distance achieves perfect per-category AUROC, confirming the layer sweep result. Logit distribution features (std, range, top-k gap) achieve only 0.58-0.72 AUROC. Critically, **combining cosine + logit features degrades performance** from 1.0 to 0.90-0.92. Feature combination is counterproductive when one feature is already perfect. Cosine distance alone is the optimal approach.
+

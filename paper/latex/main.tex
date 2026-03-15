@@ -3576,4 +3576,8 @@ We compare our hidden-state cosine distance approach against four standard logit
 \label{fig:logit_comparison}
 \end{figure}
 
+\textbf{Finding 345}: Logit distribution features (standard deviation, range, top-$k$ gap) achieve only 0.58--0.72 AUROC, confirming that the output distribution is a poor OOD signal source. \textbf{Combining} cosine distance with logit features \textbf{degrades} performance from 1.0 to 0.90--0.92: the noisy logit signal dilutes the perfect geometric signal.
+
+\textbf{Finding 346}: Layer 1 achieves \textbf{perfect per-category AUROC} (1.0 for fog, night, blur, and noise), validating the layer sweep finding. Cosine distance alone at L1 is the optimal single-feature OOD detector for VLA models.
+
 \end{document}
