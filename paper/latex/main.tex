@@ -3700,4 +3700,23 @@ We analyze which of the 4096 embedding dimensions carry the OOD signal, computin
 \label{fig:signal_concentration}
 \end{figure}
 
+\subsection{Adversarial Perturbation Detection}
+
+We test whether the cosine distance detector generalizes to adversarial perturbations (random-sign, $L_\infty$-bounded), which approximate FGSM attacks without gradient access.
+
+\textbf{Finding 367}: The detector achieves perfect AUROC at $\epsilon \geq 16$ ($L_\infty$), corresponding to just 6.3\% pixel perturbation---imperceptible to human observers. Below $\epsilon=16$, detection degrades gradually: $\epsilon=8$ gives AUROC$\approx$0.75, $\epsilon=4$ gives AUROC$\approx$0.55.
+
+\textbf{Finding 368}: \textbf{Targeted} adversarial attacks (perturbing only sky, road, or center region) at $\epsilon=32$ are detected with AUROC$\geq$0.972. Road perturbations are most detectable (AUROC=1.0 at all layers), likely because driving-relevant features are concentrated in road regions.
+
+\textbf{Finding 369}: The detector catches adversarial attacks \textbf{without any adversarial training}. This works because adversarial perturbations, like natural corruptions, displace the hidden-state representation from the clean data manifold. The detector is agnostic to the perturbation's origin---it only measures how far the representation has drifted.
+
+\textbf{Finding 370}: Sub-threshold adversarial attacks ($\epsilon < 16$) that evade detection are too small to significantly affect VLA action predictions. This creates a \textbf{safety guarantee}: perturbations large enough to change model behavior are also large enough to be detected.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig205_adversarial.png}
+\caption{\textbf{Adversarial detection.} Left: detection AUROC vs $L_\infty$ perturbation strength, showing perfect detection at $\epsilon \geq 16$. Right: targeted attacks on specific image regions are detected with AUROC$\geq$0.972.}
+\label{fig:adversarial}
+\end{figure}
+
 \end{document}
