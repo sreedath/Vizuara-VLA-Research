@@ -1,0 +1,635 @@
+{
+  "experiment": "deployment_simulation",
+  "experiment_number": 280,
+  "timestamp": "20260315_093303",
+  "results": {
+    "dawn_night": [
+      {
+        "frame": 0,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 1,
+        "severity": 0.034482758620689655,
+        "distance": 4.4345855712890625e-05
+      },
+      {
+        "frame": 2,
+        "severity": 0.06896551724137931,
+        "distance": 4.89354133605957e-05
+      },
+      {
+        "frame": 3,
+        "severity": 0.10344827586206896,
+        "distance": 0.0001386404037475586
+      },
+      {
+        "frame": 4,
+        "severity": 0.13793103448275862,
+        "distance": 0.00018727779388427734
+      },
+      {
+        "frame": 5,
+        "severity": 0.1724137931034483,
+        "distance": 0.00031876564025878906
+      },
+      {
+        "frame": 6,
+        "severity": 0.20689655172413793,
+        "distance": 0.00043380260467529297
+      },
+      {
+        "frame": 7,
+        "severity": 0.2413793103448276,
+        "distance": 0.0005718469619750977
+      },
+      {
+        "frame": 8,
+        "severity": 0.27586206896551724,
+        "distance": 0.0007243156433105469
+      },
+      {
+        "frame": 9,
+        "severity": 0.3103448275862069,
+        "distance": 0.0009298920631408691
+      },
+      {
+        "frame": 10,
+        "severity": 0.3448275862068966,
+        "distance": 0.0011258125305175781
+      },
+      {
+        "frame": 11,
+        "severity": 0.3793103448275862,
+        "distance": 0.0013474225997924805
+      },
+      {
+        "frame": 12,
+        "severity": 0.41379310344827586,
+        "distance": 0.0016156435012817383
+      },
+      {
+        "frame": 13,
+        "severity": 0.4482758620689655,
+        "distance": 0.0018393993377685547
+      },
+      {
+        "frame": 14,
+        "severity": 0.4827586206896552,
+        "distance": 0.0020822882652282715
+      },
+      {
+        "frame": 15,
+        "severity": 0.5172413793103449,
+        "distance": 0.0023025870323181152
+      },
+      {
+        "frame": 16,
+        "severity": 0.5517241379310345,
+        "distance": 0.0025594234466552734
+      },
+      {
+        "frame": 17,
+        "severity": 0.5862068965517241,
+        "distance": 0.002792060375213623
+      },
+      {
+        "frame": 18,
+        "severity": 0.6206896551724138,
+        "distance": 0.003002166748046875
+      },
+      {
+        "frame": 19,
+        "severity": 0.6551724137931034,
+        "distance": 0.0032472610473632812
+      },
+      {
+        "frame": 20,
+        "severity": 0.6896551724137931,
+        "distance": 0.0034905076026916504
+      },
+      {
+        "frame": 21,
+        "severity": 0.7241379310344828,
+        "distance": 0.003739476203918457
+      },
+      {
+        "frame": 22,
+        "severity": 0.7586206896551724,
+        "distance": 0.0040763020515441895
+      },
+      {
+        "frame": 23,
+        "severity": 0.7931034482758621,
+        "distance": 0.004436373710632324
+      },
+      {
+        "frame": 24,
+        "severity": 0.8275862068965517,
+        "distance": 0.0047463178634643555
+      },
+      {
+        "frame": 25,
+        "severity": 0.8620689655172413,
+        "distance": 0.0051351189613342285
+      },
+      {
+        "frame": 26,
+        "severity": 0.896551724137931,
+        "distance": 0.00558161735534668
+      },
+      {
+        "frame": 27,
+        "severity": 0.9310344827586207,
+        "distance": 0.006286978721618652
+      },
+      {
+        "frame": 28,
+        "severity": 0.9655172413793104,
+        "distance": 0.007117271423339844
+      },
+      {
+        "frame": 29,
+        "severity": 1.0,
+        "distance": 0.007991313934326172
+      }
+    ],
+    "fog_cycle": [
+      {
+        "frame": 0,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 1,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 2,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 3,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 4,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 5,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 6,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 7,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 8,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 9,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 10,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 11,
+        "severity": 0.1,
+        "distance": 6.240606307983398e-05
+      },
+      {
+        "frame": 12,
+        "severity": 0.2,
+        "distance": 0.0001679062843322754
+      },
+      {
+        "frame": 13,
+        "severity": 0.3,
+        "distance": 0.00034558773040771484
+      },
+      {
+        "frame": 14,
+        "severity": 0.4,
+        "distance": 0.0005706548690795898
+      },
+      {
+        "frame": 15,
+        "severity": 0.5,
+        "distance": 0.0008426308631896973
+      },
+      {
+        "frame": 16,
+        "severity": 0.6,
+        "distance": 0.0011507272720336914
+      },
+      {
+        "frame": 17,
+        "severity": 0.7,
+        "distance": 0.0014816522598266602
+      },
+      {
+        "frame": 18,
+        "severity": 0.8,
+        "distance": 0.0018665194511413574
+      },
+      {
+        "frame": 19,
+        "severity": 0.9,
+        "distance": 0.0022712349891662598
+      },
+      {
+        "frame": 20,
+        "severity": 1.0,
+        "distance": 0.0027054548263549805
+      },
+      {
+        "frame": 21,
+        "severity": 0.9,
+        "distance": 0.0022712349891662598
+      },
+      {
+        "frame": 22,
+        "severity": 0.8,
+        "distance": 0.0018665194511413574
+      },
+      {
+        "frame": 23,
+        "severity": 0.7,
+        "distance": 0.0014816522598266602
+      },
+      {
+        "frame": 24,
+        "severity": 0.6,
+        "distance": 0.0011507272720336914
+      },
+      {
+        "frame": 25,
+        "severity": 0.5,
+        "distance": 0.0008426308631896973
+      },
+      {
+        "frame": 26,
+        "severity": 0.4,
+        "distance": 0.0005706548690795898
+      },
+      {
+        "frame": 27,
+        "severity": 0.30000000000000004,
+        "distance": 0.00034558773040771484
+      },
+      {
+        "frame": 28,
+        "severity": 0.19999999999999996,
+        "distance": 0.0001679062843322754
+      },
+      {
+        "frame": 29,
+        "severity": 0.09999999999999998,
+        "distance": 6.240606307983398e-05
+      },
+      {
+        "frame": 30,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 31,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 32,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 33,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 34,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 35,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 36,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 37,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 38,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 39,
+        "severity": 0.0,
+        "distance": 0.0
+      }
+    ],
+    "rain_simulation": [
+      {
+        "frame": 0,
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 1,
+        "severity": 0.05263157894736842,
+        "distance": 9.119510650634766e-06
+      },
+      {
+        "frame": 2,
+        "severity": 0.10526315789473684,
+        "distance": 7.390975952148438e-05
+      },
+      {
+        "frame": 3,
+        "severity": 0.15789473684210525,
+        "distance": 0.00016367435455322266
+      },
+      {
+        "frame": 4,
+        "severity": 0.21052631578947367,
+        "distance": 0.0003007054328918457
+      },
+      {
+        "frame": 5,
+        "severity": 0.2631578947368421,
+        "distance": 0.000544428825378418
+      },
+      {
+        "frame": 6,
+        "severity": 0.3157894736842105,
+        "distance": 0.0008214116096496582
+      },
+      {
+        "frame": 7,
+        "severity": 0.3684210526315789,
+        "distance": 0.0009810328483581543
+      },
+      {
+        "frame": 8,
+        "severity": 0.42105263157894735,
+        "distance": 0.0012066364288330078
+      },
+      {
+        "frame": 9,
+        "severity": 0.47368421052631576,
+        "distance": 0.001460433006286621
+      },
+      {
+        "frame": 10,
+        "severity": 0.5263157894736842,
+        "distance": 0.0016976594924926758
+      },
+      {
+        "frame": 11,
+        "severity": 0.5789473684210527,
+        "distance": 0.002070188522338867
+      },
+      {
+        "frame": 12,
+        "severity": 0.631578947368421,
+        "distance": 0.0024158358573913574
+      },
+      {
+        "frame": 13,
+        "severity": 0.6842105263157895,
+        "distance": 0.0028316378593444824
+      },
+      {
+        "frame": 14,
+        "severity": 0.7368421052631579,
+        "distance": 0.0032454729080200195
+      },
+      {
+        "frame": 15,
+        "severity": 0.7894736842105263,
+        "distance": 0.0037482380867004395
+      },
+      {
+        "frame": 16,
+        "severity": 0.8421052631578947,
+        "distance": 0.004370391368865967
+      },
+      {
+        "frame": 17,
+        "severity": 0.8947368421052632,
+        "distance": 0.004820823669433594
+      },
+      {
+        "frame": 18,
+        "severity": 0.9473684210526315,
+        "distance": 0.005396068096160889
+      },
+      {
+        "frame": 19,
+        "severity": 1.0,
+        "distance": 0.005744874477386475
+      }
+    ],
+    "jpeg_sweep": [
+      {
+        "quality": 100,
+        "distance": 4.786252975463867e-05
+      },
+      {
+        "quality": 95,
+        "distance": 4.5418739318847656e-05
+      },
+      {
+        "quality": 90,
+        "distance": 4.3272972106933594e-05
+      },
+      {
+        "quality": 80,
+        "distance": 3.921985626220703e-05
+      },
+      {
+        "quality": 70,
+        "distance": 7.975101470947266e-05
+      },
+      {
+        "quality": 60,
+        "distance": 0.00012636184692382812
+      },
+      {
+        "quality": 50,
+        "distance": 0.00021719932556152344
+      },
+      {
+        "quality": 40,
+        "distance": 0.0002861618995666504
+      },
+      {
+        "quality": 30,
+        "distance": 0.0004786849021911621
+      },
+      {
+        "quality": 20,
+        "distance": 0.0005105137825012207
+      },
+      {
+        "quality": 15,
+        "distance": 0.0008552074432373047
+      },
+      {
+        "quality": 10,
+        "distance": 0.002124011516571045
+      },
+      {
+        "quality": 5,
+        "distance": 0.0034623146057128906
+      },
+      {
+        "quality": 3,
+        "distance": 0.003819763660430908
+      },
+      {
+        "quality": 1,
+        "distance": 0.005626380443572998
+      }
+    ],
+    "failure_pattern": [
+      {
+        "frame": 0,
+        "corruption": "clean",
+        "distance": 0.0
+      },
+      {
+        "frame": 1,
+        "corruption": "noise",
+        "distance": 0.00015693902969360352
+      },
+      {
+        "frame": 2,
+        "corruption": "clean",
+        "distance": 0.0
+      },
+      {
+        "frame": 3,
+        "corruption": "blur",
+        "distance": 0.005036652088165283
+      },
+      {
+        "frame": 4,
+        "corruption": "clean",
+        "distance": 0.0
+      },
+      {
+        "frame": 5,
+        "corruption": "clean",
+        "distance": 0.0
+      },
+      {
+        "frame": 6,
+        "corruption": "night",
+        "distance": 0.0021948814392089844
+      },
+      {
+        "frame": 7,
+        "corruption": "night",
+        "distance": 0.0021948814392089844
+      },
+      {
+        "frame": 8,
+        "corruption": "clean",
+        "distance": 0.0
+      },
+      {
+        "frame": 9,
+        "corruption": "fog",
+        "distance": 0.0008426308631896973
+      },
+      {
+        "frame": 10,
+        "corruption": "fog",
+        "distance": 0.0008426308631896973
+      },
+      {
+        "frame": 11,
+        "corruption": "fog",
+        "distance": 0.0008426308631896973
+      },
+      {
+        "frame": 12,
+        "corruption": "clean",
+        "distance": 0.0
+      },
+      {
+        "frame": 13,
+        "corruption": "clean",
+        "distance": 0.0
+      },
+      {
+        "frame": 14,
+        "corruption": "clean",
+        "distance": 0.0
+      },
+      {
+        "frame": 15,
+        "corruption": "noise",
+        "distance": 0.00015693902969360352
+      },
+      {
+        "frame": 16,
+        "corruption": "blur",
+        "distance": 0.005036652088165283
+      },
+      {
+        "frame": 17,
+        "corruption": "clean",
+        "distance": 0.0
+      },
+      {
+        "frame": 18,
+        "corruption": "clean",
+        "distance": 0.0
+      },
+      {
+        "frame": 19,
+        "corruption": "clean",
+        "distance": 0.0
+      }
+    ],
+    "detection_metrics": {
+      "TP": 9,
+      "FP": 0,
+      "FN": 0,
+      "TN": 11,
+      "sensitivity": 1.0,
+      "specificity": 1.0
+    }
+  }
+}
