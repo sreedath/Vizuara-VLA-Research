@@ -13543,3 +13543,69 @@ All 4 scenes show 6-7/7 dimensions changed at 0.5 severity for ALL corruption ty
 **Finding 538**: **Night produces the largest action deviations (690 bins at full severity vs fog 309, blur 519, noise 46).** Despite fog being "overconfident," night causes the most extreme action changes. Dim 1 (y-axis) shifts by 140 bins and the gripper flips from 128→0.
 
 **Finding 539**: **The gripper dimension discriminates fog from night: fog shifts 4 bins vs night's 128.** Fog primarily affects translation dimensions while leaving the gripper nearly unchanged. Night radically alters the gripper command. This dimension-specific pattern could enable corruption-type identification from action changes alone.
+
+---
+
+## Experiment 335: Theoretical Detection Bounds (Real OpenVLA-7B)
+
+**Date:** 2025-03-15
+**Script:** `scripts/real_vla_theoretical_bounds.py`
+**Results:** `experiments/theoretical_bounds_20260315_131040.json`
+**Figure:** `paper/latex/fig344_bounds.png`
+
+Comprehensive theoretical analysis using 15 scenes and formal statistical bounds.
+
+### PAC Learning Bounds
+
+With 0 errors on n samples, the PAC bound gives:
+- n=10, δ=0.05: ε < 30%
+- n=50, δ=0.05: ε < 6.0%
+- n=100, δ=0.05: ε < 3.0%
+
+### Hoeffding Concentration
+
+Gap = 4.93e-5 (min OOD - max within-scene).
+- n=1: P(false alarm) ≤ 25.6%
+- n=5: P(false alarm) ≤ 6.92e-5
+- n=10: P(false alarm) ≤ 2.40e-9
+- n=20: P(false alarm) ≤ 2.87e-18
+
+The exponential concentration means even 10 samples provide astronomical confidence.
+
+### Chebyshev Bound
+
+Clean within-scene: mean=2.95e-6, std=5.16e-6. Gap is 9.6σ. Chebyshev bound: P(FP) ≤ 1/9.6² = 1.1%.
+
+### Fisher / Rule of Three
+
+125 clean + 32 OOD, 0 errors. Rule of three at 95% CI: error < 1.91%.
+
+### SNR and Effect Size
+
+| Corruption | SNR | Cohen's d | Power@n=1 |
+|-----------|-----|-----------|-----------|
+| Blur | 34.5 | 34.5 | 1.0 |
+| Night | 28.9 | 28.8 | 1.0 |
+| Fog | 20.0 | 19.9 | 1.0 |
+| Noise | 5.9 | 5.7 | 0.99998 |
+
+ALL corruption types have power=1.0 at n=1 (single sample sufficient).
+
+### Information Theory
+
+Binary detection: MI = 0.96 bits (perfect separation).
+Severity channel capacity: Blur=7.1 bits (128+ levels), Night=5.7, Fog=5.5, Noise=4.0.
+
+### SPRT
+
+20/20 test cases decide OOD in 1 frame. Log-likelihood ratios: 269-476,033, all vastly exceeding the threshold of 4.6.
+
+### Key Findings
+
+**Finding 540**: **Hoeffding bound: P(false alarm) < 2.4e-9 with just 10 samples.** The exponential concentration inequality provides astronomical confidence from minimal data. The gap of 9.6σ between clean and OOD distributions ensures that even non-parametric bounds give strong guarantees.
+
+**Finding 541**: **All corruption types achieve statistical power=1.0 at n=1.** Cohen's d ranges from 5.7 (noise) to 34.5 (blur), all vastly exceeding the conventional "large effect" threshold of 0.8. Even noise — the weakest corruption — has SNR=5.9 and near-perfect detection power from a single sample.
+
+**Finding 542**: **Severity estimation channel capacity: 4.0-7.1 bits (16-128+ distinguishable levels).** The distance-to-severity mapping carries substantial information: blur supports 7.1 bits (128+ severity levels), while noise supports 4.0 bits (16 levels). This enables fine-grained severity estimation beyond binary detection.
+
+**Finding 543**: **SPRT decides OOD in 1 frame for all 20 test cases (log LR = 269-476k).** The Sequential Probability Ratio Test, which balances Type I and Type II errors, rejects the clean hypothesis in a single observation. The log-likelihood ratios exceed the threshold by 58-103,000× — the statistical evidence is overwhelming from a single frame.

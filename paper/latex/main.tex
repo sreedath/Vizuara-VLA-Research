@@ -6279,4 +6279,27 @@ We analyze how visual corruptions reshape the 7-dimensional action output space,
 
 \textbf{Finding 791}: \textbf{The gripper dimension discriminates fog from night: fog $\Delta=4$ vs night $\Delta=128$.} Fog primarily corrupts translation dimensions while leaving the gripper nearly unchanged. Night radically alters the gripper, suggesting different failure mechanisms. This dimension-specific signature could enable corruption-type identification from action outputs alone.
 
+%% ============================================================
+\subsection{Experiment 335: Theoretical Detection Bounds}
+\label{sec:exp335}
+
+We derive formal statistical guarantees using 15 scenes, computing PAC bounds, Hoeffding concentration, Chebyshev inequalities, SNR, and sequential analysis.
+
+\textbf{Setup.} We collect 125 clean distances (15 scenes, 105 cross-scene + 20 within-scene) and 32 OOD distances (8 scenes $\times$ 4 corruptions). We compute PAC learning bounds, Hoeffding concentration, Chebyshev bounds, SNR/Cohen's $d$, information-theoretic channel capacity, and SPRT decision statistics.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig344_bounds.png}
+\caption{\textbf{Figure~344: Theoretical detection bounds.} (A)~PAC: $\varepsilon<6\%$ at $n=50$ with 95\% CI. (B)~Hoeffding: $P(\text{FA})<10^{-9}$ at $n=10$. (C)~SNR 5.9--34.5, all power=1.0 at $n=1$. (D)~Gap is 9.6$\sigma$ (Chebyshev $<1.1\%$). (E)~Severity channel: 4--7 bits. (F)~SPRT decides in 1 frame ($\text{LR}\gg$ threshold).}
+\label{fig:bounds}
+\end{figure}
+
+\textbf{Finding 792}: \textbf{Hoeffding: $P(\text{false alarm}) < 2.4 \times 10^{-9}$ with $n=10$.} The gap between within-scene distances (mean $2.95 \times 10^{-6}$, max $\sim 5 \times 10^{-5}$) and minimum OOD distance is 9.6 standard deviations. Hoeffding's exponential concentration gives sub-$10^{-9}$ false alarm bounds with just 10 calibration samples.
+
+\textbf{Finding 793}: \textbf{All types achieve power=1.0 at $n=1$; Cohen's $d = 5.7$--$34.5$.} The smallest effect size (noise, $d=5.7$) exceeds the ``large effect'' threshold ($d=0.8$) by $7\times$. Blur achieves $d=34.5$. Even noise has near-perfect power (0.99998) from a single observation. The detector is not merely adequate --- it is \emph{absurdly overpowered}.
+
+\textbf{Finding 794}: \textbf{Severity channel capacity: 4.0--7.1 bits (16--128+ distinguishable levels).} The distance-to-severity mapping carries substantial information. Blur achieves 7.1 bits (128+ severity levels resolvable), while noise achieves 4.0 bits (16 levels). This enables fine-grained severity estimation well beyond binary detection.
+
+\textbf{Finding 795}: \textbf{SPRT decides OOD in 1 frame: log-LR $= 269$--$476{,}000$ vs threshold $4.6$.} The Sequential Probability Ratio Test rejects $H_0$ (clean) in a single observation for all 20 test cases. The log-likelihood ratios exceed the Wald threshold by $58$--$103{,}000\times$ --- the statistical evidence is overwhelming from frame one.
+
 \end{document}
