@@ -1,0 +1,507 @@
+{
+  "experiment": "attention_deep",
+  "experiment_number": 321,
+  "timestamp": "20260315_121254",
+  "clean_entropy": {
+    "0": {
+      "mean_entropy": 6.02498359978199,
+      "std_entropy": 0.7225270931947114,
+      "min_entropy": 4.56129789352417,
+      "max_entropy": 7.383432388305664
+    },
+    "4": {
+      "mean_entropy": 1.4874044060707092,
+      "std_entropy": 0.33168301491608515,
+      "min_entropy": 1.0525643825531006,
+      "max_entropy": 2.2117085456848145
+    },
+    "8": {
+      "mean_entropy": 1.5745182745158672,
+      "std_entropy": 0.46207312576602044,
+      "min_entropy": 1.0493724346160889,
+      "max_entropy": 2.495518922805786
+    },
+    "12": {
+      "mean_entropy": 2.2917064800858498,
+      "std_entropy": 0.7173065652219863,
+      "min_entropy": 1.0400972366333008,
+      "max_entropy": 3.928361654281616
+    },
+    "16": {
+      "mean_entropy": 2.5676573291420937,
+      "std_entropy": 1.245450500339919,
+      "min_entropy": 1.0789884328842163,
+      "max_entropy": 5.115016937255859
+    },
+    "20": {
+      "mean_entropy": 1.9237277396023273,
+      "std_entropy": 0.6707429247818216,
+      "min_entropy": 1.0412424802780151,
+      "max_entropy": 3.596388101577759
+    },
+    "24": {
+      "mean_entropy": 2.648418117314577,
+      "std_entropy": 0.7054036255971173,
+      "min_entropy": 1.4441421031951904,
+      "max_entropy": 3.837907314300537
+    },
+    "28": {
+      "mean_entropy": 2.423125296831131,
+      "std_entropy": 0.6807712354941533,
+      "min_entropy": 1.4357635974884033,
+      "max_entropy": 3.94810152053833
+    }
+  },
+  "attention_changes": {
+    "fog": {
+      "0": {
+        "mean_kl": 0.003514348714816151,
+        "max_kl": 0.008020533248782158,
+        "mean_entropy_change": -0.05249375104904175,
+        "diff_norm": 0.030314916744828224,
+        "most_affected_head": 11
+      },
+      "4": {
+        "mean_kl": 0.001971274817151425,
+        "max_kl": 0.022341247648000717,
+        "mean_entropy_change": 0.021571405231952667,
+        "diff_norm": 0.0652574896812439,
+        "most_affected_head": 13
+      },
+      "8": {
+        "mean_kl": 0.0022502229057863588,
+        "max_kl": 0.016488417983055115,
+        "mean_entropy_change": 0.004590585827827454,
+        "diff_norm": 0.08326750248670578,
+        "most_affected_head": 24
+      },
+      "12": {
+        "mean_kl": 0.022177935439685825,
+        "max_kl": 0.08669207990169525,
+        "mean_entropy_change": 0.07458168268203735,
+        "diff_norm": 0.30667945742607117,
+        "most_affected_head": 21
+      },
+      "16": {
+        "mean_kl": 0.07097140572841454,
+        "max_kl": 0.34887194633483887,
+        "mean_entropy_change": -0.10333722457289696,
+        "diff_norm": 0.3958486020565033,
+        "most_affected_head": 30
+      },
+      "20": {
+        "mean_kl": 0.054564404497796204,
+        "max_kl": 0.34148210287094116,
+        "mean_entropy_change": 0.04914601519703865,
+        "diff_norm": 0.4287888705730438,
+        "most_affected_head": 8
+      },
+      "24": {
+        "mean_kl": 0.10811607085634023,
+        "max_kl": 0.30752235651016235,
+        "mean_entropy_change": 0.017471354454755783,
+        "diff_norm": 0.5449122786521912,
+        "most_affected_head": 1
+      },
+      "28": {
+        "mean_kl": 0.10802466943277977,
+        "max_kl": 0.5224543809890747,
+        "mean_entropy_change": -0.05251214653253555,
+        "diff_norm": 0.48631417751312256,
+        "most_affected_head": 25
+      }
+    },
+    "night": {
+      "0": {
+        "mean_kl": 0.008832065612295992,
+        "max_kl": 0.02208854630589485,
+        "mean_entropy_change": 0.004556670784950256,
+        "diff_norm": 0.03945394605398178,
+        "most_affected_head": 16
+      },
+      "4": {
+        "mean_kl": 0.0044495640131572145,
+        "max_kl": 0.034485653042793274,
+        "mean_entropy_change": -0.03813638910651207,
+        "diff_norm": 0.07655393332242966,
+        "most_affected_head": 13
+      },
+      "8": {
+        "mean_kl": 0.00593888781259011,
+        "max_kl": 0.04165620729327202,
+        "mean_entropy_change": -0.03001704439520836,
+        "diff_norm": 0.06670324504375458,
+        "most_affected_head": 24
+      },
+      "12": {
+        "mean_kl": 0.08047898051154334,
+        "max_kl": 0.6638045310974121,
+        "mean_entropy_change": 0.015082526952028275,
+        "diff_norm": 0.450095534324646,
+        "most_affected_head": 21
+      },
+      "16": {
+        "mean_kl": 0.22886311312322505,
+        "max_kl": 1.16132390499115,
+        "mean_entropy_change": 0.1642385758459568,
+        "diff_norm": 0.6558183431625366,
+        "most_affected_head": 5
+      },
+      "20": {
+        "mean_kl": 0.22685605427250266,
+        "max_kl": 3.2342987060546875,
+        "mean_entropy_change": 0.12955743819475174,
+        "diff_norm": 0.6971926689147949,
+        "most_affected_head": 8
+      },
+      "24": {
+        "mean_kl": 0.3536851827520877,
+        "max_kl": 1.1779956817626953,
+        "mean_entropy_change": -0.324894305318594,
+        "diff_norm": 0.894526481628418,
+        "most_affected_head": 1
+      },
+      "28": {
+        "mean_kl": 0.36563441599719226,
+        "max_kl": 3.7491562366485596,
+        "mean_entropy_change": -0.039013419300317764,
+        "diff_norm": 0.7979255318641663,
+        "most_affected_head": 25
+      }
+    },
+    "blur": {
+      "0": {
+        "mean_kl": 0.03848582610953599,
+        "max_kl": 0.1570359766483307,
+        "mean_entropy_change": -0.03415723145008087,
+        "diff_norm": 0.10402724891901016,
+        "most_affected_head": 25
+      },
+      "4": {
+        "mean_kl": 0.010381857562606456,
+        "max_kl": 0.08307783305644989,
+        "mean_entropy_change": 0.03569931164383888,
+        "diff_norm": 0.091704361140728,
+        "most_affected_head": 13
+      },
+      "8": {
+        "mean_kl": 0.01989199113450013,
+        "max_kl": 0.15015123784542084,
+        "mean_entropy_change": 0.046331021934747696,
+        "diff_norm": 0.18054597079753876,
+        "most_affected_head": 24
+      },
+      "12": {
+        "mean_kl": 0.24949898864724673,
+        "max_kl": 1.0872232913970947,
+        "mean_entropy_change": 0.11077094078063965,
+        "diff_norm": 0.8998098969459534,
+        "most_affected_head": 21
+      },
+      "16": {
+        "mean_kl": 0.9677966043236665,
+        "max_kl": 5.423279762268066,
+        "mean_entropy_change": -0.1805420070886612,
+        "diff_norm": 1.5099519491195679,
+        "most_affected_head": 5
+      },
+      "20": {
+        "mean_kl": 0.6916958041001635,
+        "max_kl": 5.372077465057373,
+        "mean_entropy_change": 0.13279926031827927,
+        "diff_norm": 0.9877488613128662,
+        "most_affected_head": 8
+      },
+      "24": {
+        "mean_kl": 0.7941733731422573,
+        "max_kl": 3.0893306732177734,
+        "mean_entropy_change": 0.00957467034459114,
+        "diff_norm": 1.2970056533813477,
+        "most_affected_head": 1
+      },
+      "28": {
+        "mean_kl": 0.8582617249339819,
+        "max_kl": 6.176093578338623,
+        "mean_entropy_change": 0.22130848094820976,
+        "diff_norm": 1.0785653591156006,
+        "most_affected_head": 25
+      }
+    },
+    "noise": {
+      "0": {
+        "mean_kl": 0.012711933086393401,
+        "max_kl": 0.0338214635848999,
+        "mean_entropy_change": 0.022824659943580627,
+        "diff_norm": 0.03909480199217796,
+        "most_affected_head": 25
+      },
+      "4": {
+        "mean_kl": 0.003959881686569133,
+        "max_kl": 0.04381812736392021,
+        "mean_entropy_change": 0.005929861217737198,
+        "diff_norm": 0.02282077819108963,
+        "most_affected_head": 13
+      },
+      "8": {
+        "mean_kl": 0.008237680377533252,
+        "max_kl": 0.07299589365720749,
+        "mean_entropy_change": 0.00709383562207222,
+        "diff_norm": 0.04106752574443817,
+        "most_affected_head": 24
+      },
+      "12": {
+        "mean_kl": 0.08501633870764636,
+        "max_kl": 0.6842209100723267,
+        "mean_entropy_change": -0.0403326116502285,
+        "diff_norm": 0.2831965684890747,
+        "most_affected_head": 21
+      },
+      "16": {
+        "mean_kl": 0.38199322269065306,
+        "max_kl": 2.94766902923584,
+        "mean_entropy_change": 0.05186421424150467,
+        "diff_norm": 0.5937067866325378,
+        "most_affected_head": 17
+      },
+      "20": {
+        "mean_kl": 0.23474670844734646,
+        "max_kl": 1.675685167312622,
+        "mean_entropy_change": 0.014302324503660202,
+        "diff_norm": 0.6713680624961853,
+        "most_affected_head": 8
+      },
+      "24": {
+        "mean_kl": 0.3468817637767643,
+        "max_kl": 1.0872019529342651,
+        "mean_entropy_change": -0.041272591799497604,
+        "diff_norm": 0.7689476013183594,
+        "most_affected_head": 17
+      },
+      "28": {
+        "mean_kl": 0.3407534786965698,
+        "max_kl": 1.5899027585983276,
+        "mean_entropy_change": -0.12028103321790695,
+        "diff_norm": 0.6118393540382385,
+        "most_affected_head": 25
+      }
+    }
+  },
+  "image_attention": {
+    "clean": {
+      "0": {
+        "img_attention_pct": 43.51282501220703,
+        "img_attention_abs": 0.43512076139450073
+      },
+      "3": {
+        "img_attention_pct": 1.1636669635772705,
+        "img_attention_abs": 0.011641333810985088
+      },
+      "15": {
+        "img_attention_pct": 16.62015151977539,
+        "img_attention_abs": 0.16621460020542145
+      },
+      "31": {
+        "img_attention_pct": 18.633533477783203,
+        "img_attention_abs": 0.186353862285614
+      }
+    },
+    "fog": {
+      "0": {
+        "img_attention_pct": 42.660369873046875,
+        "img_attention_abs": 0.4265775680541992
+      },
+      "3": {
+        "img_attention_pct": 1.2963192462921143,
+        "img_attention_abs": 0.012959418818354607
+      },
+      "15": {
+        "img_attention_pct": 15.357097625732422,
+        "img_attention_abs": 0.15356411039829254
+      },
+      "31": {
+        "img_attention_pct": 16.065183639526367,
+        "img_attention_abs": 0.16069413721561432
+      }
+    },
+    "night": {
+      "0": {
+        "img_attention_pct": 43.51624298095703,
+        "img_attention_abs": 0.4351717233657837
+      },
+      "3": {
+        "img_attention_pct": 0.8806978464126587,
+        "img_attention_abs": 0.008804968558251858
+      },
+      "15": {
+        "img_attention_pct": 16.936500549316406,
+        "img_attention_abs": 0.16940899193286896
+      },
+      "31": {
+        "img_attention_pct": 15.588855743408203,
+        "img_attention_abs": 0.15589261054992676
+      }
+    },
+    "blur": {
+      "0": {
+        "img_attention_pct": 42.503360748291016,
+        "img_attention_abs": 0.42502984404563904
+      },
+      "3": {
+        "img_attention_pct": 1.0822358131408691,
+        "img_attention_abs": 0.010823601856827736
+      },
+      "15": {
+        "img_attention_pct": 20.87308692932129,
+        "img_attention_abs": 0.20874719321727753
+      },
+      "31": {
+        "img_attention_pct": 20.035381317138672,
+        "img_attention_abs": 0.20030277967453003
+      }
+    },
+    "noise": {
+      "0": {
+        "img_attention_pct": 43.704288482666016,
+        "img_attention_abs": 0.43703120946884155
+      },
+      "3": {
+        "img_attention_pct": 1.0606567859649658,
+        "img_attention_abs": 0.010605234652757645
+      },
+      "15": {
+        "img_attention_pct": 15.093188285827637,
+        "img_attention_abs": 0.15091073513031006
+      },
+      "31": {
+        "img_attention_pct": 19.06113624572754,
+        "img_attention_abs": 0.19057774543762207
+      }
+    }
+  },
+  "severity_entropy": {
+    "fog": [
+      {
+        "severity": 0.0,
+        "layer": 3,
+        "mean_entropy": 1.366245560348034
+      },
+      {
+        "severity": 0.0,
+        "layer": 31,
+        "mean_entropy": 3.0196937285363674
+      },
+      {
+        "severity": 0.1,
+        "layer": 3,
+        "mean_entropy": 1.3792984373867512
+      },
+      {
+        "severity": 0.1,
+        "layer": 31,
+        "mean_entropy": 2.974289793521166
+      },
+      {
+        "severity": 0.3,
+        "layer": 3,
+        "mean_entropy": 1.4001031033694744
+      },
+      {
+        "severity": 0.3,
+        "layer": 31,
+        "mean_entropy": 2.922742187976837
+      },
+      {
+        "severity": 0.5,
+        "layer": 3,
+        "mean_entropy": 1.416813913732767
+      },
+      {
+        "severity": 0.5,
+        "layer": 31,
+        "mean_entropy": 2.8904727771878242
+      },
+      {
+        "severity": 0.7,
+        "layer": 3,
+        "mean_entropy": 1.4202235229313374
+      },
+      {
+        "severity": 0.7,
+        "layer": 31,
+        "mean_entropy": 2.873193796724081
+      },
+      {
+        "severity": 1.0,
+        "layer": 3,
+        "mean_entropy": 1.4307901971042156
+      },
+      {
+        "severity": 1.0,
+        "layer": 31,
+        "mean_entropy": 2.7707264684140682
+      }
+    ],
+    "blur": [
+      {
+        "severity": 0.0,
+        "layer": 3,
+        "mean_entropy": 1.366245560348034
+      },
+      {
+        "severity": 0.0,
+        "layer": 31,
+        "mean_entropy": 3.0196937285363674
+      },
+      {
+        "severity": 0.1,
+        "layer": 3,
+        "mean_entropy": 1.371439266949892
+      },
+      {
+        "severity": 0.1,
+        "layer": 31,
+        "mean_entropy": 3.0116619057953358
+      },
+      {
+        "severity": 0.3,
+        "layer": 3,
+        "mean_entropy": 1.3800580129027367
+      },
+      {
+        "severity": 0.3,
+        "layer": 31,
+        "mean_entropy": 2.8202287442982197
+      },
+      {
+        "severity": 0.5,
+        "layer": 3,
+        "mean_entropy": 1.3800190761685371
+      },
+      {
+        "severity": 0.5,
+        "layer": 31,
+        "mean_entropy": 2.59238313511014
+      },
+      {
+        "severity": 0.7,
+        "layer": 3,
+        "mean_entropy": 1.3693522326648235
+      },
+      {
+        "severity": 0.7,
+        "layer": 31,
+        "mean_entropy": 2.3631648793816566
+      },
+      {
+        "severity": 1.0,
+        "layer": 3,
+        "mean_entropy": 1.3472842201590538
+      },
+      {
+        "severity": 1.0,
+        "layer": 31,
+        "mean_entropy": 2.3858981914818287
+      }
+    ]
+  }
+}

@@ -1,0 +1,299 @@
+{
+  "experiment": "inference_robustness",
+  "experiment_number": 322,
+  "timestamp": "20260315_121418",
+  "prompts": {
+    "prompt_0": {
+      "prompt": "In: What action should the robot take to pick up t...",
+      "clean_distance": 0.0,
+      "ood_distances": {
+        "fog": 0.0008426308631896973,
+        "night": 0.0021948814392089844,
+        "blur": 0.005036652088165283,
+        "noise": 0.00015681982040405273
+      },
+      "min_ood": 0.00015681982040405273,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "prompt_1": {
+      "prompt": "In: What action should the robot take to move forw...",
+      "clean_distance": 0.0,
+      "ood_distances": {
+        "fog": 0.000918269157409668,
+        "night": 0.0022658109664916992,
+        "blur": 0.005341887474060059,
+        "noise": 0.0001277327537536621
+      },
+      "min_ood": 0.0001277327537536621,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "prompt_2": {
+      "prompt": "In: What action should the robot take to grasp the...",
+      "clean_distance": 0.0,
+      "ood_distances": {
+        "fog": 0.0008866786956787109,
+        "night": 0.0021905899047851562,
+        "blur": 0.005306422710418701,
+        "noise": 0.0001417994499206543
+      },
+      "min_ood": 0.0001417994499206543,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "prompt_3": {
+      "prompt": "In: What action should the robot take to push the ...",
+      "clean_distance": 0.0,
+      "ood_distances": {
+        "fog": 0.0008931159973144531,
+        "night": 0.0021789073944091797,
+        "blur": 0.005250394344329834,
+        "noise": 0.00012493133544921875
+      },
+      "min_ood": 0.00012493133544921875,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "prompt_4": {
+      "prompt": "In: What action should the robot take to lift the ...",
+      "clean_distance": 0.0,
+      "ood_distances": {
+        "fog": 0.0008325576782226562,
+        "night": 0.0021803975105285645,
+        "blur": 0.004897058010101318,
+        "noise": 0.00012367963790893555
+      },
+      "min_ood": 0.00012367963790893555,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "prompt_5": {
+      "prompt": "In: What action should the robot take to reach the...",
+      "clean_distance": 0.0,
+      "ood_distances": {
+        "fog": 0.0008485317230224609,
+        "night": 0.002206742763519287,
+        "blur": 0.0050885677337646484,
+        "noise": 0.00014019012451171875
+      },
+      "min_ood": 0.00014019012451171875,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "prompt_6": {
+      "prompt": "In: What action should the robot take to open the ...",
+      "clean_distance": 0.0,
+      "ood_distances": {
+        "fog": 0.000877678394317627,
+        "night": 0.0021507740020751953,
+        "blur": 0.005088210105895996,
+        "noise": 0.00014787912368774414
+      },
+      "min_ood": 0.00014787912368774414,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "prompt_7": {
+      "prompt": "In: What action should the robot take to close the...",
+      "clean_distance": 0.0,
+      "ood_distances": {
+        "fog": 0.0009179115295410156,
+        "night": 0.002297699451446533,
+        "blur": 0.005309462547302246,
+        "noise": 0.00012427568435668945
+      },
+      "min_ood": 0.00012427568435668945,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "prompt_8": {
+      "prompt": "In: What action should the robot take to place the...",
+      "clean_distance": 0.0,
+      "ood_distances": {
+        "fog": 0.0008623600006103516,
+        "night": 0.0021377205848693848,
+        "blur": 0.005173444747924805,
+        "noise": 0.00014001131057739258
+      },
+      "min_ood": 0.00014001131057739258,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "prompt_9": {
+      "prompt": "In: What action should the robot take to stack the...",
+      "clean_distance": 0.0,
+      "ood_distances": {
+        "fog": 0.0008597970008850098,
+        "night": 0.002143383026123047,
+        "blur": 0.004969120025634766,
+        "noise": 0.00012165307998657227
+      },
+      "min_ood": 0.00012165307998657227,
+      "auroc": 1.0,
+      "perfect": true
+    }
+  },
+  "image_sizes": {
+    "64": {
+      "clean_distance": 0.0,
+      "min_ood": 0.0009852051734924316,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "128": {
+      "clean_distance": 0.0,
+      "min_ood": 0.0013087987899780273,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "224": {
+      "clean_distance": 0.0,
+      "min_ood": 0.00015681982040405273,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "256": {
+      "clean_distance": 0.0,
+      "min_ood": 0.00030738115310668945,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "384": {
+      "clean_distance": 0.0,
+      "min_ood": 7.706880569458008e-05,
+      "auroc": 1.0,
+      "perfect": true
+    },
+    "512": {
+      "clean_distance": 0.0,
+      "min_ood": 3.7550926208496094e-05,
+      "auroc": 1.0,
+      "perfect": true
+    }
+  },
+  "sequential": {
+    "n_passes": 20,
+    "all_zero": true,
+    "max_distance": 0.0,
+    "distances": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "cross_prompt": {
+    "cal0_test1": {
+      "clean_distance": 0.0028324127197265625,
+      "ood_distances": {
+        "fog": 0.0034885406494140625,
+        "night": 0.004992306232452393,
+        "blur": 0.007625102996826172,
+        "noise": 0.003061532974243164
+      },
+      "min_ood": 0.003061532974243164,
+      "separable": true
+    },
+    "cal0_test3": {
+      "clean_distance": 0.0011623501777648926,
+      "ood_distances": {
+        "fog": 0.0019533634185791016,
+        "night": 0.0034226179122924805,
+        "blur": 0.006043434143066406,
+        "noise": 0.0013315081596374512
+      },
+      "min_ood": 0.0013315081596374512,
+      "separable": true
+    },
+    "cal0_test5": {
+      "clean_distance": 0.0009042024612426758,
+      "ood_distances": {
+        "fog": 0.0016028881072998047,
+        "night": 0.0031164884567260742,
+        "blur": 0.005488038063049316,
+        "noise": 0.0010892152786254883
+      },
+      "min_ood": 0.0010892152786254883,
+      "separable": true
+    },
+    "cal0_test9": {
+      "clean_distance": 0.0012118220329284668,
+      "ood_distances": {
+        "fog": 0.001980602741241455,
+        "night": 0.003393888473510742,
+        "blur": 0.005797326564788818,
+        "noise": 0.0013930201530456543
+      },
+      "min_ood": 0.0013930201530456543,
+      "separable": true
+    }
+  },
+  "combined": {
+    "tests": {
+      "s0_p0": {
+        "clean_d": 0.0,
+        "min_ood": 0.00012254714965820312,
+        "perfect": true
+      },
+      "s0_p3": {
+        "clean_d": 0.0,
+        "min_ood": 0.00013381242752075195,
+        "perfect": true
+      },
+      "s0_p7": {
+        "clean_d": 0.0,
+        "min_ood": 0.00016647577285766602,
+        "perfect": true
+      },
+      "s99_p0": {
+        "clean_d": 0.0,
+        "min_ood": 7.462501525878906e-05,
+        "perfect": true
+      },
+      "s99_p3": {
+        "clean_d": 0.0,
+        "min_ood": 8.14199447631836e-05,
+        "perfect": true
+      },
+      "s99_p7": {
+        "clean_d": 0.0,
+        "min_ood": 8.022785186767578e-05,
+        "perfect": true
+      },
+      "s777_p0": {
+        "clean_d": 0.0,
+        "min_ood": 8.547306060791016e-05,
+        "perfect": true
+      },
+      "s777_p3": {
+        "clean_d": 0.0,
+        "min_ood": 8.428096771240234e-05,
+        "perfect": true
+      },
+      "s777_p7": {
+        "clean_d": 0.0,
+        "min_ood": 8.672475814819336e-05,
+        "perfect": true
+      }
+    },
+    "n_perfect": 9,
+    "n_total": 9
+  }
+}
