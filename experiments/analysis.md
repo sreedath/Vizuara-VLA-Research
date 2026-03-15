@@ -15066,3 +15066,56 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 
 **Finding 669**: Fog has the highest per-pixel sensitivity (0.000035 emb_L2/pixel_L2) — 2x blur's sensitivity (0.000018). Despite blur producing the largest absolute embedding shift, fog is more "efficient" per pixel changed, explaining why fog is detectable at moderate severity despite smaller absolute perturbations.
 
+
+## Experiment 365: Token Prediction Confidence Under Corruption
+
+**Script**: `scripts/real_vla_token_confidence.py`
+**Result**: `experiments/token_confidence_20260315_153917.json`
+**Figure**: `figures/fig374_token_conf.png`
+
+### Key Results
+
+**Softmax Entropy (per-token)**:
+| Corruption | Clean Entropy | Corrupt Entropy | AUROC |
+|-----------|--------------|----------------|-------|
+| Fog | 1.63 bits | 1.72 bits | 0.530 |
+| Night | 1.63 bits | 2.03 bits | 0.586 |
+| Noise | 1.63 bits | 1.65 bits | 0.513 |
+| Blur | 1.63 bits | 3.49 bits | 0.809 |
+
+**Top-1 Probability**:
+| Corruption | Clean top-1 | Corrupt top-1 | AUROC |
+|-----------|------------|--------------|-------|
+| Fog | 0.672 | 0.645 | 0.536 |
+| Night | 0.672 | 0.597 | 0.581 |
+| Noise | 0.672 | 0.658 | 0.519 |
+| Blur | 0.672 | 0.394 | 0.776 |
+
+**Clean Token Rank Under Corruption**:
+| Corruption | Mean Rank | Top-1 | Top-5 |
+|-----------|----------|-------|-------|
+| Fog | 923 | 18% | 30% |
+| Night | 171 | 11% | 26% |
+| Noise | 442 | 32% | 44% |
+| Blur | 69 | 11% | 17% |
+
+**Entropy-Based OOD Detection (per scene)**:
+| Corruption | AUROC | Gap (bits) |
+|-----------|-------|------------|
+| Fog | 0.573 | 0.09 |
+| Night | 0.831 | 0.40 |
+| Noise | 0.462 | 0.02 |
+| Blur | 1.000 | 1.86 |
+
+### Findings
+
+**Finding 670**: Token confidence is a POOR OOD detector: entropy-based AUROC is 0.57 (fog), 0.46 (noise, WORSE than random), 0.83 (night), and only 1.0 for blur. This contrasts sharply with embedding cosine distance which achieves AUROC=1.0 across ALL corruptions.
+
+**Finding 671**: The model remains confidently wrong under corruption. Top-1 probability drops only from 0.672 to 0.645 under fog (4% decrease) while producing completely different action tokens. The model's output confidence is decoupled from its correctness.
+
+**Finding 672**: Clean token rank under corruption averages 69-923 across corruptions, confirming that corrupted predictions are not "near misses" — the correct token is deeply buried in the distribution. Fog is paradoxically worst (rank 923) despite modest entropy increase.
+
+**Finding 673**: Noise is completely undetectable by entropy (AUROC=0.462, below random). Entropy actually DECREASES under noise at some severities, making noise corruption invisible to confidence-based monitoring. Only embedding-based detection catches noise.
+
+**Finding 674**: Blur is the only corruption where entropy-based detection achieves AUROC=1.0, with entropy nearly doubling from 1.63 to 3.49 bits. Blur uniquely disrupts the model's confidence, while other corruptions preserve confidence while changing predictions.
+

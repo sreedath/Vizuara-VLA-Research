@@ -6931,4 +6931,25 @@ We characterize the local geometry of the input-to-embedding map using finite-di
 
 \textbf{Finding 921}: \textbf{Fog has the highest per-pixel sensitivity (2$\times$ blur's).} Despite blur producing the largest absolute embedding shift, fog moves the embedding more efficiently per pixel changed (0.000035 vs 0.000018 emb\_L2/pixel\_L2). This ``efficiency'' metric explains fog's detectability at moderate severity.
 
+\subsection{Experiment 365: Token Prediction Confidence Under Corruption}
+
+We investigate whether the model's output confidence (softmax entropy, top-1 probability) can serve as an OOD detector, comparing it directly against our embedding cosine distance approach.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig374_token_conf.png}
+\caption{Token confidence analysis. Top-left: softmax entropy barely increases under fog/noise. Top-middle: embedding-based detection (green) vastly outperforms entropy-based (red) --- noise entropy AUROC is below random (0.462). Top-right: clean token rank plummets to 69--923 under corruption. Bottom: severity curves show blur is the only corruption that substantially increases entropy.}
+\label{fig:tokenconf}
+\end{figure}
+
+\textbf{Finding 922}: \textbf{Token confidence is a poor OOD detector.} Entropy-based AUROC achieves only 0.57 (fog), 0.46 (noise, \emph{worse than random}), 0.83 (night), and 1.0 (blur only). Embedding cosine distance achieves AUROC=1.0 across \emph{all} corruptions --- a decisive advantage.
+
+\textbf{Finding 923}: \textbf{The model remains confidently wrong.} Top-1 probability drops only 4\% (0.672$\to$0.645) under fog while producing completely different action tokens. The model's output confidence is decoupled from correctness --- the classic overconfidence failure mode of neural networks.
+
+\textbf{Finding 924}: \textbf{Clean tokens are deeply buried under corruption.} The correct (clean) token's rank drops to 69--923 across corruptions (fog worst at rank 923), confirming that corrupted predictions are not ``near misses'' but entirely different outputs.
+
+\textbf{Finding 925}: \textbf{Noise is invisible to confidence monitoring.} Noise corruption produces AUROC=0.462 (below random chance), with entropy actually \emph{decreasing} at some severities. This is particularly dangerous: the model produces different actions with \emph{higher} confidence than the clean prediction.
+
+\textbf{Finding 926}: \textbf{Only blur disrupts model confidence} (entropy nearly doubles from 1.63 to 3.49 bits, AUROC=1.0). This unique blur property stems from its large-scale spatial disruption that fundamentally undermines the model's ability to form coherent token predictions.
+
 \end{document}

@@ -1,251 +1,277 @@
-"""
-Token Confidence Analysis for OOD Detection.
+#!/usr/bin/env python3
+"""Experiment 365: Token Prediction Confidence Under Corruption
 
-Analyzes the softmax probability (confidence) of predicted action
-tokens for ID vs OOD inputs.  Hypotheses:
-1. OOD inputs produce lower max probabilities
-2. OOD inputs produce flatter probability distributions (higher entropy)
-3. Token confidence can serve as an OOD signal
-
-Experiment 127 in the CalibDrive series.
+How does model confidence change when inputs are corrupted?
+1. Softmax entropy of next-token prediction
+2. Top-1 probability under each corruption
+3. Rank of clean-predicted token under corruption
+4. Confidence-based OOD detection (AUROC)
+5. Per-action-dimension confidence analysis
 """
-import os
-import json
-import datetime
+
+import json, time, os, sys
 import numpy as np
 import torch
-from PIL import Image
-from sklearn.metrics import roc_auc_score
+from PIL import Image, ImageFilter
+from transformers import AutoModelForVision2Seq, AutoProcessor
 
-RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
-os.makedirs(RESULTS_DIR, exist_ok=True)
-SIZE = (256, 256)
-ACTION_TOKEN_BASE = 31744
+def apply_corruption(image, ctype, severity=1.0):
+    arr = np.array(image).astype(np.float32) / 255.0
+    if ctype == 'fog':
+        arr = arr * (1 - 0.6 * severity) + 0.6 * severity
+    elif ctype == 'night':
+        arr = arr * max(0.01, 1.0 - 0.95 * severity)
+    elif ctype == 'noise':
+        arr = arr + np.random.RandomState(42).randn(*arr.shape) * 0.3 * severity
+        arr = np.clip(arr, 0, 1)
+    elif ctype == 'blur':
+        return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
+    return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
-
-def create_highway(idx):
-    rng = np.random.default_rng(idx * 20001)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]
-    img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_urban(idx):
-    rng = np.random.default_rng(idx * 20002)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]
-    img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_noise(idx):
-    rng = np.random.default_rng(idx * 20003)
-    return rng.integers(0, 256, (*SIZE, 3), dtype=np.uint8)
-
-def create_indoor(idx):
-    rng = np.random.default_rng(idx * 20004)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:] = [200, 180, 160]
-    img[SIZE[0]//2:, :] = [100, 80, 60]
-    img[:SIZE[0]//3, SIZE[1]//3:2*SIZE[1]//3] = [150, 200, 255]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_twilight_highway(idx):
-    rng = np.random.default_rng(idx * 20010)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [70, 50, 80]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [200, 200, 100]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_snow(idx):
-    rng = np.random.default_rng(idx * 20014)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [200, 200, 210]
-    img[SIZE[0]//2:] = [220, 220, 230]
-    img[SIZE[0]//2:, SIZE[1]//2-2:SIZE[1]//2+2] = [180, 180, 190]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-
-def get_token_confidences(model, processor, image, prompt):
-    """Get confidence (softmax prob) for each generated action token."""
+def get_logits_and_tokens(model, processor, image, prompt, n_actions=7):
+    """Get logits and generated tokens for action prediction."""
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    input_len = inputs['input_ids'].shape[1]
+
+    # Generate with logits
     with torch.no_grad():
         output = model.generate(
             **inputs,
-            max_new_tokens=16,
+            max_new_tokens=n_actions + 5,
             do_sample=False,
-            output_scores=True,
             return_dict_in_generate=True,
+            output_scores=True,
         )
 
-    gen_ids = output.sequences[0, inputs['input_ids'].shape[1]:]
-    scores = output.scores  # tuple of logits at each step
+    gen_tokens = output.sequences[0, input_len:].cpu().tolist()
+    # scores is a tuple of (n_generated_tokens,) each of shape (1, vocab_size)
+    scores = [s[0].float().cpu() for s in output.scores]
 
-    confidences = []
-    entropies = []
-    action_bins = []
+    return gen_tokens, scores
 
-    for step_idx, (tid, score) in enumerate(zip(gen_ids.tolist(), scores)):
-        # Only analyze action tokens
-        if ACTION_TOKEN_BASE <= tid < ACTION_TOKEN_BASE + 256:
-            probs = torch.softmax(score[0].float(), dim=-1)
-            max_prob = float(probs[tid])
-            # Entropy over action tokens only
-            action_probs = probs[ACTION_TOKEN_BASE:ACTION_TOKEN_BASE+256]
-            action_probs = action_probs / (action_probs.sum() + 1e-10)
-            entropy = float(-torch.sum(action_probs * torch.log(action_probs + 1e-10)))
-
-            confidences.append(max_prob)
-            entropies.append(entropy)
-            action_bins.append(tid - ACTION_TOKEN_BASE)
-
-    return {
-        'confidences': confidences,
-        'entropies': entropies,
-        'action_bins': action_bins,
-        'mean_confidence': float(np.mean(confidences)) if confidences else 0.0,
-        'mean_entropy': float(np.mean(entropies)) if entropies else 0.0,
-        'min_confidence': float(np.min(confidences)) if confidences else 0.0,
-    }
-
+def compute_auroc(id_scores, ood_scores):
+    id_s = np.asarray(id_scores)
+    ood_s = np.asarray(ood_scores)
+    n_id, n_ood = len(id_s), len(ood_s)
+    if n_id == 0 or n_ood == 0:
+        return 0.5
+    count = sum(float(np.sum(o > id_s) + 0.5 * np.sum(o == id_s)) for o in ood_s)
+    return count / (n_id * n_ood)
 
 def main():
-    print("=" * 70, flush=True)
-    print("TOKEN CONFIDENCE ANALYSIS", flush=True)
-    print("=" * 70, flush=True)
-
-    from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading model...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
-        device_map="auto", trust_remote_code=True,
-    )
-    processor = AutoProcessor.from_pretrained(
-        "openvla/openvla-7b", trust_remote_code=True,
-    )
+        device_map="auto", trust_remote_code=True)
+    processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
-    print("Model loaded.", flush=True)
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
-
-    categories = {
-        'highway': (create_highway, 'ID'),
-        'urban': (create_urban, 'ID'),
-        'noise': (create_noise, 'OOD'),
-        'indoor': (create_indoor, 'OOD'),
-        'twilight': (create_twilight_highway, 'OOD'),
-        'snow': (create_snow, 'OOD'),
-    }
-
-    print("\n--- Collecting token confidences ---", flush=True)
+    prompt = "In: What action should the robot take to pick up the object?\nOut:"
     results = {}
-    for cat_name, (fn, group) in categories.items():
-        print(f"\n  {cat_name} ({group}):", flush=True)
-        all_confs = []
-        all_entropies = []
-        all_min_confs = []
+    ctypes = ['fog', 'night', 'noise', 'blur']
 
-        for i in range(10):
-            img = Image.fromarray(fn(i + 2700))
-            tc = get_token_confidences(model, processor, img, prompt)
-            all_confs.append(tc['mean_confidence'])
-            all_entropies.append(tc['mean_entropy'])
-            all_min_confs.append(tc['min_confidence'])
-            print(f"    {i}: mean_conf={tc['mean_confidence']:.4f}, mean_ent={tc['mean_entropy']:.3f}, "
-                  f"min_conf={tc['min_confidence']:.4f}, n_tokens={len(tc['confidences'])}", flush=True)
+    # Generate test images
+    print("Generating images...")
+    seeds = list(range(0, 1500, 100))[:15]
+    images = {}
+    clean_tokens = {}
+    clean_scores = {}
 
-        results[cat_name] = {
-            'group': group,
-            'mean_confidence': float(np.mean(all_confs)),
-            'std_confidence': float(np.std(all_confs)),
-            'mean_entropy': float(np.mean(all_entropies)),
-            'std_entropy': float(np.std(all_entropies)),
-            'mean_min_conf': float(np.mean(all_min_confs)),
-            'all_confs': all_confs,
-            'all_entropies': all_entropies,
+    for seed in seeds:
+        rng = np.random.RandomState(seed)
+        px = rng.randint(50, 200, (224, 224, 3), dtype=np.uint8)
+        images[seed] = Image.fromarray(px)
+        tokens, scores = get_logits_and_tokens(model, processor, images[seed], prompt)
+        clean_tokens[seed] = tokens
+        clean_scores[seed] = scores
+
+    print(f"  Generated {len(seeds)} scenes")
+
+    # ========== 1. Softmax Entropy Under Corruption ==========
+    print("\n=== Softmax Entropy ===")
+
+    entropy_results = {}
+    for ct in ctypes:
+        clean_entropies = []
+        corrupt_entropies = []
+
+        for seed in seeds:
+            # Clean entropy
+            for score in clean_scores[seed][:7]:
+                probs = torch.softmax(score, dim=-1).numpy()
+                ent = -float(np.sum(probs * np.log2(probs + 1e-12)))
+                clean_entropies.append(ent)
+
+            # Corrupt entropy
+            corrupt_img = apply_corruption(images[seed], ct, 0.5)
+            _, c_scores = get_logits_and_tokens(model, processor, corrupt_img, prompt)
+            for score in c_scores[:7]:
+                probs = torch.softmax(score, dim=-1).numpy()
+                ent = -float(np.sum(probs * np.log2(probs + 1e-12)))
+                corrupt_entropies.append(ent)
+
+        entropy_results[ct] = {
+            'clean_mean': float(np.mean(clean_entropies)),
+            'clean_std': float(np.std(clean_entropies)),
+            'corrupt_mean': float(np.mean(corrupt_entropies)),
+            'corrupt_std': float(np.std(corrupt_entropies)),
+            'entropy_increase': float(np.mean(corrupt_entropies) - np.mean(clean_entropies)),
+            'auroc': float(compute_auroc(clean_entropies, corrupt_entropies)),
         }
+        print(f"  {ct}: clean={np.mean(clean_entropies):.2f}, "
+              f"corrupt={np.mean(corrupt_entropies):.2f}, "
+              f"AUROC={entropy_results[ct]['auroc']:.4f}")
 
-    # Detection using confidence
-    print("\n--- Confidence as OOD Detector ---", flush=True)
-    id_confs = []
-    ood_confs = []
-    id_ents = []
-    ood_ents = []
-    labels = []
-    conf_scores = []
-    ent_scores = []
+    results['softmax_entropy'] = entropy_results
 
-    for cat_name, data in results.items():
-        for c, e in zip(data['all_confs'], data['all_entropies']):
-            if data['group'] == 'ID':
-                id_confs.append(c)
-                id_ents.append(e)
-            else:
-                ood_confs.append(c)
-                ood_ents.append(e)
-            labels.append(0 if data['group'] == 'ID' else 1)
-            conf_scores.append(-c)  # lower confidence = more OOD
-            ent_scores.append(e)    # higher entropy = more OOD
+    # ========== 2. Top-1 Probability ==========
+    print("\n=== Top-1 Probability ===")
 
-    labels = np.array(labels)
-    conf_scores = np.array(conf_scores)
-    ent_scores = np.array(ent_scores)
+    top1_results = {}
+    for ct in ctypes:
+        clean_top1 = []
+        corrupt_top1 = []
 
-    conf_auroc = float(roc_auc_score(labels, conf_scores))
-    ent_auroc = float(roc_auc_score(labels, ent_scores))
+        for seed in seeds:
+            for score in clean_scores[seed][:7]:
+                probs = torch.softmax(score, dim=-1)
+                clean_top1.append(float(probs.max()))
 
-    id_conf_mean = float(np.mean(id_confs))
-    ood_conf_mean = float(np.mean(ood_confs))
-    id_ent_mean = float(np.mean(id_ents))
-    ood_ent_mean = float(np.mean(ood_ents))
+            corrupt_img = apply_corruption(images[seed], ct, 0.5)
+            _, c_scores = get_logits_and_tokens(model, processor, corrupt_img, prompt)
+            for score in c_scores[:7]:
+                probs = torch.softmax(score, dim=-1)
+                corrupt_top1.append(float(probs.max()))
 
-    conf_d = float((np.mean(-np.array(ood_confs)) - np.mean(-np.array(id_confs))) / (np.std(-np.array(id_confs)) + 1e-10))
-    ent_d = float((ood_ent_mean - id_ent_mean) / (np.std(id_ents) + 1e-10))
+        top1_results[ct] = {
+            'clean_mean': float(np.mean(clean_top1)),
+            'corrupt_mean': float(np.mean(corrupt_top1)),
+            'decrease': float(np.mean(clean_top1) - np.mean(corrupt_top1)),
+            'auroc': float(compute_auroc(
+                [-x for x in clean_top1], [-x for x in corrupt_top1]
+            )),
+        }
+        print(f"  {ct}: clean_top1={np.mean(clean_top1):.4f}, "
+              f"corrupt_top1={np.mean(corrupt_top1):.4f}, "
+              f"AUROC={top1_results[ct]['auroc']:.4f}")
 
-    print(f"  Confidence detector: AUROC={conf_auroc:.4f}, d={conf_d:.2f}", flush=True)
-    print(f"    ID mean conf: {id_conf_mean:.4f}, OOD mean conf: {ood_conf_mean:.4f}", flush=True)
-    print(f"  Entropy detector: AUROC={ent_auroc:.4f}, d={ent_d:.2f}", flush=True)
-    print(f"    ID mean entropy: {id_ent_mean:.3f}, OOD mean entropy: {ood_ent_mean:.3f}", flush=True)
+    results['top1_probability'] = top1_results
 
-    # Summary
-    print("\n--- Per-Category Summary ---", flush=True)
-    for cat_name, data in results.items():
-        print(f"  {cat_name:12s}: conf={data['mean_confidence']:.4f}+/-{data['std_confidence']:.4f}, "
-              f"ent={data['mean_entropy']:.3f}+/-{data['std_entropy']:.3f}", flush=True)
+    # ========== 3. Rank of Clean Token Under Corruption ==========
+    print("\n=== Clean Token Rank Under Corruption ===")
+
+    rank_results = {}
+    for ct in ctypes:
+        ranks = []
+        for seed in seeds:
+            corrupt_img = apply_corruption(images[seed], ct, 0.5)
+            _, c_scores = get_logits_and_tokens(model, processor, corrupt_img, prompt)
+
+            min_len = min(len(clean_tokens[seed]), len(c_scores))
+            for i in range(min(min_len, 7)):
+                clean_tok = clean_tokens[seed][i]
+                # Sort corrupt logits to find rank of clean token
+                sorted_indices = torch.argsort(c_scores[i], descending=True).numpy()
+                rank = int(np.where(sorted_indices == clean_tok)[0][0]) + 1
+                ranks.append(rank)
+
+        rank_results[ct] = {
+            'mean_rank': float(np.mean(ranks)),
+            'median_rank': float(np.median(ranks)),
+            'max_rank': int(max(ranks)),
+            'fraction_top1': float(np.mean([1 if r == 1 else 0 for r in ranks])),
+            'fraction_top5': float(np.mean([1 if r <= 5 else 0 for r in ranks])),
+            'fraction_top10': float(np.mean([1 if r <= 10 else 0 for r in ranks])),
+        }
+        print(f"  {ct}: mean_rank={np.mean(ranks):.1f}, "
+              f"top1={rank_results[ct]['fraction_top1']*100:.0f}%, "
+              f"top5={rank_results[ct]['fraction_top5']*100:.0f}%")
+
+    results['clean_token_rank'] = rank_results
+
+    # ========== 4. Severity-Dependent Confidence ==========
+    print("\n=== Severity vs Confidence ===")
+
+    sev_conf = {}
+    for ct in ctypes:
+        per_sev = {}
+        for sev in [0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0]:
+            top1_probs = []
+            entropies = []
+            for seed in seeds[:5]:
+                corrupt_img = apply_corruption(images[seed], ct, sev)
+                _, c_scores = get_logits_and_tokens(model, processor, corrupt_img, prompt)
+                for score in c_scores[:7]:
+                    probs = torch.softmax(score, dim=-1)
+                    top1_probs.append(float(probs.max()))
+                    p_np = probs.numpy()
+                    entropies.append(-float(np.sum(p_np * np.log2(p_np + 1e-12))))
+
+            per_sev[str(sev)] = {
+                'mean_top1': float(np.mean(top1_probs)),
+                'mean_entropy': float(np.mean(entropies)),
+            }
+
+        sev_conf[ct] = per_sev
+        ents = [per_sev[str(s)]['mean_entropy'] for s in [0.05, 0.1, 0.5, 1.0]]
+        print(f"  {ct}: entropy@[0.05,0.1,0.5,1.0] = [{', '.join(f'{e:.2f}' for e in ents)}]")
+
+    results['severity_confidence'] = sev_conf
+
+    # ========== 5. Entropy-Based OOD Detection ==========
+    print("\n=== Entropy-Based Detection (per scene) ===")
+
+    detection = {}
+    for ct in ctypes:
+        clean_ents = []
+        corrupt_ents = []
+        for seed in seeds:
+            # Mean entropy across action tokens
+            ents = []
+            for score in clean_scores[seed][:7]:
+                probs = torch.softmax(score, dim=-1).numpy()
+                ents.append(-float(np.sum(probs * np.log2(probs + 1e-12))))
+            clean_ents.append(np.mean(ents))
+
+            corrupt_img = apply_corruption(images[seed], ct, 0.5)
+            _, c_scores = get_logits_and_tokens(model, processor, corrupt_img, prompt)
+            c_ents = []
+            for score in c_scores[:7]:
+                probs = torch.softmax(score, dim=-1).numpy()
+                c_ents.append(-float(np.sum(probs * np.log2(probs + 1e-12))))
+            corrupt_ents.append(np.mean(c_ents))
+
+        auroc = compute_auroc(clean_ents, corrupt_ents)
+        detection[ct] = {
+            'auroc': float(auroc),
+            'clean_mean': float(np.mean(clean_ents)),
+            'corrupt_mean': float(np.mean(corrupt_ents)),
+            'gap': float(np.mean(corrupt_ents) - np.mean(clean_ents)),
+            'overlap': float(max(0, min(max(clean_ents), max(corrupt_ents)) -
+                               max(min(clean_ents), min(corrupt_ents)))),
+        }
+        print(f"  {ct}: AUROC={auroc:.4f}, gap={detection[ct]['gap']:.2f} bits")
+
+    results['entropy_detection'] = detection
 
     # Save
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    output = {
-        'experiment': 'token_confidence',
-        'experiment_number': 127,
-        'timestamp': timestamp,
-        'detection': {
-            'confidence_auroc': conf_auroc,
-            'confidence_d': conf_d,
-            'entropy_auroc': ent_auroc,
-            'entropy_d': ent_d,
-            'id_conf_mean': id_conf_mean,
-            'ood_conf_mean': ood_conf_mean,
-            'id_ent_mean': id_ent_mean,
-            'ood_ent_mean': ood_ent_mean,
-        },
-        'per_category': {
-            k: {kk: vv for kk, vv in v.items() if kk not in ['all_confs', 'all_entropies']}
-            for k, v in results.items()
-        },
-    }
-    output_path = os.path.join(RESULTS_DIR, f"token_confidence_{timestamp}.json")
-    with open(output_path, 'w') as f:
-        json.dump(output, f, indent=2)
-    print(f"\nSaved to {output_path}", flush=True)
-
+    ts = time.strftime("%Y%m%d_%H%M%S")
+    out_path = f"experiments/token_confidence_{ts}.json"
+    def convert(obj):
+        if isinstance(obj, (np.floating, np.float32, np.float64)): return float(obj)
+        if isinstance(obj, (np.integer, np.int32, np.int64)): return int(obj)
+        if isinstance(obj, np.ndarray): return obj.tolist()
+        if isinstance(obj, np.bool_): return bool(obj)
+        if isinstance(obj, torch.Tensor): return obj.tolist()
+        return obj
+    def recursive_convert(d):
+        if isinstance(d, dict): return {k: recursive_convert(v) for k, v in d.items()}
+        if isinstance(d, list): return [recursive_convert(x) for x in d]
+        return convert(d)
+    results = recursive_convert(results)
+    with open(out_path, 'w') as f:
+        json.dump(results, f, indent=2, default=convert)
+    print(f"\nResults saved to {out_path}")
 
 if __name__ == "__main__":
     main()
