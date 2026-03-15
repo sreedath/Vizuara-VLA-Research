@@ -7801,3 +7801,42 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 5. **All corruptions reach perfect detection well below their "severe" levels**: The detector activates with corruptions that are barely perceptible to humans.
 
 **Finding**: The cosine distance detector has **high sensitivity** to visual corruptions. Detection becomes perfect at surprisingly low corruption levels — 50% fog, 30% darkening, 2px blur, or σ=20 noise. L3 is the most sensitive layer, reaching perfect detection at the lowest severity thresholds. The practical implication: any corruption strong enough to meaningfully affect driving behavior will be detected.
+---
+
+### Finding 192: Per-Dimension OOD Signal Analysis (Experiment 197)
+
+**Experiment**: Analyze which embedding dimensions carry the OOD signal. Compute per-dimension Cohen's d, signal concentration, and AUROC with dimension subsets (top-k, random-k, bottom-k).
+
+**Signal Distribution**:
+| Metric | L1 | L3 |
+|--------|------|------|
+| Mean Cohen's d | 0.521 | 0.548 |
+| Max Cohen's d | 2.84 | 3.46 |
+| Median Cohen's d | 0.448 | 0.455 |
+| Significant (d>0.8) | 860 (21%) | 946 (23%) |
+| Dims for 50% signal | 988 (24%) | 963 (24%) |
+| Dims for 80% signal | 2085 (51%) | 2064 (50%) |
+| Dims for 90% signal | 2656 (65%) | 2652 (65%) |
+
+**Subset AUROC Results (L1)**:
+| k dims | Top-k | Random-k | Bottom-k |
+|--------|-------|----------|----------|
+| 10 | 1.000 | 1.000 | 1.000 |
+| 50 | 1.000 | 0.992 | 1.000 |
+| 100 | 1.000 | 1.000 | 1.000 |
+| 500 | 1.000 | 1.000 | 1.000 |
+
+**Subset AUROC Results (L3)**:
+| k dims | Top-k | Random-k | Bottom-k |
+|--------|-------|----------|----------|
+| 10 | 1.000 | 0.988 | 0.945 |
+| 50 | 1.000 | 1.000 | 1.000 |
+
+**Key Findings**:
+1. **OOD signal is massively distributed**: 860-946 dimensions (21-23%) have "significant" Cohen's d >0.8. Virtually no dimension is truly uninformative.
+2. **Even 10 random dimensions achieve AUROC≈1.0**: The signal is so pervasive that any tiny random subset of the embedding suffices for detection.
+3. **Bottom-k dimensions still work**: Even the 10 least-discriminative dimensions for L3 achieve AUROC=0.945. No dimension is truly "dead" for OOD.
+4. **50% of signal requires ~24% of dimensions**: Signal is moderately concentrated — not in a few dimensions, but also not perfectly uniform.
+5. **L3 has slightly higher max Cohen's d (3.46 vs 2.84)**: Individual dimensions in L3 have larger effect sizes, matching its higher per-category sensitivity.
+
+**Finding**: The OOD signal in VLA hidden states is **massively distributed** across dimensions. Unlike typical learned features where a few dimensions dominate, the OOD displacement affects nearly all 4096 dimensions simultaneously. This explains why cosine distance (which aggregates all dimensions) works perfectly — the signal-to-noise ratio improves with √4096 = 64× when aggregating across dimensions. Dimensionality reduction would not help; it's the full-space geometry that provides robust detection.

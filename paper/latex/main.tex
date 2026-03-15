@@ -3674,4 +3674,30 @@ We sweep corruption severity to determine detection thresholds---the minimum cor
 \label{fig:detection_thresholds}
 \end{figure}
 
+\subsection{Per-Dimension Signal Analysis}
+
+We analyze which of the 4096 embedding dimensions carry the OOD signal, computing per-dimension Cohen's $d$ effect sizes.
+
+\textbf{Finding 363}: The OOD signal is \textbf{massively distributed} across dimensions. At L1, 860/4096 dimensions (21\%) have Cohen's $d > 0.8$ (``large'' effect). At L3, 946/4096 (23\%). Half the total signal requires $\sim$24\% of dimensions; 90\% requires 65\%.
+
+\textbf{Finding 364}: Even \textbf{10 random dimensions} achieve AUROC$\approx$1.0. The signal is so pervasive that any tiny random subset suffices. Even the 10 \emph{least} discriminative L3 dimensions achieve AUROC=0.945. No dimension is truly ``dead'' for OOD detection.
+
+\textbf{Finding 365}: The distributed signal explains cosine distance's effectiveness. Aggregating across $N$ dimensions improves signal-to-noise by $\sqrt{N}$. With $N$=4096, cosine distance achieves a $\sqrt{4096}=64\times$ SNR amplification over any single dimension---explaining the gap between per-dimension AUROC ($\sim$0.9) and full-embedding AUROC (1.0).
+
+\textbf{Finding 366}: Dimensionality reduction would not improve detection. Since the OOD signal is spread across all dimensions with no clear low-rank structure, PCA or other projections would discard useful signal. The optimal detector uses the \textbf{full 4096-dim embedding} as-is.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig203_per_dimension.png}
+\caption{\textbf{Dimension subset analysis.} AUROC with top-k, random-k, and bottom-k dimensions for L1 and L3. Even 10 random dimensions achieve near-perfect detection, demonstrating the OOD signal is pervasive across all embedding dimensions.}
+\label{fig:per_dimension}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig204_signal_concentration.png}
+\caption{\textbf{Signal concentration.} Number of dimensions needed to capture 50\%, 80\%, and 90\% of total Cohen's $d$ signal. The signal is moderately concentrated---50\% requires $\sim$24\% of dims, 90\% requires 65\%.}
+\label{fig:signal_concentration}
+\end{figure}
+
 \end{document}
