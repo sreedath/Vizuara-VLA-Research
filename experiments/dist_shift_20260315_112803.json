@@ -1,0 +1,528 @@
+{
+  "experiment": "distribution_shift",
+  "experiment_number": 310,
+  "timestamp": "20260315_112803",
+  "per_scene": {
+    "random_42": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0012978911399841309
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.003682990868886312
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.004997630914052327
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.00023831923802693686
+        }
+      },
+      "mean_auroc": 1.0,
+      "id_mean": 0.0,
+      "clean_norm": 8.278409004211426
+    },
+    "gradient_h": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.00077056884765625
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0015839536984761555
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_ood_dist": 1.8636385599772137e-05
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0027770002683003745
+        }
+      },
+      "mean_auroc": 1.0,
+      "id_mean": 0.0,
+      "clean_norm": 8.497978210449219
+    },
+    "gradient_v": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.000694135824839274
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0015180309613545735
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_ood_dist": 2.2490819295247395e-05
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0035126209259033203
+        }
+      },
+      "mean_auroc": 1.0,
+      "id_mean": 0.0,
+      "clean_norm": 8.375092506408691
+    },
+    "checkerboard": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0017124613126118977
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.004560927549997966
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.007616976896921794
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0014777580897013347
+        }
+      },
+      "mean_auroc": 1.0,
+      "id_mean": 0.0,
+      "clean_norm": 8.527814865112305
+    },
+    "red_heavy": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0013254682223002117
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.004969934622446696
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.003646552562713623
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.00017517805099487305
+        }
+      },
+      "mean_auroc": 1.0,
+      "id_mean": 0.0,
+      "clean_norm": 8.303664207458496
+    },
+    "blue_heavy": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0013331969579060872
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.003830115000406901
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.004725317160288493
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.00018352270126342773
+        }
+      },
+      "mean_auroc": 1.0,
+      "id_mean": 0.0,
+      "clean_norm": 8.298196792602539
+    },
+    "very_dark": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0026086767514546714
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0011705954869588215
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0019530653953552246
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.002486069997151693
+        }
+      },
+      "mean_auroc": 1.0,
+      "id_mean": 0.0,
+      "clean_norm": 8.48145580291748
+    },
+    "very_bright": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.00012018283208211263
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.004440863927205403
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0013127326965332031
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0006301204363505045
+        }
+      },
+      "mean_auroc": 1.0,
+      "id_mean": 0.0,
+      "clean_norm": 8.42372989654541
+    },
+    "gray_uniform": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0009954174359639485
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.002316455046335856
+        },
+        "blur": {
+          "auroc": 0.5,
+          "mean_ood_dist": 0.0
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.00537260373433431
+        }
+      },
+      "mean_auroc": 0.875,
+      "id_mean": 0.0,
+      "clean_norm": 8.436399459838867
+    },
+    "random_99": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0014881690343221028
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.003731111685434977
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.004950424035390218
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.00015632311503092447
+        }
+      },
+      "mean_auroc": 1.0,
+      "id_mean": 0.0,
+      "clean_norm": 8.283552169799805
+    },
+    "stripes": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0016279220581054688
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.004885494709014893
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0046695272127787275
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0017122228940327962
+        }
+      },
+      "mean_auroc": 1.0,
+      "id_mean": 0.0,
+      "clean_norm": 8.499761581420898
+    },
+    "circle": {
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.0008955995241800944
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.002350032329559326
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.004171689351399739
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_ood_dist": 0.001900474230448405
+        }
+      },
+      "mean_auroc": 1.0,
+      "id_mean": 0.0,
+      "clean_norm": 8.31666088104248
+    }
+  },
+  "cross_transfer": {
+    "random_42": {
+      "gradient_h": {
+        "auroc": 0.75,
+        "id_mean": 0.004772841930389404,
+        "ood_mean": 0.0048508793115615845
+      },
+      "checkerboard": {
+        "auroc": 0.5,
+        "id_mean": 0.00799018144607544,
+        "ood_mean": 0.007801815867424011
+      },
+      "very_dark": {
+        "auroc": 0.5,
+        "id_mean": 0.004906594753265381,
+        "ood_mean": 0.00571025162935257
+      },
+      "very_bright": {
+        "auroc": 0.75,
+        "id_mean": 0.00348818302154541,
+        "ood_mean": 0.00426192581653595
+      },
+      "random_99": {
+        "auroc": 1.0,
+        "id_mean": 0.00010567903518676758,
+        "ood_mean": 0.003105439245700836
+      }
+    },
+    "gradient_h": {
+      "random_42": {
+        "auroc": 0.375,
+        "id_mean": 0.004772841930389404,
+        "ood_mean": 0.004123754799365997
+      },
+      "checkerboard": {
+        "auroc": 0.25,
+        "id_mean": 0.01191568374633789,
+        "ood_mean": 0.010582312941551208
+      },
+      "very_dark": {
+        "auroc": 0.5,
+        "id_mean": 0.003204941749572754,
+        "ood_mean": 0.004087559878826141
+      },
+      "very_bright": {
+        "auroc": 0.625,
+        "id_mean": 0.0029925107955932617,
+        "ood_mean": 0.0032211318612098694
+      },
+      "random_99": {
+        "auroc": 0.375,
+        "id_mean": 0.005311071872711182,
+        "ood_mean": 0.00412934273481369
+      }
+    },
+    "checkerboard": {
+      "random_42": {
+        "auroc": 0.75,
+        "id_mean": 0.00799018144607544,
+        "ood_mean": 0.010886311531066895
+      },
+      "gradient_h": {
+        "auroc": 0.625,
+        "id_mean": 0.01191568374633789,
+        "ood_mean": 0.012099869549274445
+      },
+      "very_dark": {
+        "auroc": 0.5,
+        "id_mean": 0.012195408344268799,
+        "ood_mean": 0.013020128011703491
+      },
+      "very_bright": {
+        "auroc": 0.75,
+        "id_mean": 0.011255383491516113,
+        "ood_mean": 0.012107618153095245
+      },
+      "random_99": {
+        "auroc": 0.75,
+        "id_mean": 0.0077745914459228516,
+        "ood_mean": 0.0108051598072052
+      }
+    },
+    "very_dark": {
+      "random_42": {
+        "auroc": 0.625,
+        "id_mean": 0.004906594753265381,
+        "ood_mean": 0.004749573767185211
+      },
+      "gradient_h": {
+        "auroc": 0.75,
+        "id_mean": 0.003204941749572754,
+        "ood_mean": 0.00408829003572464
+      },
+      "checkerboard": {
+        "auroc": 0.125,
+        "id_mean": 0.012195408344268799,
+        "ood_mean": 0.010056272149085999
+      },
+      "very_bright": {
+        "auroc": 0.5,
+        "id_mean": 0.007298827171325684,
+        "ood_mean": 0.0064279139041900635
+      },
+      "random_99": {
+        "auroc": 0.5,
+        "id_mean": 0.005205333232879639,
+        "ood_mean": 0.004723958671092987
+      }
+    },
+    "very_bright": {
+      "random_42": {
+        "auroc": 0.75,
+        "id_mean": 0.00348818302154541,
+        "ood_mean": 0.0047998130321502686
+      },
+      "gradient_h": {
+        "auroc": 0.5,
+        "id_mean": 0.0029925107955932617,
+        "ood_mean": 0.003993630409240723
+      },
+      "checkerboard": {
+        "auroc": 0.5,
+        "id_mean": 0.011255383491516113,
+        "ood_mean": 0.01096709817647934
+      },
+      "very_dark": {
+        "auroc": 0.75,
+        "id_mean": 0.007298827171325684,
+        "ood_mean": 0.007928431034088135
+      },
+      "random_99": {
+        "auroc": 0.625,
+        "id_mean": 0.0040781497955322266,
+        "ood_mean": 0.004731431603431702
+      }
+    },
+    "random_99": {
+      "random_42": {
+        "auroc": 1.0,
+        "id_mean": 0.00010567903518676758,
+        "ood_mean": 0.0033999457955360413
+      },
+      "gradient_h": {
+        "auroc": 0.75,
+        "id_mean": 0.005311071872711182,
+        "ood_mean": 0.005298778414726257
+      },
+      "checkerboard": {
+        "auroc": 0.5,
+        "id_mean": 0.0077745914459228516,
+        "ood_mean": 0.007687784731388092
+      },
+      "very_dark": {
+        "auroc": 0.5,
+        "id_mean": 0.005205333232879639,
+        "ood_mean": 0.0059050023555755615
+      },
+      "very_bright": {
+        "auroc": 0.625,
+        "id_mean": 0.0040781497955322266,
+        "ood_mean": 0.004718296229839325
+      }
+    }
+  },
+  "scene_similarity": {
+    "matrix": {
+      "random_42_vs_red_heavy": 0.9993310570716858,
+      "random_42_vs_very_dark": 0.9950934052467346,
+      "random_42_vs_very_bright": 0.9965118169784546,
+      "random_42_vs_random_99": 0.9998943209648132,
+      "random_42_vs_stripes": 0.9924514293670654,
+      "gradient_h_vs_random_42": 0.9952271580696106,
+      "gradient_h_vs_gradient_v": 0.9987436532974243,
+      "gradient_h_vs_red_heavy": 0.9941165447235107,
+      "gradient_h_vs_very_dark": 0.9967950582504272,
+      "gradient_h_vs_very_bright": 0.9970074892044067,
+      "gradient_h_vs_gray_uniform": 0.9984362721443176,
+      "gradient_h_vs_random_99": 0.9946889281272888,
+      "gradient_h_vs_stripes": 0.9903149008750916,
+      "gradient_v_vs_random_42": 0.9951043725013733,
+      "gradient_v_vs_red_heavy": 0.9939236044883728,
+      "gradient_v_vs_very_dark": 0.9967530965805054,
+      "gradient_v_vs_very_bright": 0.996427059173584,
+      "gradient_v_vs_gray_uniform": 0.9982330203056335,
+      "gradient_v_vs_random_99": 0.9946153163909912,
+      "gradient_v_vs_stripes": 0.9905104041099548,
+      "checkerboard_vs_random_42": 0.9920098185539246,
+      "checkerboard_vs_gradient_h": 0.9880843162536621,
+      "checkerboard_vs_gradient_v": 0.9882120490074158,
+      "checkerboard_vs_red_heavy": 0.9916831254959106,
+      "checkerboard_vs_very_dark": 0.9878045916557312,
+      "checkerboard_vs_very_bright": 0.9887446165084839,
+      "checkerboard_vs_gray_uniform": 0.9868217706680298,
+      "checkerboard_vs_random_99": 0.9922254085540771,
+      "checkerboard_vs_stripes": 0.9944080710411072,
+      "checkerboard_vs_circle": 0.9923895597457886,
+      "red_heavy_vs_very_dark": 0.9928956031799316,
+      "red_heavy_vs_very_bright": 0.9965870976448059,
+      "red_heavy_vs_stripes": 0.991897463798523,
+      "blue_heavy_vs_random_42": 0.9995751976966858,
+      "blue_heavy_vs_gradient_h": 0.9953369498252869,
+      "blue_heavy_vs_gradient_v": 0.9951817393302917,
+      "blue_heavy_vs_checkerboard": 0.991746187210083,
+      "blue_heavy_vs_red_heavy": 0.9990915060043335,
+      "blue_heavy_vs_very_dark": 0.9949776530265808,
+      "blue_heavy_vs_very_bright": 0.9966889023780823,
+      "blue_heavy_vs_gray_uniform": 0.9949605464935303,
+      "blue_heavy_vs_random_99": 0.9994800090789795,
+      "blue_heavy_vs_stripes": 0.9925987124443054,
+      "blue_heavy_vs_circle": 0.9941784739494324,
+      "very_bright_vs_very_dark": 0.9927011728286743,
+      "gray_uniform_vs_random_42": 0.994373619556427,
+      "gray_uniform_vs_red_heavy": 0.9932229518890381,
+      "gray_uniform_vs_very_dark": 0.9962318539619446,
+      "gray_uniform_vs_very_bright": 0.996390163898468,
+      "gray_uniform_vs_random_99": 0.9938966631889343,
+      "gray_uniform_vs_stripes": 0.9897653460502625,
+      "random_99_vs_red_heavy": 0.9992363452911377,
+      "random_99_vs_very_dark": 0.9947946667671204,
+      "random_99_vs_very_bright": 0.9959218502044678,
+      "random_99_vs_stripes": 0.9925176501274109,
+      "stripes_vs_very_dark": 0.9895867705345154,
+      "stripes_vs_very_bright": 0.99019455909729,
+      "circle_vs_random_42": 0.994621753692627,
+      "circle_vs_gradient_h": 0.9941616058349609,
+      "circle_vs_gradient_v": 0.9943311214447021,
+      "circle_vs_red_heavy": 0.9942167401313782,
+      "circle_vs_very_dark": 0.9922108054161072,
+      "circle_vs_very_bright": 0.993725061416626,
+      "circle_vs_gray_uniform": 0.9918551445007324,
+      "circle_vs_random_99": 0.9944300651550293,
+      "circle_vs_stripes": 0.9918283224105835
+    },
+    "mean": 0.994120795618404,
+    "min": 0.9868217706680298,
+    "max": 0.9998943209648132,
+    "std": 0.0030753233249246506
+  },
+  "failures": [
+    {
+      "scene": "gray_uniform",
+      "corruption": "blur",
+      "auroc": 0.5
+    }
+  ]
+}
