@@ -1,0 +1,322 @@
+{
+  "experiment": "sequential_corruption",
+  "experiment_number": 272,
+  "timestamp": "20260315_085919",
+  "results": {
+    "sequence": [
+      {
+        "frame": 0,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 1,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 2,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 3,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 4,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 5,
+        "corruption": "fog",
+        "severity": 0.2,
+        "distance": 0.0001679062843322754
+      },
+      {
+        "frame": 6,
+        "corruption": "fog",
+        "severity": 0.4,
+        "distance": 0.0005706548690795898
+      },
+      {
+        "frame": 7,
+        "corruption": "fog",
+        "severity": 0.6,
+        "distance": 0.0011507272720336914
+      },
+      {
+        "frame": 8,
+        "corruption": "fog",
+        "severity": 0.8,
+        "distance": 0.0018665194511413574
+      },
+      {
+        "frame": 9,
+        "corruption": "fog",
+        "severity": 1.0,
+        "distance": 0.0027054548263549805
+      },
+      {
+        "frame": 10,
+        "corruption": "fog",
+        "severity": 1.0,
+        "distance": 0.0027054548263549805
+      },
+      {
+        "frame": 11,
+        "corruption": "fog",
+        "severity": 1.0,
+        "distance": 0.0027054548263549805
+      },
+      {
+        "frame": 12,
+        "corruption": "fog",
+        "severity": 1.0,
+        "distance": 0.0027054548263549805
+      },
+      {
+        "frame": 13,
+        "corruption": "fog",
+        "severity": 1.0,
+        "distance": 0.0027054548263549805
+      },
+      {
+        "frame": 14,
+        "corruption": "fog",
+        "severity": 1.0,
+        "distance": 0.0027054548263549805
+      },
+      {
+        "frame": 15,
+        "corruption": "fog",
+        "severity": 0.8,
+        "distance": 0.0018665194511413574
+      },
+      {
+        "frame": 16,
+        "corruption": "fog",
+        "severity": 0.6,
+        "distance": 0.0011507272720336914
+      },
+      {
+        "frame": 17,
+        "corruption": "fog",
+        "severity": 0.4,
+        "distance": 0.0005706548690795898
+      },
+      {
+        "frame": 18,
+        "corruption": "fog",
+        "severity": 0.19999999999999996,
+        "distance": 0.0001679062843322754
+      },
+      {
+        "frame": 19,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 20,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 21,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 22,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 23,
+        "corruption": "night",
+        "severity": 0.2,
+        "distance": 0.0003681182861328125
+      },
+      {
+        "frame": 24,
+        "corruption": "night",
+        "severity": 0.4,
+        "distance": 0.0015032291412353516
+      },
+      {
+        "frame": 25,
+        "corruption": "night",
+        "severity": 0.6,
+        "distance": 0.0028502345085144043
+      },
+      {
+        "frame": 26,
+        "corruption": "night",
+        "severity": 0.8,
+        "distance": 0.004476428031921387
+      },
+      {
+        "frame": 27,
+        "corruption": "night",
+        "severity": 1.0,
+        "distance": 0.007991313934326172
+      },
+      {
+        "frame": 28,
+        "corruption": "night",
+        "severity": 1.0,
+        "distance": 0.007991313934326172
+      },
+      {
+        "frame": 29,
+        "corruption": "night",
+        "severity": 1.0,
+        "distance": 0.007991313934326172
+      },
+      {
+        "frame": 30,
+        "corruption": "night",
+        "severity": 1.0,
+        "distance": 0.007991313934326172
+      },
+      {
+        "frame": 31,
+        "corruption": "night",
+        "severity": 1.0,
+        "distance": 0.007991313934326172
+      },
+      {
+        "frame": 32,
+        "corruption": "night",
+        "severity": 1.0,
+        "distance": 0.007991313934326172
+      },
+      {
+        "frame": 33,
+        "corruption": "night",
+        "severity": 0.8,
+        "distance": 0.004476428031921387
+      },
+      {
+        "frame": 34,
+        "corruption": "night",
+        "severity": 0.6,
+        "distance": 0.0028502345085144043
+      },
+      {
+        "frame": 35,
+        "corruption": "night",
+        "severity": 0.4,
+        "distance": 0.0015032291412353516
+      },
+      {
+        "frame": 36,
+        "corruption": "night",
+        "severity": 0.19999999999999996,
+        "distance": 0.0003681182861328125
+      },
+      {
+        "frame": 37,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 38,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 39,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 40,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 41,
+        "corruption": "blur",
+        "severity": 1.0,
+        "distance": 0.006263315677642822
+      },
+      {
+        "frame": 42,
+        "corruption": "blur",
+        "severity": 1.0,
+        "distance": 0.006263315677642822
+      },
+      {
+        "frame": 43,
+        "corruption": "blur",
+        "severity": 1.0,
+        "distance": 0.006263315677642822
+      },
+      {
+        "frame": 44,
+        "corruption": "blur",
+        "severity": 1.0,
+        "distance": 0.006263315677642822
+      },
+      {
+        "frame": 45,
+        "corruption": "blur",
+        "severity": 1.0,
+        "distance": 0.006263315677642822
+      },
+      {
+        "frame": 46,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 47,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 48,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 49,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      },
+      {
+        "frame": 50,
+        "corruption": "clean",
+        "severity": 0.0,
+        "distance": 0.0
+      }
+    ],
+    "threshold": 1e-05,
+    "tp": 33,
+    "fp": 0,
+    "fn": 0,
+    "tn": 18,
+    "precision": 1.0,
+    "recall": 1.0
+  }
+}
