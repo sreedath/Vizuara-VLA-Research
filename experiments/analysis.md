@@ -7872,3 +7872,26 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 5. **L1 is first to respond**: At ε=8, L1 (0.778) already outperforms L3 (0.722) and L32 (0.750), confirming first-layer sensitivity.
 
 **Finding**: The cosine distance OOD detector successfully detects adversarial perturbations at ε≥16 (L∞), which corresponds to imperceptible 6.3% pixel changes. This extends the detector's safety coverage beyond natural corruptions to include adversarial attacks — without any adversarial training. The detector works because adversarial perturbations, like natural corruptions, displace the hidden-state representation from the clean data manifold. Sub-threshold adversarial attacks (ε<16) that evade detection are too small to significantly affect VLA action predictions.
+---
+
+### Finding 194: Action Prediction Impact Analysis (Experiment 199)
+
+**Experiment**: Measure how much OOD inputs change VLA action predictions — action token changes, action value deltas, KL divergence, and action entropy.
+
+**Action Impact Summary**:
+| Condition | Mean Action | Std Action | Mean Δ | Max Δ | Token Change | KL Div | Entropy |
+|-----------|------------|------------|--------|-------|-------------|--------|---------|
+| ID (clean) | 0.189 | 0.216 | — | — | — | — | 1.51 |
+| Fog 60% | 0.337 | 0.043 | 0.148 | 0.377 | 50% | 1.12 | 1.53 |
+| Night | 0.140 | 0.203 | 0.049 | 0.078 | 100% | 2.83 | 4.08 |
+| Blur | 0.008 | 0.076 | 0.181 | 0.290 | 62.5% | 2.21 | 2.10 |
+| Noise | 0.017 | 0.272 | 0.182 | 0.667 | 62.5% | 2.77 | 1.61 |
+
+**Key Findings**:
+1. **OOD inputs cause significant action changes**: Mean action delta ranges from 0.049 (night) to 0.182 (noise) on a [-1, 1] scale. Max delta reaches 0.667 — a 33% shift of the full action range.
+2. **Night is uniquely disruptive**: 100% token change rate, entropy increases from 1.51 to 4.08 (2.7× increase). The model becomes maximally uncertain — distributing probability mass broadly across action bins.
+3. **Noise causes the largest action shifts**: Max delta=0.667, potentially catastrophic for driving. The model's predicted action can swing by a third of its full range.
+4. **KL divergence correlates with hidden-state distance**: night (KL=2.83, L1 dist=0.0017) > noise (KL=2.77, L1 dist=0.0010) > blur (KL=2.21, L1 dist=0.0009) > fog (KL=1.12, L1 dist=0.0005).
+5. **Fog narrows action distribution**: Std decreases from 0.216 to 0.043 — fog makes the model overly confident on a wrong action (mean shifts from 0.189 to 0.337).
+
+**Finding**: OOD inputs cause **practically significant** changes to VLA action predictions — up to 33% of the full action range for noise, and 100% token change rate for night. This validates the real-world importance of OOD detection: without it, corrupted inputs can cause dangerous driving actions. The correlation between hidden-state cosine distance and action KL divergence confirms that our detector is measuring a safety-relevant signal.

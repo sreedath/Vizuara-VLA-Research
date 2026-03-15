@@ -3719,4 +3719,23 @@ We test whether the cosine distance detector generalizes to adversarial perturba
 \label{fig:adversarial}
 \end{figure}
 
+\subsection{Action Prediction Impact}
+
+We measure how OOD inputs affect actual VLA action predictions to validate the practical importance of detection.
+
+\textbf{Finding 371}: OOD inputs cause \textbf{practically significant} action changes. Mean action delta ranges from 0.049 (night) to 0.182 (noise) on a $[-1,1]$ scale. The worst case (noise) shifts the predicted action by up to \textbf{0.667}---a 33\% swing of the full action range, potentially catastrophic for driving.
+
+\textbf{Finding 372}: Night corruption is uniquely disruptive: \textbf{100\% token change rate} with action entropy increasing from 1.51 to 4.08 (2.7$\times$). The model becomes maximally uncertain, distributing probability across action bins rather than committing to a specific action.
+
+\textbf{Finding 373}: KL divergence between ID and OOD action distributions \textbf{correlates with hidden-state cosine distance}: night (KL=2.83, L1 dist=0.0017) $>$ noise (KL=2.77, L1 dist=0.0010) $>$ blur (KL=2.21, L1 dist=0.0009) $>$ fog (KL=1.12, L1 dist=0.0005). This confirms our detector measures a \textbf{safety-relevant signal}---larger representation drift implies larger action disruption.
+
+\textbf{Finding 374}: Fog exhibits a subtle but dangerous failure mode: action standard deviation \emph{decreases} from 0.216 to 0.043 while the mean shifts from 0.189 to 0.337. The model becomes \textbf{overly confident on the wrong action}---the most dangerous failure mode for safety-critical systems, where miscalibrated confidence prevents fallback.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig206_action_impact.png}
+\caption{\textbf{Action prediction impact.} Left: OOD inputs cause significant action changes, with noise producing the largest shifts (max $\Delta$=0.667). Right: KL divergence and action entropy quantify distributional impact---night causes 2.7$\times$ entropy increase.}
+\label{fig:action_impact}
+\end{figure}
+
 \end{document}

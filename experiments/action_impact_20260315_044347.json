@@ -1,0 +1,71 @@
+{
+  "experiment": "action_impact",
+  "experiment_number": 199,
+  "timestamp": "20260315_044347",
+  "n_test": 8,
+  "results": {
+    "id": {
+      "mean_action": 0.18921568627450985,
+      "std_action": 0.21643142228806156,
+      "mean_expected": 0.17915796580613225,
+      "mean_entropy": 1.5126223713159561,
+      "unique_tokens": 2
+    },
+    "fog_60": {
+      "mean_action": 0.3372549019607844,
+      "std_action": 0.04313725490196078,
+      "mean_expected": 0.29210653376312135,
+      "mean_entropy": 1.5312206074595451,
+      "mean_action_delta": 0.14803921568627454,
+      "max_action_delta": 0.3764705882352942,
+      "token_change_rate": 0.5,
+      "mean_kl_divergence": 1.1191685684025288,
+      "hidden_dists": {
+        "L1": 0.0004747733473777771,
+        "L3": 0.0009153708815574646
+      }
+    },
+    "night": {
+      "mean_action": 0.14019607843137252,
+      "std_action": 0.20312580405306213,
+      "mean_expected": 0.043304337971691455,
+      "mean_entropy": 4.077462255954742,
+      "mean_action_delta": 0.04901960784313732,
+      "max_action_delta": 0.07843137254901977,
+      "token_change_rate": 1.0,
+      "mean_kl_divergence": 2.8307398557662964,
+      "hidden_dists": {
+        "L1": 0.0017308369278907776,
+        "L3": 0.0034934505820274353
+      }
+    },
+    "blur": {
+      "mean_action": 0.007843137254901947,
+      "std_action": 0.07594084992563561,
+      "mean_expected": 0.01346089441072683,
+      "mean_entropy": 2.101998455822468,
+      "mean_action_delta": 0.1813725490196079,
+      "max_action_delta": 0.29019607843137263,
+      "token_change_rate": 0.625,
+      "mean_kl_divergence": 2.208286836743355,
+      "hidden_dists": {
+        "L1": 0.000927753746509552,
+        "L3": 0.001383945345878601
+      }
+    },
+    "noise": {
+      "mean_action": 0.016666666666666677,
+      "std_action": 0.2717207756701645,
+      "mean_expected": -0.024397140383697762,
+      "mean_entropy": 1.614339753985405,
+      "mean_action_delta": 0.1823529411764706,
+      "max_action_delta": 0.6666666666666667,
+      "token_change_rate": 0.625,
+      "mean_kl_divergence": 2.7728435397148132,
+      "hidden_dists": {
+        "L1": 0.0009659230709075928,
+        "L3": 0.0019732415676116943
+      }
+    }
+  }
+}
