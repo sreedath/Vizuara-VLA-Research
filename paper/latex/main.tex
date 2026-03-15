@@ -5698,4 +5698,24 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 678}: \textbf{Noise shows anti-additive spatial spread} --- as more rows are corrupted from top to bottom, the cosine distance \emph{decreases} from peak at 37.5\% coverage ($d = 0.00163$) to minimum at 100\% ($d = 0.000512$). Noise at different spatial locations partially cancels in embedding space, a unique property not shared by fog, night, or blur which all show monotonic distance growth.
 
+\subsection{Decision Boundary \& Interpolation}
+
+\textbf{Experiment 307: Detection-Before-Action Safety Margins.} We perform fine-grained interpolation between clean and corrupted images ($\alpha \in [0, 1]$), tracking both the detection distance and the output action tokens. We also analyze embedding trajectory geometry and cross-corruption interpolation.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig316_boundary.png}
+\caption{Decision boundary analysis (Experiment 307). (a) Distance grows monotonically with interpolation $\alpha$ for all corruptions. (b) Detection always fires before or at the same $\alpha$ as action changes; night has 15$\times$ margin. (c) Trajectory curvature: fog nearly geodesic (1.17), blur most curved (1.81). (d) Cross-corruption interpolation: fog$\to$noise cancels near zero. (e) Fine-grained boundary sharpness. (f) Safety margin summary.}
+\end{figure}
+
+\textbf{Finding 679}: \textbf{Detection always precedes action change} --- the detector fires at $\alpha = 0.01$--$0.02$ while actions first change at $\alpha = 0.05$--$0.15$. Night has the largest safety margin ($15\times$): detected at 1\% interpolation but actions robust until 15\%. Fog and noise offer $10\times$ margins, blur offers $2.5\times$. In all cases, detection provides advance warning before any dangerous action would execute.
+
+\textbf{Finding 680}: \textbf{Embedding trajectories are non-geodesic} with curvature ratios 1.17--1.81 (path length / straight-line distance). Fog is closest to linear (curvature 1.17, direction consistency 0.73), while blur is most curved (1.81, consistency 0.51). Noise trajectories are effectively random walks (direction consistency 0.10). This non-linearity means severity estimation from distance alone is approximate, consistent with the MAE of 0.035--0.066 from Experiment~233.
+
+\textbf{Finding 681}: \textbf{Cross-corruption cancellation reveals embedding geometry} --- interpolating from fog to noise passes through a near-zero distance region ($d \approx 0.0002$ at $\alpha = 0.75$), as does blur to noise ($d \approx 0.00007$ at $\alpha = 0.5$). This mutual cancellation means fog/noise and blur/noise push embeddings in roughly \emph{opposite} directions, revealing a structured geometry where corruptions occupy distinct angular regions of the embedding space.
+
+\textbf{Finding 682}: \textbf{Blur is the most action-sensitive corruption} --- it changes 5/7 action dimensions at just $\alpha = 0.05$ (5\% corruption), giving the smallest detection-before-action margin ($2.5\times$). Night is the safest: only 1/7 dimension changes at $\alpha = 0.15$. For deployment, blur requires the fastest response time from the safety controller.
+
+\textbf{Finding 683}: \textbf{Detection boundary is sharp for night/noise, gradual for fog/blur} --- night and noise produce nonzero distance at $\alpha = 0.001$ (0.1\%), while fog requires $\alpha = 0.01$ (1\%) and blur requires $\alpha = 0.015$ (1.5\%). Multiplicative (night) and additive (noise) corruptions create embedding shifts at 10$\times$ lower intensity than uniform (fog) or spatial (blur) corruptions.
+
 \end{document}

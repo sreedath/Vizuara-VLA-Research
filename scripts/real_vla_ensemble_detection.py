@@ -1,395 +1,360 @@
+#!/usr/bin/env python3
+"""Experiment 308: Ensemble & Voting Detection Strategies
+Tests whether combining multiple detection signals improves robustness:
+1. Multi-layer voting (L1, L3, L7, L15, L31)
+2. Multi-metric ensemble (cosine + euclidean + norm + correlation)
+3. Multi-token ensemble (different sequence positions)
+4. Weighted vs unweighted combination
+5. Adversarial robustness of ensemble vs single detector
 """
-Ensemble OOD Detection: Combining Multiple Detectors.
 
-Tests various fusion strategies for combining cosine distance,
-attention max, attention entropy, and output-based signals:
-1. Simple averaging
-2. Weighted average (learned on calibration)
-3. Maximum rule (conservative)
-4. Product rule (aggressive)
-5. Voting with threshold
-
-The hypothesis is that ensembles can close the gap between
-calibrated (cosine) and calibration-free (attention) approaches,
-especially for near-OOD detection.
-
-Experiment 69 in the CalibDrive series.
-"""
-import os
-import json
-import datetime
-import numpy as np
 import torch
-from PIL import Image
-from sklearn.metrics import roc_auc_score
+import numpy as np
+import json
+from datetime import datetime
+from PIL import Image, ImageFilter
+from transformers import AutoModelForVision2Seq, AutoProcessor
+from scipy.spatial.distance import cosine
 
-RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
-os.makedirs(RESULTS_DIR, exist_ok=True)
-SIZE = (256, 256)
+def apply_corruption(image, ctype, severity=1.0):
+    arr = np.array(image).astype(np.float32) / 255.0
+    if ctype == 'fog':
+        arr = arr * (1 - 0.6 * severity) + 0.6 * severity
+    elif ctype == 'night':
+        arr = arr * max(0.01, 1.0 - 0.95 * severity)
+    elif ctype == 'noise':
+        arr = arr + np.random.RandomState(42).randn(*arr.shape) * 0.3 * severity
+        arr = np.clip(arr, 0, 1)
+    elif ctype == 'blur':
+        return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
+    return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
-
-def create_highway(idx):
-    rng = np.random.default_rng(idx * 5001)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]
-    img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_urban(idx):
-    rng = np.random.default_rng(idx * 5002)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]
-    img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-# Near-OOD
-def create_twilight_highway(idx):
-    rng = np.random.default_rng(idx * 5010)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [70, 50, 80]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [200, 200, 100]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_wet_highway(idx):
-    rng = np.random.default_rng(idx * 5011)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [100, 120, 140]
-    img[SIZE[0]//2:] = [50, 55, 65]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [180, 180, 200]
-    for y in range(SIZE[0]//2, SIZE[0]):
-        if rng.random() > 0.7:
-            img[y, :] = np.clip(img[y, :].astype(np.int16) + 20, 0, 255).astype(np.uint8)
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_construction(idx):
-    rng = np.random.default_rng(idx * 5012)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]
-    img[SIZE[0]//2:] = [80, 80, 80]
-    barrier_x = rng.integers(SIZE[1]//4, 3*SIZE[1]//4)
-    img[SIZE[0]//2:3*SIZE[0]//4, max(0,barrier_x-20):barrier_x+20] = [255, 140, 0]
-    for cone_x in rng.integers(0, SIZE[1], size=5):
-        img[SIZE[0]-30:SIZE[0]-10, max(0,cone_x-5):cone_x+5] = [255, 100, 0]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_occluded(idx):
-    rng = np.random.default_rng(idx * 5013)
-    img = create_highway(idx + 7000)
-    for _ in range(rng.integers(3, 8)):
-        cx, cy = rng.integers(0, SIZE[1]), rng.integers(0, SIZE[0])
-        r = rng.integers(10, 40)
-        for dy in range(-r, r):
-            for dx in range(-r, r):
-                if dx*dx + dy*dy <= r*r:
-                    ny, nx = cy+dy, cx+dx
-                    if 0 <= ny < SIZE[0] and 0 <= nx < SIZE[1]:
-                        img[ny, nx] = np.clip(img[ny, nx].astype(np.int16) - 80, 0, 255).astype(np.uint8)
-    return img
-
-def create_snow(idx):
-    rng = np.random.default_rng(idx * 5014)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [200, 200, 210]
-    img[SIZE[0]//2:] = [220, 220, 230]
-    img[SIZE[0]//2:, SIZE[1]//2-2:SIZE[1]//2+2] = [180, 180, 190]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-# Far-OOD
-def create_noise(idx):
-    rng = np.random.default_rng(idx * 5003)
-    return rng.integers(0, 256, (*SIZE, 3), dtype=np.uint8)
-
-def create_indoor(idx):
-    rng = np.random.default_rng(idx * 5004)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:] = [200, 180, 160]
-    img[SIZE[0]//2:, :] = [100, 80, 60]
-    img[:SIZE[0]//3, SIZE[1]//3:2*SIZE[1]//3] = [150, 200, 255]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_blackout(idx):
-    return np.zeros((*SIZE, 3), dtype=np.uint8)
-
-
-def extract_signals(model, processor, image, prompt):
-    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-    result = {}
-    with torch.no_grad():
-        fwd = model(**inputs, output_attentions=True, output_hidden_states=True)
-
-    if hasattr(fwd, 'attentions') and fwd.attentions:
-        attn = fwd.attentions[-1][0].float().cpu().numpy()
-        n_heads = attn.shape[0]
-        last_attn = attn[:, -1, :]
-        result['attn_max'] = float(np.mean([np.max(last_attn[h]) for h in range(n_heads)]))
-        result['attn_entropy'] = float(np.mean([
-            -np.sum((last_attn[h]+1e-10) * np.log(last_attn[h]+1e-10))
-            for h in range(n_heads)
-        ]))
-
-    if hasattr(fwd, 'hidden_states') and fwd.hidden_states:
-        result['hidden'] = fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
-
-    if hasattr(fwd, 'logits') and fwd.logits is not None:
-        logits = fwd.logits[0, -1, :].float().cpu().numpy()
-        probs = np.exp(logits - np.max(logits))
-        probs = probs / probs.sum()
-        result['msp'] = float(np.max(probs))
-        result['energy'] = float(np.log(np.sum(np.exp(logits - np.max(logits)))) + np.max(logits))
-
-    return result
-
-
-def cosine_dist(a, b):
-    return 1.0 - float(np.dot(a / (np.linalg.norm(a) + 1e-10),
-                               b / (np.linalg.norm(b) + 1e-10)))
-
-
-def normalize_scores(scores):
-    """Min-max normalize to [0, 1]."""
-    arr = np.array(scores)
-    mn, mx = arr.min(), arr.max()
-    if mx - mn < 1e-10:
-        return np.ones_like(arr) * 0.5
-    return (arr - mn) / (mx - mn)
-
+def compute_auroc(id_scores, ood_scores):
+    id_s = np.asarray(id_scores)
+    ood_s = np.asarray(ood_scores)
+    n_id, n_ood = len(id_s), len(ood_s)
+    if n_id == 0 or n_ood == 0: return 0.5
+    count = sum(float(np.sum(o > id_s) + 0.5 * np.sum(o == id_s)) for o in ood_s)
+    return count / (n_id * n_ood)
 
 def main():
-    print("=" * 70, flush=True)
-    print("ENSEMBLE OOD DETECTION", flush=True)
-    print("=" * 70, flush=True)
-
-    from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading OpenVLA-7B...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
-        device_map="auto", trust_remote_code=True,
-    )
-    processor = AutoProcessor.from_pretrained(
-        "openvla/openvla-7b", trust_remote_code=True,
-    )
+        device_map="auto", trust_remote_code=True)
+    processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
-    print("Model loaded.", flush=True)
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
+    prompt = "In: What action should the robot take to pick up the object?\nOut:"
+    np.random.seed(42)
+    pixels = np.random.randint(50, 200, (224, 224, 3), dtype=np.uint8)
+    base_img = Image.fromarray(pixels)
 
-    # Calibration
-    print("\nCalibrating...", flush=True)
-    cal_hidden = []
-    cal_signals = []
-    for fn in [create_highway, create_urban]:
-        for i in range(15):
-            sig = extract_signals(model, processor,
-                                  Image.fromarray(fn(i + 9000)), prompt)
-            if 'hidden' in sig:
-                cal_hidden.append(sig['hidden'])
-            cal_signals.append(sig)
-    centroid = np.mean(cal_hidden, axis=0)
-    print(f"  Calibration: {len(cal_hidden)} samples", flush=True)
-
-    # Test scenarios
-    test_fns = {
-        'highway': (create_highway, 'id', 12),
-        'urban': (create_urban, 'id', 12),
-        'twilight': (create_twilight_highway, 'near_ood', 8),
-        'wet': (create_wet_highway, 'near_ood', 8),
-        'construction': (create_construction, 'near_ood', 8),
-        'occluded': (create_occluded, 'near_ood', 8),
-        'snow': (create_snow, 'near_ood', 8),
-        'noise': (create_noise, 'far_ood', 8),
-        'indoor': (create_indoor, 'far_ood', 8),
-        'blackout': (create_blackout, 'far_ood', 8),
+    results = {
+        "experiment": "ensemble_detection",
+        "experiment_number": 308,
+        "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
     }
 
-    all_data = []
-    cnt = 0
-    total = sum(v[2] for v in test_fns.values())
-    for scene, (fn, ood_type, n) in test_fns.items():
-        for i in range(n):
-            cnt += 1
-            sig = extract_signals(model, processor,
-                                  Image.fromarray(fn(i + 400)), prompt)
-            sig['scenario'] = scene
-            sig['ood_type'] = ood_type
-            sig['is_ood'] = ood_type != 'id'
-            if 'hidden' in sig:
-                sig['cosine'] = cosine_dist(sig['hidden'], centroid)
-            all_data.append(sig)
-            if cnt % 10 == 0:
-                print(f"  [{cnt}/{total}] {scene}", flush=True)
+    corruptions = ['fog', 'night', 'blur', 'noise']
+    target_layers = [1, 3, 7, 15, 31]
 
-    print(f"\nCollected {len(all_data)} samples.", flush=True)
+    # Get clean references at all layers
+    print("Getting clean references...")
+    inputs = processor(prompt, base_img).to(model.device, dtype=torch.bfloat16)
+    with torch.no_grad():
+        fwd = model(**inputs, output_hidden_states=True)
+    n_layers = len(fwd.hidden_states)
+    seq_len = fwd.hidden_states[3].shape[1]
 
-    # Split
-    id_data = [d for d in all_data if d['ood_type'] == 'id']
-    near_ood = [d for d in all_data if d['ood_type'] == 'near_ood']
-    far_ood = [d for d in all_data if d['ood_type'] == 'far_ood']
-    all_ood = near_ood + far_ood
+    clean_refs = {}
+    for li in target_layers:
+        if li < n_layers:
+            clean_refs[li] = fwd.hidden_states[li][0, -1, :].float().cpu().numpy()
 
-    # Extract raw signal arrays
-    def get_signals(data_list, signal_name, negate=False):
-        vals = []
-        for d in data_list:
-            if signal_name == 'cosine':
-                vals.append(d.get('cosine', 0))
-            elif signal_name == 'attn_max':
-                vals.append(d.get('attn_max', 0))
-            elif signal_name == 'attn_entropy':
-                v = d.get('attn_entropy', 0)
-                vals.append(-v if negate else v)
-            elif signal_name == 'msp':
-                vals.append(-d.get('msp', 1))
-            elif signal_name == 'energy':
-                vals.append(-d.get('energy', 0))
-        return np.array(vals)
+    # Token positions for multi-token ensemble
+    token_positions = [-1, seq_len//4, seq_len//2, 3*seq_len//4]
+    clean_token_refs = {}
+    for pos in token_positions:
+        clean_token_refs[pos] = fwd.hidden_states[3][0, pos, :].float().cpu().numpy()
 
-    print("\n" + "=" * 70, flush=True)
-    print("ENSEMBLE RESULTS", flush=True)
-    print("=" * 70, flush=True)
+    # Part 1: Multi-layer voting
+    print("\n=== Part 1: Multi-Layer Voting ===")
+    layer_voting = {}
 
-    results = {}
+    # Collect individual layer scores
+    id_scores_by_layer = {li: [] for li in target_layers if li < n_layers}
+    for _ in range(5):
+        inputs = processor(prompt, base_img).to(model.device, dtype=torch.bfloat16)
+        with torch.no_grad():
+            f = model(**inputs, output_hidden_states=True)
+        for li in target_layers:
+            if li < n_layers:
+                emb = f.hidden_states[li][0, -1, :].float().cpu().numpy()
+                id_scores_by_layer[li].append(float(cosine(clean_refs[li], emb)))
 
-    for test_name, ood_group in [('far_ood', far_ood), ('near_ood', near_ood), ('all_ood', all_ood)]:
-        print(f"\n  === {test_name.upper()} ===", flush=True)
-        results[test_name] = {}
+    for c in corruptions:
+        print(f"  {c}...")
+        ood_scores_by_layer = {li: [] for li in target_layers if li < n_layers}
+        for sev in [0.3, 0.5, 1.0]:
+            corrupted = apply_corruption(base_img, c, sev)
+            inputs = processor(prompt, corrupted).to(model.device, dtype=torch.bfloat16)
+            with torch.no_grad():
+                f = model(**inputs, output_hidden_states=True)
+            for li in target_layers:
+                if li < n_layers:
+                    emb = f.hidden_states[li][0, -1, :].float().cpu().numpy()
+                    ood_scores_by_layer[li].append(float(cosine(clean_refs[li], emb)))
 
-        combined = id_data + list(ood_group)
-        labels = np.array([0]*len(id_data) + [1]*len(ood_group))
+        # Individual layer AUROCs
+        individual = {}
+        for li in target_layers:
+            if li < n_layers:
+                individual[f"L{li}"] = compute_auroc(id_scores_by_layer[li], ood_scores_by_layer[li])
 
-        # Individual signals
-        signal_names = ['cosine', 'attn_max', 'attn_entropy', 'msp', 'energy']
-        raw_signals = {}
-        for sn in signal_names:
-            raw_signals[sn] = get_signals(combined, sn, negate=(sn == 'attn_entropy'))
+        # Ensemble: mean of layer distances
+        id_mean = [np.mean([id_scores_by_layer[li][i] for li in target_layers if li < n_layers])
+                   for i in range(len(id_scores_by_layer[target_layers[0]]))]
+        ood_mean = [np.mean([ood_scores_by_layer[li][i] for li in target_layers if li < n_layers])
+                    for i in range(len(ood_scores_by_layer[target_layers[0]]))]
+        mean_auroc = compute_auroc(id_mean, ood_mean)
 
-        # Normalize all signals
-        norm_signals = {}
-        for sn in signal_names:
-            norm_signals[sn] = normalize_scores(raw_signals[sn])
+        # Ensemble: max of layer distances
+        id_max = [max(id_scores_by_layer[li][i] for li in target_layers if li < n_layers)
+                  for i in range(len(id_scores_by_layer[target_layers[0]]))]
+        ood_max = [max(ood_scores_by_layer[li][i] for li in target_layers if li < n_layers)
+                   for i in range(len(ood_scores_by_layer[target_layers[0]]))]
+        max_auroc = compute_auroc(id_max, ood_max)
 
-        # Individual baselines
-        for sn in signal_names:
-            auroc = roc_auc_score(labels, raw_signals[sn])
-            results[test_name][sn] = float(auroc)
-            print(f"    {sn:<20}: AUROC={auroc:.3f}", flush=True)
+        # Voting: majority vote
+        thresholds = {}
+        for li in target_layers:
+            if li < n_layers:
+                thresholds[li] = max(id_scores_by_layer[li]) * 1.5 if max(id_scores_by_layer[li]) > 0 else 1e-6
 
-        # Ensemble strategies
-        # 1. Simple average (all signals)
-        avg_all = np.mean([norm_signals[sn] for sn in signal_names], axis=0)
-        auroc = roc_auc_score(labels, avg_all)
-        results[test_name]['ensemble_avg_all'] = float(auroc)
-        print(f"    {'Avg (all 5)':<20}: AUROC={auroc:.3f}", flush=True)
+        id_votes = [sum(1 for li in target_layers if li < n_layers
+                        and id_scores_by_layer[li][i] > thresholds[li])
+                    for i in range(len(id_scores_by_layer[target_layers[0]]))]
+        ood_votes = [sum(1 for li in target_layers if li < n_layers
+                         and ood_scores_by_layer[li][i] > thresholds[li])
+                     for i in range(len(ood_scores_by_layer[target_layers[0]]))]
+        vote_auroc = compute_auroc(id_votes, ood_votes)
 
-        # 2. Average top-3 (cosine + attn_max + attn_entropy)
-        avg_top3 = np.mean([norm_signals['cosine'], norm_signals['attn_max'],
-                            norm_signals['attn_entropy']], axis=0)
-        auroc = roc_auc_score(labels, avg_top3)
-        results[test_name]['ensemble_avg_top3'] = float(auroc)
-        print(f"    {'Avg (top 3)':<20}: AUROC={auroc:.3f}", flush=True)
-
-        # 3. Cosine + Attn Max only
-        avg_cos_attn = np.mean([norm_signals['cosine'], norm_signals['attn_max']], axis=0)
-        auroc = roc_auc_score(labels, avg_cos_attn)
-        results[test_name]['ensemble_cos_attn'] = float(auroc)
-        print(f"    {'Avg (cos+attn)':<20}: AUROC={auroc:.3f}", flush=True)
-
-        # 4. Maximum rule (take highest anomaly score)
-        max_cos_attn = np.maximum(norm_signals['cosine'], norm_signals['attn_max'])
-        auroc = roc_auc_score(labels, max_cos_attn)
-        results[test_name]['ensemble_max_cos_attn'] = float(auroc)
-        print(f"    {'Max (cos+attn)':<20}: AUROC={auroc:.3f}", flush=True)
-
-        # 5. Weighted: 0.6 cosine + 0.4 attn (emphasize calibrated)
-        weighted_cos_heavy = 0.6 * norm_signals['cosine'] + 0.4 * norm_signals['attn_max']
-        auroc = roc_auc_score(labels, weighted_cos_heavy)
-        results[test_name]['ensemble_w60_cos'] = float(auroc)
-        print(f"    {'W(0.6cos+0.4at)':<20}: AUROC={auroc:.3f}", flush=True)
-
-        # 6. Weighted: 0.4 cosine + 0.6 attn (emphasize cal-free)
-        weighted_attn_heavy = 0.4 * norm_signals['cosine'] + 0.6 * norm_signals['attn_max']
-        auroc = roc_auc_score(labels, weighted_attn_heavy)
-        results[test_name]['ensemble_w60_attn'] = float(auroc)
-        print(f"    {'W(0.4cos+0.6at)':<20}: AUROC={auroc:.3f}", flush=True)
-
-        # 7. Product rule
-        prod = norm_signals['cosine'] * norm_signals['attn_max']
-        auroc = roc_auc_score(labels, prod)
-        results[test_name]['ensemble_product'] = float(auroc)
-        print(f"    {'Product (cos*at)':<20}: AUROC={auroc:.3f}", flush=True)
-
-        # 8. Voting (majority of top-3 signals above median threshold)
-        vote = np.zeros(len(combined))
-        for sn in ['cosine', 'attn_max', 'attn_entropy']:
-            median_val = np.median(norm_signals[sn])
-            vote += (norm_signals[sn] > median_val).astype(float)
-        auroc = roc_auc_score(labels, vote)
-        results[test_name]['ensemble_vote'] = float(auroc)
-        print(f"    {'Vote (top 3)':<20}: AUROC={auroc:.3f}", flush=True)
-
-        # 9. Adaptive: use attn for far-OOD, cosine for near-OOD
-        # Proxy: if attn_max is very high → likely far-OOD → trust attn
-        # If attn_max is moderate → might be near-OOD → blend with cosine
-        adaptive = np.where(
-            norm_signals['attn_max'] > 0.8,
-            norm_signals['attn_max'],  # trust attention for obvious OOD
-            0.7 * norm_signals['cosine'] + 0.3 * norm_signals['attn_max']  # blend for subtle
-        )
-        auroc = roc_auc_score(labels, adaptive)
-        results[test_name]['ensemble_adaptive'] = float(auroc)
-        print(f"    {'Adaptive':<20}: AUROC={auroc:.3f}", flush=True)
-
-    # Weight sweep
-    print("\n  === WEIGHT SWEEP (cos_w, attn_w) ===", flush=True)
-    weight_sweep = {}
-    combined_all = id_data + list(all_ood)
-    labels_all = np.array([0]*len(id_data) + [1]*len(all_ood))
-    cos_norm = normalize_scores(get_signals(combined_all, 'cosine'))
-    attn_norm = normalize_scores(get_signals(combined_all, 'attn_max'))
-
-    combined_near = id_data + list(near_ood)
-    labels_near = np.array([0]*len(id_data) + [1]*len(near_ood))
-    cos_norm_n = normalize_scores(get_signals(combined_near, 'cosine'))
-    attn_norm_n = normalize_scores(get_signals(combined_near, 'attn_max'))
-
-    for w in np.arange(0, 1.05, 0.1):
-        w = round(w, 1)
-        blend_all = w * cos_norm + (1 - w) * attn_norm
-        blend_near = w * cos_norm_n + (1 - w) * attn_norm_n
-        auroc_all = roc_auc_score(labels_all, blend_all)
-        auroc_near = roc_auc_score(labels_near, blend_near)
-        weight_sweep[str(w)] = {
-            'all_ood': float(auroc_all),
-            'near_ood': float(auroc_near),
+        layer_voting[c] = {
+            "individual": individual,
+            "mean_ensemble": mean_auroc,
+            "max_ensemble": max_auroc,
+            "vote_ensemble": vote_auroc,
         }
-        print(f"    cos_w={w:.1f}: all_AUROC={auroc_all:.3f}, near_AUROC={auroc_near:.3f}", flush=True)
+        print(f"    individual: {individual}")
+        print(f"    mean={mean_auroc:.3f}, max={max_auroc:.3f}, vote={vote_auroc:.3f}")
+
+    results["layer_voting"] = layer_voting
+
+    # Part 2: Multi-metric ensemble
+    print("\n=== Part 2: Multi-Metric Ensemble ===")
+    metric_ensemble = {}
+    clean_l3 = clean_refs[3]
+
+    metric_fns = {
+        "cosine": lambda a, b: float(cosine(a, b)),
+        "euclidean": lambda a, b: float(np.linalg.norm(a - b)),
+        "norm_diff": lambda a, b: abs(float(np.linalg.norm(a)) - float(np.linalg.norm(b))),
+        "correlation": lambda a, b: float(1 - np.corrcoef(a, b)[0, 1]),
+    }
+
+    id_by_metric = {m: [] for m in metric_fns}
+    for _ in range(5):
+        inputs = processor(prompt, base_img).to(model.device, dtype=torch.bfloat16)
+        with torch.no_grad():
+            f = model(**inputs, output_hidden_states=True)
+        emb = f.hidden_states[3][0, -1, :].float().cpu().numpy()
+        for m, fn in metric_fns.items():
+            id_by_metric[m].append(fn(clean_l3, emb))
+
+    for c in corruptions:
+        print(f"  {c}...")
+        ood_by_metric = {m: [] for m in metric_fns}
+        for sev in [0.3, 0.5, 1.0]:
+            corrupted = apply_corruption(base_img, c, sev)
+            inputs = processor(prompt, corrupted).to(model.device, dtype=torch.bfloat16)
+            with torch.no_grad():
+                f = model(**inputs, output_hidden_states=True)
+            emb = f.hidden_states[3][0, -1, :].float().cpu().numpy()
+            for m, fn in metric_fns.items():
+                ood_by_metric[m].append(fn(clean_l3, emb))
+
+        individual = {m: compute_auroc(id_by_metric[m], ood_by_metric[m]) for m in metric_fns}
+
+        # Normalized ensemble
+        id_ensemble = []
+        for i in range(len(id_by_metric["cosine"])):
+            scores = []
+            for m in metric_fns:
+                max_val = max(max(ood_by_metric[m]), max(id_by_metric[m])) + 1e-30
+                scores.append(id_by_metric[m][i] / max_val)
+            id_ensemble.append(np.mean(scores))
+
+        ood_ensemble = []
+        for i in range(len(ood_by_metric["cosine"])):
+            scores = []
+            for m in metric_fns:
+                max_val = max(max(ood_by_metric[m]), max(id_by_metric[m])) + 1e-30
+                scores.append(ood_by_metric[m][i] / max_val)
+            ood_ensemble.append(np.mean(scores))
+
+        ensemble_auroc = compute_auroc(id_ensemble, ood_ensemble)
+
+        metric_ensemble[c] = {
+            "individual": individual,
+            "ensemble": ensemble_auroc,
+        }
+        print(f"    individual: {individual}, ensemble={ensemble_auroc:.3f}")
+
+    results["metric_ensemble"] = metric_ensemble
+
+    # Part 3: Multi-token position ensemble
+    print("\n=== Part 3: Multi-Token Ensemble ===")
+    token_ensemble = {}
+
+    id_by_token = {pos: [] for pos in token_positions}
+    for _ in range(5):
+        inputs = processor(prompt, base_img).to(model.device, dtype=torch.bfloat16)
+        with torch.no_grad():
+            f = model(**inputs, output_hidden_states=True)
+        for pos in token_positions:
+            emb = f.hidden_states[3][0, pos, :].float().cpu().numpy()
+            id_by_token[pos].append(float(cosine(clean_token_refs[pos], emb)))
+
+    for c in corruptions:
+        print(f"  {c}...")
+        ood_by_token = {pos: [] for pos in token_positions}
+        for sev in [0.3, 0.5, 1.0]:
+            corrupted = apply_corruption(base_img, c, sev)
+            inputs = processor(prompt, corrupted).to(model.device, dtype=torch.bfloat16)
+            with torch.no_grad():
+                f = model(**inputs, output_hidden_states=True)
+            for pos in token_positions:
+                emb = f.hidden_states[3][0, pos, :].float().cpu().numpy()
+                ood_by_token[pos].append(float(cosine(clean_token_refs[pos], emb)))
+
+        individual = {}
+        for pos in token_positions:
+            pos_name = f"pos{pos}" if pos >= 0 else "last"
+            individual[pos_name] = compute_auroc(id_by_token[pos], ood_by_token[pos])
+
+        id_mean = [np.mean([id_by_token[pos][i] for pos in token_positions])
+                   for i in range(len(id_by_token[token_positions[0]]))]
+        ood_mean = [np.mean([ood_by_token[pos][i] for pos in token_positions])
+                    for i in range(len(ood_by_token[token_positions[0]]))]
+        mean_auroc = compute_auroc(id_mean, ood_mean)
+
+        token_ensemble[c] = {
+            "individual": individual,
+            "ensemble": mean_auroc,
+        }
+        print(f"    individual: {individual}, ensemble={mean_auroc:.3f}")
+
+    results["token_ensemble"] = token_ensemble
+
+    # Part 4: Full ensemble (layers × metrics)
+    print("\n=== Part 4: Full Ensemble ===")
+    full_ensemble = {}
+
+    for c in corruptions:
+        print(f"  {c}...")
+        id_all = []
+        ood_all = []
+
+        for _ in range(5):
+            inputs = processor(prompt, base_img).to(model.device, dtype=torch.bfloat16)
+            with torch.no_grad():
+                f = model(**inputs, output_hidden_states=True)
+            scores = []
+            for li in [3, 15, 31]:
+                if li < n_layers:
+                    emb = f.hidden_states[li][0, -1, :].float().cpu().numpy()
+                    scores.append(float(cosine(clean_refs[li], emb)))
+                    scores.append(float(np.linalg.norm(emb - clean_refs[li])))
+            id_all.append(np.mean(scores))
+
+        for sev in [0.3, 0.5, 1.0]:
+            corrupted = apply_corruption(base_img, c, sev)
+            inputs = processor(prompt, corrupted).to(model.device, dtype=torch.bfloat16)
+            with torch.no_grad():
+                f = model(**inputs, output_hidden_states=True)
+            scores = []
+            for li in [3, 15, 31]:
+                if li < n_layers:
+                    emb = f.hidden_states[li][0, -1, :].float().cpu().numpy()
+                    scores.append(float(cosine(clean_refs[li], emb)))
+                    scores.append(float(np.linalg.norm(emb - clean_refs[li])))
+            ood_all.append(np.mean(scores))
+
+        full_auroc = compute_auroc(id_all, ood_all)
+        full_ensemble[c] = full_auroc
+        print(f"    AUROC={full_auroc:.3f}")
+
+    results["full_ensemble"] = full_ensemble
+
+    # Part 5: Separation margins
+    print("\n=== Part 5: Separation Margins ===")
+    margins = {}
+
+    for c in corruptions:
+        corrupted = apply_corruption(base_img, c, 1.0)
+
+        inputs_clean = processor(prompt, base_img).to(model.device, dtype=torch.bfloat16)
+        with torch.no_grad():
+            f_clean = model(**inputs_clean, output_hidden_states=True)
+        clean_d = float(cosine(clean_refs[3], f_clean.hidden_states[3][0, -1, :].float().cpu().numpy()))
+
+        inputs_corr = processor(prompt, corrupted).to(model.device, dtype=torch.bfloat16)
+        with torch.no_grad():
+            f_corr = model(**inputs_corr, output_hidden_states=True)
+        corr_d = float(cosine(clean_refs[3], f_corr.hidden_states[3][0, -1, :].float().cpu().numpy()))
+
+        single_margin = corr_d - clean_d
+
+        clean_scores = []
+        corr_scores = []
+        for li in target_layers:
+            if li < n_layers:
+                c_emb = f_clean.hidden_states[li][0, -1, :].float().cpu().numpy()
+                clean_scores.append(float(cosine(clean_refs[li], c_emb)))
+                cr_emb = f_corr.hidden_states[li][0, -1, :].float().cpu().numpy()
+                corr_scores.append(float(cosine(clean_refs[li], cr_emb)))
+
+        ensemble_margin = np.mean(corr_scores) - np.mean(clean_scores)
+
+        margins[c] = {
+            "single_id": clean_d,
+            "single_ood": corr_d,
+            "single_margin": single_margin,
+            "ensemble_id": float(np.mean(clean_scores)),
+            "ensemble_ood": float(np.mean(corr_scores)),
+            "ensemble_margin": float(ensemble_margin),
+            "margin_ratio": float(ensemble_margin / (single_margin + 1e-30)) if single_margin != 0 else 0,
+        }
+        print(f"  {c}: single={single_margin:.6f}, ensemble={ensemble_margin:.6f}, "
+              f"ratio={margins[c]['margin_ratio']:.2f}")
+
+    results["separation_margins"] = margins
 
     # Save
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    output = {
-        'experiment': 'ensemble_detection',
-        'experiment_number': 69,
-        'timestamp': timestamp,
-        'n_id': len(id_data),
-        'n_near_ood': len(near_ood),
-        'n_far_ood': len(far_ood),
-        'results': results,
-        'weight_sweep': weight_sweep,
-    }
-    output_path = os.path.join(RESULTS_DIR, f"ensemble_{timestamp}.json")
-    with open(output_path, 'w') as f:
-        json.dump(output, f, indent=2)
-    print(f"\nSaved to {output_path}", flush=True)
+    def convert(obj):
+        if isinstance(obj, (np.integer,)): return int(obj)
+        if isinstance(obj, (np.floating,)): return float(obj)
+        if isinstance(obj, np.ndarray): return obj.tolist()
+        if isinstance(obj, dict): return {k: convert(v) for k, v in obj.items()}
+        if isinstance(obj, list): return [convert(v) for v in obj]
+        return obj
 
+    ts = results["timestamp"]
+    out_path = f"experiments/ensemble_{ts}.json"
+    with open(out_path, 'w') as f:
+        json.dump(convert(results), f, indent=2)
+    print(f"\nSaved to {out_path}")
 
 if __name__ == "__main__":
     main()

@@ -11726,3 +11726,63 @@ All 4 corruption types first detected at **28 rows (12.5%)** of the image corrup
 **Finding 414**: **Cross-channel interactions amplify the OOD signal** — for noise, individual R/G/B channels sum to only 64% of the full 3-channel distance, meaning 36% of the signal arises from cross-channel interactions in the vision encoder. For fog and night, the gap is smaller (81% and 92%) but still present.
 
 **Finding 415**: **Noise shows a unique anti-additive spread pattern** — as more rows are corrupted (top→bottom), the cosine distance DECREASES from 37.5% coverage (d=0.00163) to 100% coverage (d=0.000512). This is because noise at different spatial locations partially cancels in the embedding space, consistent with the sub-additive occlusion result.
+
+---
+
+## Experiment 307: Decision Boundary & Embedding Interpolation
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_decision_boundary.py`
+**Results**: `experiments/boundary_20260315_111646.json`
+**Figure**: `fig316_boundary.png`
+
+### Methodology
+
+Analysis of the geometry around clean/corrupted decision boundaries:
+1. **Image-space interpolation**: α-blend clean→corrupted at 15 levels (0 to 1.0)
+2. **Embedding trajectory**: Path curvature and direction consistency
+3. **Cross-corruption interpolation**: Blend between different corruption types
+4. **Boundary sharpness**: Fine-grained analysis at very low alpha (0.001 to 0.05)
+5. **Detection vs action threshold**: When detection fires vs when actions change
+
+### Results
+
+#### Detection-Before-Action Safety Margins
+
+| Corruption | Detect at α | Action Change at α | Safety Margin | Actions Changed |
+|-----------|------------|-------------------|---------------|-----------------|
+| Fog | 0.01 | 0.10 | **10×** | 4/7 dims |
+| Night | 0.01 | 0.15 | **15×** | 1/7 dims |
+| Blur | 0.02 | 0.05 | **2.5×** | 5/7 dims |
+| Noise | 0.01 | 0.10 | **10×** | 4/7 dims |
+
+#### Embedding Trajectory Properties
+
+| Corruption | Curvature (path/straight) | Direction Consistency | Path Type |
+|-----------|--------------------------|----------------------|-----------|
+| Fog | 1.170 | 0.726 | Nearly linear |
+| Night | 1.598 | 0.612 | Moderately curved |
+| Blur | 1.814 | 0.512 | Significantly curved |
+| Noise | 1.686 | 0.101 | Highly non-linear |
+
+#### Cross-Corruption Interpolation
+
+Blending between corruption types reveals cancellation effects:
+- **fog→noise**: Distance drops near zero at α=0.5–0.75 before rising — mutual cancellation
+- **blur→noise**: Distance drops from 0.00626 to 0.00007 (near zero) then recovers — almost complete cancellation
+- **fog→night**: Distance increases monotonically (additive effects)
+- **night→blur**: Distance stays relatively stable (similar embedding impact)
+
+### Key Findings
+
+**Finding 416**: **Detection always precedes or coincides with action change** — the detector fires at α=0.01-0.02 while actions don't change until α=0.05-0.15. Night has the largest safety margin (15×): detection at 1% interpolation, first action change at 15%. This means the detector can warn 10-15× earlier than the model would produce a wrong action.
+
+**Finding 417**: **Fog offers 10× early warning** — detection fires at α=0.01 (1% fog), but actions don't change until α=0.10 (10% fog, 4/7 dimensions affected). This is critical because fog is the most dangerous corruption type (confident-wrong from Exp 302), and the 10× margin gives ample time for intervention.
+
+**Finding 418**: **Embedding trajectories are non-geodesic** — all corruption paths have curvature ratio >1.0 (1.17–1.81), meaning they don't follow straight lines in embedding space. Fog is closest to linear (1.17), while blur is most curved (1.81). Noise has extremely low direction consistency (0.101), meaning its trajectory randomly wanders rather than following a consistent direction.
+
+**Finding 419**: **Cross-corruption cancellation reveals embedding structure** — fog and noise can CANCEL each other in embedding space (distance drops near zero when blending), as can blur and noise. This means fog and noise push the embedding in roughly opposite directions. Fog→night is additive (both darken/brighten), confirming that corruption embedding directions encode physical properties.
+
+**Finding 420**: **Detection boundary is sharp for night/noise, gradual for fog/blur** — night and noise produce nonzero distance at α=0.001 (0.1%), while fog first appears at α=0.01 (1%) and blur at α=0.015 (1.5%). This matches the minimum severity results from Exp 305 and confirms that multiplicative corruptions (night) and additive corruptions (noise) are detected earlier than uniform (fog) or spatial (blur) corruptions.
+
+**Finding 421**: **Blur changes actions earliest (α=0.05)** despite being detected later (α=0.02), giving the smallest safety margin (2.5×). This makes blur the corruption requiring the fastest detector response time. Night has the safest profile: detected early (α=0.01) but actions robust until α=0.15.
