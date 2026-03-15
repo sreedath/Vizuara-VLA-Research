@@ -1,0 +1,373 @@
+{
+  "experiment": "detection_bound",
+  "experiment_number": 282,
+  "timestamp": "20260315_093938",
+  "results": {
+    "noise_floor": {
+      "distances": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max": 0.0,
+      "mean": 0.0
+    },
+    "fine_severity": {
+      "fog": {
+        "distances": {
+          "0.0005": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.001": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.002": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.003": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.005": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.007": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.01": {
+            "distance": 4.231929779052734e-06,
+            "above_noise_floor": true
+          },
+          "0.015": {
+            "distance": 2.5212764739990234e-05,
+            "above_noise_floor": true
+          },
+          "0.02": {
+            "distance": 3.5762786865234375e-06,
+            "above_noise_floor": true
+          },
+          "0.03": {
+            "distance": 7.033348083496094e-06,
+            "above_noise_floor": true
+          },
+          "0.05": {
+            "distance": 1.2814998626708984e-05,
+            "above_noise_floor": true
+          },
+          "0.07": {
+            "distance": 4.178285598754883e-05,
+            "above_noise_floor": true
+          },
+          "0.1": {
+            "distance": 6.240606307983398e-05,
+            "above_noise_floor": true
+          }
+        },
+        "first_detected_severity": 0.01,
+        "detection_bound": 0.01
+      },
+      "night": {
+        "distances": {
+          "0.0005": {
+            "distance": 2.9385089874267578e-05,
+            "above_noise_floor": true
+          },
+          "0.001": {
+            "distance": 2.9385089874267578e-05,
+            "above_noise_floor": true
+          },
+          "0.002": {
+            "distance": 2.9385089874267578e-05,
+            "above_noise_floor": true
+          },
+          "0.003": {
+            "distance": 2.9385089874267578e-05,
+            "above_noise_floor": true
+          },
+          "0.005": {
+            "distance": 2.9385089874267578e-05,
+            "above_noise_floor": true
+          },
+          "0.007": {
+            "distance": 6.139278411865234e-06,
+            "above_noise_floor": true
+          },
+          "0.01": {
+            "distance": 3.159046173095703e-05,
+            "above_noise_floor": true
+          },
+          "0.015": {
+            "distance": 6.794929504394531e-06,
+            "above_noise_floor": true
+          },
+          "0.02": {
+            "distance": 3.701448440551758e-05,
+            "above_noise_floor": true
+          },
+          "0.03": {
+            "distance": 4.076957702636719e-05,
+            "above_noise_floor": true
+          },
+          "0.05": {
+            "distance": 3.1828880310058594e-05,
+            "above_noise_floor": true
+          },
+          "0.07": {
+            "distance": 5.048513412475586e-05,
+            "above_noise_floor": true
+          },
+          "0.1": {
+            "distance": 0.00013369321823120117,
+            "above_noise_floor": true
+          }
+        },
+        "first_detected_severity": 0.0005,
+        "detection_bound": 0.0005
+      },
+      "noise": {
+        "distances": {
+          "0.0005": {
+            "distance": 2.9802322387695312e-06,
+            "above_noise_floor": true
+          },
+          "0.001": {
+            "distance": 2.562999725341797e-06,
+            "above_noise_floor": true
+          },
+          "0.002": {
+            "distance": 2.562999725341797e-06,
+            "above_noise_floor": true
+          },
+          "0.003": {
+            "distance": 2.4437904357910156e-06,
+            "above_noise_floor": true
+          },
+          "0.005": {
+            "distance": 2.4437904357910156e-06,
+            "above_noise_floor": true
+          },
+          "0.007": {
+            "distance": 2.8014183044433594e-06,
+            "above_noise_floor": true
+          },
+          "0.01": {
+            "distance": 2.3245811462402344e-06,
+            "above_noise_floor": true
+          },
+          "0.015": {
+            "distance": 3.6954879760742188e-06,
+            "above_noise_floor": true
+          },
+          "0.02": {
+            "distance": 3.4570693969726562e-06,
+            "above_noise_floor": true
+          },
+          "0.03": {
+            "distance": 3.874301910400391e-06,
+            "above_noise_floor": true
+          },
+          "0.05": {
+            "distance": 4.231929779052734e-06,
+            "above_noise_floor": true
+          },
+          "0.07": {
+            "distance": 4.887580871582031e-06,
+            "above_noise_floor": true
+          },
+          "0.1": {
+            "distance": 2.7835369110107422e-05,
+            "above_noise_floor": true
+          }
+        },
+        "first_detected_severity": 0.0005,
+        "detection_bound": 0.0005
+      },
+      "blur": {
+        "distances": {
+          "0.0005": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.001": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.002": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.003": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.005": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.007": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.01": {
+            "distance": 0.0,
+            "above_noise_floor": false
+          },
+          "0.015": {
+            "distance": 4.231929779052734e-06,
+            "above_noise_floor": true
+          },
+          "0.02": {
+            "distance": 6.020069122314453e-06,
+            "above_noise_floor": true
+          },
+          "0.03": {
+            "distance": 6.03795051574707e-05,
+            "above_noise_floor": true
+          },
+          "0.05": {
+            "distance": 0.00013786554336547852,
+            "above_noise_floor": true
+          },
+          "0.07": {
+            "distance": 0.0003306269645690918,
+            "above_noise_floor": true
+          },
+          "0.1": {
+            "distance": 0.0007543563842773438,
+            "above_noise_floor": true
+          }
+        },
+        "first_detected_severity": 0.015,
+        "detection_bound": 0.015
+      }
+    },
+    "pixel_perturbation": [
+      {
+        "n_pixels": 1,
+        "distance": 1.9073486328125e-06,
+        "above_noise": true
+      },
+      {
+        "n_pixels": 2,
+        "distance": 2.8014183044433594e-06,
+        "above_noise": true
+      },
+      {
+        "n_pixels": 5,
+        "distance": 2.4437904357910156e-06,
+        "above_noise": true
+      },
+      {
+        "n_pixels": 10,
+        "distance": 3.874301910400391e-06,
+        "above_noise": true
+      },
+      {
+        "n_pixels": 20,
+        "distance": 3.4570693969726562e-06,
+        "above_noise": true
+      },
+      {
+        "n_pixels": 50,
+        "distance": 4.887580871582031e-06,
+        "above_noise": true
+      },
+      {
+        "n_pixels": 100,
+        "distance": 3.4570693969726562e-06,
+        "above_noise": true
+      },
+      {
+        "n_pixels": 500,
+        "distance": 9.775161743164062e-06,
+        "above_noise": true
+      }
+    ],
+    "bitdepth": [
+      {
+        "bits": 8,
+        "distance": 0.0,
+        "above_noise": false
+      },
+      {
+        "bits": 7,
+        "distance": 2.4437904357910156e-06,
+        "above_noise": true
+      },
+      {
+        "bits": 6,
+        "distance": 3.325939178466797e-05,
+        "above_noise": true
+      },
+      {
+        "bits": 5,
+        "distance": 4.4465065002441406e-05,
+        "above_noise": true
+      },
+      {
+        "bits": 4,
+        "distance": 7.671117782592773e-05,
+        "above_noise": true
+      },
+      {
+        "bits": 3,
+        "distance": 0.00019419193267822266,
+        "above_noise": true
+      },
+      {
+        "bits": 2,
+        "distance": 0.000672757625579834,
+        "above_noise": true
+      },
+      {
+        "bits": 1,
+        "distance": 0.0020391345024108887,
+        "above_noise": true
+      }
+    ],
+    "brightness": [
+      {
+        "shift": 1,
+        "distance": 3.2186508178710938e-06,
+        "above_noise": true
+      },
+      {
+        "shift": 2,
+        "distance": 5.543231964111328e-06,
+        "above_noise": true
+      },
+      {
+        "shift": 3,
+        "distance": 7.033348083496094e-06,
+        "above_noise": true
+      },
+      {
+        "shift": 5,
+        "distance": 1.436471939086914e-05,
+        "above_noise": true
+      },
+      {
+        "shift": 10,
+        "distance": 7.104873657226562e-05,
+        "above_noise": true
+      },
+      {
+        "shift": 20,
+        "distance": 0.0001843571662902832,
+        "above_noise": true
+      }
+    ]
+  }
+}

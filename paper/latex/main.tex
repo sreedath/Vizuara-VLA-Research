@@ -5304,4 +5304,36 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 606}: \textbf{Inversion produces non-monotonic distance}: $d$ peaks at severity 0.5 ($d = 0.0057$) then decreases at severity 1.0 ($d = 0.00006$). The VLA processor's normalization partially compensates for full channel inversion, mapping it closer to the clean embedding. This is the only corruption showing non-monotonic severity-distance behavior.
 
+\subsection{Detection Sensitivity Bounds}
+
+\textbf{Experiment 282: Minimum Detectable Perturbation.} We measure the absolute detection limit by: (1) establishing the noise floor (10 re-runs of identical clean image), (2) testing ultra-fine severity increments (0.05\%--10\%), (3) single-pixel perturbations, (4) bit-depth reduction (7--1 bits), and (5) brightness shifts (+1 to +20).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig291_bound.png}
+\caption{Detection sensitivity bounds. (a) Ultra-fine severity: night/noise detectable at 0.05\%, fog at 1\%, blur at 1.5\%. (b) Single pixel change produces $d = 1.9 \times 10^{-6}$ --- detectable. (c) Reducing from 8 to 7 bits produces $d = 2.4 \times 10^{-6}$. (d) +1 brightness level produces $d = 3.2 \times 10^{-6}$. Noise floor is exactly zero.}
+\end{figure}
+
+\textbf{Finding 607}: The noise floor is \textbf{exactly zero}: 10/10 re-runs of the identical clean image produce bit-identical embeddings ($d = 0$). The model is perfectly deterministic --- there is no measurement noise in the detector. This means the detection threshold is infinitesimally above zero, giving the detector theoretically \textbf{infinite sensitivity} to any perturbation that survives the processor's quantization.
+
+\textbf{Finding 608}: The minimum detectable perturbation is \textbf{1 pixel} ($d = 1.91 \times 10^{-6}$), \textbf{1 brightness level} ($d = 3.22 \times 10^{-6}$), or \textbf{1 bit of quantization} ($d = 2.44 \times 10^{-6}$). These are the smallest possible discrete changes to a digital image --- the detector operates at the fundamental resolution limit of 8-bit pixel representation.
+
+\textbf{Finding 609}: Night and noise corruptions are detectable at \textbf{0.05\% severity} --- far below human perceptibility. Fog requires 1\% and blur requires 1.5\% because very small fog/blur changes get rounded to identical pixel values by 8-bit quantization before reaching the model.
+
+\subsection{Baseline OOD Detection Comparison}
+
+\textbf{Experiment 283: Standard OOD Methods.} We compare our cosine distance detector against 5 standard OOD detection methods: Maximum Softmax Probability (MSP)~\cite{hendrycks2017baseline}, Energy Score~\cite{liu2020energy}, output entropy, feature norm, and top-$K$ probability. We evaluate on 5 in-distribution images and 4 corruption types (10 OOD samples per type).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig292_baseline.png}
+\caption{Baseline comparison. (a) AUROC heatmap: cosine distance achieves 1.0 on all corruptions; energy score achieves 0.00 on fog (worse than random); MSP and entropy are inconsistent (0.28--0.98). (b) Mean AUROC: cosine distance (1.000) $\gg$ feature norm (0.960) $\gg$ top-$K$ (0.655) $>$ entropy (0.640) $>$ MSP (0.615) $\approx$ energy (0.505).}
+\end{figure}
+
+\textbf{Finding 610}: Cosine distance \textbf{dominates all 5 standard OOD baselines}: AUROC = 1.000 vs.\ MSP (0.615), energy (0.505), entropy (0.640), feature norm (0.960), and top-$K$ probability (0.655). The energy score --- a popular OOD method in classification --- achieves AUROC = 0.000 on fog, performing \emph{worse than random}. Standard methods designed for classification networks do not transfer to VLA models.
+
+\textbf{Finding 611}: \textbf{Output-space methods fundamentally fail} for VLA OOD detection. MSP, energy, entropy, and top-$K$ probability all have mean AUROC $< 0.66$. The VLA model produces overconfident outputs on corrupted inputs --- high softmax probability on \emph{wrong} tokens --- masking corruption from any output-space detector. Only embedding-space methods can reliably detect the corruption.
+
+\textbf{Finding 612}: Feature norm is the only competitive baseline (AUROC = 0.960) but fails on noise (0.840). Noise corruption produces directional shifts in embedding space with minimal magnitude change, which norm-based detection misses. \textbf{Cosine distance captures directionality}, giving it perfect detection where magnitude-based methods fail.
+
 \end{document}
