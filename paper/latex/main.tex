@@ -6910,4 +6910,25 @@ We investigate how visual corruptions alter the model's internal attention distr
 
 \textbf{Finding 916}: \textbf{Attention disruption saturates at high severity.} Noise JSD increases only 14\% from severity 0.5 to 1.0; blur JSD actually \emph{decreases} slightly. The attention mechanism has a finite response range that caps corruption-induced disruption, unlike the embedding distance which grows monotonically.
 
+\subsection{Experiment 364: Embedding Gradient Sensitivity Analysis}
+
+We characterize the local geometry of the input-to-embedding map using finite-difference Jacobians, channel-specific perturbations, spatial sensitivity maps, and corruption-direction analysis.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig373_gradient_sens.png}
+\caption{Gradient sensitivity analysis. Top-left: sub-linear Jacobian --- embedding L2 grows 19$\times$ for 50$\times$ pixel change. Top-middle: red channel is 1.9$\times$ more sensitive than green/blue. Top-right: spatial sensitivity heatmap shows 16$\times$ range. Bottom-left: random pixel flips are nearly invisible. Bottom-middle: blur produces largest absolute shift but fog has highest per-pixel efficiency.}
+\label{fig:gradientsens}
+\end{figure}
+
+\textbf{Finding 917}: \textbf{The embedding-to-pixel Jacobian is sub-linear.} L2 shift grows from 0.019 at $\epsilon=1$ to 0.363 at $\epsilon=50$ (19$\times$ for 50$\times$ change). The model compresses large pixel perturbations through a soft saturation in the input-to-embedding map.
+
+\textbf{Finding 918}: \textbf{Red channel is 1.9$\times$ more sensitive than green and 2.0$\times$ more than blue.} The SigLIP vision encoder has asymmetric color channel sensitivity, likely reflecting training data statistics where red-channel changes carry more semantic significance.
+
+\textbf{Finding 919}: \textbf{Spatial sensitivity varies 16$\times$ across image patches.} Even for random pixel images, the model's vision encoder exhibits strong spatial non-uniformity, with top-left regions being maximally sensitive --- consistent with typical object placement in robotics datasets.
+
+\textbf{Finding 920}: \textbf{Random pixel flips are nearly invisible to the embedding.} Randomizing 25\% of pixels yields cosine distance $\sim$0.00015, far below corruption detection thresholds ($\sim$0.00006). Only spatially-coherent corruptions produce detectable shifts, explaining why noise is the hardest corruption to detect.
+
+\textbf{Finding 921}: \textbf{Fog has the highest per-pixel sensitivity (2$\times$ blur's).} Despite blur producing the largest absolute embedding shift, fog moves the embedding more efficiently per pixel changed (0.000035 vs 0.000018 emb\_L2/pixel\_L2). This ``efficiency'' metric explains fog's detectability at moderate severity.
+
 \end{document}

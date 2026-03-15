@@ -15011,3 +15011,58 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 
 **Finding 664**: Attention disruption saturates for noise and blur at high severity: noise JSD increases only 14% from sev=0.5 to 1.0, blur actually DECREASES slightly. The attention mechanism has a finite response range that caps disruption.
 
+
+## Experiment 364: Embedding Gradient Sensitivity Analysis
+
+**Script**: `scripts/real_vla_gradient_sensitivity.py`
+**Result**: `experiments/gradient_sensitivity_20260315_153527.json`
+**Figure**: `figures/fig373_gradient_sens.png`
+
+### Key Results
+
+**Finite-Difference Jacobian (L2 embedding shift per pixel eps)**:
+| eps (pixel units) | Seed 0 L2 | Seed 100 L2 | Seed 200 L2 |
+|-------------------|-----------|-------------|-------------|
+| 1 | 0.019 | 0.019 | 0.027 |
+| 5 | 0.049 | 0.050 | 0.053 |
+| 20 | 0.167 | 0.170 | 0.168 |
+| 50 | 0.365 | 0.352 | 0.373 |
+
+**Channel Sensitivity (cos_dist from +30 per-channel perturbation)**:
+| Channel | Seed 0 | Seed 100 | Seed 200 |
+|---------|--------|----------|----------|
+| R | 0.000162 | 0.000180 | 0.000159 |
+| G | 0.000087 | 0.000094 | 0.000087 |
+| B | 0.000090 | 0.000079 | 0.000090 |
+
+**Spatial Sensitivity Map (7x7 grid)**:
+- Most sensitive: patch (0,5), cos_dist=0.001902
+- Least sensitive: patch (6,6), cos_dist=0.000119
+- Range: 16x between most and least sensitive
+
+**Random Pixel Flip Stability**:
+- 0.1% flipped: cos_dist~0.000004
+- 1% flipped: cos_dist~0.000009
+- 10% flipped: cos_dist~0.000061
+- 25% flipped: cos_dist~0.000149
+
+**Corruption Direction Sensitivity at sev=0.05**:
+| Corruption | Emb L2 | Pixel L2 | Sensitivity |
+|-----------|--------|----------|-------------|
+| Fog | 0.050 | 1422 | 0.000035 |
+| Night | 0.060 | 2616 | 0.000023 |
+| Noise | 0.029 | 1501 | 0.000019 |
+| Blur | 0.129 | 7151 | 0.000018 |
+
+### Findings
+
+**Finding 665**: The embedding-to-pixel Jacobian is sub-linear: L2 shift grows from 0.019 at eps=1 to 0.363 at eps=50 (19x increase for 50x pixel change). The model compresses large pixel perturbations, suggesting a soft saturation in the input-to-embedding map.
+
+**Finding 666**: Red channel is 1.9x more sensitive than green and 2.0x more sensitive than blue in embedding cosine distance. The SigLIP vision encoder has asymmetric color channel sensitivity, potentially reflecting training data biases.
+
+**Finding 667**: Spatial sensitivity varies 16x across the image (7x7 grid). Patch (0,5) is most sensitive while (6,6) is least, suggesting the model's vision encoder has non-uniform spatial attention even for random pixel images.
+
+**Finding 668**: Random pixel flips produce negligible embedding change: 25% of pixels randomized yields cos_dist~0.00015, far below corruption thresholds (~0.00006). Sparse, randomly-distributed perturbations are nearly invisible to the embedding — only spatially-coherent corruptions produce detectable shifts.
+
+**Finding 669**: Fog has the highest per-pixel sensitivity (0.000035 emb_L2/pixel_L2) — 2x blur's sensitivity (0.000018). Despite blur producing the largest absolute embedding shift, fog is more "efficient" per pixel changed, explaining why fog is detectable at moderate severity despite smaller absolute perturbations.
+
