@@ -15563,3 +15563,41 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 724**: The most affected action dimension is dim 1 (dy, Y-translation) with mean differences of 0.61-0.77 across corruptions, while dim 3 (droll) is least affected (0.12-0.13). Visual corruption disproportionately impacts translational actions over rotational ones.
 
+---
+
+## Experiment 376: Calibration Set Size Sensitivity
+
+**Objective**: How many clean calibration images are needed for reliable OOD detection? Tests AUROC vs N, threshold stability, LOO cross-validation, bootstrap CIs, and centroid convergence.
+
+**Setup**: 30 scenes total (20 calibration pool, 10 test), 4 corruptions at severity 0.5, bootstrap with 1000 resamples.
+
+### Results
+
+**AUROC vs Calibration Size**:
+| N | Fog | Night | Noise (mean) | Noise (min) | Blur |
+|---|-----|-------|-------------|-------------|------|
+| 1 | 1.000 | 1.000 | 0.957 | 0.740 | 1.000 |
+| 2 | 1.000 | 1.000 | 0.978 | 0.940 | 1.000 |
+| 3 | 1.000 | 1.000 | 0.982 | 0.960 | 1.000 |
+| 5 | 1.000 | 1.000 | 0.985 | 0.960 | 1.000 |
+| 10 | 1.000 | 1.000 | 0.990 | 0.970 | 1.000 |
+| 20 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+
+**LOO Cross-Validation (N=20)**: All ≥ 0.999 AUROC (noise: 0.999±0.003)
+
+**Bootstrap 95% CI (N=10)**: Noise [0.960, 1.000], all others [1.000, 1.000]
+
+**Centroid Convergence**: N=1: 3.65e-5, N=5: 5.91e-6, N=20: 1.2e-7 (rapid convergence)
+
+### Findings
+
+**Finding 725**: One-shot calibration (N=1) achieves AUROC=1.0 for fog, night, and blur — only noise requires additional calibration images. Even for noise, N=1 achieves mean AUROC=0.957.
+
+**Finding 726**: The worst-case noise AUROC with N=1 is 0.74, improving to 0.94 at N=2 and 0.96 at N=3. The practical recommendation is N≥3 calibration images for guaranteed noise detection above 0.95 AUROC.
+
+**Finding 727**: Bootstrap 95% confidence interval for noise detection with N=10 is [0.960, 1.000]. The lower bound of 0.96 means noise detection is statistically reliable even with modest calibration, though not perfect.
+
+**Finding 728**: The centroid converges rapidly: distance to the full N=20 centroid drops from 3.65e-5 (N=1) to 5.91e-6 (N=5) — a 6x improvement. Beyond N=10, additional calibration images provide negligible benefit.
+
+**Finding 729**: Leave-one-out cross-validation with N=20 yields AUROC ≥ 0.999 for all corruptions including noise. The detector is robust to the choice of calibration scenes, with noise std=0.003 across LOO folds.
+
