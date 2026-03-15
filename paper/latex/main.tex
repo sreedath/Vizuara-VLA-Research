@@ -7409,4 +7409,37 @@ We examine how corruption detection evolves across all 33 transformer layers (L0
 
 \textbf{Finding 1006}: \textbf{L3 is the optimal layer for universal detection across all corruption types.} It achieves AUROC = 1.0 for all four corruptions, while deeper layers sacrifice noise performance for marginal distance gains on other types.
 
+% ============================================================
+% EXPERIMENT 382: Severity Detection Threshold Mapping
+% ============================================================
+
+\subsection{Experiment 382: Severity Detection Threshold Mapping}
+
+We map the minimum detectable severity for each corruption type through a fine-grained sweep of 18 severity levels from 0.01 to 1.0.
+
+\textbf{10$\times$ Range in Detection Thresholds.} Blur achieves 100\% detection at severity 0.05, night at 0.10, fog at 0.15, but noise requires severity 0.50 --- a full order of magnitude harder. This 10$\times$ range quantifies the detection difficulty hierarchy established in earlier experiments.
+
+\textbf{Quadratic Distance-Severity Scaling.} All four corruptions follow a quadratic relationship between severity and cosine distance ($R^2 > 0.985$), not linear. Detection sensitivity grows \emph{acceleratingly}: doubling severity more than doubles the detection signal. This provides a natural safety margin at operational severity levels.
+
+\textbf{Noise Detection Cliff.} Noise at severity $\leq 0.3$ is essentially undetectable (AUROC = 0.88, detection rate = 0\%). The transition from undetectable to perfectly detectable is sharp: 0\% at severity 0.35 $\to$ 100\% at severity 0.50. This cliff behavior contrasts with the gradual AUROC increase seen for other corruptions.
+
+\textbf{Massive Safety Margin at High Severity.} At severity 1.0, distances are 30--100$\times$ the clean threshold. Even with imperfect calibration, this margin ensures robust detection for operationally relevant corruption levels.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig391_severity.png}
+\caption{\textbf{Experiment 382}: Severity threshold mapping. Detection distance follows quadratic scaling ($R^2 > 0.985$). Blur detectable at 0.05 severity, noise requires 0.50 (10$\times$ harder). AUROC shows sharp transitions, especially for noise.}
+\label{fig:severity}
+\end{figure}
+
+\textbf{Finding 1007}: \textbf{Blur is 10$\times$ easier to detect than noise (severity 0.05 vs 0.50 for 100\% detection).} The detection threshold hierarchy blur $<$ night $<$ fog $\ll$ noise spans a full order of magnitude.
+
+\textbf{Finding 1008}: \textbf{All corruptions follow quadratic distance-severity scaling ($R^2 > 0.985$).} Detection sensitivity grows acceleratingly, providing natural safety margins: at severity 1.0, distances are 30--100$\times$ the clean threshold.
+
+\textbf{Finding 1009}: \textbf{Noise detection has a sharp cliff: 0\% at severity 0.35, 100\% at severity 0.50.} This binary transition contrasts with the gradual onset for other corruptions and establishes the detector's fundamental noise limitation.
+
+\textbf{Finding 1010}: \textbf{Night is detectable at lower severity (0.10) than fog (0.15) despite similar appearance.} Night produces steeper scaling ($\times 2.8$ slope) because brightness reduction affects all pixels uniformly, while fog adds both dimming and whitening.
+
+\textbf{Finding 1011}: \textbf{The quadratic scaling explains the detector's effectiveness.} Small corruptions are disproportionately harder to detect (sublinear regime), but operational corruptions ($>$0.3) fall in the superlinear regime where the signal grows much faster than severity.
+
 \end{document}

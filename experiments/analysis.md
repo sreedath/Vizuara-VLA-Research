@@ -15871,3 +15871,47 @@ Mid and late layers are nearly perfectly correlated. Early layers diverge slight
 
 **Finding 754**: Mid and late layers are nearly perfectly correlated (r=0.993), while early layers diverge slightly (early-late r=0.903). The model converges to a consistent corruption representation by mid-depth, with early layers capturing qualitatively different features.
 
+---
+
+## Experiment 382: Severity Detection Threshold Mapping
+
+**Objective**: For each corruption type, what is the minimum detectable severity? Fine-grained severity sweep from 0.01 to 1.0 with AUROC and detection rate analysis.
+
+**Setup**: 10 scenes, 5 used for OOD scores, 18 severity levels per corruption. Threshold = max clean distance = 7.80e-05.
+
+### Results
+
+**Minimum Severity for 100% Detection**:
+| Corruption | 50% Detect | 100% Detect | AUROC=1.0 | 10x Range? |
+|-----------|-----------|-------------|-----------|-----------|
+| Blur | 0.05 | 0.05 | 0.05 | Easiest |
+| Night | 0.10 | 0.10 | 0.10 | |
+| Fog | 0.10 | 0.15 | 0.15 | |
+| **Noise** | **0.40** | **0.50** | **0.50** | **10x harder** |
+
+10x range between easiest (blur=0.05) and hardest (noise=0.50) corruption to fully detect.
+
+**Functional Form** (all QUADRATIC, not linear):
+| Corruption | R² Linear | R² Quadratic | R² Log |
+|-----------|-----------|-------------|--------|
+| Fog | 0.964 | 0.9996 | 0.610 |
+| Night | 0.911 | 0.996 | 0.530 |
+| Noise | 0.867 | 0.999 | 0.461 |
+| Blur | 0.852 | 0.986 | 0.895 |
+
+ALL corruptions follow QUADRATIC distance-severity scaling (R² > 0.985). Detection sensitivity grows acceleratingly.
+
+**Noise is anomalous**: At severity 0.3, noise AUROC is only 0.88 while all other corruptions are already at 1.0 by severity 0.15. Noise doesn't even breach the threshold until severity 0.35.
+
+### Findings
+
+**Finding 755**: Blur is the EASIEST corruption to detect (100% at severity 0.05), while noise is 10x HARDER (100% only at severity 0.50). The detection threshold hierarchy is blur < night < fog << noise, spanning a full order of magnitude.
+
+**Finding 756**: ALL corruptions follow QUADRATIC distance-severity scaling (R² > 0.985). Detection sensitivity grows acceleratingly with severity — small corruptions are disproportionately harder to detect. This means doubling the severity MORE than doubles the detection signal.
+
+**Finding 757**: Noise at severity ≤0.3 is essentially UNDETECTABLE by the centroid-based detector (AUROC=0.88, detection rate=0%). The noise threshold is not a gradual transition but a sharp cliff between 0.35 (20% rate) and 0.50 (100% rate).
+
+**Finding 758**: Night and fog have near-identical low-severity behavior (both AUROC≈0.6 at severity 0.01) but diverge above 0.1: night reaches AUROC=1.0 at 0.10 while fog requires 0.15. Night produces steeper distance scaling at high severity.
+
+**Finding 759**: The quadratic scaling explains WHY the detector works: at severity 1.0, distances are 30-100x the clean threshold. Even with imperfect calibration, the massive safety margin at operational severity levels provides robust detection.
+

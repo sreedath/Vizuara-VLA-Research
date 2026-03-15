@@ -1,266 +1,252 @@
-"""
-Embedding Geometry Analysis.
+#!/usr/bin/env python3
+"""Experiment 383: Embedding Space Geometry Under Corruption
 
-Studies the geometric structure of ID and OOD embeddings:
-- Intrinsic dimensionality via PCA explained variance
-- ID cluster compactness vs OOD dispersion
-- Inter- and intra-class distances
-- Angular distribution on the hypersphere
-
-Experiment 119 in the CalibDrive series.
+What is the geometric structure of the embedding manifold?
+1. Principal angles between clean and corruption subspaces
+2. Corruption-specific direction vectors (mean shift directions)
+3. Orthogonality of corruption shift directions
+4. Projection analysis: how much of corruption shift is shared vs unique
+5. Residual analysis: what remains after removing the main corruption direction
 """
-import os
-import json
-import datetime
+
+import json, time, os, sys
 import numpy as np
 import torch
-from PIL import Image
-from sklearn.metrics import roc_auc_score
-from sklearn.decomposition import PCA
+from PIL import Image, ImageFilter
+from transformers import AutoModelForVision2Seq, AutoProcessor
 
-RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
-os.makedirs(RESULTS_DIR, exist_ok=True)
-SIZE = (256, 256)
-
-
-def create_highway(idx):
-    rng = np.random.default_rng(idx * 13001)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]
-    img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_urban(idx):
-    rng = np.random.default_rng(idx * 13002)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]
-    img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_noise(idx):
-    rng = np.random.default_rng(idx * 13003)
-    return rng.integers(0, 256, (*SIZE, 3), dtype=np.uint8)
-
-def create_indoor(idx):
-    rng = np.random.default_rng(idx * 13004)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:] = [200, 180, 160]
-    img[SIZE[0]//2:, :] = [100, 80, 60]
-    img[:SIZE[0]//3, SIZE[1]//3:2*SIZE[1]//3] = [150, 200, 255]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_twilight_highway(idx):
-    rng = np.random.default_rng(idx * 13010)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [70, 50, 80]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [200, 200, 100]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_snow(idx):
-    rng = np.random.default_rng(idx * 13014)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [200, 200, 210]
-    img[SIZE[0]//2:] = [220, 220, 230]
-    img[SIZE[0]//2:, SIZE[1]//2-2:SIZE[1]//2+2] = [180, 180, 190]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-
-def extract_hidden(model, processor, image, prompt):
+def extract_hidden(model, processor, image, prompt, layer=3):
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
     with torch.no_grad():
         fwd = model(**inputs, output_hidden_states=True)
-    if not hasattr(fwd, 'hidden_states') or not fwd.hidden_states:
-        return None
-    return fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
+    return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
 
+def apply_corruption(image, ctype, severity=1.0):
+    arr = np.array(image).astype(np.float32) / 255.0
+    if ctype == 'fog':
+        arr = arr * (1 - 0.6 * severity) + 0.6 * severity
+    elif ctype == 'night':
+        arr = arr * max(0.01, 1.0 - 0.95 * severity)
+    elif ctype == 'noise':
+        arr = arr + np.random.RandomState(42).randn(*arr.shape) * 0.3 * severity
+        arr = np.clip(arr, 0, 1)
+    elif ctype == 'blur':
+        return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
+    return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
-def cosine_dist(a, b):
-    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
-
+def cosine_sim(a, b):
+    dot = np.dot(a, b)
+    na, nb = np.linalg.norm(a), np.linalg.norm(b)
+    if na < 1e-10 or nb < 1e-10:
+        return 0.0
+    return dot / (na * nb)
 
 def main():
-    print("=" * 70, flush=True)
-    print("EMBEDDING GEOMETRY ANALYSIS", flush=True)
-    print("=" * 70, flush=True)
-
-    from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading model...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
-        device_map="auto", trust_remote_code=True,
-    )
-    processor = AutoProcessor.from_pretrained(
-        "openvla/openvla-7b", trust_remote_code=True,
-    )
+        device_map="auto", trust_remote_code=True)
+    processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
-    print("Model loaded.", flush=True)
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
+    prompt = "In: What action should the robot take to pick up the object?\nOut:"
+    results = {}
+    ctypes = ['fog', 'night', 'noise', 'blur']
 
-    categories = {
-        'highway': (create_highway, 'ID'),
-        'urban': (create_urban, 'ID'),
-        'noise': (create_noise, 'OOD'),
-        'indoor': (create_indoor, 'OOD'),
-        'twilight': (create_twilight_highway, 'OOD'),
-        'snow': (create_snow, 'OOD'),
+    print("Generating images...")
+    seeds = list(range(0, 1500, 100))[:15]
+    images = {}
+    clean_embs = {}
+    for seed in seeds:
+        rng = np.random.RandomState(seed)
+        px = rng.randint(50, 200, (224, 224, 3), dtype=np.uint8)
+        images[seed] = Image.fromarray(px)
+        clean_embs[seed] = extract_hidden(model, processor, images[seed], prompt)
+
+    centroid = np.mean(list(clean_embs.values()), axis=0)
+
+    # Extract corruption embeddings
+    print("Extracting corruption embeddings...")
+    corrupt_embs = {ct: {} for ct in ctypes}
+    for ct in ctypes:
+        for seed in seeds[:10]:
+            corrupt_embs[ct][seed] = extract_hidden(
+                model, processor, apply_corruption(images[seed], ct, 0.5), prompt)
+
+    # ========== 1. Corruption Shift Directions ==========
+    print("\n=== Corruption Shift Directions ===")
+
+    shift_dirs = {}
+    for ct in ctypes:
+        shifts = [corrupt_embs[ct][s] - clean_embs[s] for s in seeds[:10]]
+        mean_shift = np.mean(shifts, axis=0)
+        mean_shift_norm = mean_shift / max(np.linalg.norm(mean_shift), 1e-10)
+        shift_dirs[ct] = mean_shift_norm
+
+        # How consistent are individual shifts with mean direction?
+        consistencies = [cosine_sim(s, mean_shift) for s in shifts]
+        results[f'{ct}_shift_consistency'] = {
+            'mean': float(np.mean(consistencies)),
+            'min': float(np.min(consistencies)),
+            'max': float(np.max(consistencies)),
+            'shift_magnitude': float(np.linalg.norm(mean_shift)),
+        }
+        print(f"  {ct}: consistency={np.mean(consistencies):.4f}, "
+              f"magnitude={np.linalg.norm(mean_shift):.6f}")
+
+    # ========== 2. Orthogonality of Shift Directions ==========
+    print("\n=== Shift Direction Orthogonality ===")
+
+    ortho = {}
+    for i, ct1 in enumerate(ctypes):
+        for j, ct2 in enumerate(ctypes):
+            if j > i:
+                sim = cosine_sim(shift_dirs[ct1], shift_dirs[ct2])
+                key = f"{ct1}_vs_{ct2}"
+                ortho[key] = float(sim)
+                print(f"  {ct1} vs {ct2}: cos_sim={sim:.4f}")
+
+    results['shift_orthogonality'] = ortho
+
+    # ========== 3. Principal Component Analysis ==========
+    print("\n=== PCA of Shift Space ===")
+
+    all_shifts = []
+    shift_labels = []
+    for ct in ctypes:
+        for seed in seeds[:10]:
+            shift = corrupt_embs[ct][seed] - clean_embs[seed]
+            all_shifts.append(shift)
+            shift_labels.append(ct)
+
+    all_shifts = np.array(all_shifts)
+    # Center
+    all_shifts_centered = all_shifts - np.mean(all_shifts, axis=0)
+
+    # SVD
+    U, S, Vt = np.linalg.svd(all_shifts_centered, full_matrices=False)
+    total_var = np.sum(S**2)
+    explained = (S**2) / max(total_var, 1e-10)
+    cumulative = np.cumsum(explained)
+
+    pca_results = {
+        'explained_variance': explained[:20].tolist(),
+        'cumulative_variance': cumulative[:20].tolist(),
+        'n_components_90pct': int(np.searchsorted(cumulative, 0.9) + 1),
+        'n_components_95pct': int(np.searchsorted(cumulative, 0.95) + 1),
+        'n_components_99pct': int(np.searchsorted(cumulative, 0.99) + 1),
+        'top1_variance': float(explained[0]),
+        'top3_variance': float(cumulative[2]),
     }
+    results['pca'] = pca_results
+    print(f"  90% variance: {pca_results['n_components_90pct']} components")
+    print(f"  95% variance: {pca_results['n_components_95pct']} components")
+    print(f"  Top-1: {explained[0]:.4f}, Top-3: {cumulative[2]:.4f}")
 
-    print("\n--- Collecting embeddings ---", flush=True)
-    embeddings = {}
-    for cat_name, (fn, group) in categories.items():
-        print(f"  {cat_name} ({group})...", flush=True)
-        embeds = []
-        for i in range(15):
-            h = extract_hidden(model, processor, Image.fromarray(fn(i + 2000)), prompt)
-            if h is not None:
-                embeds.append(h)
-        embeddings[cat_name] = {'embeds': np.array(embeds), 'group': group}
+    # ========== 4. Projection Analysis ==========
+    print("\n=== Projection Analysis ===")
 
-    # Collect all embeddings
-    all_embeds = np.concatenate([d['embeds'] for d in embeddings.values()], axis=0)
-    id_embeds = np.concatenate([d['embeds'] for d in embeddings.values() if d['group'] == 'ID'], axis=0)
-    ood_embeds = np.concatenate([d['embeds'] for d in embeddings.values() if d['group'] == 'OOD'], axis=0)
+    # Project each corruption's shifts onto other corruption directions
+    projection = {}
+    for ct in ctypes:
+        shifts = [corrupt_embs[ct][s] - clean_embs[s] for s in seeds[:10]]
+        mean_shift = np.mean(shifts, axis=0)
+        shift_norm = np.linalg.norm(mean_shift)
 
-    dim = all_embeds.shape[1]
-    print(f"\nTotal: {len(all_embeds)}, ID: {len(id_embeds)}, OOD: {len(ood_embeds)}, Dim: {dim}", flush=True)
-
-    # 1. Intrinsic dimensionality via PCA
-    print("\n--- Intrinsic Dimensionality ---", flush=True)
-    max_comp = min(len(all_embeds), dim) - 1
-    n_pca = min(max_comp, 50)
-    pca = PCA(n_components=n_pca)
-    pca.fit(all_embeds)
-    cumvar = np.cumsum(pca.explained_variance_ratio_)
-
-    # Find dimensionality at various thresholds
-    thresholds = [0.5, 0.75, 0.9, 0.95, 0.99]
-    intrinsic_dims = {}
-    for t in thresholds:
-        idx = np.searchsorted(cumvar, t)
-        intrinsic_dims[str(t)] = int(idx + 1) if idx < len(cumvar) else n_pca
-        print(f"  {t*100:.0f}% variance at {intrinsic_dims[str(t)]} dims", flush=True)
-
-    # ID-only and OOD-only PCA
-    pca_id = PCA(n_components=min(len(id_embeds)-1, n_pca))
-    pca_id.fit(id_embeds)
-    id_cumvar = np.cumsum(pca_id.explained_variance_ratio_)
-
-    pca_ood = PCA(n_components=min(len(ood_embeds)-1, n_pca))
-    pca_ood.fit(ood_embeds)
-    ood_cumvar = np.cumsum(pca_ood.explained_variance_ratio_)
-
-    for t in [0.9, 0.95]:
-        id_idx = np.searchsorted(id_cumvar, t)
-        ood_idx = np.searchsorted(ood_cumvar, t)
-        print(f"  {t*100:.0f}% var: ID at {id_idx+1} dims, OOD at {ood_idx+1} dims", flush=True)
-
-    # 2. Intra-class distances
-    print("\n--- Intra-class Distances ---", flush=True)
-    intra_distances = {}
-    for cat_name, data in embeddings.items():
-        dists = []
-        for i in range(len(data['embeds'])):
-            for j in range(i+1, len(data['embeds'])):
-                dists.append(cosine_dist(data['embeds'][i], data['embeds'][j]))
-        intra_distances[cat_name] = {
-            'mean': float(np.mean(dists)),
-            'std': float(np.std(dists)),
-            'max': float(np.max(dists)),
-            'group': data['group'],
-        }
-        print(f"  {cat_name}: mean={np.mean(dists):.4f}, std={np.std(dists):.4f}, max={np.max(dists):.4f}", flush=True)
-
-    # 3. Inter-class distances
-    print("\n--- Inter-class Distances ---", flush=True)
-    inter_distances = {}
-    cat_centroids = {c: np.mean(d['embeds'], axis=0) for c, d in embeddings.items()}
-    cats = list(embeddings.keys())
-    for i in range(len(cats)):
-        for j in range(i+1, len(cats)):
-            d = cosine_dist(cat_centroids[cats[i]], cat_centroids[cats[j]])
-            key = f"{cats[i]}_vs_{cats[j]}"
-            inter_distances[key] = {
-                'distance': d,
-                'groups': f"{embeddings[cats[i]]['group']}_vs_{embeddings[cats[j]]['group']}",
+        proj = {}
+        for ct2 in ctypes:
+            # How much of ct's shift lies along ct2's direction?
+            proj_amount = np.dot(mean_shift, shift_dirs[ct2])
+            proj[ct2] = {
+                'projection': float(proj_amount),
+                'fraction': float(abs(proj_amount) / max(shift_norm, 1e-10)),
             }
-            print(f"  {key}: {d:.4f} ({inter_distances[key]['groups']})", flush=True)
 
-    # 4. Norm statistics
-    print("\n--- Norm Statistics ---", flush=True)
-    norm_stats = {}
-    for cat_name, data in embeddings.items():
-        norms = [float(np.linalg.norm(e)) for e in data['embeds']]
-        norm_stats[cat_name] = {
-            'mean': float(np.mean(norms)),
-            'std': float(np.std(norms)),
-            'group': data['group'],
+        projection[ct] = proj
+
+    results['projection'] = projection
+
+    for ct in ctypes:
+        self_frac = projection[ct][ct]['fraction']
+        other_fracs = [projection[ct][ct2]['fraction'] for ct2 in ctypes if ct2 != ct]
+        print(f"  {ct}: self={self_frac:.4f}, others={[f'{f:.4f}' for f in other_fracs]}")
+
+    # ========== 5. Residual After Main Direction ==========
+    print("\n=== Residual Analysis ===")
+
+    residual = {}
+    for ct in ctypes:
+        shifts = [corrupt_embs[ct][s] - clean_embs[s] for s in seeds[:10]]
+        mean_shift = np.mean(shifts, axis=0)
+
+        # Remove projection onto own direction
+        proj_on_self = np.dot(mean_shift, shift_dirs[ct]) * shift_dirs[ct]
+        residual_vec = mean_shift - proj_on_self
+        residual_mag = np.linalg.norm(residual_vec) / max(np.linalg.norm(mean_shift), 1e-10)
+
+        # Remove projection onto ALL corruption directions
+        remaining = mean_shift.copy()
+        for ct2 in ctypes:
+            proj = np.dot(remaining, shift_dirs[ct2]) * shift_dirs[ct2]
+            remaining = remaining - proj
+
+        unexplained = np.linalg.norm(remaining) / max(np.linalg.norm(mean_shift), 1e-10)
+
+        residual[ct] = {
+            'residual_after_self': float(residual_mag),
+            'residual_after_all': float(unexplained),
         }
-        print(f"  {cat_name}: norm={np.mean(norms):.2f}±{np.std(norms):.2f}", flush=True)
+        print(f"  {ct}: after_self={residual_mag:.4f}, after_all={unexplained:.4f}")
 
-    # 5. Angular analysis
-    print("\n--- Angular Distribution ---", flush=True)
-    id_centroid = np.mean(id_embeds, axis=0)
+    results['residual'] = residual
 
-    angular_stats = {}
-    for cat_name, data in embeddings.items():
-        angles = [np.arccos(np.clip(1 - cosine_dist(e, id_centroid), -1, 1)) * 180 / np.pi
-                  for e in data['embeds']]
-        angular_stats[cat_name] = {
-            'mean_angle': float(np.mean(angles)),
-            'std_angle': float(np.std(angles)),
-            'group': data['group'],
+    # ========== 6. Severity Scaling of Directions ==========
+    print("\n=== Severity Scaling ===")
+
+    severity_scaling = {}
+    for ct in ctypes:
+        sevs = [0.1, 0.3, 0.5, 0.7, 1.0]
+        dir_sims = []
+        magnitudes = []
+        for sev in sevs:
+            shifts = []
+            for seed in seeds[:5]:
+                emb = extract_hidden(model, processor,
+                    apply_corruption(images[seed], ct, sev), prompt)
+                shifts.append(emb - clean_embs[seed])
+            mean_s = np.mean(shifts, axis=0)
+            sim = cosine_sim(mean_s, shift_dirs[ct])
+            dir_sims.append(float(sim))
+            magnitudes.append(float(np.linalg.norm(mean_s)))
+
+        severity_scaling[ct] = {
+            'severities': sevs,
+            'direction_similarity': dir_sims,
+            'magnitudes': magnitudes,
+            'direction_stable': bool(min(dir_sims) > 0.9),
         }
-        print(f"  {cat_name}: angle={np.mean(angles):.2f}°±{np.std(angles):.2f}°", flush=True)
+        print(f"  {ct}: dir_sims={[f'{s:.3f}' for s in dir_sims]}, "
+              f"stable={min(dir_sims) > 0.9}")
 
-    # 6. Cluster compactness ratio
-    print("\n--- Cluster Compactness ---", flush=True)
-    id_intra = np.mean([intra_distances[c]['mean'] for c in embeddings if embeddings[c]['group'] == 'ID'])
-    ood_intra = np.mean([intra_distances[c]['mean'] for c in embeddings if embeddings[c]['group'] == 'OOD'])
-    id_ood_inter = cosine_dist(np.mean(id_embeds, axis=0), np.mean(ood_embeds, axis=0))
-    compactness = id_ood_inter / (id_intra + 1e-10)
-    print(f"  ID intra-distance: {id_intra:.4f}", flush=True)
-    print(f"  OOD intra-distance: {ood_intra:.4f}", flush=True)
-    print(f"  ID-OOD inter-distance: {id_ood_inter:.4f}", flush=True)
-    print(f"  Compactness ratio (inter/intra): {compactness:.2f}", flush=True)
+    results['severity_scaling'] = severity_scaling
 
     # Save
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    output = {
-        'experiment': 'embedding_geometry',
-        'experiment_number': 119,
-        'timestamp': timestamp,
-        'dim': dim,
-        'n_id': len(id_embeds),
-        'n_ood': len(ood_embeds),
-        'intrinsic_dims': intrinsic_dims,
-        'pca_cumvar': cumvar[:20].tolist(),
-        'id_pca_cumvar': id_cumvar[:20].tolist(),
-        'ood_pca_cumvar': ood_cumvar[:20].tolist(),
-        'intra_distances': intra_distances,
-        'inter_distances': inter_distances,
-        'norm_stats': norm_stats,
-        'angular_stats': angular_stats,
-        'compactness': {
-            'id_intra': id_intra,
-            'ood_intra': ood_intra,
-            'id_ood_inter': id_ood_inter,
-            'ratio': compactness,
-        },
-    }
-    output_path = os.path.join(RESULTS_DIR, f"embedding_geometry_{timestamp}.json")
-    with open(output_path, 'w') as f:
-        json.dump(output, f, indent=2)
-    print(f"\nSaved to {output_path}", flush=True)
-
+    ts = time.strftime("%Y%m%d_%H%M%S")
+    out_path = f"experiments/embedding_geometry_{ts}.json"
+    def convert(obj):
+        if isinstance(obj, (np.floating, np.float32, np.float64)): return float(obj)
+        if isinstance(obj, (np.integer, np.int32, np.int64)): return int(obj)
+        if isinstance(obj, np.ndarray): return obj.tolist()
+        if isinstance(obj, np.bool_): return bool(obj)
+        return obj
+    def recursive_convert(d):
+        if isinstance(d, dict): return {k: recursive_convert(v) for k, v in d.items()}
+        if isinstance(d, list): return [recursive_convert(x) for x in d]
+        return convert(d)
+    results = recursive_convert(results)
+    with open(out_path, 'w') as f:
+        json.dump(results, f, indent=2, default=convert)
+    print(f"\nResults saved to {out_path}")
 
 if __name__ == "__main__":
     main()
