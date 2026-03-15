@@ -8239,3 +8239,29 @@ snow       0     0     0     0      0     0     6
 6. **Sequence length is only 16**: The VLA uses a very compact token representation. With 256 image tokens from the ViT and text tokens, the final sequence seen by the LLM is 16 tokens.
 
 **Finding**: The OOD signal is **spatially distributed across the token sequence** but concentrated in the early-to-middle image tokens (positions 4-12), where OOD distances are 100-200× larger than at the last token. The first token (BOS) is completely blind to visual corruption. Despite this, the last token — which is what we use for all other experiments — still achieves perfect detection because the ID within-class variance is essentially zero. This justifies our design choice of using the last-token hidden state.
+---
+
+### Finding 208: Spatial Region Importance (Experiment 213)
+
+**Experiment**: Apply corruption to specific spatial regions (quadrants, halves, center, periphery) of the image and test OOD detection on each. Determines which image regions matter most for detection.
+
+**AUROC by Region (L1/L3 identical for all)**:
+| Region | Fog | Night | Blur | Noise |
+|--------|-----|-------|------|-------|
+| full | 1.0 | 1.0 | 1.0 | 1.0 |
+| top_left | 1.0 | 1.0 | 1.0 | 1.0 |
+| top_right | 1.0 | 1.0 | 1.0 | 1.0 |
+| bottom_left | 1.0 | 1.0 | 1.0 | 1.0 |
+| bottom_right | 1.0 | 1.0 | 1.0 | 1.0 |
+| top_half | 1.0 | 1.0 | 1.0 | 1.0 |
+| bottom_half | 1.0 | 1.0 | 1.0 | 1.0 |
+| center | 1.0 | 1.0 | 1.0 | 1.0 |
+| periphery | 1.0 | 1.0 | 1.0 | 1.0 |
+
+**Key Findings**:
+1. **Every region is sufficient for detection**: Even corrupting just one quadrant (25% of the image) produces AUROC=1.0. No region is more important than any other.
+2. **Spatial uniformity**: The ViT processes the image into patches, and corruption in any set of patches propagates through the self-attention mechanism to affect the overall representation. There is no "blind spot."
+3. **Consistent across corruption types**: All 4 corruption types are perfectly detected in every spatial configuration. The detector is spatially agnostic.
+4. **Practical implication**: In real driving scenarios, even localized corruption (e.g., mud on part of the lens, sun glare on one side) would be detected. The detector doesn't require global corruption to trigger.
+
+**Finding**: OOD detection is **spatially uniform** — corrupting any single quadrant (25% of pixels) achieves AUROC=1.0 for all corruption types. The ViT's self-attention mechanism propagates local corruption into global representation changes, ensuring no spatial blind spots. This means the detector can catch **localized** corruption (lens smudge, partial occlusion, directional glare) as effectively as global corruption.

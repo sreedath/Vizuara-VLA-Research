@@ -1,0 +1,175 @@
+{
+  "experiment": "spatial_region_importance",
+  "experiment_number": 213,
+  "timestamp": "20260315_054328",
+  "n_cal": 10,
+  "n_test": 8,
+  "regions": [
+    "top_left",
+    "top_right",
+    "bottom_left",
+    "bottom_right",
+    "top_half",
+    "bottom_half",
+    "center",
+    "periphery"
+  ],
+  "layers": [
+    1,
+    3
+  ],
+  "results": {
+    "fog": {
+      "full": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_left": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_right": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_left": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_right": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_half": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_half": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "center": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "periphery": {
+        "L1": 1.0,
+        "L3": 1.0
+      }
+    },
+    "night": {
+      "full": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_left": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_right": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_left": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_right": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_half": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_half": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "center": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "periphery": {
+        "L1": 1.0,
+        "L3": 1.0
+      }
+    },
+    "blur": {
+      "full": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_left": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_right": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_left": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_right": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_half": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_half": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "center": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "periphery": {
+        "L1": 1.0,
+        "L3": 1.0
+      }
+    },
+    "noise": {
+      "full": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_left": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_right": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_left": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_right": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "top_half": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "bottom_half": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "center": {
+        "L1": 1.0,
+        "L3": 1.0
+      },
+      "periphery": {
+        "L1": 1.0,
+        "L3": 1.0
+      }
+    }
+  }
+}

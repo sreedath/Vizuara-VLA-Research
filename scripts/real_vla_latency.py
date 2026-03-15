@@ -1,173 +1,164 @@
-#!/usr/bin/env python3
-"""Experiment 193: Inference latency analysis — how much overhead does
-OOD detection add to VLA inference?
-
-Measures forward pass time with and without hidden state extraction,
-and the computation time for centroid calibration and distance calculation.
 """
+Experiment 214: End-to-End Latency Benchmark
+Measure the wall-clock overhead of OOD detection on top of normal VLA inference.
+"""
+import torch, json, numpy as np, os, time
+from datetime import datetime
+from PIL import Image
 
-import json, os, sys, datetime, time
-import numpy as np
-import torch
-from pathlib import Path
-from PIL import Image, ImageFilter
+def make_driving_image(w=256, h=256):
+    img = Image.new('RGB', (w, h))
+    pixels = img.load()
+    for y in range(h):
+        for x in range(w):
+            if y < h // 2:
+                b = int(180 + 75 * (1 - y / (h / 2)))
+                pixels[x, y] = (100, 150, b)
+            else:
+                g = int(80 + 40 * ((y - h/2) / (h/2)))
+                pixels[x, y] = (g, g + 10, g - 10)
+    return img
 
-SCRIPT_DIR = Path(__file__).parent
-REPO_DIR = SCRIPT_DIR.parent
-EXPERIMENTS_DIR = REPO_DIR / "experiments"
-EXPERIMENTS_DIR.mkdir(exist_ok=True)
-RESULTS_DIR = str(EXPERIMENTS_DIR)
-
-SIZE = (256, 256)
-rng = np.random.RandomState(42)
-
-def create_highway(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]; img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
-
-def cosine_distance(a, b):
-    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
+def cosine_dist(a, b):
+    return 1.0 - float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
 
 def main():
     print("=" * 60)
-    print("Experiment 193: Inference Latency Analysis")
-    print("=" * 60, flush=True)
+    print("Experiment 214: Latency Benchmark")
+    print("=" * 60)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading OpenVLA-7B...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
         device_map="auto", trust_remote_code=True)
     processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
-    img = Image.fromarray(create_highway(0))
+    prompt = "In: What action should the robot take to drive forward?\nOut:"
+    img = make_driving_image()
+    layers = [1, 3]
+    n_warmup = 3
+    n_bench = 20
 
     # Warmup
-    print("\n--- Warmup ---", flush=True)
-    for _ in range(3):
+    print("\n--- Warmup ---")
+    for i in range(n_warmup):
         inputs = processor(prompt, img).to(model.device, dtype=torch.bfloat16)
         with torch.no_grad():
-            _ = model(**inputs)
-    torch.cuda.synchronize()
+            _ = model(**inputs, output_hidden_states=True)
+        torch.cuda.synchronize()
+    print(f"  {n_warmup} warmup iterations done")
 
-    n_trials = 20
-
-    # 1. Standard forward pass (no hidden states)
-    print("--- Standard forward pass ---", flush=True)
-    times_standard = []
-    for i in range(n_trials):
-        inputs = processor(prompt, img).to(model.device, dtype=torch.bfloat16)
+    # Benchmark 1: Normal inference (without hidden states)
+    print("\n--- Benchmark: Normal inference ---")
+    times_normal = []
+    for i in range(n_bench):
         torch.cuda.synchronize()
         t0 = time.perf_counter()
+        inputs = processor(prompt, img).to(model.device, dtype=torch.bfloat16)
         with torch.no_grad():
-            _ = model(**inputs)
+            fwd = model(**inputs)
         torch.cuda.synchronize()
         t1 = time.perf_counter()
-        times_standard.append(t1 - t0)
+        times_normal.append(t1 - t0)
+    print(f"  Mean: {np.mean(times_normal)*1000:.2f} ms, Std: {np.std(times_normal)*1000:.2f} ms")
 
-    # 2. Forward pass with hidden states
-    print("--- Forward pass with hidden states ---", flush=True)
+    # Benchmark 2: Inference with hidden states
+    print("\n--- Benchmark: Inference + hidden state extraction ---")
     times_hidden = []
-    for i in range(n_trials):
-        inputs = processor(prompt, img).to(model.device, dtype=torch.bfloat16)
+    for i in range(n_bench):
         torch.cuda.synchronize()
         t0 = time.perf_counter()
+        inputs = processor(prompt, img).to(model.device, dtype=torch.bfloat16)
         with torch.no_grad():
             fwd = model(**inputs, output_hidden_states=True)
+        # Extract hidden states
+        hidden = {l: fwd.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
         torch.cuda.synchronize()
         t1 = time.perf_counter()
         times_hidden.append(t1 - t0)
+    print(f"  Mean: {np.mean(times_hidden)*1000:.2f} ms, Std: {np.std(times_hidden)*1000:.2f} ms")
 
-    # 3. Hidden state extraction + cosine distance computation
-    print("--- OOD detection overhead ---", flush=True)
-    centroid = np.random.randn(4096).astype(np.float32)  # dummy centroid
-    times_ood = []
-    for i in range(n_trials):
-        inputs = processor(prompt, img).to(model.device, dtype=torch.bfloat16)
-        torch.cuda.synchronize()
-        t0 = time.perf_counter()
-        with torch.no_grad():
-            fwd = model(**inputs, output_hidden_states=True)
-        # Extract and compute distance
-        emb = fwd.hidden_states[3][0, -1, :].float().cpu().numpy()
-        dist = cosine_distance(emb, centroid)
-        torch.cuda.synchronize()
-        t1 = time.perf_counter()
-        times_ood.append(t1 - t0)
-
-    # 4. Just the cosine distance computation
-    print("--- Pure cosine distance time ---", flush=True)
-    emb = np.random.randn(4096).astype(np.float32)
+    # Benchmark 3: Cosine distance computation only
+    print("\n--- Benchmark: Cosine distance computation ---")
+    centroid = np.random.randn(4096).astype(np.float32)
+    embedding = np.random.randn(4096).astype(np.float32)
     times_cosine = []
-    for i in range(1000):
+    for i in range(10000):
         t0 = time.perf_counter()
-        _ = cosine_distance(emb, centroid)
+        d = cosine_dist(embedding, centroid)
         t1 = time.perf_counter()
         times_cosine.append(t1 - t0)
+    print(f"  Mean: {np.mean(times_cosine)*1e6:.2f} us, Std: {np.std(times_cosine)*1e6:.2f} us")
 
-    # 5. Preprocessing time
-    print("--- Preprocessing time ---", flush=True)
-    times_preproc = []
-    for i in range(n_trials):
+    # Benchmark 4: Full pipeline (inference + hidden state + cosine distance)
+    print("\n--- Benchmark: Full OOD detection pipeline ---")
+    cal_embeds = [np.random.randn(4096).astype(np.float32) for _ in range(10)]
+    centroid = np.mean(cal_embeds, axis=0)
+    times_full = []
+    for i in range(n_bench):
+        torch.cuda.synchronize()
         t0 = time.perf_counter()
-        _ = processor(prompt, img)
+        inputs = processor(prompt, img).to(model.device, dtype=torch.bfloat16)
+        with torch.no_grad():
+            fwd = model(**inputs, output_hidden_states=True)
+        hidden = fwd.hidden_states[1][0, -1, :].float().cpu().numpy()
+        score = cosine_dist(hidden, centroid)
+        is_ood = score > 0.001  # threshold
+        torch.cuda.synchronize()
         t1 = time.perf_counter()
-        times_preproc.append(t1 - t0)
+        times_full.append(t1 - t0)
+    print(f"  Mean: {np.mean(times_full)*1000:.2f} ms, Std: {np.std(times_full)*1000:.2f} ms")
 
-    results = {
-        "standard_forward_ms": {
-            "mean": float(np.mean(times_standard) * 1000),
-            "std": float(np.std(times_standard) * 1000),
-            "min": float(np.min(times_standard) * 1000),
-            "max": float(np.max(times_standard) * 1000),
-        },
-        "hidden_states_forward_ms": {
-            "mean": float(np.mean(times_hidden) * 1000),
-            "std": float(np.std(times_hidden) * 1000),
-            "min": float(np.min(times_hidden) * 1000),
-            "max": float(np.max(times_hidden) * 1000),
-        },
-        "full_ood_detection_ms": {
-            "mean": float(np.mean(times_ood) * 1000),
-            "std": float(np.std(times_ood) * 1000),
-            "min": float(np.min(times_ood) * 1000),
-            "max": float(np.max(times_ood) * 1000),
-        },
-        "cosine_distance_us": {
-            "mean": float(np.mean(times_cosine) * 1e6),
-            "std": float(np.std(times_cosine) * 1e6),
-        },
-        "preprocessing_ms": {
-            "mean": float(np.mean(times_preproc) * 1000),
-            "std": float(np.std(times_preproc) * 1000),
-        },
-        "overhead_ms": float((np.mean(times_ood) - np.mean(times_standard)) * 1000),
-        "overhead_pct": float((np.mean(times_ood) - np.mean(times_standard)) / np.mean(times_standard) * 100),
-        "n_trials": n_trials,
-    }
+    # Compute overhead
+    overhead_ms = (np.mean(times_hidden) - np.mean(times_normal)) * 1000
+    overhead_pct = ((np.mean(times_hidden) / np.mean(times_normal)) - 1) * 100
+    cosine_us = np.mean(times_cosine) * 1e6
 
-    print(f"\n  Standard forward:    {results['standard_forward_ms']['mean']:.1f} ± {results['standard_forward_ms']['std']:.1f} ms", flush=True)
-    print(f"  Hidden states:       {results['hidden_states_forward_ms']['mean']:.1f} ± {results['hidden_states_forward_ms']['std']:.1f} ms", flush=True)
-    print(f"  Full OOD detection:  {results['full_ood_detection_ms']['mean']:.1f} ± {results['full_ood_detection_ms']['std']:.1f} ms", flush=True)
-    print(f"  Cosine distance:     {results['cosine_distance_us']['mean']:.1f} ± {results['cosine_distance_us']['std']:.1f} µs", flush=True)
-    print(f"  Preprocessing:       {results['preprocessing_ms']['mean']:.1f} ± {results['preprocessing_ms']['std']:.1f} ms", flush=True)
-    print(f"  OOD overhead:        {results['overhead_ms']:.1f} ms ({results['overhead_pct']:.1f}%)", flush=True)
+    print(f"\n--- Summary ---")
+    print(f"  Normal inference: {np.mean(times_normal)*1000:.2f} ms")
+    print(f"  With hidden states: {np.mean(times_hidden)*1000:.2f} ms")
+    print(f"  Overhead: {overhead_ms:.2f} ms ({overhead_pct:.2f}%)")
+    print(f"  Cosine distance: {cosine_us:.2f} us")
+    print(f"  Full pipeline: {np.mean(times_full)*1000:.2f} ms")
 
-    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
-        "experiment": "latency_analysis",
-        "experiment_number": 193,
-        "timestamp": ts,
-        "results": results,
+        "experiment": "latency_benchmark",
+        "experiment_number": 214,
+        "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
+        "n_warmup": n_warmup,
+        "n_bench": n_bench,
+        "results": {
+            "normal_inference_ms": {
+                "mean": round(np.mean(times_normal) * 1000, 2),
+                "std": round(np.std(times_normal) * 1000, 2),
+                "min": round(np.min(times_normal) * 1000, 2),
+                "max": round(np.max(times_normal) * 1000, 2),
+            },
+            "with_hidden_states_ms": {
+                "mean": round(np.mean(times_hidden) * 1000, 2),
+                "std": round(np.std(times_hidden) * 1000, 2),
+                "min": round(np.min(times_hidden) * 1000, 2),
+                "max": round(np.max(times_hidden) * 1000, 2),
+            },
+            "cosine_distance_us": {
+                "mean": round(np.mean(times_cosine) * 1e6, 2),
+                "std": round(np.std(times_cosine) * 1e6, 2),
+            },
+            "full_pipeline_ms": {
+                "mean": round(np.mean(times_full) * 1000, 2),
+                "std": round(np.std(times_full) * 1000, 2),
+            },
+            "overhead_ms": round(overhead_ms, 2),
+            "overhead_pct": round(overhead_pct, 2),
+        },
     }
-    path = os.path.join(RESULTS_DIR, f"latency_analysis_{ts}.json")
-    with open(path, "w") as f:
+
+    out_path = f"/workspace/Vizuara-VLA-Research/experiments/latency_benchmark_{output['timestamp']}.json"
+    with open(out_path, 'w') as f:
         json.dump(output, f, indent=2)
-    print(f"\nSaved: {path}")
+    print(f"\nSaved: {out_path}")
 
 if __name__ == "__main__":
     main()

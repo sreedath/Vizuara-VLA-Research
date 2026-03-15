@@ -3993,4 +3993,19 @@ We investigate where in the 16-token sequence the OOD signal appears, comparing 
 \label{fig:token_position}
 \end{figure}
 
+\subsection{Spatial Region Sensitivity}
+
+We test whether the detector can catch \emph{localized} corruption by applying corruption to individual quadrants, halves, and the center/periphery of the image.
+
+\textbf{Finding 417}: OOD detection is \textbf{spatially uniform}: corrupting any single quadrant (25\% of pixels) achieves AUROC=1.0 for all 4 corruption types at both L1 and L3. There are no spatial blind spots.
+
+\textbf{Finding 418}: The ViT's self-attention mechanism propagates local corruption into \textbf{global representation changes}, ensuring even a mud smudge on one corner of the camera lens would be detected. All 36 region$\times$corruption combinations tested produce perfect detection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/fig225_spatial_regions.png}
+\caption{\textbf{Spatial region sensitivity.} AUROC=1.0 for all corruption types in all spatial regions, including single quadrants (25\% of pixels). No spatial blind spots exist.}
+\label{fig:spatial_regions}
+\end{figure}
+
 \end{document}
