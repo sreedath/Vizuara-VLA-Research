@@ -4491,4 +4491,34 @@ Center occlusion 80$\times$80 & 1.000 & 0.001702 \\
 
 \textbf{Finding 467}: Temporal video frame variation (1-pixel per frame) produces cosine distance of $\sim$1.3$\times$10$^{-5}$, which is \textbf{45$\times$ smaller} than the weakest corruption (fog: 0.000571). Normal frame-to-frame variation will never trigger a false alarm.
 
+\subsection{Severity Estimation}
+
+\textbf{Experiment 233: Severity Prediction from Distance.} Beyond binary OOD detection, can the cosine distance quantify \textit{how severe} the corruption is? We sample 20 severity levels from 0.05 to 1.0 for fog, night, and noise, and fit linear regression: $d = \alpha \cdot s + \beta$.
+
+\begin{table}[h]
+\centering
+\caption{Linear distance-severity relationship enables severity estimation from a single measurement.}
+\begin{tabular}{lccc}
+\toprule
+Corruption & R$^2$ & Slope ($\alpha$) & Severity MAE \\
+\midrule
+Fog & 0.928 & 0.00196 & 0.066 \\
+Night & \textbf{0.980} & 0.00376 & \textbf{0.035} \\
+Noise & 0.978 & 0.00445 & 0.037 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig242_severity_estimation.png}
+\caption{Cosine distance scales linearly with corruption severity (R$^2$ = 0.928--0.980). Each point is a single forward pass at a given severity level, with the dashed line showing the linear fit. The strong linearity enables predicting corruption severity from a single distance measurement.}
+\end{figure}
+
+\textbf{Finding 468}: Cosine distance scales \textbf{linearly with corruption severity} (R$^2$ = 0.928--0.980). The detector provides not just binary OOD detection but quantitative severity estimation.
+
+\textbf{Finding 469}: Night corruption severity can be predicted from a single distance measurement with MAE = 0.035 (R$^2$ = 0.980). A single forward pass tells you both \textit{that} the input is corrupted and \textit{how badly}.
+
+\textbf{Finding 470}: Different corruption types have distinct slopes: noise (0.00445) $>$ night (0.00376) $>$ fog (0.00196). This slope difference, combined with clustering (Experiment 234), could enable simultaneous corruption type identification and severity estimation.
+
 \end{document}

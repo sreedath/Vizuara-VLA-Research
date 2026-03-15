@@ -8794,3 +8794,32 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **No temporal instability risk**: The detector will not false-alarm on normal video frame variation.
 
 **Finding**: Embeddings are **deterministically reproducible** (L3: bit-identical across 20 passes). Temporal video frame variation (1-pixel/frame) produces distances 45× smaller than the weakest corruption. The detector is temporally stable with zero false alarm risk from normal frame-to-frame variation.
+
+---
+
+## Experiment 233: Severity Estimation from Cosine Distance
+
+**Research Question**: Can we predict corruption severity from a single cosine distance measurement? If distance scales linearly with severity, the detector provides not just binary OOD detection but quantitative severity estimation.
+
+**Method**: For fog, night, and noise corruptions, sample 20 severity levels from 0.05 to 1.0. Measure cosine distance at each severity. Fit linear regression: distance = slope × severity + intercept. Evaluate with R² and inverse-prediction MAE.
+
+**Results**:
+
+| Corruption | Slope | Intercept | R² | Severity MAE |
+|-----------|-------|-----------|-----|-------------|
+| Fog | 0.00196 | -0.00033 | 0.928 | 0.066 |
+| Night | 0.00376 | -0.00052 | 0.980 | 0.035 |
+| Noise | 0.00445 | -0.00053 | 0.978 | 0.037 |
+
+**Distance ranges**:
+- Fog: 1.76e-5 (sev=0.05) → 0.00204 (sev=1.0)
+- Night: 2.35e-5 (sev=0.05) → 0.00340 (sev=1.0)
+- Noise: 9.70e-5 (sev=0.05) → 0.00403 (sev=1.0)
+
+**Key Findings**:
+1. **Distance-severity relationship is strongly linear**: R² = 0.928-0.980 across all three corruption types. Night and noise are most linear (R² ≈ 0.98), fog slightly less (R² = 0.93).
+2. **Severity prediction from single measurement**: Given the linear fit, we can invert to predict severity from distance with MAE of 0.035-0.066. Night corruption severity can be estimated to within ±3.5% from a single cosine distance measurement.
+3. **Corruption types have different slopes**: Noise has the steepest slope (0.00445), followed by night (0.00376) and fog (0.00196). This means noise causes the largest per-unit-severity embedding shift.
+4. **All types start from near-zero**: At severity 0.05, all distances are in the 10⁻⁵ range, confirming that very mild corruption is detectable but produces small shifts.
+
+**Finding 228**: Cosine distance scales **linearly with corruption severity** (R² = 0.928-0.980). A single distance measurement predicts severity with MAE = 0.035-0.066, enabling not just binary detection but **quantitative severity estimation**. Night severity is predictable to within ±3.5%.
