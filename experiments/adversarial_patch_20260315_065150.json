@@ -1,0 +1,110 @@
+{
+  "experiment": "adversarial_patch",
+  "experiment_number": 231,
+  "timestamp": "20260315_065150",
+  "n_cal": 10,
+  "n_test": 8,
+  "patch_types": [
+    "random_small",
+    "random_large",
+    "white_patch",
+    "black_patch",
+    "red_patch",
+    "pixel_noise_1pct",
+    "pixel_noise_5pct",
+    "stripe_horizontal",
+    "occlusion_center"
+  ],
+  "results": {
+    "random_small": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.000588
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.002309
+      }
+    },
+    "random_large": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.001002
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.004283
+      }
+    },
+    "white_patch": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.000259
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.00051
+      }
+    },
+    "black_patch": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.000201
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.000409
+      }
+    },
+    "red_patch": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.000177
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.000332
+      }
+    },
+    "pixel_noise_1pct": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.001445
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.004173
+      }
+    },
+    "pixel_noise_5pct": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.001706
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.004433
+      }
+    },
+    "stripe_horizontal": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.001299
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.001789
+      }
+    },
+    "occlusion_center": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.000703
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.001702
+      }
+    }
+  }
+}

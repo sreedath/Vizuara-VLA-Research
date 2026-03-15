@@ -8749,3 +8749,23 @@ All ID means and stds are effectively 0.0 for all metrics.
 5. **Noise is most detectable at lowest severity**: 5.10e-6 at sev=0.01, vs fog's 4.77e-6 — both at L3.
 
 **Finding**: The detector achieves AUROC=1.0 for fog, night, and noise at the **minimum tested severity of 1%**. Only blur requires ≥5% severity for detection, but this is because sub-pixel blur (radius < 0.25) has literally zero visual effect on the image. The embedding distance scales monotonically with severity, enabling severity estimation from a single distance measurement.
+---
+
+### Finding 226: Adversarial Patch Detection (Experiment 231)
+
+**Experiment**: Can the cosine distance detector detect adversarial-style perturbations including random patches, constant-color patches, pixel noise, stripes, and center occlusion?
+
+**Results (all AUROC=1.0)**:
+| Patch Type | L1 AUROC | L3 AUROC | L3 Mean Dist |
+|-----------|----------|----------|-------------|
+| Random patch (32×32) | 1.0 | 1.0 | 0.002309 |
+| Random patch (64×64) | 1.0 | 1.0 | 0.004283 |
+| White patch (32×32) | 1.0 | 1.0 | 0.000510 |
+| Black patch (32×32) | 1.0 | 1.0 | 0.000409 |
+| Red patch (32×32) | 1.0 | 1.0 | 0.000332 |
+| 1% random pixels | 1.0 | 1.0 | 0.004173 |
+| 5% random pixels | 1.0 | 1.0 | 0.004433 |
+| Horizontal stripe | 1.0 | 1.0 | 0.001789 |
+| Center occlusion (80×80) | 1.0 | 1.0 | 0.001702 |
+
+**Finding**: ALL 9 adversarial-style perturbations are detected at AUROC=1.0. Pixel noise (1-5%) produces the largest embedding shift (~0.004), while single-color patches produce the smallest (~0.0003-0.0005). The detector generalizes to localized perturbations, not just global corruptions.

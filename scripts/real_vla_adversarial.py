@@ -1,177 +1,156 @@
-#!/usr/bin/env python3
-"""Experiment 198: Adversarial perturbation detection — can the cosine detector
-catch adversarial attacks (FGSM-like perturbations)?
-
-Tests detection of L-infinity constrained adversarial noise at various epsilon.
 """
-
-import json, os, sys, datetime
-import numpy as np
-import torch
-from pathlib import Path
+Experiment 231: Adversarial Patch Detection
+Can the cosine distance detector detect adversarial-style perturbations?
+Tests random patches, constant-color patches, and targeted pixel perturbations.
+"""
+import torch, json, numpy as np, os
+from datetime import datetime
 from PIL import Image, ImageFilter
 
-SCRIPT_DIR = Path(__file__).parent
-REPO_DIR = SCRIPT_DIR.parent
-EXPERIMENTS_DIR = REPO_DIR / "experiments"
-EXPERIMENTS_DIR.mkdir(exist_ok=True)
-RESULTS_DIR = str(EXPERIMENTS_DIR)
+def make_driving_image(w=256, h=256):
+    img = Image.new('RGB', (w, h))
+    pixels = img.load()
+    for y in range(h):
+        for x in range(w):
+            if y < h // 2:
+                b = int(180 + 75 * (1 - y / (h / 2)))
+                pixels[x, y] = (100, 150, b)
+            else:
+                g = int(80 + 40 * ((y - h/2) / (h/2)))
+                pixels[x, y] = (g, g + 10, g - 10)
+    return img
 
-SIZE = (256, 256)
-rng = np.random.RandomState(42)
+def apply_patch(img, patch_type, rng, size=32):
+    arr = np.array(img).copy()
+    h, w = arr.shape[:2]
+    y_start = (h - size) // 2
+    x_start = (w - size) // 2
 
-def create_highway(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]; img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
+    if patch_type == 'random_small':
+        arr[y_start:y_start+size, x_start:x_start+size] = rng.integers(0, 256, (size, size, 3))
+    elif patch_type == 'random_large':
+        s = 64
+        y_s = (h - s) // 2
+        x_s = (w - s) // 2
+        arr[y_s:y_s+s, x_s:x_s+s] = rng.integers(0, 256, (s, s, 3))
+    elif patch_type == 'white_patch':
+        arr[y_start:y_start+size, x_start:x_start+size] = 255
+    elif patch_type == 'black_patch':
+        arr[y_start:y_start+size, x_start:x_start+size] = 0
+    elif patch_type == 'red_patch':
+        arr[y_start:y_start+size, x_start:x_start+size] = [255, 0, 0]
+    elif patch_type == 'pixel_noise_1pct':
+        n_pixels = int(h * w * 0.01)
+        for _ in range(n_pixels):
+            py, px = rng.integers(0, h), rng.integers(0, w)
+            arr[py, px] = rng.integers(0, 256, 3)
+    elif patch_type == 'pixel_noise_5pct':
+        n_pixels = int(h * w * 0.05)
+        for _ in range(n_pixels):
+            py, px = rng.integers(0, h), rng.integers(0, w)
+            arr[py, px] = rng.integers(0, 256, 3)
+    elif patch_type == 'stripe_horizontal':
+        arr[h//2-5:h//2+5, :] = [255, 0, 0]
+    elif patch_type == 'occlusion_center':
+        s = 80
+        y_s = (h - s) // 2
+        x_s = (w - s) // 2
+        arr[y_s:y_s+s, x_s:x_s+s] = 0
 
-def create_urban(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]; img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]; img[SIZE[0]//2:] = [60, 60, 60]
-    return np.clip(img.astype(np.int16) + rng.randint(-5, 6, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
+    return Image.fromarray(arr)
 
-def create_rural(idx):
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [100, 180, 255]; img[SIZE[0]//3:SIZE[0]*2//3] = [34, 139, 34]; img[SIZE[0]*2//3:] = [90, 90, 90]
-    return np.clip(img.astype(np.int16) + rng.randint(-8, 9, img.shape).astype(np.int16), 0, 255).astype(np.uint8)
+def extract_hidden(model, processor, image, prompt, layers):
+    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    with torch.no_grad():
+        fwd = model(**inputs, output_hidden_states=True)
+    return {l: fwd.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
 
-def cosine_distance(a, b):
-    return float(1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
+def cosine_dist(a, b):
+    return 1.0 - float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
 
 def compute_auroc(id_scores, ood_scores):
     id_scores = np.asarray(id_scores)
     ood_scores = np.asarray(ood_scores)
     n_id, n_ood = len(id_scores), len(ood_scores)
-    if n_id == 0 or n_ood == 0: return 0.5
+    if n_id == 0 or n_ood == 0:
+        return 0.5
     count = sum(float(np.sum(o > id_scores) + 0.5 * np.sum(o == id_scores)) for o in ood_scores)
     return count / (n_id * n_ood)
 
-def apply_adversarial(img, epsilon, seed=None):
-    """Apply FGSM-like adversarial perturbation (random sign, L-inf bounded)."""
-    if seed is not None:
-        np.random.seed(seed)
-    # Random sign perturbation (approximates FGSM without gradient access)
-    perturbation = np.random.choice([-1, 1], size=img.shape).astype(np.float32) * epsilon
-    return np.clip(img.astype(np.float32) + perturbation, 0, 255).astype(np.uint8)
-
-def apply_targeted_adversarial(img, epsilon, target_region="sky", seed=None):
-    """Adversarial perturbation targeting a specific image region."""
-    if seed is not None:
-        np.random.seed(seed)
-    result = img.copy().astype(np.float32)
-    h, w = img.shape[:2]
-    if target_region == "sky":
-        result[:h//3] += np.random.choice([-1, 1], size=result[:h//3].shape).astype(np.float32) * epsilon
-    elif target_region == "road":
-        result[h//2:] += np.random.choice([-1, 1], size=result[h//2:].shape).astype(np.float32) * epsilon
-    elif target_region == "center":
-        ch, cw = h//4, w//4
-        result[ch:3*ch, cw:3*cw] += np.random.choice([-1, 1], size=result[ch:3*ch, cw:3*cw].shape).astype(np.float32) * epsilon
-    return np.clip(result, 0, 255).astype(np.uint8)
-
 def main():
     print("=" * 60)
-    print("Experiment 198: Adversarial Perturbation Detection")
-    print("=" * 60, flush=True)
+    print("Experiment 231: Adversarial Patch Detection")
+    print("=" * 60)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading OpenVLA-7B...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
         device_map="auto", trust_remote_code=True)
     processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
-    layers = [1, 3, 32]
+    layers = [1, 3]
+    prompt = "In: What action should the robot take to drive forward?\nOut:"
+    n_cal, n_test = 10, 8
+    rng = np.random.default_rng(42)
+    base_imgs = [make_driving_image() for _ in range(20)]
 
-    creators = [create_highway, create_urban, create_rural]
-    n_cal = 10
-    n_test = 6
-
-    def extract_all(image):
-        inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-        with torch.no_grad():
-            fwd = model(**inputs, output_hidden_states=True)
-        return {l: fwd.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
+    patch_types = ['random_small', 'random_large', 'white_patch', 'black_patch',
+                   'red_patch', 'pixel_noise_1pct', 'pixel_noise_5pct',
+                   'stripe_horizontal', 'occlusion_center']
 
     # Calibrate
-    print("\n--- Calibration ---", flush=True)
-    cal_arrs = [creators[i%3](i) for i in range(n_cal)]
-    cal_embs = {l: [] for l in layers}
-    for arr in cal_arrs:
-        h = extract_all(Image.fromarray(arr))
+    print("\n--- Calibration ---")
+    cal_embeds = {l: [] for l in layers}
+    for i in range(n_cal):
+        h = extract_hidden(model, processor, base_imgs[i], prompt, layers)
         for l in layers:
-            cal_embs[l].append(h[l])
-    centroids = {l: np.array(cal_embs[l]).mean(axis=0) for l in layers}
+            cal_embeds[l].append(h[l])
+    centroids = {l: np.mean(cal_embeds[l], axis=0) for l in layers}
 
-    # ID baseline
-    print("--- ID baseline ---", flush=True)
-    test_arrs = [creators[(i+n_cal)%3](i+n_cal) for i in range(n_test)]
-    id_dists = {l: [] for l in layers}
-    for arr in test_arrs:
-        h = extract_all(Image.fromarray(arr))
+    # Test ID
+    id_scores = {l: [] for l in layers}
+    for i in range(n_cal, n_cal + n_test):
+        h = extract_hidden(model, processor, base_imgs[i], prompt, layers)
         for l in layers:
-            id_dists[l].append(cosine_distance(h[l], centroids[l]))
+            id_scores[l].append(cosine_dist(h[l], centroids[l]))
 
-    # Adversarial sweep
-    epsilons = [2, 4, 8, 16, 32, 48, 64, 96, 128]
-    print("\n--- Global adversarial sweep ---", flush=True)
-    global_results = []
-    for eps in epsilons:
-        ood_dists = {l: [] for l in layers}
-        for i, arr in enumerate(test_arrs):
-            adv = apply_adversarial(arr, eps, seed=42+i)
-            h = extract_all(Image.fromarray(adv))
+    # Test each patch type
+    print("\n--- Patch tests ---")
+    results = {}
+    for ptype in patch_types:
+        scores = {l: [] for l in layers}
+        for i in range(n_test):
+            rng_local = np.random.default_rng(42 + i)
+            img = apply_patch(base_imgs[i], ptype, rng_local)
+            h = extract_hidden(model, processor, img, prompt, layers)
             for l in layers:
-                ood_dists[l].append(cosine_distance(h[l], centroids[l]))
+                scores[l].append(cosine_dist(h[l], centroids[l]))
 
-        entry = {"epsilon": eps}
+        results[ptype] = {}
         for l in layers:
-            auroc = compute_auroc(id_dists[l], ood_dists[l])
-            sep = float(np.mean(ood_dists[l]) / (np.mean(id_dists[l]) + 1e-10))
-            entry[f"L{l}"] = {"auroc": auroc, "separation": sep, "mean_dist": float(np.mean(ood_dists[l]))}
-        global_results.append(entry)
-        print(f"  eps={eps}: L1={entry['L1']['auroc']:.3f} L3={entry['L3']['auroc']:.3f} L32={entry['L32']['auroc']:.3f}", flush=True)
+            auroc = round(compute_auroc(id_scores[l], scores[l]), 4)
+            results[ptype][f"L{l}"] = {
+                "auroc": auroc,
+                "mean_dist": round(float(np.mean(scores[l])), 6),
+            }
+        print(f"  {ptype}: L1={results[ptype]['L1']['auroc']} L3={results[ptype]['L3']['auroc']} | L3_dist={results[ptype]['L3']['mean_dist']:.6f}")
 
-    # Targeted adversarial (eps=32)
-    print("\n--- Targeted adversarial (eps=32) ---", flush=True)
-    targeted_results = {}
-    for region in ["sky", "road", "center"]:
-        ood_dists = {l: [] for l in layers}
-        for i, arr in enumerate(test_arrs):
-            adv = apply_targeted_adversarial(arr, 32, target_region=region, seed=42+i)
-            h = extract_all(Image.fromarray(adv))
-            for l in layers:
-                ood_dists[l].append(cosine_distance(h[l], centroids[l]))
-
-        entry = {}
-        for l in layers:
-            auroc = compute_auroc(id_dists[l], ood_dists[l])
-            entry[f"L{l}"] = {"auroc": auroc, "mean_dist": float(np.mean(ood_dists[l]))}
-        targeted_results[region] = entry
-        print(f"  {region}: L1={entry['L1']['auroc']:.3f} L3={entry['L3']['auroc']:.3f} L32={entry['L32']['auroc']:.3f}", flush=True)
-
-    # Comparison with natural corruptions at same PSNR
-    # eps=8 in L-inf corresponds to PSNR ~38 dB (similar to noise std=5)
-    # eps=32 corresponds to PSNR ~26 dB (similar to noise std=20)
-
-    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
-        "experiment": "adversarial_detection",
-        "experiment_number": 198,
-        "timestamp": ts,
-        "n_cal": n_cal, "n_test": n_test,
-        "layers": layers,
-        "id_means": {f"L{l}": float(np.mean(id_dists[l])) for l in layers},
-        "global_sweep": global_results,
-        "targeted": targeted_results,
+        "experiment": "adversarial_patch",
+        "experiment_number": 231,
+        "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
+        "n_cal": n_cal,
+        "n_test": n_test,
+        "patch_types": patch_types,
+        "results": results,
     }
-    path = os.path.join(RESULTS_DIR, f"adversarial_detection_{ts}.json")
-    with open(path, "w") as f:
+
+    out_path = f"/workspace/Vizuara-VLA-Research/experiments/adversarial_patch_{output['timestamp']}.json"
+    with open(out_path, 'w') as f:
         json.dump(output, f, indent=2)
-    print(f"\nSaved: {path}")
+    print(f"\nSaved: {out_path}")
 
 if __name__ == "__main__":
     main()
