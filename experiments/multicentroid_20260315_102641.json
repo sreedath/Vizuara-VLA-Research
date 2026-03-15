@@ -1,0 +1,197 @@
+{
+  "experiment": "multi_centroid",
+  "experiment_number": 294,
+  "timestamp": "20260315_102641",
+  "multi_centroid_rules": {
+    "min_dist": {
+      "1": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "2": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "3": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "5": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "10": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      }
+    },
+    "mean_dist": {
+      "1": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "2": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "3": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "5": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "10": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      }
+    },
+    "max_dist": {
+      "1": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "2": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "3": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "5": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "10": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      }
+    },
+    "global_centroid": {
+      "1": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "2": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "3": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "5": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      },
+      "10": {
+        "fog": 1.0,
+        "night": 1.0,
+        "blur": 1.0,
+        "noise": 1.0
+      }
+    }
+  },
+  "loo_crossval": {
+    "fog": {
+      "loo_accuracy": 1.0,
+      "per_scene": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "night": {
+      "loo_accuracy": 1.0,
+      "per_scene": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "blur": {
+      "loo_accuracy": 1.0,
+      "per_scene": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "noise": {
+      "loo_accuracy": 1.0,
+      "per_scene": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  }
+}

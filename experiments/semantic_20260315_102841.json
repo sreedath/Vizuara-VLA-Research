@@ -1,0 +1,553 @@
+{
+  "experiment": "semantic_content",
+  "experiment_number": 295,
+  "timestamp": "20260315_102841",
+  "per_image_distances": {
+    "random_noise": {
+      "fog": 0.0027054548263549805,
+      "night": 0.007991313934326172,
+      "blur": 0.006263315677642822,
+      "noise": 0.0005123615264892578
+    },
+    "solid_gray": {
+      "fog": 0.0018756985664367676,
+      "night": 0.004033923149108887,
+      "blur": 0.0,
+      "noise": 0.006909430027008057
+    },
+    "solid_red": {
+      "fog": 0.0045816898345947266,
+      "night": 0.006076931953430176,
+      "blur": 0.0,
+      "noise": 0.004306375980377197
+    },
+    "solid_green": {
+      "fog": 0.004551351070404053,
+      "night": 0.006768703460693359,
+      "blur": 0.0,
+      "noise": 0.004122495651245117
+    },
+    "gradient_v": {
+      "fog": 0.0015211105346679688,
+      "night": 0.003454446792602539,
+      "blur": 3.5643577575683594e-05,
+      "noise": 0.005296945571899414
+    },
+    "gradient_h": {
+      "fog": 0.001589357852935791,
+      "night": 0.0034164786338806152,
+      "blur": 3.802776336669922e-05,
+      "noise": 0.003757476806640625
+    },
+    "checkerboard": {
+      "fog": 0.0020102262496948242,
+      "night": 0.00608217716217041,
+      "blur": 0.006450951099395752,
+      "noise": 0.0023251771926879883
+    },
+    "stripes": {
+      "fog": 0.004811465740203857,
+      "night": 0.007885158061981201,
+      "blur": 0.004507124423980713,
+      "noise": 0.003249526023864746
+    },
+    "sky_ground": {
+      "fog": 0.002079010009765625,
+      "night": 0.006661951541900635,
+      "blur": 0.0008583664894104004,
+      "noise": 0.0033674240112304688
+    },
+    "road": {
+      "fog": 0.0020176172256469727,
+      "night": 0.003450453281402588,
+      "blur": 0.001574397087097168,
+      "noise": 0.004961669445037842
+    },
+    "indoor": {
+      "fog": 0.0009940266609191895,
+      "night": 0.007591903209686279,
+      "blur": 0.0031033754348754883,
+      "noise": 0.0021251440048217773
+    }
+  },
+  "cross_image_distances": {
+    "random_noise_vs_solid_gray": 0.005626380443572998,
+    "random_noise_vs_solid_red": 0.003827989101409912,
+    "random_noise_vs_solid_green": 0.004254639148712158,
+    "random_noise_vs_gradient_v": 0.004895627498626709,
+    "random_noise_vs_gradient_h": 0.004772841930389404,
+    "random_noise_vs_checkerboard": 0.003046751022338867,
+    "random_noise_vs_stripes": 0.005644619464874268,
+    "random_noise_vs_sky_ground": 0.0031549930572509766,
+    "random_noise_vs_road": 0.004065155982971191,
+    "random_noise_vs_indoor": 0.004114985466003418,
+    "solid_gray_vs_solid_red": 0.0036548972129821777,
+    "solid_gray_vs_solid_green": 0.005065798759460449,
+    "solid_gray_vs_gradient_v": 0.001766979694366455,
+    "solid_gray_vs_gradient_h": 0.001563727855682373,
+    "solid_gray_vs_checkerboard": 0.00333327054977417,
+    "solid_gray_vs_stripes": 0.008317172527313232,
+    "solid_gray_vs_sky_ground": 0.0034602880477905273,
+    "solid_gray_vs_road": 0.002393960952758789,
+    "solid_gray_vs_indoor": 0.005682110786437988,
+    "solid_red_vs_solid_green": 0.003934919834136963,
+    "solid_red_vs_gradient_v": 0.004303395748138428,
+    "solid_red_vs_gradient_h": 0.0046122074127197266,
+    "solid_red_vs_checkerboard": 0.00425410270690918,
+    "solid_red_vs_stripes": 0.00557178258895874,
+    "solid_red_vs_sky_ground": 0.0035425424575805664,
+    "solid_red_vs_road": 0.003654003143310547,
+    "solid_red_vs_indoor": 0.00521773099899292,
+    "solid_green_vs_gradient_v": 0.0047664642333984375,
+    "solid_green_vs_gradient_h": 0.004895567893981934,
+    "solid_green_vs_checkerboard": 0.0049479007720947266,
+    "solid_green_vs_stripes": 0.007883071899414062,
+    "solid_green_vs_sky_ground": 0.0016139745712280273,
+    "solid_green_vs_road": 0.004477083683013916,
+    "solid_green_vs_indoor": 0.006390869617462158,
+    "gradient_v_vs_gradient_h": 0.0012563467025756836,
+    "gradient_v_vs_checkerboard": 0.003223896026611328,
+    "gradient_v_vs_stripes": 0.007979333400726318,
+    "gradient_v_vs_sky_ground": 0.0030435919761657715,
+    "gradient_v_vs_road": 0.002084493637084961,
+    "gradient_v_vs_indoor": 0.004438042640686035,
+    "gradient_h_vs_checkerboard": 0.0027419328689575195,
+    "gradient_h_vs_stripes": 0.007791697978973389,
+    "gradient_h_vs_sky_ground": 0.003270864486694336,
+    "gradient_h_vs_road": 0.0018218755722045898,
+    "gradient_h_vs_indoor": 0.004195213317871094,
+    "checkerboard_vs_stripes": 0.00519251823425293,
+    "checkerboard_vs_sky_ground": 0.0031123757362365723,
+    "checkerboard_vs_road": 0.001404404640197754,
+    "checkerboard_vs_indoor": 0.003802001476287842,
+    "stripes_vs_sky_ground": 0.006524264812469482,
+    "stripes_vs_road": 0.0050501227378845215,
+    "stripes_vs_indoor": 0.005944609642028809,
+    "sky_ground_vs_road": 0.0026444196701049805,
+    "sky_ground_vs_indoor": 0.0033100247383117676,
+    "road_vs_indoor": 0.0030151009559631348
+  },
+  "per_image_auroc": {
+    "random_noise": 1.0,
+    "solid_gray": 0.875,
+    "solid_red": 0.875,
+    "solid_green": 0.875,
+    "gradient_v": 1.0,
+    "gradient_h": 1.0,
+    "checkerboard": 1.0,
+    "stripes": 1.0,
+    "sky_ground": 1.0,
+    "road": 1.0,
+    "indoor": 1.0
+  },
+  "cross_semantic": {
+    "random_noise": {
+      "solid_gray": {
+        "auroc": 0.375,
+        "clean_distance": 0.005626380443572998,
+        "corruption_distances": {
+          "fog": 0.0045357346534729,
+          "night": 0.008708596229553223,
+          "blur": 0.005626380443572998,
+          "noise": 0.00038057565689086914
+        }
+      },
+      "solid_red": {
+        "auroc": 0.625,
+        "clean_distance": 0.003827989101409912,
+        "corruption_distances": {
+          "fog": 0.004306137561798096,
+          "night": 0.00856560468673706,
+          "blur": 0.003827989101409912,
+          "noise": 0.0008720755577087402
+        }
+      },
+      "solid_green": {
+        "auroc": 0.625,
+        "clean_distance": 0.004254639148712158,
+        "corruption_distances": {
+          "fog": 0.004299819469451904,
+          "night": 0.008671224117279053,
+          "blur": 0.004254639148712158,
+          "noise": 0.001313924789428711
+        }
+      },
+      "gradient_v": {
+        "auroc": 0.75,
+        "clean_distance": 0.004895627498626709,
+        "corruption_distances": {
+          "fog": 0.005254566669464111,
+          "night": 0.008462309837341309,
+          "blur": 0.004896581172943115,
+          "noise": 0.0024890899658203125
+        }
+      },
+      "gradient_h": {
+        "auroc": 0.75,
+        "clean_distance": 0.004772841930389404,
+        "corruption_distances": {
+          "fog": 0.005013406276702881,
+          "night": 0.008419275283813477,
+          "blur": 0.0048261284828186035,
+          "noise": 0.0017576217651367188
+        }
+      },
+      "checkerboard": {
+        "auroc": 0.75,
+        "clean_distance": 0.003046751022338867,
+        "corruption_distances": {
+          "fog": 0.003937780857086182,
+          "night": 0.008587658405303955,
+          "blur": 0.007674694061279297,
+          "noise": 0.0007770657539367676
+        }
+      },
+      "stripes": {
+        "auroc": 0.25,
+        "clean_distance": 0.005644619464874268,
+        "corruption_distances": {
+          "fog": 0.004193902015686035,
+          "night": 0.006423592567443848,
+          "blur": 0.003989517688751221,
+          "noise": 0.0021562576293945312
+        }
+      },
+      "sky_ground": {
+        "auroc": 0.75,
+        "clean_distance": 0.0031549930572509766,
+        "corruption_distances": {
+          "fog": 0.004274606704711914,
+          "night": 0.00853431224822998,
+          "blur": 0.0033693909645080566,
+          "noise": 0.0010764598846435547
+        }
+      },
+      "road": {
+        "auroc": 0.75,
+        "clean_distance": 0.004065155982971191,
+        "corruption_distances": {
+          "fog": 0.004179477691650391,
+          "night": 0.0072293877601623535,
+          "blur": 0.005570828914642334,
+          "noise": 0.0019310712814331055
+        }
+      },
+      "indoor": {
+        "auroc": 0.75,
+        "clean_distance": 0.004114985466003418,
+        "corruption_distances": {
+          "fog": 0.0048067569732666016,
+          "night": 0.0066138505935668945,
+          "blur": 0.005919039249420166,
+          "noise": 0.0017450451850891113
+        }
+      }
+    },
+    "solid_gray": {
+      "random_noise": {
+        "auroc": 0.25,
+        "clean_distance": 0.005626380443572998,
+        "corruption_distances": {
+          "fog": 0.003202676773071289,
+          "night": 0.0038689374923706055,
+          "blur": 0.0029979944229125977,
+          "noise": 0.0071566104888916016
+        }
+      },
+      "solid_red": {
+        "auroc": 0.625,
+        "clean_distance": 0.0036548972129821777,
+        "corruption_distances": {
+          "fog": 0.002672255039215088,
+          "night": 0.003973901271820068,
+          "blur": 0.0036548972129821777,
+          "noise": 0.00813227891921997
+        }
+      },
+      "solid_green": {
+        "auroc": 0.375,
+        "clean_distance": 0.005065798759460449,
+        "corruption_distances": {
+          "fog": 0.0016185641288757324,
+          "night": 0.004103720188140869,
+          "blur": 0.005065798759460449,
+          "noise": 0.007348954677581787
+        }
+      },
+      "gradient_v": {
+        "auroc": 0.75,
+        "clean_distance": 0.001766979694366455,
+        "corruption_distances": {
+          "fog": 0.0016448497772216797,
+          "night": 0.0035939812660217285,
+          "blur": 0.002002537250518799,
+          "noise": 0.007500052452087402
+        }
+      },
+      "gradient_h": {
+        "auroc": 1.0,
+        "clean_distance": 0.001563727855682373,
+        "corruption_distances": {
+          "fog": 0.0021523237228393555,
+          "night": 0.0037566423416137695,
+          "blur": 0.0016731619834899902,
+          "noise": 0.006021022796630859
+        }
+      },
+      "checkerboard": {
+        "auroc": 0.75,
+        "clean_distance": 0.00333327054977417,
+        "corruption_distances": {
+          "fog": 0.002290010452270508,
+          "night": 0.0038704872131347656,
+          "blur": 0.009502768516540527,
+          "noise": 0.005452275276184082
+        }
+      },
+      "stripes": {
+        "auroc": 0.0,
+        "clean_distance": 0.008317172527313232,
+        "corruption_distances": {
+          "fog": 0.00435405969619751,
+          "night": 0.004139840602874756,
+          "blur": 0.001824021339416504,
+          "noise": 0.007677733898162842
+        }
+      },
+      "sky_ground": {
+        "auroc": 0.75,
+        "clean_distance": 0.0034602880477905273,
+        "corruption_distances": {
+          "fog": 0.0020546317100524902,
+          "night": 0.0036758780479431152,
+          "blur": 0.004009366035461426,
+          "noise": 0.0063419342041015625
+        }
+      },
+      "road": {
+        "auroc": 1.0,
+        "clean_distance": 0.002393960952758789,
+        "corruption_distances": {
+          "fog": 0.0025664567947387695,
+          "night": 0.003228425979614258,
+          "blur": 0.004397988319396973,
+          "noise": 0.008868694305419922
+        }
+      },
+      "indoor": {
+        "auroc": 0.5,
+        "clean_distance": 0.005682110786437988,
+        "corruption_distances": {
+          "fog": 0.006166398525238037,
+          "night": 0.003217041492462158,
+          "blur": 0.005537807941436768,
+          "noise": 0.006727993488311768
+        }
+      }
+    },
+    "road": {
+      "random_noise": {
+        "auroc": 0.75,
+        "clean_distance": 0.004065155982971191,
+        "corruption_distances": {
+          "fog": 0.0034804344177246094,
+          "night": 0.004608571529388428,
+          "blur": 0.004135727882385254,
+          "noise": 0.0052054524421691895
+        }
+      },
+      "solid_gray": {
+        "auroc": 0.875,
+        "clean_distance": 0.002393960952758789,
+        "corruption_distances": {
+          "fog": 0.003445923328399658,
+          "night": 0.005095958709716797,
+          "blur": 0.002393960952758789,
+          "noise": 0.004980266094207764
+        }
+      },
+      "solid_red": {
+        "auroc": 0.875,
+        "clean_distance": 0.003654003143310547,
+        "corruption_distances": {
+          "fog": 0.004004955291748047,
+          "night": 0.00487130880355835,
+          "blur": 0.003654003143310547,
+          "noise": 0.006076931953430176
+        }
+      },
+      "solid_green": {
+        "auroc": 0.625,
+        "clean_distance": 0.004477083683013916,
+        "corruption_distances": {
+          "fog": 0.0032505393028259277,
+          "night": 0.005111098289489746,
+          "blur": 0.004477083683013916,
+          "noise": 0.005256950855255127
+        }
+      },
+      "gradient_v": {
+        "auroc": 1.0,
+        "clean_distance": 0.002084493637084961,
+        "corruption_distances": {
+          "fog": 0.0030417442321777344,
+          "night": 0.004581809043884277,
+          "blur": 0.002125680446624756,
+          "noise": 0.005208253860473633
+        }
+      },
+      "gradient_h": {
+        "auroc": 1.0,
+        "clean_distance": 0.0018218755722045898,
+        "corruption_distances": {
+          "fog": 0.003202974796295166,
+          "night": 0.004609942436218262,
+          "blur": 0.001975536346435547,
+          "noise": 0.004268229007720947
+        }
+      },
+      "checkerboard": {
+        "auroc": 1.0,
+        "clean_distance": 0.001404404640197754,
+        "corruption_distances": {
+          "fog": 0.0027529001235961914,
+          "night": 0.004837989807128906,
+          "blur": 0.0065108537673950195,
+          "noise": 0.003444850444793701
+        }
+      },
+      "stripes": {
+        "auroc": 0.25,
+        "clean_distance": 0.0050501227378845215,
+        "corruption_distances": {
+          "fog": 0.0035071372985839844,
+          "night": 0.0034485459327697754,
+          "blur": 0.0021189451217651367,
+          "noise": 0.005143284797668457
+        }
+      },
+      "sky_ground": {
+        "auroc": 0.75,
+        "clean_distance": 0.0026444196701049805,
+        "corruption_distances": {
+          "fog": 0.0029119253158569336,
+          "night": 0.00473254919052124,
+          "blur": 0.0025027990341186523,
+          "noise": 0.003814101219177246
+        }
+      },
+      "indoor": {
+        "auroc": 0.75,
+        "clean_distance": 0.0030151009559631348,
+        "corruption_distances": {
+          "fog": 0.0042684078216552734,
+          "night": 0.002809464931488037,
+          "blur": 0.004509985446929932,
+          "noise": 0.004378974437713623
+        }
+      }
+    },
+    "indoor": {
+      "random_noise": {
+        "auroc": 0.75,
+        "clean_distance": 0.004114985466003418,
+        "corruption_distances": {
+          "fog": 0.00316011905670166,
+          "night": 0.010022401809692383,
+          "blur": 0.0066109299659729,
+          "noise": 0.005457103252410889
+        }
+      },
+      "solid_gray": {
+        "auroc": 0.375,
+        "clean_distance": 0.005682110786437988,
+        "corruption_distances": {
+          "fog": 0.004779160022735596,
+          "night": 0.010632753372192383,
+          "blur": 0.005682110786437988,
+          "noise": 0.005095958709716797
+        }
+      },
+      "solid_red": {
+        "auroc": 0.625,
+        "clean_distance": 0.00521773099899292,
+        "corruption_distances": {
+          "fog": 0.0036146044731140137,
+          "night": 0.010394036769866943,
+          "blur": 0.00521773099899292,
+          "noise": 0.006097137928009033
+        }
+      },
+      "solid_green": {
+        "auroc": 0.625,
+        "clean_distance": 0.006390869617462158,
+        "corruption_distances": {
+          "fog": 0.004183709621429443,
+          "night": 0.010675430297851562,
+          "blur": 0.006390869617462158,
+          "noise": 0.0068534016609191895
+        }
+      },
+      "gradient_v": {
+        "auroc": 0.75,
+        "clean_distance": 0.004438042640686035,
+        "corruption_distances": {
+          "fog": 0.004579722881317139,
+          "night": 0.010044395923614502,
+          "blur": 0.004275083541870117,
+          "noise": 0.006278634071350098
+        }
+      },
+      "gradient_h": {
+        "auroc": 1.0,
+        "clean_distance": 0.004195213317871094,
+        "corruption_distances": {
+          "fog": 0.004236400127410889,
+          "night": 0.010017096996307373,
+          "blur": 0.004386842250823975,
+          "noise": 0.004865169525146484
+        }
+      },
+      "checkerboard": {
+        "auroc": 0.75,
+        "clean_distance": 0.003802001476287842,
+        "corruption_distances": {
+          "fog": 0.003526151180267334,
+          "night": 0.010317444801330566,
+          "blur": 0.009738683700561523,
+          "noise": 0.003977835178375244
+        }
+      },
+      "stripes": {
+        "auroc": 0.5,
+        "clean_distance": 0.005944609642028809,
+        "corruption_distances": {
+          "fog": 0.003237485885620117,
+          "night": 0.008460283279418945,
+          "blur": 0.004574716091156006,
+          "noise": 0.006544172763824463
+        }
+      },
+      "sky_ground": {
+        "auroc": 1.0,
+        "clean_distance": 0.0033100247383117676,
+        "corruption_distances": {
+          "fog": 0.003328084945678711,
+          "night": 0.01024019718170166,
+          "blur": 0.003375113010406494,
+          "noise": 0.004103720188140869
+        }
+      },
+      "road": {
+        "auroc": 0.75,
+        "clean_distance": 0.0030151009559631348,
+        "corruption_distances": {
+          "fog": 0.0018864870071411133,
+          "night": 0.008504211902618408,
+          "blur": 0.004772782325744629,
+          "noise": 0.005171060562133789
+        }
+      }
+    }
+  }
+}

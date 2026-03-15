@@ -5478,4 +5478,30 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 633}: \textbf{Detection works at 12-bit quantization} (shift $= 1.05 \times 10^{-4}$, all corruptions detected) \textbf{but breaks at 8-bit} (shift $= 2.16 \times 10^{-3}$) when using the original bf16 centroid. At 8-bit, the clean embedding shifts beyond the noise corruption distance ($5.12 \times 10^{-4}$), causing false positives. However, corruption distances remain well-separated (0.0006--0.0075), so \textbf{re-calibration after quantization would restore perfect detection}. The detector is quantization-compatible with a simple centroid update.
 
+\subsection{Multi-Centroid Ensemble}
+
+\textbf{Experiment 294: Ensemble Centroid Detection.} We test whether using multiple centroids from $K$ different scenes (K=1,2,3,5,10) improves cross-scene detection, comparing four aggregation rules (min-distance, mean-distance, max-distance, global centroid) and leave-one-out cross-validation across 10 diverse scenes.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig303_multicentroid.png}
+\caption{Multi-centroid ensemble detection. (a) All aggregation rules achieve AUROC=1.0 at every K. (b) Leave-one-out cross-validation: 100\% accuracy for all corruptions. (c) Summary table confirming universal perfect detection.}
+\end{figure}
+
+\textbf{Finding 634}: \textbf{Multi-centroid ensemble achieves AUROC=1.0 regardless of aggregation rule or number of centroids} ($K = 1$ to 10). Min-distance, mean-distance, max-distance, and global centroid all produce perfect detection. Leave-one-out cross-validation (calibrate on 9 scenes, test on 1) also achieves 100\% accuracy, confirming the detection signal survives cross-scene variation even when the test scene is unseen.
+
+\subsection{Semantic Content Analysis}
+
+\textbf{Experiment 295: Image Type Sensitivity.} We test detection across 11 semantically diverse image types: random noise, solid colors (gray/red/green), gradients, patterns (checkerboard, stripes), and simple scenes (sky/ground, road, indoor).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig304_semantic.png}
+\caption{Semantic content analysis. (a) Per-image AUROC: 8/11 types achieve 1.0; solid colors drop to 0.875. (b) Corruption distance heatmap: distances vary strongly by image type and corruption. (c) Blur on solid colors produces $d = 0$ (physically correct: blurring a uniform field is identity). (d) Cross-semantic detection degrades to 0.60--0.79, confirming per-scene calibration is essential.}
+\end{figure}
+
+\textbf{Finding 635}: \textbf{Blur is undetectable on solid-color images} ($d = 0.0$) because Gaussian blur on a uniform field produces the identical pixel values. This is a physical limitation, not a detector failure. All structured images (gradients, patterns, scenes) achieve AUROC=1.0. Corruption distances vary $>10\times$ across image types: noise on solid gray produces $d = 0.007$ (14$\times$ more than on random noise), while blur on gradients produces only $d = 3.6 \times 10^{-5}$.
+
+\textbf{Finding 636}: \textbf{Cross-semantic detection degrades to AUROC 0.60--0.79}, confirming that per-scene (or per-scene-type) calibration is essential for deployment. The road scene provides the best universal centroid (avg AUROC $= 0.787$) due to moderate visual complexity, while random noise and solid colors are poor universal centroids. This motivates a deployment strategy of maintaining a small library of per-scene centroids.
+
 \end{document}
