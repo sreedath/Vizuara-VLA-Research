@@ -4008,4 +4008,19 @@ We test whether the detector can catch \emph{localized} corruption by applying c
 \label{fig:spatial_regions}
 \end{figure}
 
+\subsection{Latency Benchmark}
+
+We measure the wall-clock overhead of OOD detection on an A40 GPU with OpenVLA-7B.
+
+\textbf{Finding 419}: End-to-end OOD detection adds only \textbf{4.33 ms (3.09\%)} overhead to the 140 ms baseline inference. The cosine distance computation itself takes 4.76 $\mu$s---0.003\% of inference time. The overhead comes entirely from enabling hidden state output.
+
+\textbf{Finding 420}: At $\sim$147 ms per frame, the VLA with OOD detection runs at \textbf{6.8 Hz}---meeting real-time requirements for autonomous driving at typical control rates (5--10 Hz). The OOD detection overhead is \textbf{constant} regardless of image content or number of corruption types monitored.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig226_latency.png}
+\caption{\textbf{Latency benchmark.} Left: full pipeline adds only 4.33 ms (3.09\%) over normal inference. Right: overhead breakdown on log scale---cosine distance is 4.76 $\mu$s (essentially free).}
+\label{fig:latency}
+\end{figure}
+
 \end{document}

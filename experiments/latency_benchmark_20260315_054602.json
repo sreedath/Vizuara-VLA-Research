@@ -1,0 +1,31 @@
+{
+  "experiment": "latency_benchmark",
+  "experiment_number": 214,
+  "timestamp": "20260315_054602",
+  "n_warmup": 3,
+  "n_bench": 20,
+  "results": {
+    "normal_inference_ms": {
+      "mean": 140.31,
+      "std": 42.81,
+      "min": 97.24,
+      "max": 200.85
+    },
+    "with_hidden_states_ms": {
+      "mean": 144.64,
+      "std": 43.87,
+      "min": 98.72,
+      "max": 195.94
+    },
+    "cosine_distance_us": {
+      "mean": 4.76,
+      "std": 0.65
+    },
+    "full_pipeline_ms": {
+      "mean": 147.46,
+      "std": 43.89
+    },
+    "overhead_ms": 4.33,
+    "overhead_pct": 3.09
+  }
+}
