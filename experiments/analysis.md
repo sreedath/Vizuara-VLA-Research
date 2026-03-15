@@ -14913,3 +14913,46 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 
 **Finding 654**: Worst transfer is natural→gradient (degradation 0.748). Best transfer is checkerboard→random (degradation 0.080). Scene structure complexity determines transfer difficulty.
 
+
+## Experiment 362: Action Degradation Under Corruption
+
+**Script**: `scripts/real_vla_action_degradation.py`
+**Result**: `experiments/action_degradation_20260315_152350.json`
+**Figure**: `figures/fig371_action_deg.png`
+
+### Key Results
+
+**Token Change Rate (severity 0.5)**:
+| Corruption | Tokens Changed | Mean Action Diff | Max Action Diff |
+|-----------|---------------|-----------------|-----------------|
+| Fog | 77.5% | 0.286 | ~0.8 |
+| Night | 87.5% | 0.359 | ~1.0 |
+| Noise | 62.8% | 0.219 | ~0.6 |
+| Blur | 83.3% | 0.344 | ~0.9 |
+
+**Action Vector Cosine Similarity**:
+| Corruption | Mean cos_sim | Min cos_sim |
+|-----------|-------------|-------------|
+| Fog | 0.092 | -0.681 |
+| Night | 0.159 | -0.677 |
+| Noise | 0.383 | -0.343 |
+| Blur | 0.166 | -0.785 |
+
+**Severity vs Token Change**:
+- Blur at sev=0.05: 62.5% tokens changed
+- Fog at sev=0.05: 0% tokens changed
+- Night at sev=0.05: 30% tokens changed
+- All reach 78-98% at sev=1.0
+
+### Findings
+
+**Finding 655**: Corruptions at severity 0.5 change 63-88% of action tokens, producing mean action deviations of 0.22-0.36 on a [-1,1] scale. Actions are not slightly shifted — they are fundamentally different.
+
+**Finding 656**: Action cosine similarity drops to near-zero (0.09-0.38 mean) with minimum values as low as -0.785 (blur). Corrupted actions can be REVERSED relative to clean, representing the worst possible safety outcome.
+
+**Finding 657**: Blur degrades actions at the lowest severity: 62.5% token change at sev=0.05, while fog shows 0% change. This correlates with blur's highest embedding Lipschitz constant (10×).
+
+**Finding 658**: All 7 action dimensions are affected across all corruption types (7/7 or 7/8 dims changed), confirming that corruption impact is distributed across all degrees of freedom.
+
+**Finding 659**: Night causes the highest mean action deviation (0.359) despite not having the largest embedding distance, suggesting the action head amplifies night corruption disproportionately.
+

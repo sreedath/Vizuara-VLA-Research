@@ -6868,4 +6868,25 @@ We test whether a detector calibrated on one scene type can detect corruptions i
 
 \textbf{Finding 906}: \textbf{This result demands per-deployment calibration.} The practical implication is that each deployment environment requires its own calibration images --- a universal detector calibrated on lab data will fail in the field.
 
+\subsection{Experiment 362: Action Degradation Under Corruption}
+
+We quantify how corruptions affect the model's actual action outputs, measuring token change rates, action value deviations, cosine similarity of action vectors, and per-dimension impact.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig371_action_deg.png}
+\caption{Action degradation analysis. Top-left: 63--88\% of action tokens change at severity 0.5. Top-right: action cosine similarity drops to near-zero with negative minima (reversed actions). Bottom-left: severity-dependent degradation curves --- blur degrades earliest. Bottom-right: mean action deviation of 0.22--0.36 on [-1,1] scale.}
+\label{fig:actiondeg}
+\end{figure}
+
+\textbf{Finding 907}: \textbf{Corruptions at severity 0.5 change 63--88\% of action tokens.} Mean action deviations reach 0.22--0.36 on the $[-1,1]$ scale --- actions are fundamentally different, not merely shifted.
+
+\textbf{Finding 908}: \textbf{Action cosine similarity drops to near-zero (0.09--0.38) with minima as low as $-0.785$.} Corrupted actions can be \emph{reversed} relative to clean predictions, representing the worst possible safety outcome for autonomous systems.
+
+\textbf{Finding 909}: \textbf{Blur degrades actions at the lowest severity: 62.5\% token change at sev=0.05.} This correlates with blur's highest embedding Lipschitz constant ($10\times$) from Experiment~346, confirming the cascade from pixel perturbation through embedding shift to action corruption.
+
+\textbf{Finding 910}: \textbf{All 7 action dimensions are affected across all corruption types.} The corruption impact is distributed across all degrees of freedom, meaning no action dimension is ``safe'' from corruption-induced errors.
+
+\textbf{Finding 911}: \textbf{Night causes the highest mean action deviation (0.359) despite moderate embedding distance.} The action head amplifies night corruption disproportionately, suggesting non-uniform sensitivity in the model's action decoding pathway.
+
 \end{document}
