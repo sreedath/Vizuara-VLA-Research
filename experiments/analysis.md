@@ -7916,3 +7916,31 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 5. **Different corruption types form distinct clusters**: Fog, night, blur, and noise occupy different regions of PCA space, explaining the perfect cross-corruption transfer — each corruption type has its own displacement direction.
 
 **Finding**: PCA visualization confirms that VLA early-layer embeddings are **extremely low-rank** (81% variance in 3 PCs at L1). ID and OOD embeddings form clearly separable clusters in 2D projection space, with each corruption type displacing along distinct directions. This low-rank structure explains why calibration converges with just 3 images — the effective manifold is 2-3 dimensional, so a centroid estimated from 3 points is already highly accurate.
+---
+
+### Finding 196: FPR@TPR and Threshold Calibration (Experiment 201)
+
+**Experiment**: Compute ROC curves, FPR@95TPR, FPR@99TPR, and optimal detection thresholds for L1, L3, L32.
+
+**Detection Performance**:
+| Layer | AUROC | FPR@95TPR | FPR@99TPR | Optimal Threshold |
+|-------|-------|-----------|-----------|-------------------|
+| L1 | 1.000 | 0.000 | 0.000 | 0.000248 |
+| L3 | 1.000 | 0.000 | 0.000 | 0.000456 |
+| L32 | 1.000 | 0.000 | 0.000 | 0.126788 |
+
+**Score Distributions**:
+| Layer | ID Mean | ID Std | ID Range | OOD Mean | OOD Std | OOD Range |
+|-------|---------|--------|----------|----------|---------|-----------|
+| L1 | 0.000183 | 0.000035 | [0.000143, 0.000241] | 0.001040 | 0.000484 | [0.000353, 0.001881] |
+| L3 | 0.000378 | 0.000044 | [0.000321, 0.000451] | 0.001947 | 0.000994 | [0.000813, 0.003673] |
+| L32 | 0.109526 | 0.006172 | [0.101657, 0.125223] | 0.288997 | 0.098247 | [0.143273, 0.458868] |
+
+**Key Findings**:
+1. **FPR@95TPR = 0.000 at all layers**: Zero false positives even at 95% true positive rate. The ID and OOD score distributions are completely non-overlapping.
+2. **ID scores are extremely tight**: L1 ID range is [0.000143, 0.000241] — a spread of only 0.0001. This means the centroid is highly stable.
+3. **Clear separation gap**: At L1, the maximum ID score (0.000241) is 1.47× lower than the minimum OOD score (0.000353). There's a "dead zone" between distributions.
+4. **L32 has wider distributions**: ID std=0.006 vs OOD std=0.098, but still perfectly separated. The separation gap at L32 is [0.125, 0.143].
+5. **Optimal threshold is deterministic**: Setting threshold midway between ID max and OOD min gives perfect classification.
+
+**Finding**: The cosine distance detector achieves **FPR@95TPR = 0.000** — zero false positives at 95% detection rate. This is the gold standard metric for OOD detection benchmarks. The ID and OOD score distributions are completely non-overlapping with a clear gap, making threshold selection trivial. For deployment, the optimal threshold can be set to the midpoint between calibration max and any OOD sample.
