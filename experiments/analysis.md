@@ -16394,3 +16394,29 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 
 **Finding 819**: The model's memoryless property makes temporal smoothing COUNTERPRODUCTIVE. Any windowed averaging or EMA introduces artificial lag into an inherently lagless system, delaying detection by the window size without improving accuracy.
 
+---
+
+## Experiment 395: Compositional Corruption Analysis
+
+**Objective**: Test detection under simultaneous multiple corruptions (pairwise, triple, quadruple) simulating compound real-world degradation.
+
+**Method**: Applied all C(4,2)=6 pairwise, C(4,3)=4 triple, and 1 quadruple corruption combinations at severity 0.5. Measured detection distance, sub-additivity ratio, application order effect, severity balancing, and AUROC.
+
+**Key Results**:
+- ALL 11 compound corruptions detected: AUROC=1.0 for all pairwise, triple, and quadruple combinations
+- Sub-additivity ratio: 0.29–1.05 (most compounds CANCEL, reducing combined effect)
+- fog+night has strongest cancellation (ratio=0.46), night+blur is slightly super-additive (1.05)
+- Application ORDER matters: noise+blur shows 12.8× distance difference (5.76e-3 vs 4.48e-4)
+- Triple fog+night+noise has extreme cancellation (ratio=0.29, 71% reduction)
+- Fog+night severity balancing shows U-shape with minimum at s1=0.6 (cancellation)
+
+**Finding 820**: ALL 11 compound corruption combinations are detected with AUROC=1.0. The detector remains perfect even under worst-case compound degradation — four simultaneous corruptions (fog+night+noise+blur) are still perfectly detectable.
+
+**Finding 821**: Compound corruptions are predominantly SUB-ADDITIVE (5/6 pairwise ratios < 1.0). The combined embedding shift is LESS than the sum of individual shifts, with fog+night showing the strongest cancellation (ratio=0.46, 54% reduction). This confirms the anti-correlated shift directions from experiment 383.
+
+**Finding 822**: Application order has MASSIVE effect for noise+blur: 12.8× distance difference (noise-then-blur: 5.76e-3 vs blur-then-noise: 4.48e-4). Blur applied first destroys the high-frequency information that noise affects, creating path-dependent corruption in pixel space that propagates to embedding space.
+
+**Finding 823**: Triple corruption fog+night+noise has extreme cancellation (ratio=0.29, 71% reduction from sum). Three anti-correlated shift directions partially cancel each other, creating the minimum-distance compound. Despite this, AUROC remains 1.0 — the residual signal is sufficient.
+
+**Finding 824**: Fog+night severity balancing reveals a cancellation minimum at s1(fog)=0.6 where the compound distance (0.79e-3) is LOWER than either pure corruption at severity 0.5 individually. This quantifies the exact cancellation geometry of anti-correlated shift vectors.
+

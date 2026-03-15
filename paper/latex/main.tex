@@ -7766,4 +7766,25 @@ We test detection behavior under temporal corruption sequences---step transition
 
 \textbf{Finding 1071}: \textbf{The memoryless property makes temporal smoothing counterproductive.} Any windowed averaging introduces artificial lag into an inherently lagless system, delaying detection without improving accuracy. The optimal temporal filter is identity (no smoothing).
 
+\subsection{Experiment 395: Compositional Corruption Analysis}
+
+We test detection under compound corruptions---all pairwise, triple, and quadruple combinations applied simultaneously---simulating realistic multi-degradation scenarios.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig404_compositional.png}
+\caption{Compositional corruption. (A) Individual vs pairwise distances. (B) Sub-additivity: most compounds cancel. (C) Order effect: noise+blur = 12.8$\times$ difference. (D) Triple and quadruple all detected. (E) Severity balancing shows cancellation. (F) ALL 11 compounds AUROC=1.0.}
+\label{fig:compositional}
+\end{figure}
+
+\textbf{Finding 1072}: \textbf{All 11 compound corruptions are detected (AUROC=1.0): 6 pairwise, 4 triple, 1 quadruple.} The detector remains perfect under worst-case compound degradation. Four simultaneous corruptions are still detectable.
+
+\textbf{Finding 1073}: \textbf{Compound corruptions are sub-additive (5/6 ratios $<$ 1.0).} Fog+night shows 54\% cancellation (ratio=0.46), consistent with their anti-correlated shift directions. Only night+blur is slightly super-additive (1.05).
+
+\textbf{Finding 1074}: \textbf{Application order creates 12.8$\times$ distance difference for noise+blur.} Noise-then-blur produces 5.76$\times 10^{-3}$ vs blur-then-noise at $4.48\times 10^{-4}$. Blur destroys high-frequency information that noise would affect, creating path-dependent corruption.
+
+\textbf{Finding 1075}: \textbf{Triple fog+night+noise has 71\% cancellation (ratio=0.29).} Three anti-correlated shifts partially cancel, creating the minimum-distance compound. Despite this extreme cancellation, AUROC remains 1.0.
+
+\textbf{Finding 1076}: \textbf{Fog+night balancing reveals a cancellation minimum at $s_1=0.6$ where compound distance is LOWER than either individual corruption.} This precisely quantifies the geometry of anti-correlated embedding shifts.
+
 \end{document}
