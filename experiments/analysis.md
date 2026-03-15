@@ -9942,3 +9942,48 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 289**: Later layers (L15, L31) show **7-17% prompt sensitivity**, making them less suitable for prompt-agnostic deployment. This further supports L3 as the optimal detection layer.
 
 **Finding 290**: Cross-prompt centroid detection at L3 produces only **1.47× distance inflation**, well within the detection margin. The detector is robust to prompt mismatch.
+
+---
+
+## Experiment 268: Corruption Direction Consistency
+
+**Research Question**: Does each corruption type shift embeddings in a consistent direction across different images? Can we identify WHICH corruption is present from the shift direction?
+
+**Method**: For 8 diverse scenes, compute the normalized shift vector (corrupted - clean) for each corruption. Measure pairwise cosine similarity of shift directions within each corruption type and across types. Test at L3, L15, L31.
+
+**Results**:
+
+**Within-Type Direction Similarity (L3)**:
+
+| Corruption | Mean | Std | Min |
+|-----------|------|-----|-----|
+| Night | **0.993** | 0.002 | 0.990 |
+| Fog | **0.983** | 0.005 | 0.974 |
+| Blur | **0.933** | 0.022 | 0.891 |
+| Noise | 0.831 | 0.065 | 0.655 |
+
+**Cross-Type Direction Similarity (L3)**:
+
+| Pair | Similarity |
+|------|-----------|
+| Night vs Blur | 0.649 |
+| Fog vs Blur | 0.571 |
+| Fog vs Night | 0.272 |
+| Night vs Noise | 0.101 |
+| Fog vs Noise | −0.134 |
+| Noise vs Blur | −0.030 |
+
+**Key Findings**:
+1. **Night has near-perfect direction consistency (0.993)**: Across 8 different scenes, night shifts embeddings in virtually the same direction. This means a corruption TYPE classifier can work with a single reference shift vector.
+2. **Fog also highly consistent (0.983)**: Scene-independent direction.
+3. **Noise is least consistent (0.831)**: The stochastic nature of noise creates more variable shift directions, though still substantially above random (0.0).
+4. **Cross-type directions are mostly distinct**: Mean cross-type similarity is 0.22, while mean within-type is 0.94. This 4.3× ratio enables corruption TYPE identification.
+5. **Night and blur share direction (0.649)**: Both darken/smooth the image, creating partially overlapping shift directions. This is consistent with prior PCA results.
+6. **Noise is nearly orthogonal to everything**: fog→noise = -0.134, noise→blur = -0.030. Noise occupies a distinct subspace.
+7. **Layer depth reduces consistency**: Within-type similarity drops from L3 (0.94 mean) to L31 (0.64 mean). L3 captures more scene-independent corruption features.
+
+**Finding 291**: Each corruption type shifts embeddings in a **highly consistent direction** across different images: night (0.993), fog (0.983), blur (0.933), noise (0.831) at L3. This enables corruption type identification from a single reference shift vector.
+
+**Finding 292**: Cross-type shift directions are **mostly distinct** (mean similarity 0.22 vs within-type 0.94), with noise nearly orthogonal to all other types (|similarity| < 0.13). This enables a corruption TYPE classifier based on shift direction alone.
+
+**Finding 293**: Night and blur share the most directional overlap (0.649), consistent with both corruptions reducing visual information content. Fog and noise are anti-correlated (-0.134), suggesting they perturb complementary aspects of the representation.

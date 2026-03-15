@@ -1,0 +1,110 @@
+{
+  "experiment": "corruption_direction",
+  "experiment_number": 268,
+  "timestamp": "20260315_084718",
+  "n_scenes": 8,
+  "results": {
+    "3": {
+      "fog": {
+        "mean_direction_similarity": 0.9833447656461171,
+        "std_direction_similarity": 0.0050967157448143,
+        "min_direction_similarity": 0.9736241698265076,
+        "n_scenes": 8
+      },
+      "night": {
+        "mean_direction_similarity": 0.9928359048707145,
+        "std_direction_similarity": 0.0016065776663617974,
+        "min_direction_similarity": 0.9898329973220825,
+        "n_scenes": 8
+      },
+      "noise": {
+        "mean_direction_similarity": 0.8305532612970897,
+        "std_direction_similarity": 0.06515104583659269,
+        "min_direction_similarity": 0.6552309989929199,
+        "n_scenes": 8
+      },
+      "blur": {
+        "mean_direction_similarity": 0.9334275786365781,
+        "std_direction_similarity": 0.021513719109156584,
+        "min_direction_similarity": 0.8907517194747925,
+        "n_scenes": 8
+      },
+      "cross_corruption": {
+        "fog_vs_night": 0.272350937128067,
+        "fog_vs_noise": -0.13443708419799805,
+        "fog_vs_blur": 0.5709578990936279,
+        "night_vs_noise": 0.10148429870605469,
+        "night_vs_blur": 0.6488323211669922,
+        "noise_vs_blur": -0.029882296919822693
+      }
+    },
+    "15": {
+      "fog": {
+        "mean_direction_similarity": 0.8229139170476368,
+        "std_direction_similarity": 0.03191478854461321,
+        "min_direction_similarity": 0.761815071105957,
+        "n_scenes": 8
+      },
+      "night": {
+        "mean_direction_similarity": 0.9586896789925439,
+        "std_direction_similarity": 0.008759338617152737,
+        "min_direction_similarity": 0.9368228912353516,
+        "n_scenes": 8
+      },
+      "noise": {
+        "mean_direction_similarity": 0.42744905608040945,
+        "std_direction_similarity": 0.10639448678403564,
+        "min_direction_similarity": 0.2161845862865448,
+        "n_scenes": 8
+      },
+      "blur": {
+        "mean_direction_similarity": 0.862183832696506,
+        "std_direction_similarity": 0.022071833162287058,
+        "min_direction_similarity": 0.8143712282180786,
+        "n_scenes": 8
+      },
+      "cross_corruption": {
+        "fog_vs_night": 0.23288601636886597,
+        "fog_vs_noise": -0.17113643884658813,
+        "fog_vs_blur": 0.3055627942085266,
+        "night_vs_noise": 0.04856684058904648,
+        "night_vs_blur": 0.6682274341583252,
+        "noise_vs_blur": 0.005066285841166973
+      }
+    },
+    "31": {
+      "fog": {
+        "mean_direction_similarity": 0.6474790424108505,
+        "std_direction_similarity": 0.04586146493831457,
+        "min_direction_similarity": 0.5670764446258545,
+        "n_scenes": 8
+      },
+      "night": {
+        "mean_direction_similarity": 0.8866391628980637,
+        "std_direction_similarity": 0.021470673289013777,
+        "min_direction_similarity": 0.8233038187026978,
+        "n_scenes": 8
+      },
+      "noise": {
+        "mean_direction_similarity": 0.3236695457515972,
+        "std_direction_similarity": 0.1174395484135357,
+        "min_direction_similarity": 0.050363730639219284,
+        "n_scenes": 8
+      },
+      "blur": {
+        "mean_direction_similarity": 0.7106786498001644,
+        "std_direction_similarity": 0.03211364555108956,
+        "min_direction_similarity": 0.6405172348022461,
+        "n_scenes": 8
+      },
+      "cross_corruption": {
+        "fog_vs_night": 0.3572564125061035,
+        "fog_vs_noise": 0.16621443629264832,
+        "fog_vs_blur": 0.3687715232372284,
+        "night_vs_noise": 0.30706509947776794,
+        "night_vs_blur": 0.6763691902160645,
+        "noise_vs_blur": 0.28157615661621094
+      }
+    }
+  }
+}

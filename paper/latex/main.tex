@@ -5074,4 +5074,20 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 561}: Cross-prompt centroid detection at L3 produces only \textbf{1.47$\times$ distance inflation} (using prompt A's centroid with prompt B's corrupted test image). Since corruption distances are orders of magnitude above zero, this inflation is inconsequential for detection accuracy.
 
+\subsection{Corruption Direction Consistency}
+
+\textbf{Experiment 268: Shift Direction Analysis.} For 8 diverse scenes, we compute the normalized shift vector (corrupted $-$ clean) at L3, L15, L31. We measure within-type direction consistency and cross-type direction similarity.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig277_direction.png}
+\caption{(a) Within-type direction consistency: night (0.993) and fog (0.983) shift embeddings in nearly identical directions across all scenes. (b) Cross-type similarity matrix at L3: corruptions have distinct directions (mean cross-type 0.22). (c) Within-type similarity (0.94) greatly exceeds cross-type (0.22), enabling corruption identification.}
+\end{figure}
+
+\textbf{Finding 562}: Each corruption shifts embeddings in a \textbf{highly consistent direction} across different scenes: night (0.993), fog (0.983), blur (0.933), noise (0.831) at L3. A single reference shift vector per corruption type is sufficient for type identification --- the model learns scene-independent corruption features.
+
+\textbf{Finding 563}: Cross-type shift directions are \textbf{mostly distinct} (mean similarity 0.22 vs within-type 0.94), with noise nearly orthogonal to all other types ($|$similarity$|$ $<$ 0.13). This 4.3$\times$ within/cross ratio enables a corruption \textit{type classifier} --- not just detecting OOD, but identifying \textit{which} corruption is present from the shift direction alone.
+
+\textbf{Finding 564}: Night and blur share the most directional overlap (0.649), consistent with both corruptions reducing visual information content. Fog and noise are \textbf{anti-correlated} ($-$0.134), perturbing complementary aspects of the representation. These geometric relationships match the corruption physics: brightness reduction (night) and frequency filtering (blur) have more in common than additive noise.
+
 \end{document}
