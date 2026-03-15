@@ -1,0 +1,51 @@
+{
+  "experiment": "per_scene_calibration",
+  "experiment_number": 229,
+  "timestamp": "20260315_064235",
+  "n_per_scene": 6,
+  "scene_types": [
+    "highway",
+    "urban",
+    "rural",
+    "parking",
+    "intersection"
+  ],
+  "results": {
+    "global": {
+      "L1": {
+        "auroc": 0.8822,
+        "id_mean": 0.000473,
+        "ood_mean": 0.001339
+      },
+      "L3": {
+        "auroc": 0.88,
+        "id_mean": 0.001167,
+        "ood_mean": 0.002644
+      }
+    },
+    "per_scene": {
+      "L1": {
+        "auroc": 1.0,
+        "id_mean": 1.8e-05,
+        "ood_mean": 0.00124
+      },
+      "L3": {
+        "auroc": 1.0,
+        "id_mean": 4.1e-05,
+        "ood_mean": 0.002385
+      }
+    },
+    "nearest_scene": {
+      "L1": {
+        "auroc": 1.0,
+        "id_mean": 1.8e-05,
+        "ood_mean": 0.001117
+      },
+      "L3": {
+        "auroc": 1.0,
+        "id_mean": 4.1e-05,
+        "ood_mean": 0.002091
+      }
+    }
+  }
+}

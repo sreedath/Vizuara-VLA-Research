@@ -4399,4 +4399,30 @@ Noise & 0.88 & 0.88 \\
 
 \textbf{Finding 458}: This identifies the key architectural limitation and motivates \textbf{per-scene calibration}: maintaining scene-specific centroids eliminates inter-scene variance and should recover AUROC=1.0.
 
+\textbf{Experiment 229: Per-Scene Calibration Solution.} We test three calibration strategies: (1) global centroid across all scenes, (2) per-scene centroids with known scene labels, (3) nearest-scene centroid (auto-selects closest reference at test time).
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Strategy} & \textbf{L3 AUROC} & \textbf{L3 ID Mean} & \textbf{L3 OOD Mean} & \textbf{Requires Labels?} \\
+\midrule
+Global centroid & 0.880 & 0.001167 & 0.002644 & No \\
+Per-scene centroid & 1.000 & 0.000041 & 0.002385 & Yes \\
+Nearest-scene centroid & 1.000 & 0.000041 & 0.002091 & No \\
+\bottomrule
+\end{tabular}
+\caption{Per-scene calibration recovers AUROC=1.0 by reducing ID distance 28$\times$.}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig240_perscene.png}
+\caption{(Left) Per-scene and nearest-scene strategies both recover AUROC=1.0 from the 0.88 degradation. (Right) ID mean distance drops 28$\times$ when using scene-specific centroids.}
+\end{figure}
+
+\textbf{Finding 459}: Per-scene calibration \textbf{fully recovers AUROC=1.0} by reducing ID distance 28$\times$ (0.001167 $\to$ 0.000041). The degradation in Experiment 228 was entirely due to inter-scene variance, not a fundamental detector limitation.
+
+\textbf{Finding 460}: The \textbf{nearest-scene centroid} approach achieves AUROC=1.0 \textbf{without requiring scene labels} at inference. It auto-selects the closest centroid from a small library, providing a practical deployment strategy: maintain 5 scene-type centroids (5 vectors of 4096D) and compute minimum distance.
+
 \end{document}

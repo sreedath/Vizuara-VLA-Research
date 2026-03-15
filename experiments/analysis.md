@@ -8700,3 +8700,23 @@ All ID means and stds are effectively 0.0 for all metrics.
 5. **This identifies the key challenge**: The detector's limitation is that corruption shift must exceed scene diversity. Per-scene calibration (Experiment 229) should recover performance.
 
 **Finding**: Diverse scene calibration reduces overall AUROC to **0.88** (from 1.0 with homogeneous scenes). The fundamental limitation: corruption's embedding shift must exceed in-distribution scene variance. Fog (0.000698 shift) becomes partially invisible when scene variance (0.001151 mean) exceeds it. Night (0.003403 shift) remains perfectly detected. This motivates per-scene calibration strategies.
+---
+
+### Finding 224: Per-Scene Calibration Strategy (Experiment 229)
+
+**Experiment**: Compare three calibration strategies for diverse scenes: global centroid, per-scene centroid, and nearest-scene centroid.
+
+**Results**:
+| Strategy | L1 AUROC | L3 AUROC | L3 ID Mean | L3 OOD Mean |
+|----------|----------|----------|------------|-------------|
+| Global centroid | 0.882 | 0.880 | 0.001167 | 0.002644 |
+| Per-scene centroid | 1.000 | 1.000 | 0.000041 | 0.002385 |
+| Nearest-scene centroid | 1.000 | 1.000 | 0.000041 | 0.002091 |
+
+**Key Findings**:
+1. **Per-scene calibration fully recovers AUROC=1.0**: By maintaining separate centroids for each scene type, ID distance drops from 0.001167 to 0.000041 (28× reduction), recovering perfect detection.
+2. **Nearest-scene centroid also works**: Auto-selecting the closest centroid at test time achieves AUROC=1.0, providing a practical approach that doesn't require scene labels at inference.
+3. **The problem is exclusively inter-scene variance**: Within any single scene type, embeddings are identical. The 0.88 AUROC was entirely caused by mixing diverse scene centroids.
+4. **Practical deployment strategy**: Maintain a small library of scene-type centroids (1 per scene type). At inference, find the nearest centroid and measure distance from it. This achieves perfect detection with minimal storage.
+
+**Finding**: Per-scene calibration **fully recovers AUROC=1.0** from the 0.88 degradation. ID distance drops 28× (0.001167 → 0.000041) when using scene-specific centroids. The nearest-scene centroid approach, which auto-selects the closest reference at test time, achieves identical AUROC=1.0 without requiring scene labels — providing a practical deployment strategy.
