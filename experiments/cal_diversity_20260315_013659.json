@@ -1,0 +1,190 @@
+{
+  "experiment": "cal_diversity",
+  "experiment_number": 152,
+  "timestamp": "20260315_013659",
+  "n_cal": 9,
+  "n_test_id": 8,
+  "n_ood_per_cat": 5,
+  "ood_categories": [
+    "fog_30",
+    "fog_60",
+    "night",
+    "blur",
+    "noise",
+    "occlusion",
+    "snow"
+  ],
+  "layers": [
+    3,
+    32
+  ],
+  "cal_configs": [
+    "highway_only",
+    "urban_only",
+    "rural_only",
+    "diverse_3each",
+    "diverse_6hw_3ur"
+  ],
+  "results": {
+    "highway_only": {
+      "L3": {
+        "overall_auroc": 0.8464285714285714,
+        "d_prime": 1.388406649309146,
+        "cal_radius": 1.9371509552001953e-05,
+        "id_max": 0.0013347268104553223,
+        "per_category": {
+          "fog_30": 0.625,
+          "fog_60": 0.75,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 0.55,
+          "snow": 1.0
+        }
+      },
+      "L32": {
+        "overall_auroc": 0.85,
+        "d_prime": 1.1380986631011918,
+        "cal_radius": 0.019494712352752686,
+        "id_max": 0.34758061170578003,
+        "per_category": {
+          "fog_30": 0.65,
+          "fog_60": 0.7,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 0.875,
+          "occlusion": 0.725,
+          "snow": 1.0
+        }
+      }
+    },
+    "urban_only": {
+      "L3": {
+        "overall_auroc": 0.8035714285714286,
+        "d_prime": 1.511682773541985,
+        "cal_radius": 1.5079975128173828e-05,
+        "id_max": 0.0011170506477355957,
+        "per_category": {
+          "fog_30": 0.475,
+          "fog_60": 0.625,
+          "night": 1.0,
+          "blur": 0.85,
+          "noise": 1.0,
+          "occlusion": 0.675,
+          "snow": 1.0
+        }
+      },
+      "L32": {
+        "overall_auroc": 0.775,
+        "d_prime": 1.2285590603683707,
+        "cal_radius": 0.034779250621795654,
+        "id_max": 0.2843659520149231,
+        "per_category": {
+          "fog_30": 0.525,
+          "fog_60": 0.5,
+          "night": 1.0,
+          "blur": 0.75,
+          "noise": 1.0,
+          "occlusion": 0.65,
+          "snow": 1.0
+        }
+      }
+    },
+    "rural_only": {
+      "L3": {
+        "overall_auroc": 0.8964285714285715,
+        "d_prime": 1.614379478410566,
+        "cal_radius": 1.704692840576172e-05,
+        "id_max": 0.00134354829788208,
+        "per_category": {
+          "fog_30": 0.7,
+          "fog_60": 0.95,
+          "night": 1.0,
+          "blur": 0.925,
+          "noise": 1.0,
+          "occlusion": 0.7,
+          "snow": 1.0
+        }
+      },
+      "L32": {
+        "overall_auroc": 0.8107142857142857,
+        "d_prime": 1.301093410354007,
+        "cal_radius": 0.03624016046524048,
+        "id_max": 0.3206513524055481,
+        "per_category": {
+          "fog_30": 0.45,
+          "fog_60": 0.675,
+          "night": 1.0,
+          "blur": 0.925,
+          "noise": 0.9,
+          "occlusion": 0.8,
+          "snow": 0.925
+        }
+      }
+    },
+    "diverse_3each": {
+      "L3": {
+        "overall_auroc": 0.9892857142857143,
+        "d_prime": 1.799992027240729,
+        "cal_radius": 0.00045609474182128906,
+        "id_max": 0.0004589557647705078,
+        "per_category": {
+          "fog_30": 0.925,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0
+        }
+      },
+      "L32": {
+        "overall_auroc": 0.9607142857142857,
+        "d_prime": 2.069112705430804,
+        "cal_radius": 0.12617278099060059,
+        "id_max": 0.13833016157150269,
+        "per_category": {
+          "fog_30": 0.725,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0
+        }
+      }
+    },
+    "diverse_6hw_3ur": {
+      "L3": {
+        "overall_auroc": 0.9071428571428571,
+        "d_prime": 1.6223854326380864,
+        "cal_radius": 0.000494539737701416,
+        "id_max": 0.0009506940841674805,
+        "per_category": {
+          "fog_30": 0.6,
+          "fog_60": 0.9,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 0.85,
+          "snow": 1.0
+        }
+      },
+      "L32": {
+        "overall_auroc": 0.8892857142857142,
+        "d_prime": 1.6799241179434916,
+        "cal_radius": 0.1463598608970642,
+        "id_max": 0.2545697093009949,
+        "per_category": {
+          "fog_30": 0.65,
+          "fog_60": 0.625,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 0.95,
+          "snow": 1.0
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,296 @@
+{
+  "experiment": "unified_detector",
+  "experiment_number": 151,
+  "timestamp": "20260315_013014",
+  "n_cal": 8,
+  "n_test_id": 10,
+  "n_ood_per_cat": 5,
+  "ood_categories": [
+    "fog_30",
+    "fog_60",
+    "night",
+    "blur",
+    "noise",
+    "occlusion",
+    "snow",
+    "overexpose"
+  ],
+  "prompts": [
+    "drive_forward",
+    "navigate",
+    "follow_lane",
+    "stop"
+  ],
+  "sigma": 3.0,
+  "layers": [
+    3,
+    32
+  ],
+  "k_pca": 2,
+  "results": {
+    "drive_forward": {
+      "cosine_same": {
+        "fpr": 0.0,
+        "recall": 0.9,
+        "precision": 1.0,
+        "f1": 0.9473684210526316,
+        "per_category_recall": {
+          "fog_30": 0.2,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "recon_same": {
+        "fpr": 0.9,
+        "recall": 1.0,
+        "precision": 0.8163265306122449,
+        "f1": 0.898876404494382,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "cosine_nearest": {
+        "fpr": 0.0,
+        "recall": 0.9,
+        "precision": 1.0,
+        "f1": 0.9473684210526316,
+        "per_category_recall": {
+          "fog_30": 0.2,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "recon_nearest": {
+        "fpr": 0.9,
+        "recall": 1.0,
+        "precision": 0.8163265306122449,
+        "f1": 0.898876404494382,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      }
+    },
+    "navigate": {
+      "cosine_same": {
+        "fpr": 0.0,
+        "recall": 0.95,
+        "precision": 1.0,
+        "f1": 0.9743589743589743,
+        "per_category_recall": {
+          "fog_30": 0.6,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "recon_same": {
+        "fpr": 0.5,
+        "recall": 1.0,
+        "precision": 0.8888888888888888,
+        "f1": 0.9411764705882353,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "cosine_nearest": {
+        "fpr": 0.0,
+        "recall": 0.95,
+        "precision": 1.0,
+        "f1": 0.9743589743589743,
+        "per_category_recall": {
+          "fog_30": 0.6,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "recon_nearest": {
+        "fpr": 0.5,
+        "recall": 1.0,
+        "precision": 0.8888888888888888,
+        "f1": 0.9411764705882353,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      }
+    },
+    "follow_lane": {
+      "cosine_same": {
+        "fpr": 0.0,
+        "recall": 0.925,
+        "precision": 1.0,
+        "f1": 0.961038961038961,
+        "per_category_recall": {
+          "fog_30": 0.4,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "recon_same": {
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.8,
+        "f1": 0.888888888888889,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "cosine_nearest": {
+        "fpr": 0.0,
+        "recall": 0.925,
+        "precision": 1.0,
+        "f1": 0.961038961038961,
+        "per_category_recall": {
+          "fog_30": 0.4,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "recon_nearest": {
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.8,
+        "f1": 0.888888888888889,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      }
+    },
+    "stop": {
+      "cosine_same": {
+        "fpr": 0.0,
+        "recall": 0.9,
+        "precision": 1.0,
+        "f1": 0.9473684210526316,
+        "per_category_recall": {
+          "fog_30": 0.2,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "recon_same": {
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.8,
+        "f1": 0.888888888888889,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "cosine_nearest": {
+        "fpr": 0.0,
+        "recall": 0.9,
+        "precision": 1.0,
+        "f1": 0.9473684210526316,
+        "per_category_recall": {
+          "fog_30": 0.2,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      },
+      "recon_nearest": {
+        "fpr": 1.0,
+        "recall": 1.0,
+        "precision": 0.8,
+        "f1": 0.888888888888889,
+        "per_category_recall": {
+          "fog_30": 1.0,
+          "fog_60": 1.0,
+          "night": 1.0,
+          "blur": 1.0,
+          "noise": 1.0,
+          "occlusion": 1.0,
+          "snow": 1.0,
+          "overexpose": 1.0
+        }
+      }
+    }
+  }
+}

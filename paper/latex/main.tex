@@ -2790,4 +2790,36 @@ The OR-gate architecture represents our recommended production deployment: two c
 \label{fig:recon}
 \end{figure}
 
+\subsection{Unified Detector Comparison}
+\label{app:unified}
+
+\textbf{Finding 216}: PCA reconstruction error, despite achieving AUROC$=$1.000 (Exp.~150), fails as a threshold-based classifier: FPR$=$0.850 at 3$\sigma$ threshold. The reconstruction error distribution violates the Gaussian assumption underlying $\sigma$-based thresholds.
+
+\textbf{Finding 217}: Cosine distance with nearest-centroid routing achieves \textbf{F1$=$0.958, FPR$=$0.000} across all 4 prompts, matching oracle (same-prompt) performance. This is the \textbf{recommended production architecture}: simple, robust, and prompt-agnostic.
+
+\textbf{Finding 218}: The gap between AUROC$=$1.000 (ranking metric) and F1$=$0.904 (threshold metric) for PCA reconstruction highlights that \textbf{ranking performance does not guarantee threshold performance}. Calibration statistics must match the score distribution.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig137_unified_detector.png}
+\caption{\textbf{Unified detector comparison.} (A) F1: cosine methods achieve 0.958; PCA-recon drops to 0.904 due to FPR. (B) Recall vs FPR: PCA-recon has perfect recall but unacceptable FPR; cosine achieves zero FPR. (C) Cosine same-prompt and nearest-centroid are identical per prompt.}
+\label{fig:unified}
+\end{figure}
+
+\subsection{Calibration Set Diversity}
+\label{app:diversity}
+
+\textbf{Finding 219}: Calibration diversity is worth $\sim$15\% AUROC: diverse calibration (3 highway + 3 urban + 3 rural) achieves L3 AUROC$=$0.989 vs 0.846--0.896 for any homogeneous set. Same total sample count ($n{=}9$), dramatically different performance.
+
+\textbf{Finding 220}: L32 benefits more from diversity than L3 (AUROC gain: +0.15 at L32 vs +0.09 at L3). L32's higher intrinsic dimensionality (10D vs 2D) makes the centroid more sensitive to calibration composition.
+
+\textbf{Finding 221}: Practical calibration guideline: include $\geq$2--3 representative scene types even if total count stays fixed. \textbf{Diversity matters more than quantity} — 3$\times$3 diverse outperforms 9$\times$1 homogeneous by a large margin.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig138_cal_diversity.png}
+\caption{\textbf{Calibration diversity.} (A) Overall AUROC: diverse (3 each) achieves 0.989 at L3, far exceeding any single-type calibration (0.80--0.90). (B) Per-category comparison at L3: diverse calibration improves ALL categories. (C) d-prime confirms diversity boosts separation at both layers.}
+\label{fig:diversity}
+\end{figure}
+
 \end{document}

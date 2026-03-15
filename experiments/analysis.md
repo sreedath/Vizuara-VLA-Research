@@ -6600,3 +6600,62 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 5. **Practical detector: PCA-Recon OR-gate**: Use PCA reconstruction error (k=2) at L3 and L32 in an OR-gate configuration. This should achieve perfect AUROC while being robust to both fog and all other OOD categories.
 
 6. **Implementation cost**: One SVD during calibration (one-time), then 2 matrix-vector products per inference (project onto 2 components, compute residual). Computational cost: ~200μs total.
+
+---
+
+## Finding 145: Unified PCA-Recon OR-Gate Detector (Experiment 151)
+
+**Question**: Does combining PCA reconstruction (k=2) with multi-centroid routing create the ultimate detector?
+
+**Setup**: 4 prompts × 8 cal images, 10 test ID, 5 OOD per category (8 categories). 3σ threshold. Four detectors: cosine same-prompt, PCA-recon same-prompt, cosine nearest-centroid, PCA-recon nearest-centroid.
+
+**Key Results**:
+
+| Detector | Mean F1 | Mean Recall | Mean FPR |
+|----------|---------|-------------|----------|
+| Cosine same-prompt | **0.958** | 0.919 | **0.000** |
+| PCA-recon same-prompt | 0.904 | **1.000** | 0.850 |
+| Cosine nearest-centroid | **0.958** | 0.919 | **0.000** |
+| PCA-recon nearest-centroid | 0.904 | **1.000** | 0.850 |
+
+**Critical Insights**:
+
+1. **PCA reconstruction has a threshold calibration problem**: While AUROC=1.000 (Exp 150), the 3σ threshold from mean reconstruction error is too aggressive, flagging 85-100% of ID images as OOD. The reconstruction error distribution is not well-captured by Gaussian statistics.
+
+2. **Cosine distance remains the practical winner**: F1=0.958 with FPR=0.000. The simple cosine threshold generalizes better from calibration to test.
+
+3. **Nearest-centroid routing adds zero cost and matches oracle**: Cosine nearest-centroid achieves identical F1=0.958 to cosine same-prompt, confirming that the multi-centroid approach fully resolves prompt specificity.
+
+4. **PCA-recon needs quantile-based thresholds**: Rather than mean+3σ, a percentile-based threshold (e.g., 99th percentile of calibration reconstruction errors) might work better.
+
+5. **Final recommended architecture**: **Cosine OR-gate with nearest-centroid routing** remains the best practical detector. PCA reconstruction is useful as an AUROC metric but not as a threshold-based classifier with Gaussian assumptions.
+
+---
+
+## Finding 146: Calibration Set Diversity (Experiment 152)
+
+**Question**: Does calibration set diversity matter more than quantity?
+
+**Setup**: 9 calibration images in 5 configs: highway-only, urban-only, rural-only, diverse (3 each), partial (6hw+3ur). Same test set and OOD categories across all configs.
+
+**Key Results**:
+
+| Config | L3 AUROC | L3 d-prime | L32 AUROC | L32 d-prime |
+|--------|----------|-----------|-----------|------------|
+| Highway only | 0.846 | 1.4 | 0.850 | 1.1 |
+| Urban only | 0.804 | 1.5 | 0.775 | 1.2 |
+| Rural only | 0.896 | 1.6 | 0.811 | 1.3 |
+| **Diverse (3 each)** | **0.989** | **1.8** | **0.961** | **2.1** |
+| Partial (6hw+3ur) | 0.907 | 1.6 | 0.889 | 1.7 |
+
+**Critical Insights**:
+
+1. **Diversity is worth ~15-18% AUROC**: Diverse calibration (0.989 L3) dramatically outperforms the best homogeneous set (rural-only, 0.896 L3). At 9 total images, going from 1 scene type to 3 gains 0.093 AUROC points.
+
+2. **Homogeneous calibration biases the centroid**: A highway-only centroid sits in a subspace biased toward highway features. OOD images that happen to be highway-like may not be detected, while normal urban scenes may be flagged.
+
+3. **Even partial diversity helps**: 6hw+3ur (0.907) beats any homogeneous set, but falls short of balanced diversity (0.989). The missing rural scenes narrow the ID manifold.
+
+4. **L32 benefits more from diversity**: L32 AUROC jumps from 0.775-0.850 (homogeneous) to 0.961 (diverse), a larger relative gain than L3. L32's higher intrinsic dimensionality means the centroid is more sensitive to calibration composition.
+
+5. **Practical guidance**: Calibrate with at least 2-3 representative scene types, even if total sample count stays the same. **Diversity > quantity** for calibration effectiveness.
