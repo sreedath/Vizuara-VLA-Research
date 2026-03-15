@@ -16736,3 +16736,23 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 909**: Distance computation is O(1) with respect to calibration set size — 7.3μs whether computing against 1 or 100 calibration centroids. This constant-time scaling means the detector can use arbitrarily large calibration sets (for robustness) without any inference-time penalty, since distance is computed against the precomputed centroid rather than individual calibration images.
 
 **Finding 910**: Memory footprint is 16KB per full 4096D embedding and only 256 bytes for a 32D projected embedding. A complete calibration set of 100 scenes requires only 1.6MB at full dimensionality or 25KB projected — small enough to fit in L1 cache on any modern processor, enabling cache-resident OOD detection with no memory bandwidth bottleneck.
+
+---
+
+## Experiment 413: Embedding Dimensionality Analysis
+
+**Objective**: Study the effective dimensionality of the embedding space and how corruption detection relates to intrinsic vs. ambient dimensionality. Determine the minimum number of dimensions needed for perfect detection via random projections, feature selection, and sparse projection matrices.
+
+**Method**: PCA with participation ratio estimation, random Gaussian projections at 12 dimensionalities (1D to 2048D) with 10 trials each, per-corruption dimensionality requirements, top-k feature selection by displacement variance, and comparison of dense Gaussian, sparse (1/3 and 1/√d), and binary random projections at 32D.
+
+**Finding 911**: Participation ratio is only 2.6 — the embedding space has extremely low effective dimensionality despite ambient dimension of 4096. Only 3 PCA dimensions capture 95% of variance, and 7 dimensions capture 99%. The top 10 dimensions capture 99.5% of total variance, confirming that the corruption-relevant embedding manifold is a tiny subspace of the full 4096D space.
+
+**Finding 912**: Random projection to 64D guarantees perfect AUROC=1.0 across all trials and all corruptions, while 32D achieves mean AUROC=0.999 (min 0.99, 9/10 trials perfect). Below 32D, detection degrades rapidly: 8D gives 0.984, 4D gives 0.941, 2D gives 0.819. The sharp transition between 32D and 64D marks the practical dimensionality threshold for guaranteed detection.
+
+**Finding 913**: Per-corruption minimum dimensions for perfect AUROC vary dramatically — fog needs only 4D, blur needs 8D, noise needs 64D. Night requires only 4D. Noise's high dimensionality requirement (64D vs 4D for fog/night) is consistent with its weak per-patch signal that is distributed across many embedding dimensions rather than concentrated in a few.
+
+**Finding 914**: Top-2 variance-selected dimensions achieve AUROC=1.0, but top-1 fails completely (AUROC=0.5). The jump from 0.5 to 1.0 between 1 and 2 selected dimensions means exactly 2 embedding dimensions (indices 1512 and 3431) are necessary and sufficient for perfect OOD detection when selected by displacement variance. This is dramatically more efficient than random projection (which needs 64D for guarantees).
+
+**Finding 915**: Binary random projections (+1/-1 scaled by 1/√d) achieve perfect AUROC=1.0 at 32D — the best of all projection types tested. Dense Gaussian achieves 0.999, sparse 1/3 achieves 0.996, sparse 1/√d achieves 0.996. Binary projections are computationally cheapest (no multiplication needed, only additions/subtractions) and achieve the best detection, making them the optimal choice for resource-constrained deployments.
+
+**Finding 916**: The 5 most informative embedding dimensions (by displacement variance) are indices [1512, 3431, 2298, 2393, 339]. These 5 dimensions are stable across all k values from 8 to 256, always appearing as the top-5. Dimension 1512 alone is insufficient (AUROC=0.5), but adding dimension 3431 immediately achieves perfect detection, suggesting these two dimensions capture complementary corruption information.

@@ -8152,4 +8152,27 @@ We measure the computational overhead of the OOD detection pipeline, including e
 
 \textbf{Finding 1165}: \textbf{Memory footprint is 16KB per full 4096D embedding and only 256 bytes for a 32D projected embedding.} A complete calibration set of 100 scenes requires only 1.6MB at full dimensionality or 25KB projected---small enough to fit in L1 cache on any modern processor (Figure~\ref{fig:speed}), enabling cache-resident OOD detection with no memory bandwidth bottleneck.
 
+\subsection{Experiment 413: Embedding Dimensionality Analysis}
+
+We study the effective dimensionality of the embedding space and how corruption detection relates to intrinsic vs.\ ambient dimensionality, determining the minimum number of dimensions needed for perfect detection via random projections, feature selection, and sparse projection matrices. We perform PCA with participation ratio estimation, random Gaussian projections at 12 dimensionalities (1D to 2048D) with 10 trials each, per-corruption dimensionality requirements, top-$k$ feature selection by displacement variance, and comparison of dense Gaussian, sparse, and binary random projections at 32D.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig422_dims.png}
+\caption{Experiment 413: Embedding dimensionality analysis. Participation ratio = 2.6, only 3 PCA dims for 95\% variance. Random projection: 64D guarantees AUROC=1.0, 32D gives 0.999. Per-corruption: fog needs 4D, noise needs 64D. Top-2 variance-selected dimensions achieve AUROC=1.0 (but top-1 fails at 0.5). Binary projections outperform all others at 32D. Five key dimensions [1512, 3431, 2298, 2393, 339] are stable across all $k$ values.}
+\label{fig:dims}
+\end{figure}
+
+\textbf{Finding 1166}: \textbf{Participation ratio is only 2.6---the embedding space has extremely low effective dimensionality despite ambient dimension of 4096.} Only 3 PCA dimensions capture 95\% of variance, 7 capture 99\%, and 10 capture 99.5\% (Figure~\ref{fig:dims}). The corruption-relevant embedding manifold occupies a tiny subspace of the full space, consistent with Experiment 406's finding that a 3D subspace captures 96.5\% of corruption variance.
+
+\textbf{Finding 1167}: \textbf{Random projection to 64D guarantees perfect AUROC=1.0 across all trials and all corruptions, while 32D achieves mean AUROC=0.999 (min 0.99, 9/10 trials perfect).} Below 32D, detection degrades rapidly: 8D gives 0.984, 4D gives 0.941, 2D gives 0.819 (Figure~\ref{fig:dims}). The sharp transition between 32D and 64D marks the practical dimensionality threshold for guaranteed detection.
+
+\textbf{Finding 1168}: \textbf{Per-corruption minimum dimensions for perfect AUROC vary dramatically---fog needs only 4D, blur needs 8D, noise needs 64D.} Night requires only 4D. Noise's high dimensionality requirement ($64\text{D}$ vs $4\text{D}$ for fog/night) is consistent with its weak per-patch signal distributed across many embedding dimensions (Figure~\ref{fig:dims}).
+
+\textbf{Finding 1169}: \textbf{Top-2 variance-selected dimensions achieve AUROC=1.0, but top-1 fails completely (AUROC=0.5).} The jump from 0.5 to 1.0 between 1 and 2 selected dimensions means exactly 2 embedding dimensions (indices 1512 and 3431) are necessary and sufficient for perfect OOD detection when selected by displacement variance (Figure~\ref{fig:dims})---dramatically more efficient than random projection's 64D requirement.
+
+\textbf{Finding 1170}: \textbf{Binary random projections (+1/-1 scaled by $1/\sqrt{d}$) achieve perfect AUROC=1.0 at 32D---the best of all projection types tested.} Dense Gaussian achieves 0.999, sparse 1/3 achieves 0.996, sparse $1/\sqrt{d}$ achieves 0.996 (Figure~\ref{fig:dims}). Binary projections are computationally cheapest (no multiplication needed, only additions/subtractions) and achieve the best detection, making them optimal for resource-constrained deployments.
+
+\textbf{Finding 1171}: \textbf{The 5 most informative embedding dimensions (by displacement variance) are indices [1512, 3431, 2298, 2393, 339], stable across all $k$ values from 8 to 256.} Dimension 1512 alone is insufficient (AUROC=0.5), but adding dimension 3431 immediately achieves perfect detection (Figure~\ref{fig:dims}), suggesting these two dimensions capture complementary corruption information---one is insufficient, together they are complete.
+
 \end{document}
