@@ -243,7 +243,8 @@ def main():
             'clean_bins': scene_clean_bins,
             'corrupted': per_ct,
         }
-        print(f"  Scene {seed}: clean={scene_clean_bins}, changed: {', '.join(f'{ct}={v[\"n_changed\"]}' for ct, v in per_ct.items())}")
+        changed_str = ', '.join(f'{ct}={v["n_changed"]}' for ct, v in per_ct.items())
+        print(f"  Scene {seed}: clean={scene_clean_bins}, changed: {changed_str}")
 
     results['scene_consistency'] = scene_consistency
 

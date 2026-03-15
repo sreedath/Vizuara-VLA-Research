@@ -6256,4 +6256,27 @@ We profile detection performance across 14 layers (L0--L32) to characterize sign
 
 \textbf{Finding 787}: \textbf{Direction consistency degrades monotonically from 93\% (L1--L5) to 42\% (L31--L32).} Corruption shifts become increasingly scene-specific through deeper layers. This gradient explains the optimal detection strategy: use early layers for cross-scene transfer, deep layers only with per-scene calibration.
 
+%% ============================================================
+\subsection{Experiment 334: Action Space Geometry}
+\label{sec:exp334}
+
+We analyze how visual corruptions reshape the 7-dimensional action output space, examining per-dimension sensitivity, confidence calibration, and cross-corruption action patterns.
+
+\textbf{Setup.} We generate 7-step action sequences by autoregressive decoding under clean and corrupted conditions (4 types $\times$ 5 severities), recording action tokens, logit distributions, and per-dimension changes across 4 scenes.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig343_actions.png}
+\caption{\textbf{Figure~343: Action space geometry.} (A)~Night@10\% produces zero action change despite embedding shift. (B)~Night causes largest deviation (690 bins). (C)~Fog has LOWER entropy than clean (overconfident wrong). (D)~Gripper dim discriminates fog (4 bins) from night (128 bins). (E)~All scenes show 6--7/7 dims changed. (F)~Fog exceeds clean confidence on several steps.}
+\label{fig:actions}
+\end{figure}
+
+\textbf{Finding 788}: \textbf{Night@10\% produces zero action change despite detectable embedding shift.} The embedding detector catches corruption at $d > 0$ before any action dimension changes. This ``silent detection'' window demonstrates the detector's proactive capability: it identifies dangerous conditions \emph{before they manifest as wrong actions}.
+
+\textbf{Finding 789}: \textbf{Fog makes the model MORE confident on wrong actions (entropy 1.031 $<$ clean 1.070).} Under fog corruption, the model's action entropy \emph{decreases}, meaning it becomes more certain about incorrect predictions. This is the most dangerous failure mode: traditional entropy-based OOD detectors would \emph{fail} to flag fog because the model appears confidently correct.
+
+\textbf{Finding 790}: \textbf{Night causes the largest action deviations: 690 total bin deviation vs fog 309, blur 519, noise 46.} Despite fog's overconfidence, night produces the most extreme action changes. Dimension 1 (y-axis) shifts by 140 bins and the gripper command inverts from 128$\to$0.
+
+\textbf{Finding 791}: \textbf{The gripper dimension discriminates fog from night: fog $\Delta=4$ vs night $\Delta=128$.} Fog primarily corrupts translation dimensions while leaving the gripper nearly unchanged. Night radically alters the gripper, suggesting different failure mechanisms. This dimension-specific signature could enable corruption-type identification from action outputs alone.
+
 \end{document}
