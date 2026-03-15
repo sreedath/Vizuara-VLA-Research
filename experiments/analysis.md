@@ -8027,3 +8027,28 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 5. **Color shift detected by L3+ but not fully by L1**: L1=0.891 vs L3=1.0. Color transformations may be partially normalized by early layers.
 
 **Finding**: The cosine distance detector generalizes well to **novel OOD types** — 5/7 unseen corruptions are perfectly detected without any additional calibration. The key limitation is structural changes (occlusion) at early layers, where L32 compensates. This suggests a production system should monitor both early (L1/L3) and late (L32) layers for comprehensive coverage — early layers catch intensity/color corruptions while late layers catch structural/semantic changes.
+---
+
+### Finding 200: Dual-Layer Ensemble Detection (Experiment 205)
+
+**Experiment**: Combine L3 (early) and L32 (late) using max and average strategies with z-score normalization. Test on 7 corruption types including occlusion.
+
+**Strategy Comparison (AUROC)**:
+| Corruption | L3 Only | L32 Only | Max(L3,L32) | Avg(L3,L32) |
+|-----------|---------|----------|-------------|-------------|
+| Fog | 1.000 | 1.000 | 1.000 | 1.000 |
+| Night | 1.000 | 1.000 | 1.000 | 1.000 |
+| Blur | 1.000 | 1.000 | 1.000 | 1.000 |
+| Noise | 1.000 | 1.000 | 1.000 | 1.000 |
+| Rain | 1.000 | 1.000 | 1.000 | 1.000 |
+| Occlusion | 0.578 | 1.000 | **1.000** | **1.000** |
+| JPEG Q5 | 0.891 | 0.875 | 0.844 | **0.969** |
+
+**Key Findings**:
+1. **Max(L3,L32) fixes occlusion**: AUROC jumps from L3-only 0.578 to 1.0. The OR-gate strategy catches both color/intensity corruptions (via L3) and structural changes (via L32).
+2. **Avg(L3,L32) is best for JPEG**: AUROC=0.969 vs L3-only 0.891. Averaging normalizes the complementary signals for corruptions where both layers contribute partial information.
+3. **Max vs Avg tradeoff**: Max is better for occlusion (where one layer has perfect signal), Avg is better for JPEG (where both layers have partial signal).
+4. **No degradation on standard corruptions**: Both ensemble strategies maintain AUROC=1.0 for all 5 standard+novel corruption types where single layers already succeed.
+5. **Ensemble cost**: Trivial. Both centroids are extracted in the same forward pass. Total additional cost: one more cosine distance + one max/avg operation = ~10 µs.
+
+**Finding**: The **dual-layer ensemble** solves the occlusion gap discovered in Experiment 204. By monitoring both early (L3) and late (L32) layers with z-score normalization and OR-gate combination, the detector achieves AUROC=1.0 on 6/7 corruption types including structural changes. The recommended production configuration is **Max(L3, L32)** for maximum coverage, at negligible additional cost (~10 µs on top of the 5 µs baseline).

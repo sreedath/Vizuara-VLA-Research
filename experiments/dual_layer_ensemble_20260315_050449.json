@@ -1,0 +1,58 @@
+{
+  "experiment": "dual_layer_ensemble",
+  "experiment_number": 205,
+  "timestamp": "20260315_050449",
+  "n_cal": 10,
+  "n_test": 8,
+  "results": {
+    "fog_60": {
+      "L3_only": 1.0,
+      "L32_only": 1.0,
+      "L1_only": 1.0,
+      "max_L3_L32": 1.0,
+      "avg_L3_L32": 1.0
+    },
+    "night": {
+      "L3_only": 1.0,
+      "L32_only": 1.0,
+      "L1_only": 1.0,
+      "max_L3_L32": 1.0,
+      "avg_L3_L32": 1.0
+    },
+    "blur": {
+      "L3_only": 1.0,
+      "L32_only": 1.0,
+      "L1_only": 1.0,
+      "max_L3_L32": 1.0,
+      "avg_L3_L32": 1.0
+    },
+    "noise": {
+      "L3_only": 1.0,
+      "L32_only": 1.0,
+      "L1_only": 1.0,
+      "max_L3_L32": 1.0,
+      "avg_L3_L32": 1.0
+    },
+    "rain": {
+      "L3_only": 1.0,
+      "L32_only": 1.0,
+      "L1_only": 1.0,
+      "max_L3_L32": 1.0,
+      "avg_L3_L32": 1.0
+    },
+    "occlusion": {
+      "L3_only": 0.578125,
+      "L32_only": 1.0,
+      "L1_only": 0.421875,
+      "max_L3_L32": 1.0,
+      "avg_L3_L32": 1.0
+    },
+    "jpeg_q5": {
+      "L3_only": 0.890625,
+      "L32_only": 0.875,
+      "L1_only": 0.765625,
+      "max_L3_L32": 0.84375,
+      "avg_L3_L32": 0.96875
+    }
+  }
+}
