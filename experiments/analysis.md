@@ -8944,3 +8944,30 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **Gradual corruption is fully tracked**: Distance increases monotonically during the transition phase, providing real-time severity monitoring.
 
 **Finding 232**: Online detection detects corruption within **0-1 frames** of onset (raw) and **0-2 frames** with EMA smoothing. Even at 10% severity (earliest transition frame), fog and noise already exceed the 2× threshold. The detector provides **real-time corruption monitoring** in video streams.
+
+---
+
+## Experiment 238: Output Logit Distribution Analysis
+
+**Research Question**: How do output logits change under corruption? Does the model become more or less confident? Does the predicted action token change?
+
+**Method**: Compare output logit distribution statistics (entropy, top-k probabilities, action token mass, KL from uniform) between clean and 4 corruption types.
+
+**Results**:
+
+| Condition | Entropy | Top-1 Prob | Top Action Token | KL from Uniform |
+|----------|---------|-----------|-----------------|----------------|
+| Clean | 2.89 | 0.290 | 31869 | 2.66 |
+| Fog | 3.38 | 0.217 | 31898 | 2.16 |
+| Night | 4.59 | 0.063 | 31860 | 0.96 |
+| Noise | 0.36 | 0.943 | 31860 | 5.18 |
+| Blur | 1.68 | 0.587 | 31919 | 3.87 |
+
+**Key Findings**:
+1. **All corruptions change the predicted action token**: Clean=31869, Fog=31898, Night=31860, Noise=31860, Blur=31919. Every corruption produces a different first action token.
+2. **Corruptions shift entropy in opposite directions**: Night increases entropy by +1.70 (less confident), while noise DECREASES entropy by -2.53 (MORE confident in the wrong action!).
+3. **Noise is dangerously overconfident**: Top-1 probability = 0.943 under noise (vs 0.290 for clean). The model is 3.3× more confident in a WRONG action token.
+4. **Night produces genuine uncertainty**: Top-1 probability drops to 0.063 — the model hedges across many action tokens. But this uncertainty is model-internal and not accessible without logit analysis.
+5. **Action mass stays near 1.0**: All conditions keep >99.97% probability on action tokens (31744-31999). Corruption doesn't cause the model to predict non-action tokens.
+
+**Finding 233**: Corruption shifts output entropy in **opposite directions**: noise makes the model 3.3× MORE confident (0.943 vs 0.290) in a WRONG action, while night reduces confidence to 0.063. Output entropy is NOT a reliable OOD detector because corruptions can increase or decrease confidence arbitrarily. Embedding-based detection is strictly superior.

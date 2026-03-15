@@ -1,0 +1,62 @@
+{
+  "experiment": "logit_analysis",
+  "experiment_number": 238,
+  "timestamp": "20260315_071700",
+  "results": {
+    "clean": {
+      "entropy": 2.8865,
+      "top1_prob": 0.289882,
+      "top5_prob": 0.638604,
+      "top10_prob": 0.770439,
+      "action_mass": 0.999979,
+      "top_action_token": 31869,
+      "top_action_prob": 0.289882,
+      "top_token": 31869,
+      "kl_action_from_uniform": 2.659
+    },
+    "fog": {
+      "entropy": 3.3839,
+      "top1_prob": 0.216942,
+      "top5_prob": 0.524752,
+      "top10_prob": 0.659793,
+      "action_mass": 0.99992,
+      "top_action_token": 31898,
+      "top_action_prob": 0.216942,
+      "top_token": 31898,
+      "kl_action_from_uniform": 2.1623
+    },
+    "night": {
+      "entropy": 4.5877,
+      "top1_prob": 0.063093,
+      "top5_prob": 0.185861,
+      "top10_prob": 0.29722,
+      "action_mass": 0.999735,
+      "top_action_token": 31860,
+      "top_action_prob": 0.063093,
+      "top_token": 31860,
+      "kl_action_from_uniform": 0.9609
+    },
+    "noise": {
+      "entropy": 0.3614,
+      "top1_prob": 0.942821,
+      "top5_prob": 0.982679,
+      "top10_prob": 0.993014,
+      "action_mass": 0.999999,
+      "top_action_token": 31860,
+      "top_action_prob": 0.942821,
+      "top_token": 31860,
+      "kl_action_from_uniform": 5.1838
+    },
+    "blur": {
+      "entropy": 1.6787,
+      "top1_prob": 0.587393,
+      "top5_prob": 0.884359,
+      "top10_prob": 0.936161,
+      "action_mass": 0.999998,
+      "top_action_token": 31919,
+      "top_action_prob": 0.587393,
+      "top_token": 31919,
+      "kl_action_from_uniform": 3.8665
+    }
+  }
+}

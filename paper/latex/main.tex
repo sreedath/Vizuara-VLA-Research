@@ -4604,4 +4604,38 @@ Rain & 0.009127 & 0.000232 & 100\% \\
 
 \textbf{Finding 483}: Distance increases \textbf{monotonically} during the transition phase, providing real-time severity tracking. The system not only detects corruption onset but continuously monitors its progression.
 
+\subsection{Output Logit Analysis}
+
+\textbf{Experiment 238: Why Output Entropy Fails as OOD Detector.} We analyze output logit distributions under corruption to understand why embedding-based detection is necessary rather than simply monitoring output confidence.
+
+\begin{table}[h]
+\centering
+\caption{Output logit statistics under corruption. Noise makes the model 3.3$\times$ MORE confident in a wrong action.}
+\begin{tabular}{lcccc}
+\toprule
+Condition & Entropy & Top-1 Prob & Action Token & KL from Uniform \\
+\midrule
+Clean & 2.89 & 0.290 & 31869 & 2.66 \\
+Fog & 3.38 & 0.217 & 31898 & 2.16 \\
+Night & 4.59 & 0.063 & 31860 & 0.96 \\
+Noise & \textbf{0.36} & \textbf{0.943} & 31860 & 5.18 \\
+Blur & 1.68 & 0.587 & 31919 & 3.87 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig247_logit_analysis.png}
+\caption{Output distributions under corruption. Left: entropy shifts in \textit{opposite} directions (noise decreases, night increases). Center: noise produces 94.3\% top-1 probability --- 3.3$\times$ more confident than clean. Right: every corruption changes the predicted action token.}
+\end{figure}
+
+\textbf{Finding 484}: All four corruptions \textbf{change the predicted action token}, confirming that corruption causes dangerous action changes, not just embedding shifts.
+
+\textbf{Finding 485}: Output entropy is \textbf{not a reliable OOD detector}: noise \textit{decreases} entropy from 2.89 to 0.36, making the model 3.3$\times$ more confident in a \textit{wrong} action. An entropy-based detector would \textit{miss} noise corruption entirely.
+
+\textbf{Finding 486}: Night increases entropy to 4.59 (top-1 prob = 0.063), showing genuine model uncertainty. But this is corruption-specific --- blur actually \textit{increases} confidence (0.587 vs 0.290). No single output statistic reliably detects all corruption types.
+
+\textbf{Finding 487}: Embedding-based detection is strictly superior to output-based detection: cosine distance achieves AUROC=1.0 for all corruptions regardless of how they affect output confidence. The embedding captures the corruption signal \textit{before} it propagates to (potentially misleading) output distributions.
+
 \end{document}
