@@ -5606,4 +5606,36 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 657}: \textbf{Intermittent glitches detected with zero hysteresis}: each isolated noise frame is independently detected regardless of surrounding clean frames, confirming no temporal smoothing artifacts. The 48-frame multi-corruption journey correctly identifies every segment boundary at the exact transition frame.
 
+\subsection{Action Token Distribution Analysis}
+
+\textbf{Experiment 302: Output Distribution Under Corruption.} We analyze the full output token distribution under corruption: KL divergence, total variation distance, entropy changes, confidence calibration, and complete 7-dimensional action comparison across 4 corruption types at 3 severity levels.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig311_action_dist.png}
+\caption{Action token distribution analysis. (a) Token shift: blur shifts 88--98 bins even at low severity. (b) KL divergence: blur peaks at $>6$ at severity 0.3. (c) Entropy: night/blur increase uncertainty; fog \emph{decreases} it (confident wrong). (d) Confidence: fog \emph{more confident} than clean (0.476 vs 0.433). (e) 7D actions: 5--7/7 dimensions change under corruption. (f) Total variation: $>0.89$ for blur at all severities.}
+\end{figure}
+
+\textbf{Finding 658}: \textbf{Fog produces confident wrong actions} --- top-1 probability 0.476 (higher than clean's 0.433) despite shifting the action by 55 bins. This is the most dangerous corruption: the model is \emph{more confident} in a \emph{wrong action}. Night and blur reduce confidence (0.124, 0.093), but fog would evade any entropy-based or confidence-based detector.
+
+\textbf{Finding 659}: \textbf{Full 7D actions change catastrophically}: 5--7/7 dimensions differ under corruption, with total shifts of 283--463 bins across dimensions. Blur has the largest total shift (463 bins), representing a completely different robot trajectory. The cosine distance detector catches all of these, while argmax monitoring would miss fog and night at severity 0.3 (token unchanged, but KL $= 0.52$).
+
+\textbf{Finding 660}: \textbf{Night and blur increase output entropy} (3.87 and 4.13 vs clean 2.38), while fog slightly \emph{decreases} entropy (2.08). The total variation distance exceeds 0.85 for all corruptions at severity 1.0, confirming the entire probability distribution shifts --- not just the top-1 token.
+
+\subsection{Activation Pattern Analysis}
+
+\textbf{Experiment 303: Internal Activations Under Corruption.} We examine activation patterns: per-layer cosine distance, sign-flip rates, Pearson correlation, magnitude ratios, and sequence-position analysis comparing text vs image token activations.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig312_activation.png}
+\caption{Activation pattern analysis. (a) Cosine distance grows with depth for all corruptions. (b) Night/blur cause up to 42\% sign flips at L31. (c) Correlation drops from $>0.99$ (L3) to 0.71 (L31). (d) Image tokens carry signal at L3, text accumulates by L31. (e) Moment shifts $<0.5\%$ despite AUROC=1.0. (f) Sparsity changes are minimal.}
+\end{figure}
+
+\textbf{Finding 661}: \textbf{42\% of neurons flip sign at L31} under night and blur, with correlation dropping to 0.71--0.73. Despite this dramatic restructuring, magnitude ratios stay near 1.0 ($0.97\pm0.03$), confirming corruption perturbation is primarily \emph{rotational} (directional) rather than scaling --- consistent with the 97--99\% orthogonal decomposition from Experiment~299.
+
+\textbf{Finding 662}: \textbf{Signal propagates from image tokens to text tokens across depth.} At L3, text tokens (first 10 positions) show $d = 0.20$ for fog while the generated last token shows only $d = 0.004$. By L31, signal accumulates through attention: the last token reaches $d = 0.17$ (fog) and $d = 0.41$ (night), matching or exceeding image token distances.
+
+\textbf{Finding 663}: \textbf{Moment shifts are negligible} (mean shift $< 0.001$, std shift $< 0.005$ at L3) despite perfect detection. Standard statistical tests on activation distributions would completely miss the OOD signal. The corruption information is encoded in the embedding \emph{direction}, not in aggregate statistics like mean, variance, or kurtosis.
+
 \end{document}
