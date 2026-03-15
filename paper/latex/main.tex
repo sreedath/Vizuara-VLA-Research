@@ -6637,4 +6637,25 @@ We test detection across 15 diverse prompts spanning different task types, lingu
 
 \textbf{Finding 855}: \textbf{15/15 prompts achieve perfect detection, eliminating prompt engineering as a deployment concern.} Imperative, interrogative, minimal, verbose, task-specific, and generic prompts all work identically for OOD detection.
 
+%% ============================================================
+\subsection{Experiment 351: Layer-Depth Sensitivity Profile}
+\label{sec:exp351}
+
+We characterize detection across all 33 hidden layers (L0--L32), comparing pooling strategies and analyzing the severity$\times$layer interaction.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig360_layer.png}
+\caption{\textbf{Experiment 351}: Layer profile. Top-left: distance grows monotonically L0$\to$L32 (blur peaks at 0.66). Top-right: L0 has AUROC=0.5, L1+ all 1.0. Bottom-left: mean pooling outperforms last-token; max/first fail. Bottom-right: final layer amplifies signal $45\times$ vs L3.}
+\label{fig:exp351}
+\end{figure}
+
+\textbf{Finding 856}: \textbf{L0 $d=0$ but L1 achieves AUROC=1.0 --- the signal originates entirely in the LLM.} The vision encoder produces identical embeddings for clean and corrupted inputs. The very first LLM transformer layer creates a perfectly separable signal.
+
+\textbf{Finding 857}: \textbf{All 32 LLM layers (L1--L32) achieve AUROC=1.0 --- layer choice is not a hyperparameter.} This is complete layer universality: every layer from the first to the last provides perfect OOD detection.
+
+\textbf{Finding 858}: \textbf{Mean pooling outperforms last-token by $1.4\times$ while max and first-token pooling fail entirely.} The OOD signal concentrates in the last token position; mean pooling captures it with a bonus from distributed corruption features.
+
+\textbf{Finding 859}: \textbf{L32 amplifies the signal $45\times$ vs L3 --- the LLM is a progressive corruption amplifier.} Blur at sev=0.1 reaches $d=0.225$ at L32 vs $d=0.005$ at L3. Deeper layers provide larger detection margins for deployment.
+
 \end{document}
