@@ -1,0 +1,1240 @@
+{
+  "scene_evolution": [
+    {
+      "alpha": 0.0,
+      "clean_dist": 0.0,
+      "corrupt_dist": 0.003040188304532676,
+      "margin": 0.003040188304532676,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.05,
+      "clean_dist": 3.5206744067650675e-05,
+      "corrupt_dist": 0.0030914034208457952,
+      "margin": 0.0030561966767781445,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.1,
+      "clean_dist": 4.3472900171481754e-05,
+      "corrupt_dist": 0.0031836611069280263,
+      "margin": 0.0031401882067565445,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.15000000000000002,
+      "clean_dist": 7.17588468097663e-05,
+      "corrupt_dist": 0.003223912869367296,
+      "margin": 0.0031521540225575295,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.2,
+      "clean_dist": 9.684210609017807e-05,
+      "corrupt_dist": 0.003335776490558273,
+      "margin": 0.003238934384468095,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.25,
+      "clean_dist": 0.00013402600513789942,
+      "corrupt_dist": 0.0033656848566435693,
+      "margin": 0.00323165885150567,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.30000000000000004,
+      "clean_dist": 0.000170824973314887,
+      "corrupt_dist": 0.0034821157551215842,
+      "margin": 0.0033112907818066972,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.35000000000000003,
+      "clean_dist": 0.0002066362609119965,
+      "corrupt_dist": 0.003559767472643083,
+      "margin": 0.0033531312117310863,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.4,
+      "clean_dist": 0.00022250555053404675,
+      "corrupt_dist": 0.0035883907389901992,
+      "margin": 0.0033658851884561525,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.45,
+      "clean_dist": 0.0002228598846386598,
+      "corrupt_dist": 0.003603848659122222,
+      "margin": 0.003380988774483562,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.5,
+      "clean_dist": 0.00019811556006288367,
+      "corrupt_dist": 0.0036468983414249534,
+      "margin": 0.0034487827813620697,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.55,
+      "clean_dist": 0.0001879471141067457,
+      "corrupt_dist": 0.003608257311103147,
+      "margin": 0.003420310196996401,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.6000000000000001,
+      "clean_dist": 0.00017280823026943892,
+      "corrupt_dist": 0.0035473236143538367,
+      "margin": 0.0033745153840843978,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.65,
+      "clean_dist": 0.0001684488951028129,
+      "corrupt_dist": 0.003531300633165091,
+      "margin": 0.003362851738062278,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.7000000000000001,
+      "clean_dist": 0.00017172796777753518,
+      "corrupt_dist": 0.0034539355326319576,
+      "margin": 0.0032822075648544224,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.75,
+      "clean_dist": 0.0001617240110839413,
+      "corrupt_dist": 0.003409871627007899,
+      "margin": 0.0032481476159239575,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.8,
+      "clean_dist": 0.00014839314177839125,
+      "corrupt_dist": 0.0033173436342011087,
+      "margin": 0.0031689504924227174,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.8500000000000001,
+      "clean_dist": 0.00012792205168976611,
+      "corrupt_dist": 0.0032379930982732175,
+      "margin": 0.0031100710465834513,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.9,
+      "clean_dist": 0.00010813180469859685,
+      "corrupt_dist": 0.0031985181927922657,
+      "margin": 0.003090386388093669,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 0.9500000000000001,
+      "clean_dist": 8.359925543743874e-05,
+      "corrupt_dist": 0.0031426760459677405,
+      "margin": 0.003059076790530302,
+      "auroc": 1.0
+    },
+    {
+      "alpha": 1.0,
+      "clean_dist": 8.244341238494712e-05,
+      "corrupt_dist": 0.0030905043101676632,
+      "margin": 0.003008060897782716,
+      "auroc": 1.0
+    }
+  ],
+  "first_fail_alpha": null,
+  "threshold_robustness": {
+    "initial_threshold": 0.001520094152266338,
+    "results": [
+      {
+        "alpha": 0.0,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.05,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.1,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.15000000000000002,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.2,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.25,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.30000000000000004,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.35000000000000003,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.4,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.45,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.5,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.55,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.6000000000000001,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.65,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.7000000000000001,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.75,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.8,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.8500000000000001,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.9,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 0.9500000000000001,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      },
+      {
+        "alpha": 1.0,
+        "fp": 0,
+        "fn": 0,
+        "clean_above_thresh": false,
+        "corrupt_above_thresh": true
+      }
+    ],
+    "first_fp_alpha": null,
+    "total_fps": 0,
+    "total_fns": 0
+  },
+  "centroid_strategies": {
+    "static": [
+      {
+        "alpha": 0.0,
+        "clean_dist": 0.0,
+        "corrupt_dist": 0.003040188304532676,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.05,
+        "clean_dist": 3.5206744067650675e-05,
+        "corrupt_dist": 0.0030914034208457952,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.1,
+        "clean_dist": 4.3472900171481754e-05,
+        "corrupt_dist": 0.0031836611069280263,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.15000000000000002,
+        "clean_dist": 7.17588468097663e-05,
+        "corrupt_dist": 0.003223912869367296,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.2,
+        "clean_dist": 9.684210609017807e-05,
+        "corrupt_dist": 0.003335776490558273,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.25,
+        "clean_dist": 0.00013402600513789942,
+        "corrupt_dist": 0.0033656848566435693,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.30000000000000004,
+        "clean_dist": 0.000170824973314887,
+        "corrupt_dist": 0.0034821157551215842,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.35000000000000003,
+        "clean_dist": 0.0002066362609119965,
+        "corrupt_dist": 0.003559767472643083,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.4,
+        "clean_dist": 0.00022250555053404675,
+        "corrupt_dist": 0.0035883907389901992,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.45,
+        "clean_dist": 0.0002228598846386598,
+        "corrupt_dist": 0.003603848659122222,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.5,
+        "clean_dist": 0.00019811556006288367,
+        "corrupt_dist": 0.0036468983414249534,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.55,
+        "clean_dist": 0.0001879471141067457,
+        "corrupt_dist": 0.003608257311103147,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.6000000000000001,
+        "clean_dist": 0.00017280823026943892,
+        "corrupt_dist": 0.0035473236143538367,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.65,
+        "clean_dist": 0.0001684488951028129,
+        "corrupt_dist": 0.003531300633165091,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.7000000000000001,
+        "clean_dist": 0.00017172796777753518,
+        "corrupt_dist": 0.0034539355326319576,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.75,
+        "clean_dist": 0.0001617240110839413,
+        "corrupt_dist": 0.003409871627007899,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.8,
+        "clean_dist": 0.00014839314177839125,
+        "corrupt_dist": 0.0033173436342011087,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.8500000000000001,
+        "clean_dist": 0.00012792205168976611,
+        "corrupt_dist": 0.0032379930982732175,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.9,
+        "clean_dist": 0.00010813180469859685,
+        "corrupt_dist": 0.0031985181927922657,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.9500000000000001,
+        "clean_dist": 8.359925543743874e-05,
+        "corrupt_dist": 0.0031426760459677405,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 1.0,
+        "clean_dist": 8.244341238494712e-05,
+        "corrupt_dist": 0.0030905043101676632,
+        "auroc": 1.0
+      }
+    ],
+    "rolling_5": [
+      {
+        "alpha": 0.0,
+        "clean_dist": 0.0,
+        "corrupt_dist": 0.003040188304532676,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.05,
+        "clean_dist": 1.5621221597483803e-05,
+        "corrupt_dist": 0.003076968411706349,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.1,
+        "clean_dist": 1.576976341766123e-05,
+        "corrupt_dist": 0.003120209516848882,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.15000000000000002,
+        "clean_dist": 2.5050118961145174e-05,
+        "corrupt_dist": 0.00307849045945896,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.2,
+        "clean_dist": 2.375590450909293e-05,
+        "corrupt_dist": 0.0030960506881323457,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.25,
+        "clean_dist": 2.325968002647727e-05,
+        "corrupt_dist": 0.0030291646972192554,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.30000000000000004,
+        "clean_dist": 2.329548958568406e-05,
+        "corrupt_dist": 0.0030815324886299678,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.35000000000000003,
+        "clean_dist": 1.978544882863531e-05,
+        "corrupt_dist": 0.003121066238621517,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.4,
+        "clean_dist": 1.1386739655616651e-05,
+        "corrupt_dist": 0.0031480765982342396,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.45,
+        "clean_dist": 8.710996620697742e-06,
+        "corrupt_dist": 0.0031933074357807234,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.5,
+        "clean_dist": 1.4810823021460529e-05,
+        "corrupt_dist": 0.0032114862317766946,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.55,
+        "clean_dist": 1.2903814343379061e-05,
+        "corrupt_dist": 0.003185527646483277,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.6000000000000001,
+        "clean_dist": 1.6803255234676406e-05,
+        "corrupt_dist": 0.0031410895149658336,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.65,
+        "clean_dist": 1.496599178196778e-05,
+        "corrupt_dist": 0.0031233414814580973,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.7000000000000001,
+        "clean_dist": 1.2198713803757144e-05,
+        "corrupt_dist": 0.003039305056214525,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.75,
+        "clean_dist": 1.777878875042216e-05,
+        "corrupt_dist": 0.0029814140865612737,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.8,
+        "clean_dist": 1.5586051674731927e-05,
+        "corrupt_dist": 0.0028859291066922754,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.8500000000000001,
+        "clean_dist": 1.7365277979797256e-05,
+        "corrupt_dist": 0.0027913679172256733,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.9,
+        "clean_dist": 1.5203604770808177e-05,
+        "corrupt_dist": 0.002763187537526912,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.9500000000000001,
+        "clean_dist": 1.973989378811769e-05,
+        "corrupt_dist": 0.002769973587363528,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 1.0,
+        "clean_dist": 1.9563769397601405e-05,
+        "corrupt_dist": 0.0027441837346094955,
+        "auroc": 1.0
+      }
+    ],
+    "rolling_10": [
+      {
+        "alpha": 0.0,
+        "clean_dist": 0.0,
+        "corrupt_dist": 0.003040188304532676,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.05,
+        "clean_dist": 1.5621221597483803e-05,
+        "corrupt_dist": 0.003076968411706349,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.1,
+        "clean_dist": 1.576976341766123e-05,
+        "corrupt_dist": 0.003120209516848882,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.15000000000000002,
+        "clean_dist": 2.5050118961145174e-05,
+        "corrupt_dist": 0.00307849045945896,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.2,
+        "clean_dist": 3.144895592421815e-05,
+        "corrupt_dist": 0.0031314419016781336,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.25,
+        "clean_dist": 4.2354830601998295e-05,
+        "corrupt_dist": 0.003112560410379439,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.30000000000000004,
+        "clean_dist": 5.294358380147912e-05,
+        "corrupt_dist": 0.003213220640260195,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.35000000000000003,
+        "clean_dist": 6.02923020930346e-05,
+        "corrupt_dist": 0.0032702383480788244,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.4,
+        "clean_dist": 5.697712148666767e-05,
+        "corrupt_dist": 0.0032783748975072635,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.45,
+        "clean_dist": 4.0751192377341816e-05,
+        "corrupt_dist": 0.003261516566738454,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.5,
+        "clean_dist": 3.1782758043608084e-05,
+        "corrupt_dist": 0.003248513068213721,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.55,
+        "clean_dist": 2.5395048305121293e-05,
+        "corrupt_dist": 0.00318353592215459,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.6000000000000001,
+        "clean_dist": 2.6255848090017686e-05,
+        "corrupt_dist": 0.0031169432838403788,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.65,
+        "clean_dist": 3.024981466148713e-05,
+        "corrupt_dist": 0.0030902468660737314,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.7000000000000001,
+        "clean_dist": 3.2475988135827194e-05,
+        "corrupt_dist": 0.003021014349644968,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.75,
+        "clean_dist": 4.809849169862268e-05,
+        "corrupt_dist": 0.002965141691610773,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.8,
+        "clean_dist": 4.906472077714774e-05,
+        "corrupt_dist": 0.002873112614769302,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.8500000000000001,
+        "clean_dist": 4.698742956055213e-05,
+        "corrupt_dist": 0.002787040827743281,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.9,
+        "clean_dist": 4.510741830443532e-05,
+        "corrupt_dist": 0.0027609395197125686,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.9500000000000001,
+        "clean_dist": 5.0030369743825354e-05,
+        "corrupt_dist": 0.0027477263598865154,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 1.0,
+        "clean_dist": 5.074341942701288e-05,
+        "corrupt_dist": 0.002697936729113559,
+        "auroc": 1.0
+      }
+    ],
+    "ema_0.1": [
+      {
+        "alpha": 0.0,
+        "clean_dist": 2.220446049250313e-16,
+        "corrupt_dist": 0.0030401882974905314,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.05,
+        "clean_dist": 2.8503137521007638e-05,
+        "corrupt_dist": 0.003086248315574136,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.1,
+        "clean_dist": 3.077899393189032e-05,
+        "corrupt_dist": 0.003156512435422143,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.15000000000000002,
+        "clean_dist": 4.631920486697361e-05,
+        "corrupt_dist": 0.0031505274666149274,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.2,
+        "clean_dist": 5.5918192451542836e-05,
+        "corrupt_dist": 0.003216668710598558,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.25,
+        "clean_dist": 7.070260658781358e-05,
+        "corrupt_dist": 0.003201989047131537,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.30000000000000004,
+        "clean_dist": 8.201140691221909e-05,
+        "corrupt_dist": 0.0032911200340447477,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.35000000000000003,
+        "clean_dist": 8.857900338798963e-05,
+        "corrupt_dist": 0.003339024938242008,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.4,
+        "clean_dist": 8.10968827716918e-05,
+        "corrupt_dist": 0.003337125302650956,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.45,
+        "clean_dist": 6.813799987437363e-05,
+        "corrupt_dist": 0.0033348446478874694,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.5,
+        "clean_dist": 5.247450077139337e-05,
+        "corrupt_dist": 0.003342571318322052,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.55,
+        "clean_dist": 4.2301475396189225e-05,
+        "corrupt_dist": 0.003295199832694329,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.6000000000000001,
+        "clean_dist": 3.5435441012032776e-05,
+        "corrupt_dist": 0.0032317074804051327,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.65,
+        "clean_dist": 3.394984271720691e-05,
+        "corrupt_dist": 0.0031946358760528426,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.7000000000000001,
+        "clean_dist": 3.372102961229917e-05,
+        "corrupt_dist": 0.003105279710124309,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.75,
+        "clean_dist": 3.9378793817101965e-05,
+        "corrupt_dist": 0.0030399846630614347,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.8,
+        "clean_dist": 3.828610277678557e-05,
+        "corrupt_dist": 0.0029383681649566284,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.8500000000000001,
+        "clean_dist": 3.4737812444451954e-05,
+        "corrupt_dist": 0.0028478085859786617,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.9,
+        "clean_dist": 3.401292534821465e-05,
+        "corrupt_dist": 0.0028086777913999272,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.9500000000000001,
+        "clean_dist": 3.939131025654241e-05,
+        "corrupt_dist": 0.0027865880943770405,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 1.0,
+        "clean_dist": 4.4081381480265414e-05,
+        "corrupt_dist": 0.0027257841723784537,
+        "auroc": 1.0
+      }
+    ],
+    "ema_0.3": [
+      {
+        "alpha": 0.0,
+        "clean_dist": 0.0,
+        "corrupt_dist": 0.003040188304532676,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.05,
+        "clean_dist": 1.7225315113611472e-05,
+        "corrupt_dist": 0.003078058941614059,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.1,
+        "clean_dist": 1.4311421706936223e-05,
+        "corrupt_dist": 0.003110281319411712,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.15000000000000002,
+        "clean_dist": 1.8540855682092072e-05,
+        "corrupt_dist": 0.003036174056243901,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.2,
+        "clean_dist": 1.8255478988038476e-05,
+        "corrupt_dist": 0.003053371384811765,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.25,
+        "clean_dist": 2.076093041480931e-05,
+        "corrupt_dist": 0.003018203899394667,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.30000000000000004,
+        "clean_dist": 2.1090915670041177e-05,
+        "corrupt_dist": 0.0031168971245050248,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.35000000000000003,
+        "clean_dist": 1.8942242314246016e-05,
+        "corrupt_dist": 0.0031785278349806267,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.4,
+        "clean_dist": 1.2795695444878241e-05,
+        "corrupt_dist": 0.003184133795906763,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.45,
+        "clean_dist": 9.234864307150481e-06,
+        "corrupt_dist": 0.0032098069827507514,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.5,
+        "clean_dist": 1.0707475269100541e-05,
+        "corrupt_dist": 0.0032165291919425965,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.55,
+        "clean_dist": 8.323077254734912e-06,
+        "corrupt_dist": 0.003187649825443284,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.6000000000000001,
+        "clean_dist": 1.1258084484766506e-05,
+        "corrupt_dist": 0.0031563994556088604,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.65,
+        "clean_dist": 1.0989739574140955e-05,
+        "corrupt_dist": 0.0031232258662503565,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.7000000000000001,
+        "clean_dist": 1.0009699872193245e-05,
+        "corrupt_dist": 0.003034076869899427,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.75,
+        "clean_dist": 1.4921247679655636e-05,
+        "corrupt_dist": 0.0029586707719791994,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.8,
+        "clean_dist": 1.325962019504967e-05,
+        "corrupt_dist": 0.00285730256688832,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.8500000000000001,
+        "clean_dist": 1.4199724872820951e-05,
+        "corrupt_dist": 0.0027926080105616924,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.9,
+        "clean_dist": 1.2532071331561312e-05,
+        "corrupt_dist": 0.0027791320074928016,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 0.9500000000000001,
+        "clean_dist": 1.613871981742676e-05,
+        "corrupt_dist": 0.002787814744468875,
+        "auroc": 1.0
+      },
+      {
+        "alpha": 1.0,
+        "clean_dist": 1.6207512131605206e-05,
+        "corrupt_dist": 0.0027467529945858216,
+        "auroc": 1.0
+      }
+    ]
+  },
+  "strategy_summary": {
+    "static": {
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "n_perfect": 21,
+      "n_total": 21
+    },
+    "rolling_5": {
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "n_perfect": 21,
+      "n_total": 21
+    },
+    "rolling_10": {
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "n_perfect": 21,
+      "n_total": 21
+    },
+    "ema_0.1": {
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "n_perfect": 21,
+      "n_total": 21
+    },
+    "ema_0.3": {
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "n_perfect": 21,
+      "n_total": 21
+    }
+  },
+  "drift_detection": [
+    {
+      "alpha": 0.0,
+      "drift_distance": 0.0,
+      "detection_margin": 0.003040188304532676,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.05,
+      "drift_distance": 3.5206744067650675e-05,
+      "detection_margin": 0.0030561966767781445,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.1,
+      "drift_distance": 4.3472900171481754e-05,
+      "detection_margin": 0.0031401882067565445,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.15000000000000002,
+      "drift_distance": 7.17588468097663e-05,
+      "detection_margin": 0.0031521540225575295,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.2,
+      "drift_distance": 9.684210609017807e-05,
+      "detection_margin": 0.003238934384468095,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.25,
+      "drift_distance": 0.00013402600513789942,
+      "detection_margin": 0.00323165885150567,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.30000000000000004,
+      "drift_distance": 0.000170824973314887,
+      "detection_margin": 0.0033112907818066972,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.35000000000000003,
+      "drift_distance": 0.0002066362609119965,
+      "detection_margin": 0.0033531312117310863,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.4,
+      "drift_distance": 0.00022250555053404675,
+      "detection_margin": 0.0033658851884561525,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.45,
+      "drift_distance": 0.0002228598846386598,
+      "detection_margin": 0.003380988774483562,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.5,
+      "drift_distance": 0.00019811556006288367,
+      "detection_margin": 0.0034487827813620697,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.55,
+      "drift_distance": 0.0001879471141067457,
+      "detection_margin": 0.003420310196996401,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.6000000000000001,
+      "drift_distance": 0.00017280823026943892,
+      "detection_margin": 0.0033745153840843978,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.65,
+      "drift_distance": 0.0001684488951028129,
+      "detection_margin": 0.003362851738062278,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.7000000000000001,
+      "drift_distance": 0.00017172796777753518,
+      "detection_margin": 0.0032822075648544224,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.75,
+      "drift_distance": 0.0001617240110839413,
+      "detection_margin": 0.0032481476159239575,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.8,
+      "drift_distance": 0.00014839314177839125,
+      "detection_margin": 0.0031689504924227174,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.8500000000000001,
+      "drift_distance": 0.00012792205168976611,
+      "detection_margin": 0.0031100710465834513,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.9,
+      "drift_distance": 0.00010813180469859685,
+      "detection_margin": 0.003090386388093669,
+      "margin_positive": true
+    },
+    {
+      "alpha": 0.9500000000000001,
+      "drift_distance": 8.359925543743874e-05,
+      "detection_margin": 0.003059076790530302,
+      "margin_positive": true
+    },
+    {
+      "alpha": 1.0,
+      "drift_distance": 8.244341238494712e-05,
+      "detection_margin": 0.003008060897782716,
+      "margin_positive": true
+    }
+  ],
+  "margin_collapse_alpha": null,
+  "corruption_drift": {
+    "fog": [
+      {
+        "alpha": 0.0,
+        "auroc": 1.0,
+        "clean_dist": 0.0,
+        "corrupt_dist": 0.003040188304532676
+      },
+      {
+        "alpha": 0.25,
+        "auroc": 1.0,
+        "clean_dist": 0.00013402600513789942,
+        "corrupt_dist": 0.0033656848566435693
+      },
+      {
+        "alpha": 0.5,
+        "auroc": 1.0,
+        "clean_dist": 0.00019811556006288367,
+        "corrupt_dist": 0.0036468983414249534
+      },
+      {
+        "alpha": 0.75,
+        "auroc": 1.0,
+        "clean_dist": 0.0001617240110839413,
+        "corrupt_dist": 0.003409871627007899
+      },
+      {
+        "alpha": 1.0,
+        "auroc": 1.0,
+        "clean_dist": 8.244341238494712e-05,
+        "corrupt_dist": 0.0030905043101676632
+      }
+    ],
+    "night": [
+      {
+        "alpha": 0.0,
+        "auroc": 1.0,
+        "clean_dist": 0.0,
+        "corrupt_dist": 0.008296948172350938
+      },
+      {
+        "alpha": 0.25,
+        "auroc": 1.0,
+        "clean_dist": 0.00013402600513789942,
+        "corrupt_dist": 0.008591509065875691
+      },
+      {
+        "alpha": 0.5,
+        "auroc": 1.0,
+        "clean_dist": 0.00019811556006288367,
+        "corrupt_dist": 0.008646274031086754
+      },
+      {
+        "alpha": 0.75,
+        "auroc": 1.0,
+        "clean_dist": 0.0001617240110839413,
+        "corrupt_dist": 0.008672929040603128
+      },
+      {
+        "alpha": 1.0,
+        "auroc": 1.0,
+        "clean_dist": 8.244341238494712e-05,
+        "corrupt_dist": 0.008455175959383499
+      }
+    ],
+    "noise": [
+      {
+        "alpha": 0.0,
+        "auroc": 1.0,
+        "clean_dist": 0.0,
+        "corrupt_dist": 0.00014133203397415084
+      },
+      {
+        "alpha": 0.25,
+        "auroc": 0.0,
+        "clean_dist": 0.00013402600513789942,
+        "corrupt_dist": 7.277294609475682e-05
+      },
+      {
+        "alpha": 0.5,
+        "auroc": 0.0,
+        "clean_dist": 0.00019811556006288367,
+        "corrupt_dist": 5.710247346701891e-05
+      },
+      {
+        "alpha": 0.75,
+        "auroc": 0.0,
+        "clean_dist": 0.0001617240110839413,
+        "corrupt_dist": 7.49340705382684e-05
+      },
+      {
+        "alpha": 1.0,
+        "auroc": 1.0,
+        "clean_dist": 8.244341238494712e-05,
+        "corrupt_dist": 0.00019306111611128163
+      }
+    ],
+    "blur": [
+      {
+        "alpha": 0.0,
+        "auroc": 1.0,
+        "clean_dist": 0.0,
+        "corrupt_dist": 0.006514894267001581
+      },
+      {
+        "alpha": 0.25,
+        "auroc": 1.0,
+        "clean_dist": 0.00013402600513789942,
+        "corrupt_dist": 0.006353651828127194
+      },
+      {
+        "alpha": 0.5,
+        "auroc": 1.0,
+        "clean_dist": 0.00019811556006288367,
+        "corrupt_dist": 0.006462471335935582
+      },
+      {
+        "alpha": 0.75,
+        "auroc": 1.0,
+        "clean_dist": 0.0001617240110839413,
+        "corrupt_dist": 0.006866978647354527
+      },
+      {
+        "alpha": 1.0,
+        "auroc": 1.0,
+        "clean_dist": 8.244341238494712e-05,
+        "corrupt_dist": 0.006951094369515354
+      }
+    ]
+  }
+}

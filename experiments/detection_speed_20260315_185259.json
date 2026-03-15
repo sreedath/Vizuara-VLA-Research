@@ -1,0 +1,102 @@
+{
+  "forward_pass": {
+    "mean_ms": 127.41950526833534,
+    "std_ms": 38.692573001442774,
+    "p50_ms": 107.14917257428169,
+    "p95_ms": 193.29890380613506,
+    "p99_ms": 196.59322082065046,
+    "min_ms": 86.42223384231329,
+    "max_ms": 197.4168000742793,
+    "n_trials": 20
+  },
+  "hidden_state_overhead": {
+    "with_hidden_ms": 127.41950526833534,
+    "without_hidden_ms": 138.47067444585264,
+    "overhead_ms": -11.051169177517306,
+    "overhead_pct": -7.980873366684394
+  },
+  "cosine_distance": {
+    "mean_us": 8.26843585819006,
+    "std_us": 1.5707236482375877,
+    "embedding_dim": 4096,
+    "n_trials": 10000
+  },
+  "random_projection": {
+    "16": {
+      "projection_us": 17.2466104850173,
+      "distance_us": 3.596952371299267,
+      "total_us": 20.843562856316566,
+      "speedup_vs_full": 2.298733762550042
+    },
+    "32": {
+      "projection_us": 59.77010540664196,
+      "distance_us": 3.9721525274217133,
+      "total_us": 63.74225793406367,
+      "speedup_vs_full": 2.081600794810622
+    },
+    "64": {
+      "projection_us": 140.7419890165329,
+      "distance_us": 3.684471547603607,
+      "total_us": 144.4264605641365,
+      "speedup_vs_full": 2.2441307393370638
+    },
+    "128": {
+      "projection_us": 502.57359165698296,
+      "distance_us": 12.324810680001974,
+      "total_us": 514.8984023369849,
+      "speedup_vs_full": 0.6708773118605612
+    },
+    "256": {
+      "projection_us": 2237.310517579317,
+      "distance_us": 12.7896579913795,
+      "total_us": 2250.1001755706966,
+      "speedup_vs_full": 0.6464938987237314
+    },
+    "512": {
+      "projection_us": 2980.490048415959,
+      "distance_us": 13.272636011242867,
+      "total_us": 2993.7626844272017,
+      "speedup_vs_full": 0.6229686289284289
+    }
+  },
+  "memory": {
+    "single_embedding_bytes": 16384,
+    "single_embedding_kb": 16.0,
+    "embedding_dim": 4096,
+    "dtype": "float32",
+    "centroid_bytes": 16384,
+    "projected_32d_bytes": 256,
+    "projection_matrix_bytes": 1048576,
+    "total_32d_system_kb": 1024.25
+  },
+  "full_pipeline": {
+    "mean_ms": 133.22373470291495,
+    "std_ms": 30.66782663173349,
+    "p50_ms": 124.4238899089396,
+    "p95_ms": 189.20703157782555,
+    "detection_overhead_ms": -5.246939742937689,
+    "detection_overhead_pct": -3.7892064611770517
+  },
+  "scaling": {
+    "1": {
+      "distance_us": 7.326261140406132,
+      "centroid_compute_us": 10.212305933237076
+    },
+    "5": {
+      "distance_us": 6.6480813547968864,
+      "centroid_compute_us": 17.24054105579853
+    },
+    "10": {
+      "distance_us": 7.31742475181818,
+      "centroid_compute_us": 28.214557096362114
+    },
+    "50": {
+      "distance_us": 7.366758771240711,
+      "centroid_compute_us": 186.43926829099655
+    },
+    "100": {
+      "distance_us": 7.27971363812685,
+      "centroid_compute_us": 358.1994492560625
+    }
+  }
+}
