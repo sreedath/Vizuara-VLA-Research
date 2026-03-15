@@ -1,0 +1,277 @@
+{
+  "pca": {
+    "1": {
+      "per_type": {
+        "fog": 0.5,
+        "night": 0.5,
+        "noise": 0.5,
+        "blur": 0.5
+      },
+      "var_explained": 0.2091256082057953,
+      "compression_ratio": 4096.0,
+      "mean_auroc": 0.5
+    },
+    "2": {
+      "per_type": {
+        "fog": 0.4725,
+        "night": 0.74,
+        "noise": 0.545,
+        "blur": 0.875
+      },
+      "var_explained": 0.33828261494636536,
+      "compression_ratio": 2048.0,
+      "mean_auroc": 0.658125
+    },
+    "3": {
+      "per_type": {
+        "fog": 1.0,
+        "night": 0.97,
+        "noise": 0.6375,
+        "blur": 1.0
+      },
+      "var_explained": 0.4403078854084015,
+      "compression_ratio": 1365.3333333333333,
+      "mean_auroc": 0.901875
+    },
+    "4": {
+      "per_type": {
+        "fog": 1.0,
+        "night": 0.9825,
+        "noise": 0.635,
+        "blur": 1.0
+      },
+      "var_explained": 0.5255795121192932,
+      "compression_ratio": 1024.0,
+      "mean_auroc": 0.9043749999999999
+    },
+    "5": {
+      "per_type": {
+        "fog": 1.0,
+        "night": 0.995,
+        "noise": 0.7225,
+        "blur": 1.0
+      },
+      "var_explained": 0.6014403104782104,
+      "compression_ratio": 819.2,
+      "mean_auroc": 0.9293750000000001
+    },
+    "10": {
+      "per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.61,
+        "blur": 1.0
+      },
+      "var_explained": 0.8165855407714844,
+      "compression_ratio": 409.6,
+      "mean_auroc": 0.9025
+    },
+    "20": {
+      "per_type": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.6025,
+        "blur": 1.0
+      },
+      "var_explained": 1.0,
+      "compression_ratio": 204.8,
+      "mean_auroc": 0.900625
+    }
+  },
+  "random_projection": {
+    "2": {
+      "per_type_mean": {
+        "fog": 0.9894999999999999,
+        "night": 1.0,
+        "noise": 0.65,
+        "blur": 0.9814999999999999
+      },
+      "per_type_std": {
+        "fog": 0.020999999999999998,
+        "night": 0.0,
+        "noise": 0.08196035627057753,
+        "blur": 0.037000000000000005
+      },
+      "mean_auroc": 0.90525,
+      "compression_ratio": 2048.0
+    },
+    "5": {
+      "per_type_mean": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.8800000000000001,
+        "blur": 1.0
+      },
+      "per_type_std": {
+        "fog": 0.0,
+        "night": 0.0,
+        "noise": 0.08535221145348257,
+        "blur": 0.0
+      },
+      "mean_auroc": 0.97,
+      "compression_ratio": 819.2
+    },
+    "10": {
+      "per_type_mean": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.889,
+        "blur": 1.0
+      },
+      "per_type_std": {
+        "fog": 0.0,
+        "night": 0.0,
+        "noise": 0.07291433329599879,
+        "blur": 0.0
+      },
+      "mean_auroc": 0.9722500000000001,
+      "compression_ratio": 409.6
+    },
+    "20": {
+      "per_type_mean": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.9460000000000001,
+        "blur": 1.0
+      },
+      "per_type_std": {
+        "fog": 0.0,
+        "night": 0.0,
+        "noise": 0.03430014577228499,
+        "blur": 0.0
+      },
+      "mean_auroc": 0.9865,
+      "compression_ratio": 204.8
+    },
+    "50": {
+      "per_type_mean": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.9705,
+        "blur": 1.0
+      },
+      "per_type_std": {
+        "fog": 0.0,
+        "night": 0.0,
+        "noise": 0.01354621718414407,
+        "blur": 0.0
+      },
+      "mean_auroc": 0.992625,
+      "compression_ratio": 81.92
+    },
+    "100": {
+      "per_type_mean": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.9789999999999999,
+        "blur": 1.0
+      },
+      "per_type_std": {
+        "fog": 0.0,
+        "night": 0.0,
+        "noise": 0.005612486080160912,
+        "blur": 0.0
+      },
+      "mean_auroc": 0.99475,
+      "compression_ratio": 40.96
+    },
+    "500": {
+      "per_type_mean": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.984,
+        "blur": 1.0
+      },
+      "per_type_std": {
+        "fog": 0.0,
+        "night": 0.0,
+        "noise": 0.004636809247747873,
+        "blur": 0.0
+      },
+      "mean_auroc": 0.996,
+      "compression_ratio": 8.192
+    }
+  },
+  "sparse_projection": {
+    "10": {
+      "per_type_mean": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.8905,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.972625,
+      "compression_ratio": 409.6,
+      "sparsity": 0.6666666666666666
+    },
+    "50": {
+      "per_type_mean": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.9799999999999999,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.995,
+      "compression_ratio": 81.92,
+      "sparsity": 0.6666666666666666
+    },
+    "100": {
+      "per_type_mean": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.9845,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.996125,
+      "compression_ratio": 40.96,
+      "sparsity": 0.6666666666666666
+    },
+    "500": {
+      "per_type_mean": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.9824999999999999,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.995625,
+      "compression_ratio": 8.192,
+      "sparsity": 0.6666666666666666
+    }
+  },
+  "distance_preservation": {
+    "5": {
+      "mean_ratio": 2.253602289660992,
+      "std_ratio": 1.0251130627850655,
+      "min_ratio": 0.4932879459481469,
+      "max_ratio": 4.091126823494558,
+      "correlation": 0.8371935842167073
+    },
+    "10": {
+      "mean_ratio": 0.928170410654435,
+      "std_ratio": 0.2563056281579566,
+      "min_ratio": 0.33460432808094026,
+      "max_ratio": 1.2589287730035328,
+      "correlation": 0.9832945463963025
+    },
+    "50": {
+      "mean_ratio": 0.9537434499192052,
+      "std_ratio": 0.10715128488315608,
+      "min_ratio": 0.7817101218548828,
+      "max_ratio": 1.1528061472663027,
+      "correlation": 0.9905748777871446
+    },
+    "100": {
+      "mean_ratio": 0.8850415658364159,
+      "std_ratio": 0.05361279001546746,
+      "min_ratio": 0.8037664948995766,
+      "max_ratio": 0.999879646080299,
+      "correlation": 0.995845587214856
+    }
+  },
+  "min_dims_perfect": {
+    "fog": 3,
+    "night": 6,
+    "noise": null,
+    "blur": 3
+  }
+}

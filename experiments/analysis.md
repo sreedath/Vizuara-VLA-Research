@@ -14792,3 +14792,44 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 
 **Finding 639**: k=2 k-means perfectly separates clean from corrupt despite only 40% overall purity, confirming the fundamental binary clean/corrupt separation even when corruption sub-types overlap.
 
+
+## Experiment 359: Dimensionality Reduction for Real-Time Detection
+
+**Script**: `scripts/real_vla_dimension_reduction.py`
+**Result**: `experiments/dimension_reduction_20260315_151131.json`
+**Figure**: `figures/fig368_dimreduce.png`
+
+### Key Results
+
+**PCA Projection**:
+| Dim | Fog | Night | Noise | Blur | Var Explained | Compression |
+|-----|-----|-------|-------|------|--------------|-------------|
+| 1 | 0.500 | 0.500 | 0.500 | 0.500 | 20.9% | 4096× |
+| 2 | 0.472 | 0.740 | 0.545 | 0.875 | 33.8% | 2048× |
+| 3 | 1.000 | 0.970 | 0.637 | 1.000 | 44.0% | 1365× |
+| 5 | 1.000 | 0.995 | 0.723 | 1.000 | 60.1% | 819× |
+| 10 | 1.000 | 1.000 | 0.610 | 1.000 | 81.7% | 410× |
+
+**Random Projection** (outperforms PCA for noise):
+| Dim | Noise AUROC | Compression |
+|-----|-------------|-------------|
+| 5 | 0.880 | 819× |
+| 50 | 0.971 | 82× |
+| 500 | 0.984 | 8× |
+
+**Minimum Dims for AUROC=1.0**: Fog=3, Blur=3, Night=6, Noise=NEVER
+
+**Distance Preservation**: d=10 gives r=0.983; d=100 gives r=0.996
+
+### Findings
+
+**Finding 640**: Fog and blur require only 3 PCA dimensions for perfect AUROC=1.0 (1365× compression), while night requires 6. Noise NEVER achieves AUROC=1.0 under PCA at any dimension — its signal is distributed across many components.
+
+**Finding 641**: Random projection outperforms PCA for noise detection: RP at d=5 gives noise AUROC=0.88 vs PCA d=5 at 0.72. Random projections preserve the distributed noise signal better than PCA which concentrates on maximum-variance directions.
+
+**Finding 642**: Sparse random projection (67% zeros) matches dense RP: d=50 gives 0.98 noise AUROC at 82× compression. The Achlioptas construction is memory-efficient and detection-effective.
+
+**Finding 643**: Distance correlations exceed 0.98 at d≥10 (410× compression), meaning projected distances faithfully represent original distances. At d=100, correlation reaches 0.996.
+
+**Finding 644**: PCA d=1 is entirely uninformative (AUROC=0.5 for all types), confirming that the first principal component captures inter-scene variance, not corruption information. The corruption signal begins at PC2-3.
+

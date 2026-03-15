@@ -6805,4 +6805,25 @@ We analyze the clustering structure of VLA embeddings to understand how corrupti
 
 \textbf{Finding 891}: \textbf{k=2 perfectly separates clean from corrupt despite only 40\% overall purity.} The fundamental binary decision (clean vs any corruption) is robust even when corruption sub-types are indistinguishable from each other.
 
+\subsection{Experiment 359: Dimensionality Reduction for Real-Time Detection}
+
+We investigate compression of the 4096-D embedding for real-time deployment, comparing PCA, Gaussian random projection, and sparse random projection across target dimensions from 1 to 500.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig368_dimreduce.png}
+\caption{Dimensionality reduction analysis. Top-left: PCA AUROC vs dimension --- fog/blur achieve 1.0 at $d=3$, noise never reaches 1.0. Top-right: random projection outperforms PCA for noise detection. Bottom-left: distance correlation exceeds 0.98 at $d \geq 10$. Bottom-right: minimum PCA dimensions for perfect detection.}
+\label{fig:dimreduce}
+\end{figure}
+
+\textbf{Finding 892}: \textbf{Fog and blur need only 3 PCA dimensions for AUROC=1.0 ($1365\times$ compression).} Night requires 6 dimensions, but noise \emph{never} achieves perfect AUROC under PCA at any dimension, as its signal is distributed across many components.
+
+\textbf{Finding 893}: \textbf{Random projection outperforms PCA for noise: 0.88 vs 0.72 AUROC at $d=5$.} Random projections preserve the distributed noise signal better than PCA, which concentrates on maximum-variance (inter-scene) directions that are orthogonal to the noise corruption signal.
+
+\textbf{Finding 894}: \textbf{Sparse random projection (67\% zeros) matches dense RP at $82\times$ compression.} The Achlioptas construction achieves 0.98 noise AUROC at $d=50$ with only $1/3$ non-zero entries, enabling memory-efficient real-time deployment.
+
+\textbf{Finding 895}: \textbf{Distance correlation exceeds 0.98 at $d \geq 10$ ($410\times$ compression).} At $d=100$, correlation reaches 0.996, meaning projected cosine distances are near-perfect proxies for full-dimensional distances.
+
+\textbf{Finding 896}: \textbf{PCA $d=1$ is entirely uninformative (AUROC=0.5 for all types).} The first principal component captures inter-scene variance, not corruption information --- the detection signal begins at PC2--3.
+
 \end{document}
