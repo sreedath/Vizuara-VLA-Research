@@ -13876,3 +13876,63 @@ Characterize the boundary between benign perturbations (JPEG compression, resize
 **Finding 562**: **Blur produces the strongest detection signal (3.55e-3 at sev=0.3), separable from benign at ≥10% severity.** Blur's large embedding shift (blur@10% min = 6.63e-4 > max benign) makes it the most reliably detectable corruption type. Night and fog require ≥30-50% severity for clean separation from benign.
 
 **Finding 563**: **Deployment recommendation: calibrate WITH the camera pipeline (JPEG+resize) to eliminate benign false positives.** If calibration images are captured through the same JPEG pipeline as test images, JPEG artifacts appear in both and cancel out. This transforms the problem from "separate benign from corrupt" to "separate identical from corrupt" — recovering AUROC=1.0.
+
+---
+
+## Experiment 341: Cross-Corruption Manifold Structure (Real OpenVLA-7B)
+
+**Timestamp**: 2026-03-15 13:39 UTC
+**Status**: Complete ✓
+**GPU**: RunPod A40 (real OpenVLA-7B, 7B parameters)
+
+### Purpose
+Analyze geometric relationships between corruption types: pairwise angles, severity consistency, superposition linearity, manifold dimensionality, and commutativity of combined corruptions.
+
+### Results
+
+#### Pairwise Angles
+- **Fog–frost: 20° (aligned)** — frost is fog-like (adds bright noise to image)
+- **Fog–blur: 65°** — partially aligned (both reduce high-frequency content)
+- **Fog–noise: 114° (anti-correlated)** — fog brightens, noise adds random
+- **Night–noise: 92° (orthogonal)** — independent perturbation directions
+- **Night–rain: 92° (orthogonal)**
+- **Night–frost: 114° (anti-correlated)** — opposite brightness effects
+- Most pairs near-orthogonal (70-110°), confirming independent corruption dimensions
+
+#### Severity Direction Consistency
+- **Fog most stable**: 23° mean across severities
+- **Frost**: 27° mean
+- **Night**: 51° mean (shifts direction at high severity)
+- **Rain least stable**: 65° mean (direction changes with amount of rain)
+- No corruption type has truly stable direction (<15°) across full severity range
+
+#### Superposition Linearity
+- **Mean direction similarity**: 0.906 (combined shifts align reasonably with predicted)
+- **Mean norm ratio**: 0.896 (sub-additive: combined < sum of individuals)
+- **56% pass linearity test** (direction sim > 0.9 AND norm ratio 0.5-1.5)
+- Fog+blur and fog+noise most linear; night+blur least linear
+
+#### Manifold Dimensionality
+- **Overall**: 50% in 2D, 80% in 3D, 90% in 6D, 99% in 24D
+- **Fog**: Nearly 1D (PC1 = 89%), 90% in 2D
+- **Night**: 90% in 2D (PC1 = 79%)
+- **Noise**: Most complex (90% in 6D, PC1 = 56%)
+- **Blur**: 90% in 4D (PC1 = 62%)
+- **Rain**: 90% in 3D (PC1 = 82%)
+- **Frost**: 90% in 4D (PC1 = 73%)
+
+#### Commutativity
+- **50% commutative** (order distance < 1e-4)
+- Commutative: fog+noise, fog+blur, night+blur
+- Non-commutative: noise+blur (d=4.5e-3, shift sim ≈ 0), fog+night, night+noise
+- **noise+blur is highly non-commutative** (order produces completely different shifts)
+
+### Key Findings
+
+**Finding 564**: **Fog and frost are nearly aligned (20°) — frost is structurally fog-like in embedding space.** Despite appearing visually different (frost adds random bright patterns vs fog's uniform brightening), their embedding shifts share 94% directional similarity. Both push pixels toward brightness, explaining the alignment.
+
+**Finding 565**: **Corruption manifold is 6D for 90% variance but each type is 2-4D — noise adds most complexity.** Fog is nearly 1D (89% PC1), night and rain 2-3D, but noise requires 6D. The overall 6D manifold arises from combining individually low-dimensional corruption subspaces at diverse angles.
+
+**Finding 566**: **Noise+blur is highly non-commutative (shift similarity ≈ 0) — corruption order fundamentally matters.** Applying blur then noise vs noise then blur produces completely different embedding shifts. This is because blur smooths before noise adds, vs noise adding before blur smooths — the operations are not invertible.
+
+**Finding 567**: **Combined corruptions are approximately linear (direction sim 0.91, norm ratio 0.90) but sub-additive.** The actual combined shift typically points in the same direction as the sum of individual shifts (91% similarity) but has 10% smaller magnitude. This sub-additivity may reflect saturation in the model's response to combined perturbations.

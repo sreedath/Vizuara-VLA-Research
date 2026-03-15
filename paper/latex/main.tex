@@ -6417,4 +6417,27 @@ We investigate the practical boundary between benign perturbations (JPEG compres
 
 \textbf{Finding 815}: \textbf{Deployment solution: calibrate through the camera pipeline to eliminate benign FPs.} If calibration images pass through the same JPEG/resize pipeline as test images, artifacts appear in both and cancel. This transforms the problem from ``separate benign from corrupt'' to ``separate identical from corrupt,'' recovering AUROC=1.0.
 
+%% ============================================================
+\subsection{Experiment 341: Cross-Corruption Manifold}
+\label{sec:exp341}
+
+We analyze the geometric relationships between corruption types in embedding space: pairwise angles, severity consistency, superposition linearity, per-type dimensionality, and commutativity.
+
+\textbf{Setup.} We compute shift vectors (corrupted $-$ clean embedding) for 5 scenes $\times$ 6 types $\times$ 5 severities = 150 vectors. We measure pairwise angles, test linear superposition of combined corruptions, compute PCA dimensionality per type, and test commutativity of corruption ordering.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig350_manifold.png}
+\caption{\textbf{Figure~350: Cross-corruption manifold.} (A)~Pairwise angles: fog--frost aligned (20$^\circ$), fog--noise anti-correlated (114$^\circ$). (B)~Severity direction consistency: fog most stable (23$^\circ$), rain least (65$^\circ$). (C)~Superposition linearity: 56\% pass (direction sim 0.91, norm ratio 0.90). (D)~Per-type dimensionality: fog is 1D, noise requires 6D. (E)~Commutativity: noise+blur is highly non-commutative. (F)~Overall manifold: 90\% variance in 6D.}
+\label{fig:manifold}
+\end{figure}
+
+\textbf{Finding 816}: \textbf{Fog and frost are nearly aligned (20$^\circ$) --- frost is structurally fog-like in embedding space.} Despite visual differences, both push pixels toward brightness, producing 94\% directional similarity. Most other pairs are near-orthogonal (70--110$^\circ$), confirming that corruption types occupy largely independent subspaces.
+
+\textbf{Finding 817}: \textbf{The corruption manifold is 6D (90\% variance), but individual types are 2--4D --- noise adds most complexity.} Fog is nearly 1D (PC1=89\%), night and rain 2--3D, but noise requires 6D. The overall 6D manifold arises from combining individually low-dimensional subspaces at diverse angles.
+
+\textbf{Finding 818}: \textbf{Noise+blur is highly non-commutative (shift similarity $\approx 0$) --- corruption order fundamentally matters.} Blur-then-noise vs noise-then-blur produce completely different embedding shifts ($d = 4.5 \times 10^{-3}$). Fog+blur and fog+noise are commutative ($d < 6 \times 10^{-5}$).
+
+\textbf{Finding 819}: \textbf{Combined corruptions are approximately linear (direction sim 0.91) but sub-additive (norm ratio 0.90).} The combined shift aligns with the vector sum of individual shifts but has $\sim$10\% smaller magnitude, suggesting saturation in the model's response to cumulative perturbation.
+
 \end{document}
