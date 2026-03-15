@@ -6784,4 +6784,25 @@ We investigate how simultaneous corruptions interact: pairwise and triple compos
 
 \textbf{Finding 886}: \textbf{All-four corruptions at mild severity (0.25) produce AUROC=1.0.} Even with subadditive composition, combined mild corruptions remain easily detectable ($d = 4.37 \times 10^{-3}$), validating the detector against realistic multi-degradation scenarios.
 
+\subsection{Experiment 358: Embedding Space Clustering}
+
+We analyze the clustering structure of VLA embeddings to understand how corruption types organize in the high-dimensional space, using k-means, Fisher's discriminant analysis, and nearest-neighbor classification.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig367_clustering.png}
+\caption{Embedding space clustering. Top-left: Fisher discriminant ratios show blur and night are most separable while noise (1.74) is $13.7\times$ less separable. Top-right: pairwise centroid distance heatmap --- clean-noise distance is minimal. Bottom-left: k=5 cluster purity increases from 0.64 to 1.0 with severity. Bottom-right: perfect 1-NN confusion matrix (100/100).}
+\label{fig:clustering}
+\end{figure}
+
+\textbf{Finding 887}: \textbf{1-NN classification achieves 100\% 5-class accuracy (100/100).} At severity 0.5, corruption types are unambiguously identifiable from single embeddings, with a perfectly diagonal confusion matrix across clean, fog, night, noise, and blur classes.
+
+\textbf{Finding 888}: \textbf{Noise has Fisher discriminant ratio 1.74 --- $13.7\times$ less separable than blur (23.87).} This quantifies why noise is the hardest corruption: its between-class distance relative to within-class scatter is an order of magnitude smaller than other types.
+
+\textbf{Finding 889}: \textbf{Clean-noise centroid distance ($6.6 \times 10^{-5}$) is just 1.2\% of night-blur ($5.7 \times 10^{-3}$).} Noise barely perturbs the VLA embedding, making it the corruption most likely to evade detection, especially at low severity.
+
+\textbf{Finding 890}: \textbf{Cluster purity requires severity $\geq 0.7$ for perfection.} At severity 0.1, k=5 k-means achieves only 64\% purity as noise and low-severity corruptions merge with the clean cluster.
+
+\textbf{Finding 891}: \textbf{k=2 perfectly separates clean from corrupt despite only 40\% overall purity.} The fundamental binary decision (clean vs any corruption) is robust even when corruption sub-types are indistinguishable from each other.
+
 \end{document}

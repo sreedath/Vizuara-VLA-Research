@@ -14744,3 +14744,51 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 
 **Finding 634**: All-four corruptions at mild severity (0.25 each) produce AUROC=1.0 with distance 0.004371, showing that combined mild corruptions remain easily detectable despite individual subadditivity.
 
+
+## Experiment 358: Embedding Space Clustering
+
+**Script**: `scripts/real_vla_embedding_clustering.py`
+**Result**: `experiments/embedding_clustering_20260315_150834.json`
+**Figure**: `figures/fig367_clustering.png`
+
+### Key Results
+
+**K-Means Clustering**:
+- k=2: purity=0.400, clean perfectly separated
+- k=3: purity=0.600
+- k=4: purity=0.600
+- k=5: purity=0.600
+
+**Pairwise Class Centroid Distances**:
+- Closest: clean vs noise = 0.000066
+- Farthest: night vs blur = 0.005725
+
+**Fisher's Discriminant Ratios**:
+- Blur: 23.87 (most separable)
+- Night: 21.47
+- Fog: 16.63
+- Noise: 1.74 (13.7× less separable)
+
+**Severity-Dependent Clustering**:
+| Severity | k=5 Purity |
+|----------|------------|
+| 0.1 | 0.640 |
+| 0.3 | 0.940 |
+| 0.5 | 0.980 |
+| 0.7 | 1.000 |
+| 1.0 | 1.000 |
+
+**1-NN Classification**: 100% accuracy (100/100), perfect confusion matrix
+
+### Findings
+
+**Finding 635**: 1-NN classification achieves perfect 100% accuracy (100/100) across 5 classes (clean + 4 corruptions), with a perfectly diagonal confusion matrix. At severity 0.5, corruption types are unambiguously identifiable from embeddings alone.
+
+**Finding 636**: Noise has a Fisher discriminant ratio of only 1.74, compared to 16.63-23.87 for other corruptions — a 13.7× separation gap. This explains why noise is the hardest corruption for centroid-based detection.
+
+**Finding 637**: Clean and noise embeddings are the closest pair (d=0.000066), just 1.2% of the night-blur distance (0.005725). Noise barely perturbs the embedding, making it the hardest corruption to distinguish from clean.
+
+**Finding 638**: Cluster purity reaches 1.0 at severity ≥0.7 but drops to 0.64 at severity 0.1. k-means struggles with low-severity corruptions because noise and clean overlap.
+
+**Finding 639**: k=2 k-means perfectly separates clean from corrupt despite only 40% overall purity, confirming the fundamental binary clean/corrupt separation even when corruption sub-types overlap.
+
