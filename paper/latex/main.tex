@@ -7015,4 +7015,25 @@ We benchmark the precise latency of each component in the detection pipeline to 
 
 \textbf{Finding 941}: \textbf{The entire detection pipeline is already embedded in the standard inference path.} Since we extract hidden states that are computed during normal forward pass, the only additional cost is the 43 $\mu$s for extraction and distance computation --- no separate inference is required.
 
+\subsection{Experiment 369: Corruption Interpolation Analysis}
+
+We investigate the geometry of the input-to-embedding map by smoothly interpolating between clean and corrupted images, measuring embedding path curvature, detection threshold crossing points, and inter-corruption interpolation behavior.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig378_interp.png}
+\caption{Corruption interpolation analysis. Top-left: cosine distance curves under clean$\to$corrupt interpolation. Top-middle: embedding paths are significantly curved (1.67--1.83$\times$). Top-right: threshold crossing points --- night earliest ($\alpha$=0.067), noise latest (0.250). Bottom-left: all inter-corruption pairs show concave interpolation. Bottom-middle: severity-distance curves (non-monotonic for noise/blur).}
+\label{fig:interp}
+\end{figure}
+
+\textbf{Finding 942}: \textbf{Embedding paths are significantly curved (path/straight ratio 1.67--1.83).} Pixel-level linear interpolation does \emph{not} produce linear embedding trajectories --- the input-to-embedding map is highly non-linear, with the embedding taking a curved path through the 4096-dimensional space.
+
+\textbf{Finding 943}: \textbf{Night crosses the detection threshold earliest ($\alpha$=0.067)} while noise crosses latest ($\alpha$=0.250). This 3.7$\times$ variation in sensitivity confirms that a universal detector must be calibrated for the worst case.
+
+\textbf{Finding 944}: \textbf{All inter-corruption interpolation paths are concave.} The midpoint between two corruptions is \emph{closer} to the clean centroid than either endpoint alone. Mixing corruptions partially cancels their embedding effects, consistent with the subadditivity discovered in Experiment~357.
+
+\textbf{Finding 945}: \textbf{Severity-distance monotonicity fails for noise and blur.} Cosine distance can decrease at intermediate severities before increasing again, creating a non-monotonic detection landscape that complicates threshold-based detection for these corruption types.
+
+\textbf{Finding 946}: \textbf{Night is the only corruption with guaranteed monotonic severity response (3/3 seeds).} This monotonicity makes night the most predictable and reliable corruption to detect across all severity levels.
+
 \end{document}

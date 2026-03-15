@@ -15250,3 +15250,44 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 689**: Preprocessing (14.36 ms, 11% of pipeline) is the second-largest cost after GPU forward. For deployed systems, preprocessing can be pipelined with the previous frame's inference.
 
+
+## Experiment 369: Corruption Interpolation Analysis
+
+**Script**: `scripts/real_vla_corruption_interpolation.py`
+**Result**: `experiments/corruption_interpolation_20260315_155537.json`
+**Figure**: `figures/fig378_interp.png`
+
+### Key Results
+
+**Embedding Path Curvature (path/straight ratio)**:
+| Corruption | Path/Straight | Shape |
+|-----------|--------------|-------|
+| Fog | 1.67 | Curved |
+| Night | 1.75 | Curved |
+| Noise | 1.81 | Curved |
+| Blur | 1.83 | Curved |
+
+**Detection Threshold Crossing Point**:
+| Corruption | Mean α | Min α |
+|-----------|--------|-------|
+| Fog | 0.100 | 0.050 |
+| Night | 0.067 | 0.050 |
+| Noise | 0.250 | 0.050 |
+| Blur | 0.183 | 0.050 |
+
+**Inter-Corruption Interpolation**: ALL pairs are concave (midpoint closer to clean than endpoints)
+
+**Severity Monotonicity**: Night 3/3, Fog 2/3, Noise 1/3, Blur 1/3
+
+### Findings
+
+**Finding 690**: Embedding paths under corruption interpolation are significantly curved (path/straight ratio 1.67-1.83). The input-to-embedding map is highly non-linear — pixel-level linear interpolation does NOT produce linear embedding interpolation.
+
+**Finding 691**: Night corruption crosses the detection threshold earliest (α=0.067, or ~7% corruption), while noise crosses latest (α=0.250, or ~25%). This confirms detection sensitivity ordering: night > fog > blur > noise.
+
+**Finding 692**: ALL inter-corruption interpolation paths are concave: the midpoint between two corruptions is CLOSER to the clean centroid than either endpoint. Mixing two corruptions partially cancels their embedding effects, consistent with the subadditivity found in Experiment 357.
+
+**Finding 693**: Severity-distance monotonicity fails for noise and blur (only 1/3 seeds monotonic). Cosine distance can DECREASE at intermediate severities before increasing again, creating a non-monotonic detection landscape.
+
+**Finding 694**: The minimum crossing α is 0.050 across all corruptions, but the MEAN varies 3.7x (night 0.067 vs noise 0.250). A universal detector needs to be calibrated for the worst case (noise), not the average.
+
