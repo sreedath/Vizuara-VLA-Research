@@ -4808,4 +4808,36 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 517}: The LM head (L32) produces a consistent \textbf{2.4--2.5$\times$ distance spike} over L31 across all corruption types (night: 0.258$\rightarrow$0.628, blur: 0.196$\rightarrow$0.468, fog: 0.018$\rightarrow$0.045, noise: 0.033$\rightarrow$0.083). The final projection layer maximally amplifies embedding perturbations.
 
+\subsection{Fine-Grained Severity Sweep}
+
+\textbf{Experiment 250: Severity vs. Distance and Action Safety.} We sweep 21 severity levels (0--100\% in 5\% steps) to map the exact relationship between corruption severity, cosine distance, and action safety.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig259_severity_sweep.png}
+\caption{Left: cosine distance vs. severity for 4 corruption types (21 levels each). Blur and night show near-linear growth; noise saturates early. Center: action token categories showing when predictions change from correct to wrong. Right: blur changes actions at just 10\% severity --- the most dangerous corruption.}
+\end{figure}
+
+\textbf{Finding 518}: Blur is the \textbf{most dangerous corruption} for action safety: predicted actions change at just 10\% severity (slight defocus), while night requires 30\%, noise 35\%, and fog 60\%. This establishes a corruption-safety hierarchy: blur $>$ night $\approx$ noise $\gg$ fog.
+
+\textbf{Finding 519}: Blur exhibits \textbf{progressive action degradation}: the predicted token passes through 4 distinct wrong values as severity increases (31884$\rightarrow$31882$\rightarrow$31877$\rightarrow$31865$\rightarrow$31839), each further from correct. This is qualitatively different from fog (binary correct/wrong transition) and has implications for graduated safety responses.
+
+\textbf{Finding 520}: Distance-severity linearity varies by corruption type: blur is near-perfect ($R^2$=0.986), night is strong ($R^2$=0.933), while fog is less linear ($R^2$=0.830). The high linearity for blur enables accurate severity estimation from cosine distance alone.
+
+\subsection{PCA of Corruption Subspace}
+
+\textbf{Experiment 251: Intrinsic Dimensionality.} We collect 30 corruption shift vectors (6 types $\times$ 5 severities) and perform PCA to find the intrinsic dimensionality of the corruption subspace within the 4096D embedding space.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig260_pca_subspace.png}
+\caption{Left: scree plot shows 90\% variance captured by just 3 PCs, 95\% by 5 PCs. Center: 2D PCA projection shows each corruption type forms a linear ray from the origin, with severity increasing outward. Right: the corruption subspace is 3--9 dimensional out of 4096D (455--1365$\times$ compression).}
+\end{figure}
+
+\textbf{Finding 521}: The corruption subspace has \textbf{intrinsic dimensionality of 3--5} (out of 4096D): 3 PCs capture 90\% of variance (1365$\times$ compression), 5 PCs capture 95\% (819$\times$). This explains why random projection to 32D preserves AUROC=1.0 --- the true corruption signal occupies $<$0.1\% of the embedding space.
+
+\textbf{Finding 522}: PC1 (58\% variance) captures \textbf{corruption magnitude} (dominated by night and blur), while PC2 (26.4\%) captures \textbf{type identity} (separating night from blur from snow). This 2-component structure explains why simultaneous severity estimation and type identification is possible.
+
+\textbf{Finding 523}: In the 2D PCA projection, each corruption type forms a \textbf{linear ray from the origin}, with severity increasing outward. This geometric structure --- linear rays in distinct directions --- is the fundamental reason both severity estimation ($R^2>$0.93) and type identification (100\%) succeed simultaneously.
+
 \end{document}

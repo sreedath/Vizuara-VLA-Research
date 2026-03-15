@@ -9318,3 +9318,78 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 248**: The LM head (L32) produces a **2.5× distance spike** over L31, representing the final nonlinear projection that amplifies corruption differences. This spike is consistent across all corruption types, suggesting the LM head is maximally sensitive to embedding perturbations.
 
 **Finding 249**: Night and blur show a **peak-then-decay** pattern (night peaks at L20: 0.332, decays to L31: 0.258), while fog and noise increase monotonically. This suggests deeper layers partially compensate for brightness/blur changes but not for fog/noise contamination.
+
+---
+
+## Experiment 250: Fine-Grained Severity Sweep
+
+**Research Question**: What is the exact relationship between corruption severity and cosine distance? At what severity does each corruption first change the predicted action?
+
+**Method**: Apply 21 severity levels (0%, 5%, 10%, ..., 100%) for fog, night, noise, and blur. At each level, measure both cosine distance and predicted action token.
+
+**Results — Distance vs Severity**:
+
+| Corruption | R² | Max Distance | First Action Change |
+|-----------|-----|-------------|-------------------|
+| Blur | 0.986 | 0.00455 | **10%** severity |
+| Night | 0.933 | 0.00644 | **30%** severity |
+| Noise | 0.908 | 0.0000569 | **35%** severity |
+| Fog | 0.830 | 0.000427 | **60%** severity |
+
+**Action Token Progression**:
+- **Blur** (most dangerous): 31884→31882→31877→31865→31839 — progressive shift through 4 wrong tokens
+- **Night**: 31884→31985→31856 — two-phase (moderate wrong, then severe wrong)
+- **Noise**: 31884→31981→31944 — two-phase transition
+- **Fog**: 31884→31974 — binary (correct or wrong)
+
+**Key Findings**:
+1. **Blur is most dangerous**: Actions change at just 10% severity — a slight defocus causes wrong predictions. This is a critical safety finding.
+2. **Blur shows progressive degradation**: The action token shifts through 4 distinct values as severity increases, revealing a continuous action degradation pathway.
+3. **Night and noise are moderate**: Action change at 30-35% severity, with two-phase transitions.
+4. **Fog is most robust**: Actions don't change until 60% severity, consistent with fog having the smallest L3 distance.
+5. **Linearity varies**: Blur has near-perfect linearity (R²=0.986), while fog shows more nonlinear behavior (R²=0.830).
+
+**Finding 250**: Blur is the **most dangerous corruption** for action safety — predicted actions change at just 10% severity (slight defocus). Night and noise change at 30-35%, while fog requires 60%. This establishes a clear corruption-safety hierarchy: blur > night ≈ noise >> fog.
+
+**Finding 251**: Blur exhibits **progressive action degradation**: the action token passes through 4 distinct wrong values as severity increases (31884→31882→31877→31865→31839), each further from correct. Other corruptions show binary or two-phase transitions.
+
+---
+
+## Experiment 251: PCA of Corruption Subspace
+
+**Research Question**: What is the intrinsic dimensionality of the corruption subspace? How many principal components are needed to capture the variation across 6 corruption types × 5 severity levels?
+
+**Method**: Collect 30 shift vectors (6 types × 5 severities), form a 30×4096 matrix, and perform SVD/PCA.
+
+**Results — Variance Explained**:
+
+| PC | Singular Value | Variance | Cumulative |
+|----|---------------|----------|-----------|
+| PC1 | 1.592 | 58.0% | 58.0% |
+| PC2 | 1.074 | 26.4% | 84.5% |
+| PC3 | 0.588 | 7.9% | 92.4% |
+| PC4 | 0.303 | 2.1% | 94.5% |
+| PC5 | 0.278 | 1.8% | 96.2% |
+
+**Dimensionality at thresholds**:
+- 90% variance: **3 components** (1365× compression)
+- 95% variance: **5 components** (819× compression)
+- 99% variance: **9 components** (455× compression)
+
+**2D Projection reveals clear structure**:
+- Night and blur dominate PC1 (largest shifts), with night also loading heavily on PC2
+- Fog shows moderate PC1 loading but near-zero PC2
+- Snow loads primarily on PC2
+- Noise and rain cluster near origin (small shifts at L3)
+- Within each corruption type, severity increases radiate outward from origin (linear trajectories)
+
+**Key Findings**:
+1. **Extremely low intrinsic dimensionality**: 6 corruption types × 5 severities in 4096D space need only 3-5 PCs to capture 90-95% of variance. The corruption subspace is ~0.1% of the full embedding space.
+2. **PC1 = magnitude axis**: PC1 (58%) primarily captures the overall corruption magnitude, dominated by night and blur which have the largest distances.
+3. **PC2 = type discrimination axis**: PC2 (26.4%) separates corruption types — night loads negatively, blur positively, snow moderately positive. This is the type-identity dimension.
+4. **Linear severity trajectories**: Each corruption type traces a linear path from origin as severity increases, confirming the linear distance-severity relationship from a different angle.
+5. **Noise and rain are near-invisible at L3**: These corruptions cluster near the origin in 2D projection, consistent with their very small L3 distances.
+
+**Finding 252**: The corruption subspace has **intrinsic dimensionality of just 3-5** (out of 4096D), representing 1365-819× compression. This explains why random projection to 32D preserves detection — the true signal lives in an extremely low-dimensional subspace.
+
+**Finding 253**: The 2D PCA projection reveals that **severity trajectories are linear rays** emanating from the origin, with each corruption type pointing in a different direction. This geometric structure is why both severity estimation (R²>0.93) and type identification (100%) work simultaneously.
