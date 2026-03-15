@@ -1,0 +1,51 @@
+{
+  "experiment": "temporal_stability",
+  "experiment_number": 232,
+  "timestamp": "20260315_065720",
+  "repeat_results": {
+    "L1": {
+      "mean_pairwise_dist": -1.192e-07,
+      "max_pairwise_dist": -1.192e-07,
+      "std_per_dim": 0.0,
+      "all_identical": false
+    },
+    "L3": {
+      "mean_pairwise_dist": 0.0,
+      "max_pairwise_dist": 0.0,
+      "std_per_dim": 0.0,
+      "all_identical": true
+    }
+  },
+  "frame_results": {
+    "L1": {
+      "mean_dist": 7.05e-06,
+      "max_dist": 1.746e-05
+    },
+    "L3": {
+      "mean_dist": 1.27e-05,
+      "max_dist": 2.921e-05
+    }
+  },
+  "corrupted_frame_results": {
+    "fog": {
+      "L1": {
+        "mean_dist": 0.000357,
+        "min_dist": 0.000313
+      },
+      "L3": {
+        "mean_dist": 0.000571,
+        "min_dist": 0.000511
+      }
+    },
+    "night": {
+      "L1": {
+        "mean_dist": 0.002228,
+        "min_dist": 0.002166
+      },
+      "L3": {
+        "mean_dist": 0.003672,
+        "min_dist": 0.003597
+      }
+    }
+  }
+}

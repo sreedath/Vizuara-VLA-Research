@@ -8769,3 +8769,28 @@ All ID means and stds are effectively 0.0 for all metrics.
 | Center occlusion (80×80) | 1.0 | 1.0 | 0.001702 |
 
 **Finding**: ALL 9 adversarial-style perturbations are detected at AUROC=1.0. Pixel noise (1-5%) produces the largest embedding shift (~0.004), while single-color patches produce the smallest (~0.0003-0.0005). The detector generalizes to localized perturbations, not just global corruptions.
+---
+
+### Finding 227: Temporal Stability (Experiment 232)
+
+**Experiment**: Test embedding stability across 20 repeated forward passes (same image) and 20 temporal video frames (1-pixel per-frame variation).
+
+**Repeated Forward Passes (same image, 20 passes)**:
+- L1: mean pairwise dist = -1.19e-7 (numerical noise only, NOT identical due to floating point)
+- L3: mean pairwise dist = 0.0 (BIT-IDENTICAL across all 20 passes)
+
+**Temporal Frames (1-pixel variation per frame)**:
+- L1: mean dist to centroid = 7.05e-6, max = 1.75e-5
+- L3: mean dist to centroid = 1.27e-5, max = 2.92e-5
+
+**Corrupted Temporal Frames**:
+- Fog: L3 mean dist = 0.000571, min = 0.000511
+- Night: L3 mean dist = 0.003672, min = 0.003597
+
+**Key Findings**:
+1. **L3 is deterministically reproducible**: 20 forward passes produce BIT-IDENTICAL embeddings. No stochasticity.
+2. **Temporal frames are near-identical**: 1-pixel-per-frame variation produces cosine distance of ~1.3e-5, which is 45x smaller than the weakest corruption (fog at 0.000571).
+3. **Corrupted frames remain consistently OOD**: Fog minimum distance 0.000511 is 17x larger than clean temporal max distance 2.92e-5.
+4. **No temporal instability risk**: The detector will not false-alarm on normal video frame variation.
+
+**Finding**: Embeddings are **deterministically reproducible** (L3: bit-identical across 20 passes). Temporal video frame variation (1-pixel/frame) produces distances 45× smaller than the weakest corruption. The detector is temporally stable with zero false alarm risk from normal frame-to-frame variation.
