@@ -1,217 +1,287 @@
+#!/usr/bin/env python3
+"""Experiment 314: Failure Mode Characterization
+Systematically probes detector limitations and failure conditions:
+1. Geometric transforms (rotation, flip, crop)
+2. Camera settings (brightness, contrast, saturation)
+3. JPEG compression artifacts
+4. Pixel-level perturbations
+5. Borderline ultra-low severity corruptions
+6. Action-preserving corruptions (detected but harmless)
 """
-Failure Mode Analysis.
 
-Systematically tests when and how the OOD detector fails by creating
-adversarial-like scenarios that push the boundaries of detection:
-1. ID-mimicking OOD (constructed to look like driving in hidden space)
-2. Near-boundary interpolations at fine granularity
-3. Color-only OOD (same structure, wrong colors)
-4. Texture-only OOD (same layout, random textures)
-
-Experiment 101 in the CalibDrive series.
-"""
-import os
-import json
-import datetime
-import numpy as np
 import torch
-from PIL import Image
-from sklearn.metrics import roc_auc_score
+import numpy as np
+import json
+import io
+from datetime import datetime
+from PIL import Image, ImageFilter, ImageEnhance
+from transformers import AutoModelForVision2Seq, AutoProcessor
+from scipy.spatial.distance import cosine
 
-RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
-os.makedirs(RESULTS_DIR, exist_ok=True)
-SIZE = (256, 256)
+def apply_corruption(image, ctype, severity=1.0):
+    arr = np.array(image).astype(np.float32) / 255.0
+    if ctype == 'fog':
+        arr = arr * (1 - 0.6 * severity) + 0.6 * severity
+    elif ctype == 'night':
+        arr = arr * max(0.01, 1.0 - 0.95 * severity)
+    elif ctype == 'noise':
+        arr = arr + np.random.RandomState(42).randn(*arr.shape) * 0.3 * severity
+        arr = np.clip(arr, 0, 1)
+    elif ctype == 'blur':
+        return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
+    return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
-
-def create_highway(idx):
-    rng = np.random.default_rng(idx * 5001)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]
-    img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_urban(idx):
-    rng = np.random.default_rng(idx * 5002)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]
-    img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_inverted_highway(idx):
-    """Highway structure with inverted colors — same layout, wrong palette."""
-    rng = np.random.default_rng(idx * 5020)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [120, 49, 20]  # Inverted sky
-    img[SIZE[0]//2:] = [175, 175, 175]  # Inverted road
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [0, 0, 0]  # Inverted lane
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_green_highway(idx):
-    """Highway with green sky (alien world) — subtle semantic shift."""
-    rng = np.random.default_rng(idx * 5021)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [50, 235, 50]  # Green sky
-    img[SIZE[0]//2:] = [80, 80, 80]  # Normal road
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_red_highway(idx):
-    """Highway with red sky (sunset-like) — near-ID semantic."""
-    rng = np.random.default_rng(idx * 5022)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [235, 120, 80]  # Red sky
-    img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_textured_road(idx):
-    """Road with random texture overlay — structure preserved, texture changed."""
-    rng = np.random.default_rng(idx * 5023)
-    base = create_highway(idx)
-    texture = rng.integers(0, 60, base.shape, dtype=np.int16)
-    return np.clip(base.astype(np.int16) + texture, 0, 255).astype(np.uint8)
-
-def create_shifted_highway(idx):
-    """Highway with shifted horizon — same colors, wrong geometry."""
-    rng = np.random.default_rng(idx * 5024)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]*3//4] = [135, 206, 235]  # Sky takes 3/4
-    img[SIZE[0]*3//4:] = [80, 80, 80]  # Road only 1/4
-    img[SIZE[0]*3//4:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_highway_rotated(idx):
-    """Highway rotated 90 degrees — driving content, wrong orientation."""
-    img = create_highway(idx)
-    return np.rot90(img).copy()
-
-
-def extract_hidden(model, processor, image, prompt):
+def extract_hidden(model, processor, image, prompt, layer=3):
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
     with torch.no_grad():
         fwd = model(**inputs, output_hidden_states=True)
-    if hasattr(fwd, 'hidden_states') and fwd.hidden_states:
-        return fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
-    return None
+    return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
 
+def get_action_tokens(model, processor, image, prompt):
+    ACTION_TOKEN_START = 31744
+    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    with torch.no_grad():
+        generated = model.generate(**inputs, max_new_tokens=7, do_sample=False)
+    input_len = inputs['input_ids'].shape[1]
+    gen_tokens = generated[0, input_len:].cpu().numpy()
+    return [int(t - ACTION_TOKEN_START) for t in gen_tokens]
 
-def cosine_dist(a, b):
-    return 1.0 - float(np.dot(a / (np.linalg.norm(a) + 1e-10),
-                               b / (np.linalg.norm(b) + 1e-10)))
-
+def jpeg_compress(image, quality):
+    buf = io.BytesIO()
+    image.save(buf, format='JPEG', quality=quality)
+    buf.seek(0)
+    return Image.open(buf).convert('RGB')
 
 def main():
-    print("=" * 70, flush=True)
-    print("FAILURE MODE ANALYSIS", flush=True)
-    print("=" * 70, flush=True)
-
-    from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading OpenVLA-7B...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
-        device_map="auto", trust_remote_code=True,
-    )
-    processor = AutoProcessor.from_pretrained(
-        "openvla/openvla-7b", trust_remote_code=True,
-    )
+        device_map="auto", trust_remote_code=True)
+    processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
-    print("Model loaded.", flush=True)
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
+    prompt = "In: What action should the robot take to pick up the object?\nOut:"
+    np.random.seed(42)
+    pixels = np.random.randint(50, 200, (224, 224, 3), dtype=np.uint8)
+    base_img = Image.fromarray(pixels)
 
-    # Build calibration
-    print("\nBuilding calibration...", flush=True)
-    cal_hidden = []
-    for fn in [create_highway, create_urban]:
-        for i in range(10):
-            h = extract_hidden(model, processor,
-                              Image.fromarray(fn(i + 9000)), prompt)
-            if h is not None:
-                cal_hidden.append(h)
-    centroid = np.mean(cal_hidden, axis=0)
-    cal_scores = [cosine_dist(h, centroid) for h in cal_hidden]
-    threshold = np.mean(cal_scores) + 3 * np.std(cal_scores)
-    print(f"  Centroid from {len(cal_hidden)} samples, threshold={threshold:.4f}", flush=True)
-
-    # Test challenging scenarios
-    scenarios = {
-        'inverted_highway': (create_inverted_highway, 'Same layout, inverted colors'),
-        'green_highway': (create_green_highway, 'Normal road, green sky'),
-        'red_highway': (create_red_highway, 'Normal road, red/sunset sky'),
-        'textured_road': (create_textured_road, 'Highway + random texture overlay'),
-        'shifted_horizon': (create_shifted_highway, 'Highway with shifted horizon'),
-        'rotated_highway': (create_highway_rotated, 'Highway rotated 90°'),
+    results = {
+        "experiment": "failure_modes",
+        "experiment_number": 314,
+        "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
     }
 
-    results = {}
-    for name, (fn, desc) in scenarios.items():
-        print(f"\n--- {name}: {desc} ---", flush=True)
-        scores = []
-        for i in range(10):
-            h = extract_hidden(model, processor,
-                              Image.fromarray(fn(i + 500)), prompt)
-            if h is not None:
-                score = cosine_dist(h, centroid)
-                detected = score > threshold
-                scores.append(score)
-                status = "OOD" if detected else "ID"
-                print(f"  Sample {i}: score={score:.4f} [{status}]", flush=True)
+    clean_emb = extract_hidden(model, processor, base_img, prompt)
+    clean_actions = get_action_tokens(model, processor, base_img, prompt)
 
-        arr = np.array(scores)
-        detection_rate = float(np.mean([s > threshold for s in scores]))
-        results[name] = {
-            'description': desc,
-            'n': len(scores),
-            'mean': float(arr.mean()),
-            'std': float(arr.std()),
-            'min': float(arr.min()),
-            'max': float(arr.max()),
-            'detection_rate': detection_rate,
-            'scores': [float(s) for s in scores],
+    # Part 1: Geometric Transforms
+    print("=== Part 1: Geometric Transforms ===")
+    geometric = {}
+
+    for angle in [1, 5, 10, 30, 45, 90, 180]:
+        rotated = base_img.rotate(angle, fillcolor=(128, 128, 128))
+        emb = extract_hidden(model, processor, rotated, prompt)
+        d = float(cosine(clean_emb, emb))
+        actions = get_action_tokens(model, processor, rotated, prompt)
+        n_changed = sum(1 for a, b in zip(clean_actions, actions) if a != b)
+        geometric[f"rotate_{angle}"] = {"distance": d, "actions_changed": n_changed}
+        print(f"  Rotate {angle}: d={d:.8f}, actions_changed={n_changed}")
+
+    for flip_type in ['horizontal', 'vertical']:
+        if flip_type == 'horizontal':
+            flipped = base_img.transpose(Image.FLIP_LEFT_RIGHT)
+        else:
+            flipped = base_img.transpose(Image.FLIP_TOP_BOTTOM)
+        emb = extract_hidden(model, processor, flipped, prompt)
+        d = float(cosine(clean_emb, emb))
+        actions = get_action_tokens(model, processor, flipped, prompt)
+        n_changed = sum(1 for a, b in zip(clean_actions, actions) if a != b)
+        geometric[f"flip_{flip_type}"] = {"distance": d, "actions_changed": n_changed}
+        print(f"  Flip {flip_type}: d={d:.8f}, actions_changed={n_changed}")
+
+    for crop_pct in [0.95, 0.90, 0.80, 0.70]:
+        sz = int(224 * crop_pct)
+        offset = (224 - sz) // 2
+        cropped = base_img.crop((offset, offset, offset + sz, offset + sz))
+        cropped = cropped.resize((224, 224), Image.BILINEAR)
+        emb = extract_hidden(model, processor, cropped, prompt)
+        d = float(cosine(clean_emb, emb))
+        actions = get_action_tokens(model, processor, cropped, prompt)
+        n_changed = sum(1 for a, b in zip(clean_actions, actions) if a != b)
+        geometric[f"crop_{crop_pct}"] = {"distance": d, "actions_changed": n_changed}
+        print(f"  Crop {crop_pct*100:.0f}%: d={d:.8f}, actions_changed={n_changed}")
+
+    results["geometric"] = geometric
+
+    # Part 2: Camera Settings
+    print("\n=== Part 2: Camera Settings ===")
+    camera = {}
+
+    for factor in [0.5, 0.8, 0.9, 0.95, 1.05, 1.1, 1.2, 1.5, 2.0]:
+        enhanced = ImageEnhance.Brightness(base_img).enhance(factor)
+        emb = extract_hidden(model, processor, enhanced, prompt)
+        d = float(cosine(clean_emb, emb))
+        actions = get_action_tokens(model, processor, enhanced, prompt)
+        n_changed = sum(1 for a, b in zip(clean_actions, actions) if a != b)
+        camera[f"brightness_{factor}"] = {"distance": d, "actions_changed": n_changed}
+        print(f"  Brightness {factor}: d={d:.8f}, actions_changed={n_changed}")
+
+    for factor in [0.5, 0.8, 0.9, 1.1, 1.2, 1.5, 2.0]:
+        enhanced = ImageEnhance.Contrast(base_img).enhance(factor)
+        emb = extract_hidden(model, processor, enhanced, prompt)
+        d = float(cosine(clean_emb, emb))
+        actions = get_action_tokens(model, processor, enhanced, prompt)
+        n_changed = sum(1 for a, b in zip(clean_actions, actions) if a != b)
+        camera[f"contrast_{factor}"] = {"distance": d, "actions_changed": n_changed}
+        print(f"  Contrast {factor}: d={d:.8f}, actions_changed={n_changed}")
+
+    for factor in [0.0, 0.5, 0.8, 1.2, 1.5, 2.0]:
+        enhanced = ImageEnhance.Color(base_img).enhance(factor)
+        emb = extract_hidden(model, processor, enhanced, prompt)
+        d = float(cosine(clean_emb, emb))
+        actions = get_action_tokens(model, processor, enhanced, prompt)
+        n_changed = sum(1 for a, b in zip(clean_actions, actions) if a != b)
+        camera[f"saturation_{factor}"] = {"distance": d, "actions_changed": n_changed}
+        print(f"  Saturation {factor}: d={d:.8f}, actions_changed={n_changed}")
+
+    results["camera"] = camera
+
+    # Part 3: JPEG Compression
+    print("\n=== Part 3: JPEG Compression ===")
+    jpeg_results = {}
+
+    for quality in [1, 5, 10, 20, 30, 50, 70, 90, 95]:
+        compressed = jpeg_compress(base_img, quality)
+        emb = extract_hidden(model, processor, compressed, prompt)
+        d = float(cosine(clean_emb, emb))
+        actions = get_action_tokens(model, processor, compressed, prompt)
+        n_changed = sum(1 for a, b in zip(clean_actions, actions) if a != b)
+        jpeg_results[f"q{quality}"] = {"distance": d, "actions_changed": n_changed}
+        print(f"  JPEG Q={quality}: d={d:.8f}, actions_changed={n_changed}")
+
+    results["jpeg"] = jpeg_results
+
+    # Part 4: Pixel-Level Perturbations
+    print("\n=== Part 4: Pixel-Level Perturbations ===")
+    pixel_shifts = {}
+
+    for n_pixels in [1, 10, 100, 1000, 5000, 10000]:
+        arr = np.array(base_img).copy()
+        rng = np.random.RandomState(42)
+        indices = rng.choice(224 * 224, size=n_pixels, replace=False)
+        for idx in indices:
+            r, c_idx = divmod(idx, 224)
+            arr[r, c_idx] = rng.randint(0, 256, size=3)
+        modified = Image.fromarray(arr)
+        emb = extract_hidden(model, processor, modified, prompt)
+        d = float(cosine(clean_emb, emb))
+        actions = get_action_tokens(model, processor, modified, prompt)
+        n_changed = sum(1 for a, b in zip(clean_actions, actions) if a != b)
+        pixel_shifts[f"random_{n_pixels}px"] = {
+            "distance": d,
+            "actions_changed": n_changed,
+            "pct_pixels": n_pixels / (224 * 224) * 100,
         }
-        print(f"  Mean={arr.mean():.4f}±{arr.std():.4f}, Detection rate={detection_rate:.0%}", flush=True)
+        print(f"  {n_pixels} random pixels ({n_pixels/(224*224)*100:.2f}%): d={d:.8f}, actions_changed={n_changed}")
 
-    # Compare with known ID baseline
-    print("\n--- ID baseline ---", flush=True)
-    id_scores = []
-    for fn in [create_highway, create_urban]:
-        for i in range(10):
-            h = extract_hidden(model, processor,
-                              Image.fromarray(fn(i + 700)), prompt)
-            if h is not None:
-                score = cosine_dist(h, centroid)
-                id_scores.append(score)
-    id_arr = np.array(id_scores)
-    results['id_baseline'] = {
-        'mean': float(id_arr.mean()),
-        'std': float(id_arr.std()),
-        'max': float(id_arr.max()),
-        'detection_rate': float(np.mean([s > threshold for s in id_scores])),
+    for offset_val in [1, 5, 10, 20, 50]:
+        arr = np.array(base_img).astype(np.int16) + offset_val
+        arr = np.clip(arr, 0, 255).astype(np.uint8)
+        modified = Image.fromarray(arr)
+        emb = extract_hidden(model, processor, modified, prompt)
+        d = float(cosine(clean_emb, emb))
+        actions = get_action_tokens(model, processor, modified, prompt)
+        n_changed = sum(1 for a, b in zip(clean_actions, actions) if a != b)
+        pixel_shifts[f"uniform_+{offset_val}"] = {"distance": d, "actions_changed": n_changed}
+        print(f"  Uniform +{offset_val}: d={d:.8f}, actions_changed={n_changed}")
+
+    results["pixel_shifts"] = pixel_shifts
+
+    # Part 5: Borderline Cases
+    print("\n=== Part 5: Borderline Cases ===")
+    borderline = {}
+
+    for c in ['fog', 'noise', 'night', 'blur']:
+        for sev in [0.001, 0.005, 0.01, 0.02, 0.03, 0.05]:
+            corrupted = apply_corruption(base_img, c, sev)
+            emb = extract_hidden(model, processor, corrupted, prompt)
+            d = float(cosine(clean_emb, emb))
+            borderline[f"{c}_{sev}"] = {"distance": d, "detected": d > 0}
+            print(f"  {c} sev={sev}: d={d:.10f}, detected={d > 0}")
+
+    results["borderline"] = borderline
+
+    # Part 6: Action-Preserving Corruptions
+    print("\n=== Part 6: Action-Preserving Corruptions ===")
+    action_preserving = {}
+
+    for c in ['fog', 'night', 'blur', 'noise']:
+        for sev_val in [0.01, 0.02, 0.05, 0.10, 0.15, 0.20]:
+            corrupted = apply_corruption(base_img, c, sev_val)
+            emb = extract_hidden(model, processor, corrupted, prompt)
+            d = float(cosine(clean_emb, emb))
+            actions = get_action_tokens(model, processor, corrupted, prompt)
+            n_changed = sum(1 for a, b in zip(clean_actions, actions) if a != b)
+            action_preserving[f"{c}_{sev_val}"] = {
+                "distance": d,
+                "detected": d > 0,
+                "actions_changed": n_changed,
+                "false_alarm": d > 0 and n_changed == 0,
+            }
+            if n_changed == 0 and d > 0:
+                print(f"  * {c} sev={sev_val}: DETECTED but actions UNCHANGED (d={d:.6f})")
+            elif n_changed > 0:
+                print(f"    {c} sev={sev_val}: detected={d>0}, actions_changed={n_changed}")
+
+    n_false_alarms = sum(1 for v in action_preserving.values() if v.get("false_alarm", False))
+    n_total_tests = len(action_preserving)
+    results["action_preserving"] = {
+        "tests": action_preserving,
+        "n_false_alarms": n_false_alarms,
+        "n_total": n_total_tests,
+        "false_alarm_rate": n_false_alarms / n_total_tests if n_total_tests > 0 else 0,
     }
-    print(f"  ID: mean={id_arr.mean():.4f}±{id_arr.std():.4f}", flush=True)
+    print(f"\n  Action-preserving false alarms: {n_false_alarms}/{n_total_tests}")
+
+    # Summary
+    print("\n=== Summary ===")
+    all_tests = {}
+    for category in ['geometric', 'camera', 'jpeg', 'pixel_shifts', 'borderline']:
+        data = results[category]
+        for k, v in data.items():
+            if isinstance(v, dict) and 'distance' in v:
+                all_tests[f"{category}/{k}"] = v['distance']
+
+    detected = {k: d for k, d in all_tests.items() if d > 0}
+    undetected = {k: d for k, d in all_tests.items() if d == 0}
+
+    print(f"  Total tests: {len(all_tests)}")
+    print(f"  Detected (d>0): {len(detected)}")
+    print(f"  Undetected (d=0): {len(undetected)}")
+    if undetected:
+        print(f"  Undetected: {list(undetected.keys())}")
+
+    results["summary"] = {
+        "total_tests": len(all_tests),
+        "detected": len(detected),
+        "undetected": len(undetected),
+        "undetected_conditions": list(undetected.keys()),
+    }
 
     # Save
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    output = {
-        'experiment': 'failure_modes',
-        'experiment_number': 101,
-        'timestamp': timestamp,
-        'threshold': float(threshold),
-        'results': results,
-    }
-    output_path = os.path.join(RESULTS_DIR, f"failure_modes_{timestamp}.json")
-    with open(output_path, 'w') as f:
-        json.dump(output, f, indent=2)
-    print(f"\nSaved to {output_path}", flush=True)
+    def convert(obj):
+        if isinstance(obj, (np.integer,)): return int(obj)
+        if isinstance(obj, (np.floating,)): return float(obj)
+        if isinstance(obj, np.ndarray): return obj.tolist()
+        if isinstance(obj, dict): return {k: convert(v) for k, v in obj.items()}
+        if isinstance(obj, list): return [convert(v) for v in obj]
+        return obj
 
+    ts = results["timestamp"]
+    out_path = f"experiments/failure_{ts}.json"
+    with open(out_path, 'w') as f:
+        json.dump(convert(results), f, indent=2)
+    print(f"\nSaved to {out_path}")
 
 if __name__ == "__main__":
     main()

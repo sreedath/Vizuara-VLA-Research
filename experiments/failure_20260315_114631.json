@@ -1,0 +1,500 @@
+{
+  "experiment": "failure_modes",
+  "experiment_number": 314,
+  "timestamp": "20260315_114631",
+  "geometric": {
+    "rotate_1": {
+      "distance": 0.0001761913299560547,
+      "actions_changed": 4
+    },
+    "rotate_5": {
+      "distance": 0.0006417036056518555,
+      "actions_changed": 6
+    },
+    "rotate_10": {
+      "distance": 0.0011025071144104004,
+      "actions_changed": 6
+    },
+    "rotate_30": {
+      "distance": 0.0014551877975463867,
+      "actions_changed": 5
+    },
+    "rotate_45": {
+      "distance": 0.0014356374740600586,
+      "actions_changed": 6
+    },
+    "rotate_90": {
+      "distance": 7.462501525878906e-05,
+      "actions_changed": 5
+    },
+    "rotate_180": {
+      "distance": 8.970499038696289e-05,
+      "actions_changed": 6
+    },
+    "flip_horizontal": {
+      "distance": 5.078315734863281e-05,
+      "actions_changed": 6
+    },
+    "flip_vertical": {
+      "distance": 5.14984130859375e-05,
+      "actions_changed": 6
+    },
+    "crop_0.95": {
+      "distance": 0.00022166967391967773,
+      "actions_changed": 4
+    },
+    "crop_0.9": {
+      "distance": 0.0003432631492614746,
+      "actions_changed": 7
+    },
+    "crop_0.8": {
+      "distance": 0.0006198287010192871,
+      "actions_changed": 6
+    },
+    "crop_0.7": {
+      "distance": 0.0005576014518737793,
+      "actions_changed": 7
+    }
+  },
+  "camera": {
+    "brightness_0.5": {
+      "distance": 0.002412259578704834,
+      "actions_changed": 7
+    },
+    "brightness_0.8": {
+      "distance": 0.0004413723945617676,
+      "actions_changed": 1
+    },
+    "brightness_0.9": {
+      "distance": 0.00013405084609985352,
+      "actions_changed": 1
+    },
+    "brightness_0.95": {
+      "distance": 3.063678741455078e-05,
+      "actions_changed": 0
+    },
+    "brightness_1.05": {
+      "distance": 1.6808509826660156e-05,
+      "actions_changed": 4
+    },
+    "brightness_1.1": {
+      "distance": 6.55055046081543e-05,
+      "actions_changed": 4
+    },
+    "brightness_1.2": {
+      "distance": 0.0002243518829345703,
+      "actions_changed": 5
+    },
+    "brightness_1.5": {
+      "distance": 0.0010722875595092773,
+      "actions_changed": 6
+    },
+    "brightness_2.0": {
+      "distance": 0.002235889434814453,
+      "actions_changed": 7
+    },
+    "contrast_0.5": {
+      "distance": 0.0006334185600280762,
+      "actions_changed": 4
+    },
+    "contrast_0.8": {
+      "distance": 7.95125961303711e-05,
+      "actions_changed": 0
+    },
+    "contrast_0.9": {
+      "distance": 3.832578659057617e-05,
+      "actions_changed": 0
+    },
+    "contrast_1.1": {
+      "distance": 4.4226646423339844e-05,
+      "actions_changed": 0
+    },
+    "contrast_1.2": {
+      "distance": 5.805492401123047e-05,
+      "actions_changed": 0
+    },
+    "contrast_1.5": {
+      "distance": 0.00017851591110229492,
+      "actions_changed": 7
+    },
+    "contrast_2.0": {
+      "distance": 0.0006865262985229492,
+      "actions_changed": 6
+    },
+    "saturation_0.0": {
+      "distance": 0.0010497570037841797,
+      "actions_changed": 7
+    },
+    "saturation_0.5": {
+      "distance": 9.399652481079102e-05,
+      "actions_changed": 7
+    },
+    "saturation_0.8": {
+      "distance": 2.014636993408203e-05,
+      "actions_changed": 0
+    },
+    "saturation_1.2": {
+      "distance": 4.2319297790527344e-05,
+      "actions_changed": 4
+    },
+    "saturation_1.5": {
+      "distance": 5.459785461425781e-05,
+      "actions_changed": 4
+    },
+    "saturation_2.0": {
+      "distance": 9.47117805480957e-05,
+      "actions_changed": 4
+    }
+  },
+  "jpeg": {
+    "q1": {
+      "distance": 0.005626380443572998,
+      "actions_changed": 7
+    },
+    "q5": {
+      "distance": 0.0034623146057128906,
+      "actions_changed": 6
+    },
+    "q10": {
+      "distance": 0.002124011516571045,
+      "actions_changed": 6
+    },
+    "q20": {
+      "distance": 0.0005106329917907715,
+      "actions_changed": 7
+    },
+    "q30": {
+      "distance": 0.0004786849021911621,
+      "actions_changed": 7
+    },
+    "q50": {
+      "distance": 0.00021719932556152344,
+      "actions_changed": 7
+    },
+    "q70": {
+      "distance": 7.987022399902344e-05,
+      "actions_changed": 3
+    },
+    "q90": {
+      "distance": 4.3272972106933594e-05,
+      "actions_changed": 5
+    },
+    "q95": {
+      "distance": 4.5418739318847656e-05,
+      "actions_changed": 5
+    }
+  },
+  "pixel_shifts": {
+    "random_1px": {
+      "distance": 1.5497207641601562e-06,
+      "actions_changed": 0,
+      "pct_pixels": 0.001992984693877551
+    },
+    "random_10px": {
+      "distance": 3.337860107421875e-06,
+      "actions_changed": 4,
+      "pct_pixels": 0.01992984693877551
+    },
+    "random_100px": {
+      "distance": 3.236532211303711e-05,
+      "actions_changed": 4,
+      "pct_pixels": 0.1992984693877551
+    },
+    "random_1000px": {
+      "distance": 2.7358531951904297e-05,
+      "actions_changed": 3,
+      "pct_pixels": 1.992984693877551
+    },
+    "random_5000px": {
+      "distance": 6.562471389770508e-05,
+      "actions_changed": 4,
+      "pct_pixels": 9.964923469387756
+    },
+    "random_10000px": {
+      "distance": 0.0001240372657775879,
+      "actions_changed": 4,
+      "pct_pixels": 19.929846938775512
+    },
+    "uniform_+1": {
+      "distance": 3.2186508178710938e-06,
+      "actions_changed": 0
+    },
+    "uniform_+5": {
+      "distance": 1.436471939086914e-05,
+      "actions_changed": 0
+    },
+    "uniform_+10": {
+      "distance": 7.104873657226562e-05,
+      "actions_changed": 4
+    },
+    "uniform_+20": {
+      "distance": 0.0001843571662902832,
+      "actions_changed": 4
+    },
+    "uniform_+50": {
+      "distance": 0.0008669495582580566,
+      "actions_changed": 5
+    }
+  },
+  "borderline": {
+    "fog_0.001": {
+      "distance": 0.0,
+      "detected": false
+    },
+    "fog_0.005": {
+      "distance": 0.0,
+      "detected": false
+    },
+    "fog_0.01": {
+      "distance": 4.351139068603516e-06,
+      "detected": true
+    },
+    "fog_0.02": {
+      "distance": 3.5762786865234375e-06,
+      "detected": true
+    },
+    "fog_0.03": {
+      "distance": 7.033348083496094e-06,
+      "detected": true
+    },
+    "fog_0.05": {
+      "distance": 1.2934207916259766e-05,
+      "detected": true
+    },
+    "noise_0.001": {
+      "distance": 2.562999725341797e-06,
+      "detected": true
+    },
+    "noise_0.005": {
+      "distance": 2.4437904357910156e-06,
+      "detected": true
+    },
+    "noise_0.01": {
+      "distance": 2.4437904357910156e-06,
+      "detected": true
+    },
+    "noise_0.02": {
+      "distance": 3.5762786865234375e-06,
+      "detected": true
+    },
+    "noise_0.03": {
+      "distance": 3.874301910400391e-06,
+      "detected": true
+    },
+    "noise_0.05": {
+      "distance": 4.231929779052734e-06,
+      "detected": true
+    },
+    "night_0.001": {
+      "distance": 2.9385089874267578e-05,
+      "detected": true
+    },
+    "night_0.005": {
+      "distance": 2.9385089874267578e-05,
+      "detected": true
+    },
+    "night_0.01": {
+      "distance": 3.159046173095703e-05,
+      "detected": true
+    },
+    "night_0.02": {
+      "distance": 3.701448440551758e-05,
+      "detected": true
+    },
+    "night_0.03": {
+      "distance": 4.088878631591797e-05,
+      "detected": true
+    },
+    "night_0.05": {
+      "distance": 3.1828880310058594e-05,
+      "detected": true
+    },
+    "blur_0.001": {
+      "distance": 0.0,
+      "detected": false
+    },
+    "blur_0.005": {
+      "distance": 0.0,
+      "detected": false
+    },
+    "blur_0.01": {
+      "distance": 0.0,
+      "detected": false
+    },
+    "blur_0.02": {
+      "distance": 6.020069122314453e-06,
+      "detected": true
+    },
+    "blur_0.03": {
+      "distance": 6.03795051574707e-05,
+      "detected": true
+    },
+    "blur_0.05": {
+      "distance": 0.0001379847526550293,
+      "detected": true
+    }
+  },
+  "action_preserving": {
+    "tests": {
+      "fog_0.01": {
+        "distance": 4.351139068603516e-06,
+        "detected": true,
+        "actions_changed": 4,
+        "false_alarm": false
+      },
+      "fog_0.02": {
+        "distance": 3.5762786865234375e-06,
+        "detected": true,
+        "actions_changed": 0,
+        "false_alarm": true
+      },
+      "fog_0.05": {
+        "distance": 1.2934207916259766e-05,
+        "detected": true,
+        "actions_changed": 4,
+        "false_alarm": false
+      },
+      "fog_0.1": {
+        "distance": 6.252527236938477e-05,
+        "detected": true,
+        "actions_changed": 4,
+        "false_alarm": false
+      },
+      "fog_0.15": {
+        "distance": 0.00010651350021362305,
+        "detected": true,
+        "actions_changed": 2,
+        "false_alarm": false
+      },
+      "fog_0.2": {
+        "distance": 0.00016802549362182617,
+        "detected": true,
+        "actions_changed": 4,
+        "false_alarm": false
+      },
+      "night_0.01": {
+        "distance": 3.159046173095703e-05,
+        "detected": true,
+        "actions_changed": 0,
+        "false_alarm": true
+      },
+      "night_0.02": {
+        "distance": 3.701448440551758e-05,
+        "detected": true,
+        "actions_changed": 0,
+        "false_alarm": true
+      },
+      "night_0.05": {
+        "distance": 3.1828880310058594e-05,
+        "detected": true,
+        "actions_changed": 0,
+        "false_alarm": true
+      },
+      "night_0.1": {
+        "distance": 0.00013381242752075195,
+        "detected": true,
+        "actions_changed": 0,
+        "false_alarm": true
+      },
+      "night_0.15": {
+        "distance": 0.0002383589744567871,
+        "detected": true,
+        "actions_changed": 1,
+        "false_alarm": false
+      },
+      "night_0.2": {
+        "distance": 0.0003681182861328125,
+        "detected": true,
+        "actions_changed": 1,
+        "false_alarm": false
+      },
+      "blur_0.01": {
+        "distance": 0.0,
+        "detected": false,
+        "actions_changed": 0,
+        "false_alarm": false
+      },
+      "blur_0.02": {
+        "distance": 6.020069122314453e-06,
+        "detected": true,
+        "actions_changed": 4,
+        "false_alarm": false
+      },
+      "blur_0.05": {
+        "distance": 0.0001379847526550293,
+        "detected": true,
+        "actions_changed": 5,
+        "false_alarm": false
+      },
+      "blur_0.1": {
+        "distance": 0.0007543563842773438,
+        "detected": true,
+        "actions_changed": 7,
+        "false_alarm": false
+      },
+      "blur_0.15": {
+        "distance": 0.001426100730895996,
+        "detected": true,
+        "actions_changed": 6,
+        "false_alarm": false
+      },
+      "blur_0.2": {
+        "distance": 0.0022547245025634766,
+        "detected": true,
+        "actions_changed": 6,
+        "false_alarm": false
+      },
+      "noise_0.01": {
+        "distance": 2.4437904357910156e-06,
+        "detected": true,
+        "actions_changed": 0,
+        "false_alarm": true
+      },
+      "noise_0.02": {
+        "distance": 3.5762786865234375e-06,
+        "detected": true,
+        "actions_changed": 0,
+        "false_alarm": true
+      },
+      "noise_0.05": {
+        "distance": 4.231929779052734e-06,
+        "detected": true,
+        "actions_changed": 4,
+        "false_alarm": false
+      },
+      "noise_0.1": {
+        "distance": 2.7835369110107422e-05,
+        "detected": true,
+        "actions_changed": 4,
+        "false_alarm": false
+      },
+      "noise_0.15": {
+        "distance": 1.5139579772949219e-05,
+        "detected": true,
+        "actions_changed": 4,
+        "false_alarm": false
+      },
+      "noise_0.2": {
+        "distance": 2.4974346160888672e-05,
+        "detected": true,
+        "actions_changed": 4,
+        "false_alarm": false
+      }
+    },
+    "n_false_alarms": 7,
+    "n_total": 24,
+    "false_alarm_rate": 0.2916666666666667
+  },
+  "summary": {
+    "total_tests": 79,
+    "detected": 74,
+    "undetected": 5,
+    "undetected_conditions": [
+      "borderline/fog_0.001",
+      "borderline/fog_0.005",
+      "borderline/blur_0.001",
+      "borderline/blur_0.005",
+      "borderline/blur_0.01"
+    ]
+  }
+}
