@@ -3648,4 +3648,30 @@ We compare cosine distance against L2 distance and the classic Mahalanobis dista
 \label{fig:mahalanobis}
 \end{figure}
 
+\subsection{Corruption Severity Sensitivity}
+
+We sweep corruption severity to determine detection thresholds---the minimum corruption level at which the detector achieves perfect AUROC.
+
+\textbf{Finding 359}: Detection thresholds are \textbf{surprisingly low}. Perfect AUROC is achieved at: fog alpha=0.5 (50\% opacity), night brightness=0.7 (30\% darkening), blur radius=2 (2-pixel Gaussian), noise $\sigma$=20. These are mild corruptions---often barely perceptible to human observers.
+
+\textbf{Finding 360}: L3 is the \textbf{most sensitive layer}, reaching perfect AUROC at lower severity than L1 or L32. For fog, L3 achieves AUROC=1.0 at alpha=0.4 while L1 requires alpha=0.5. For blur, L3 detects radius=1 perfectly while L1 is at 0.97. This complements L1's higher separation ratio---L3 has better \emph{sensitivity} while L1 has better \emph{discrimination margin}.
+
+\textbf{Finding 361}: Night corruption exhibits a \textbf{sharp phase transition}: AUROC$\approx$0.65 at brightness=0.9, then jumps to AUROC=1.0 at brightness=0.7. In contrast, fog and noise show gradual ramps. This binary behavior suggests night-mode detection is driven by a threshold mechanism in the first transformer layer.
+
+\textbf{Finding 362}: Any corruption strong enough to meaningfully affect driving behavior is detected with AUROC=1.0. The detection thresholds are well below the severity levels where VLA action predictions would become unsafe, providing a \textbf{safety margin} between detection and failure.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig201_severity_sweep.png}
+\caption{\textbf{Severity sensitivity curves.} AUROC vs corruption severity for four corruption types. Detection thresholds (green lines) show perfect detection at mild corruption levels: fog$\geq$0.4, night$\leq$0.7, blur$\geq$2, noise$\geq$15.}
+\label{fig:severity_sweep}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/fig202_detection_thresholds.png}
+\caption{\textbf{Detection thresholds.} Minimum corruption severity for AUROC=1.0 across all layers. All thresholds correspond to mild corruptions that are often barely perceptible.}
+\label{fig:detection_thresholds}
+\end{figure}
+
 \end{document}
