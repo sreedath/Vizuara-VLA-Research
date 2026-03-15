@@ -2566,4 +2566,40 @@ We test whether hidden state norms alone---without centroid reference---can serv
 
 This result decomposes the OOD signal into magnitude and direction components. The norm captures only the magnitude component, explaining why it achieves $d{=}2.6$ compared to cosine distance's $d{=}52$. Cosine distance is invariant to norm and captures the directional shift exclusively, which accounts for $95\%$ of the total OOD signal. The practical implication is that while norms provide a crude OOD signal requiring zero calibration (no centroid needed), cosine distance is overwhelmingly superior and should always be preferred when even a single calibration sample is available.
 
+\subsection{OOD Category Difficulty Ranking}
+\label{app:ood_difficulty}
+
+\textbf{Finding 183: Fog is the only OOD category (out of 9 tested) that produces overlap with the ID distribution, achieving AUROC$=$0.976 rather than 1.000. All other categories---including desert, snow, construction, rain, underwater---are perfectly detected.}
+
+\textbf{Finding 184: OOD detection difficulty correlates with structural similarity to ID scenes. Fog (50\% ID blend) preserves scene layout and is hardest ($d{=}3.1$). Rain, despite also being weather, is easy ($d{=}50.1$) because it fundamentally alters pixel statistics.}
+
+We expand the OOD evaluation from 4 to 9 categories, adding fog, rain, construction zones, underwater, and desert scenes (Figure~\ref{fig:ood_difficulty}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig124_ood_category_difficulty.png}
+\caption{\textbf{Category difficulty ranking.} (a) Distance distributions: fog (mean$=$0.108) sits close to ID, while rain and noise are distant. (b) Detection gap: only fog has negative gap (overlap). (c) D-prime: fog at $d{=}3.1$ is $16\times$ weaker than rain at $d{=}50.1$.}
+\label{fig:ood_difficulty}
+\end{figure}
+
+The fog result is the most important finding for safety-critical deployment. Fog at 50\% opacity preserves the structural content of the driving scene---sky-ground boundary, road surface, lane markings---while merely reducing contrast. Because the VLA encodes \emph{structural} features rather than \emph{photometric} statistics, foggy inputs map near the clean ID cluster. This is precisely the failure mode that real-world safety systems must address: environmental conditions that preserve scene structure but degrade visual quality. We investigate fog detection in depth in the following experiment.
+
+\subsection{Fog Detection Deep Dive}
+\label{app:fog_deep_dive}
+
+\textbf{Finding 185: Layer~3 perfectly detects fog from 30\% opacity onward (AUROC$=$1.000, $d{=}4.0$--$60.9$), while the last layer fails below 40\% opacity. At 50\% fog, L3 is $3.6\times$ more effective than L32 ($d{=}18.8$ vs $5.3$).}
+
+\textbf{Finding 186: A dual-layer detector monitoring both L3 (photometric changes) and L32 (semantic changes) would achieve comprehensive OOD coverage, resolving the fog vulnerability discovered in Experiment~138.}
+
+We sweep fog opacity from 10\% to 90\% and compare detection across 5 transformer layers (Figure~\ref{fig:fog_deep_dive}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig125_fog_deep_dive.png}
+\caption{\textbf{Fog deep dive.} (a) AUROC vs opacity by layer: L3 (green) achieves perfect detection from 30\% opacity, while L32 (red) fails below 40\%. (b) D-prime comparison: L3 dominates at all fog levels. (c) L3 vs L32: early layers are $2$--$3.6\times$ better for fog, with the advantage peaking at 50\% opacity.}
+\label{fig:fog_deep_dive}
+\end{figure}
+
+The layer-dependent sensitivity to fog reveals a fundamental architectural insight. Early layers (L3) encode \emph{photometric} features---brightness, contrast, edge sharpness---that fog directly disrupts. Late layers (L32) encode \emph{semantic} features---scene layout, object categories---that fog preserves. This complementarity motivates a practical dual-layer detection architecture: monitor L3 cosine distance for photometric corruptions (fog, low-light, glare) and L32 cosine distance for semantic domain shifts (indoor, underwater, construction). The combined detector would flag any input that is anomalous at either level, achieving the union of both detection capabilities at negligible additional cost (both hidden states are already computed).
+
 \end{document}

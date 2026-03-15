@@ -6110,3 +6110,93 @@ Can the L2 norm of hidden state vectors (without centroid reference) distinguish
 4. **Multi-layer norm vector doesn't help**: AUROC=0.914 is actually worse than layer 32 alone (0.963). The uninformative layers add noise.
 
 5. **Norms are weak compared to cosine distance**: Even the best norm-based method (d=2.60) is 20× weaker than cosine distance (d=52.0). The OOD signal is primarily directional, not in the magnitude. Norms capture only the magnitude component.
+
+---
+
+## Finding 132: OOD Category Difficulty Ranking (Experiment 138)
+
+### Research Question
+Which OOD categories are hardest to detect? We expand from 4 OOD to 9 OOD categories including weather conditions (fog, rain), construction zones, underwater, and desert.
+
+### Setup
+- **Model**: OpenVLA-7B (bfloat16, NVIDIA A40)
+- **ID**: 24 images (12 highway + 12 urban)
+- **OOD**: 9 categories × 12 images each = 108 OOD images
+- **Metric**: Cosine distance from ID centroid
+
+### Results (Ranked by Difficulty)
+
+| Category | Mean Dist | Min Dist | Gap | AUROC | D-prime |
+|----------|----------|----------|-----|-------|---------|
+| **fog** | **0.108** | **0.101** | **-0.007** | **0.976** | **3.1** |
+| desert | 0.218 | 0.208 | 0.100 | 1.000 | 18.4 |
+| snow | 0.261 | 0.247 | 0.139 | 1.000 | 24.4 |
+| construction | 0.314 | 0.303 | 0.195 | 1.000 | 31.7 |
+| indoor | 0.348 | 0.332 | 0.224 | 1.000 | 37.2 |
+| underwater | 0.365 | 0.344 | 0.236 | 1.000 | 38.9 |
+| twilight | 0.436 | 0.422 | 0.313 | 1.000 | 48.7 |
+| noise | 0.430 | 0.418 | 0.310 | 1.000 | 49.3 |
+| rain | 0.445 | 0.395 | 0.287 | 1.000 | 50.1 |
+
+### Key Insights
+
+1. **FOG IS THE ONLY CATEGORY WITH ID OVERLAP**: Fog has gap=-0.007 and AUROC=0.976, meaning some fog embeddings fall within the ID distribution. This is the first category to break perfect detection across all experiments.
+
+2. **Fog is hard because it preserves scene structure**: Our fog is a 50% blend of the highway scene with a uniform gray overlay. It preserves the road layout, sky-ground boundary, and lane markings — all features the VLA uses for scene understanding. The embedding barely moves because the structural content is preserved.
+
+3. **Desert is second-hardest**: The desert scene shares the sky-ground structure with highway/urban but with different colors. Its gap (0.100) is the smallest positive gap.
+
+4. **Rain is surprisingly easy (d=50.1)**: Despite being a weather condition like fog, rain darkens the scene and adds streaks, which significantly alter the visual features.
+
+5. **Difficulty correlates with structural similarity to ID**: Categories that preserve the basic scene layout (fog, desert, snow) are hardest. Categories that fundamentally change scene content (noise, indoor, underwater) are easiest.
+
+6. **Even the hardest category (fog) achieves AUROC=0.976**: While not perfect, this is still strong detection. The fog finding motivates investigation into whether early layers or multi-layer approaches can improve fog detection (→ Experiment 139).
+
+---
+
+## Finding 133: Fog OOD Detection Deep Dive (Experiment 139)
+
+### Research Question
+Fog was the only category to overlap with ID (Exp 138). Can early layers detect fog where the last layer fails? How does detection vary with fog opacity?
+
+### Setup
+- **Model**: OpenVLA-7B (bfloat16, NVIDIA A40)
+- **ID**: 40 embeddings (20 highway + 20 urban)
+- **Fog**: 15 images at each of 9 opacity levels (10%-90%)
+- **Layers**: 3, 8, 16, 24, 32
+
+### Results
+
+**Last Layer (L32) — AUROC vs Opacity:**
+| Opacity | AUROC | D-prime | Gap |
+|---------|-------|---------|-----|
+| 10% | 0.425 | -0.20 | -0.018 |
+| 20% | 0.748 | 0.99 | -0.013 |
+| 30% | 0.973 | 2.81 | -0.007 |
+| 40% | 1.000 | 4.00 | +0.002 |
+| 50% | 1.000 | 5.28 | +0.008 |
+| 70% | 1.000 | 14.08 | +0.045 |
+| 90% | 1.000 | 32.70 | +0.122 |
+
+**Best Layer per Opacity (Critical Finding):**
+| Opacity | Best Layer | Best AUROC | Best D | L32 D | Improvement |
+|---------|-----------|-----------|--------|-------|-------------|
+| 10% | L24 | 0.498 | 0.05 | -0.20 | — |
+| 20% | L32 | 0.748 | 0.99 | 0.99 | 1.0× |
+| 30% | **L3** | **1.000** | **4.02** | 2.81 | **1.4×** |
+| 40% | **L3** | **1.000** | **10.25** | 4.00 | **2.6×** |
+| 50% | **L3** | **1.000** | **18.81** | 5.28 | **3.6×** |
+| 70% | **L3** | **1.000** | **34.41** | 14.08 | **2.4×** |
+| 90% | **L3** | **1.000** | **60.87** | 32.70 | **1.9×** |
+
+### Key Insights
+
+1. **Layer 3 perfectly detects fog from 30% opacity onward**: While L32 fails at low fog (AUROC=0.425 at 10%, 0.748 at 20%), L3 achieves perfect AUROC=1.000 from 30% opacity.
+
+2. **Layer 3 is 3.6× better than L32 at 50% fog**: d=18.81 vs d=5.28. Early layers capture low-level visual features (brightness, contrast, edge sharpness) that fog disrupts, while late layers focus on high-level scene semantics that fog preserves.
+
+3. **10% fog is undetectable by any layer**: At 10% opacity, the fog is too subtle for any single layer to detect. This represents a genuine limit of the method — very light fog is effectively indistinguishable from clean images.
+
+4. **The fog problem is solvable with layer selection**: By using L3 instead of L32, the fog false-negative problem from Exp 138 is completely eliminated for opacity ≥ 30%.
+
+5. **This motivates a dual-layer detector**: A production system could monitor both L3 (for photometric changes like fog) and L32 (for semantic changes like indoor/noise) to achieve comprehensive coverage. This is a key architectural recommendation.
