@@ -1,235 +1,364 @@
-"""
-Temporal Stability of Calibration.
+#!/usr/bin/env python3
+"""Experiment 347: Temporal Stability and Sequential Detection
 
-Tests whether the calibration centroid remains effective when test
-distributions shift gradually. Simulates temporal drift by applying
-progressive brightness, contrast, and color temperature changes to
-ID images, then measures detection stability.
-
-Experiment 80 in the CalibDrive series.
+How stable is detection over sequences of frames?
+1. Frame-to-frame embedding consistency (clean sequence)
+2. Gradual corruption onset (fog/night ramp-up over frames)
+3. Intermittent corruption (every Nth frame corrupted)
+4. Detection latency (how many consecutive corrupted frames before alarm?)
+5. EWMA (exponentially weighted moving average) detector vs single-frame
 """
-import os
-import json
-import datetime
+
+import json, time, os, sys
 import numpy as np
 import torch
-from PIL import Image
-from sklearn.metrics import roc_auc_score
+from PIL import Image, ImageFilter
+from transformers import AutoModelForVision2Seq, AutoProcessor
 
-RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
-os.makedirs(RESULTS_DIR, exist_ok=True)
-SIZE = (256, 256)
-
-
-def create_highway(idx):
-    rng = np.random.default_rng(idx * 5001)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]
-    img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_urban(idx):
-    rng = np.random.default_rng(idx * 5002)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]
-    img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_noise(idx):
-    rng = np.random.default_rng(idx * 5003)
-    return rng.integers(0, 256, (*SIZE, 3), dtype=np.uint8)
-
-def create_indoor(idx):
-    rng = np.random.default_rng(idx * 5004)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:] = [200, 180, 160]
-    img[SIZE[0]//2:, :] = [100, 80, 60]
-    img[:SIZE[0]//3, SIZE[1]//3:2*SIZE[1]//3] = [150, 200, 255]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_twilight_highway(idx):
-    rng = np.random.default_rng(idx * 5010)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [70, 50, 80]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [200, 200, 100]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-
-def apply_drift(img_arr, drift_level):
-    """Apply progressive drift to an image.
-
-    drift_level: 0.0 = no change, 1.0 = maximum drift
-    Combines brightness shift, contrast reduction, and warm color cast.
-    """
-    img = img_arr.astype(np.float32)
-
-    # Brightness shift (darken progressively)
-    brightness_factor = 1.0 - 0.4 * drift_level
-    img = img * brightness_factor
-
-    # Contrast reduction
-    mean = img.mean()
-    contrast_factor = 1.0 - 0.3 * drift_level
-    img = mean + (img - mean) * contrast_factor
-
-    # Warm color temperature shift (more red, less blue)
-    img[:, :, 0] = img[:, :, 0] * (1.0 + 0.15 * drift_level)  # R up
-    img[:, :, 2] = img[:, :, 2] * (1.0 - 0.15 * drift_level)  # B down
-
-    return np.clip(img, 0, 255).astype(np.uint8)
-
-
-def extract_hidden(model, processor, image, prompt):
+def extract_hidden(model, processor, image, prompt, layer=3):
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
     with torch.no_grad():
         fwd = model(**inputs, output_hidden_states=True)
-    if hasattr(fwd, 'hidden_states') and fwd.hidden_states:
-        return fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
-    return None
+    return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
 
+def apply_corruption(image, ctype, severity=1.0):
+    arr = np.array(image).astype(np.float32) / 255.0
+    if ctype == 'fog':
+        arr = arr * (1 - 0.6 * severity) + 0.6 * severity
+    elif ctype == 'night':
+        arr = arr * max(0.01, 1.0 - 0.95 * severity)
+    elif ctype == 'noise':
+        arr = arr + np.random.RandomState(42).randn(*arr.shape) * 0.3 * severity
+        arr = np.clip(arr, 0, 1)
+    elif ctype == 'blur':
+        return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
+    return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
 def cosine_dist(a, b):
-    return 1.0 - float(np.dot(a / (np.linalg.norm(a) + 1e-10),
-                               b / (np.linalg.norm(b) + 1e-10)))
-
+    dot = np.dot(a, b)
+    na, nb = np.linalg.norm(a), np.linalg.norm(b)
+    if na < 1e-10 or nb < 1e-10:
+        return 0.0
+    return 1.0 - dot / (na * nb)
 
 def main():
-    print("=" * 70, flush=True)
-    print("TEMPORAL STABILITY OF CALIBRATION", flush=True)
-    print("=" * 70, flush=True)
-
-    from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading model...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
-        device_map="auto", trust_remote_code=True,
-    )
-    processor = AutoProcessor.from_pretrained(
-        "openvla/openvla-7b", trust_remote_code=True,
-    )
+        device_map="auto", trust_remote_code=True)
+    processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
-    print("Model loaded.", flush=True)
 
-    prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
-
-    # Calibrate on clean images (time=0)
-    print("\nCalibrating on clean images...", flush=True)
-    cal_hidden = []
-    for fn in [create_highway, create_urban]:
-        for i in range(15):
-            h = extract_hidden(model, processor,
-                               Image.fromarray(fn(i + 9000)), prompt)
-            if h is not None:
-                cal_hidden.append(h)
-    centroid = np.mean(cal_hidden, axis=0)
-    print(f"  {len(cal_hidden)} calibration samples", flush=True)
-
-    # Drift levels simulate progression
-    drift_levels = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-
-    # OOD reference data (no drift applied to OOD)
-    print("\nCollecting OOD reference...", flush=True)
-    ood_hidden = []
-    ood_fns = [create_noise, create_indoor, create_twilight_highway]
-    for fn in ood_fns:
-        for i in range(6):
-            h = extract_hidden(model, processor,
-                               Image.fromarray(fn(i + 500)), prompt)
-            if h is not None:
-                ood_hidden.append(h)
-    print(f"  {len(ood_hidden)} OOD samples", flush=True)
-
-    # Test at each drift level
-    print("\nTesting drift levels...", flush=True)
+    prompt = "In: What action should the robot take to pick up the object?\nOut:"
     results = {}
-    total = len(drift_levels)
 
-    for di, drift in enumerate(drift_levels):
-        # Generate drifted ID images
-        id_drifted = []
-        for fn in [create_highway, create_urban]:
-            for i in range(8):
-                base = fn(i + 500)
-                drifted = apply_drift(base, drift)
-                h = extract_hidden(model, processor,
-                                   Image.fromarray(drifted), prompt)
-                if h is not None:
-                    id_drifted.append(h)
+    # Base scene
+    np.random.seed(42)
+    pixels = np.random.randint(50, 200, (224, 224, 3), dtype=np.uint8)
+    base_img = Image.fromarray(pixels)
+    cal_emb = extract_hidden(model, processor, base_img, prompt)
 
-        # Compute scores
-        id_scores = [cosine_dist(h, centroid) for h in id_drifted]
-        ood_scores = [cosine_dist(h, centroid) for h in ood_hidden]
+    ctypes = ['fog', 'night', 'noise', 'blur']
 
-        id_mean = float(np.mean(id_scores))
-        ood_mean = float(np.mean(ood_scores))
+    # ========== 1. Frame-to-frame consistency (clean sequence) ==========
+    print("\n=== Clean Sequence Consistency ===")
 
-        labels = [0]*len(id_drifted) + [1]*len(ood_hidden)
-        scores = id_scores + ood_scores
-        auroc = roc_auc_score(labels, scores)
+    # Simulate 20 "frames" — same scene but with tiny random pixel jitter
+    frame_embs = []
+    frame_dists = []
 
-        # Cohen's d
-        id_arr = np.array(id_scores)
-        ood_arr = np.array(ood_scores)
-        pooled_std = np.sqrt((id_arr.var() + ood_arr.var()) / 2)
-        cohens_d = (ood_mean - id_mean) / (pooled_std + 1e-10)
+    for frame_idx in range(20):
+        if frame_idx == 0:
+            img = base_img
+        else:
+            # Add sub-pixel jitter (+-1 pixel value)
+            rng = np.random.RandomState(1000 + frame_idx)
+            jitter = rng.randint(-1, 2, pixels.shape).astype(np.int16)
+            jittered = np.clip(pixels.astype(np.int16) + jitter, 0, 255).astype(np.uint8)
+            img = Image.fromarray(jittered)
 
-        # Centroid distance: how far did drifted ID move from centroid?
-        centroid_drift = float(np.mean([cosine_dist(h, centroid) for h in id_drifted]))
+        emb = extract_hidden(model, processor, img, prompt)
+        d = cosine_dist(cal_emb, emb)
+        frame_embs.append(emb)
+        frame_dists.append(float(d))
 
-        results[f"{drift:.1f}"] = {
-            'auroc': float(auroc),
-            'cohens_d': float(cohens_d),
-            'id_mean_dist': id_mean,
-            'ood_mean_dist': ood_mean,
-            'centroid_drift': centroid_drift,
-            'n_id': len(id_drifted),
+    # Frame-to-frame distances
+    consecutive_dists = []
+    for i in range(1, len(frame_embs)):
+        consecutive_dists.append(float(cosine_dist(frame_embs[i-1], frame_embs[i])))
+
+    clean_consistency = {
+        'n_frames': 20,
+        'distances_from_cal': frame_dists,
+        'consecutive_distances': consecutive_dists,
+        'max_dist_from_cal': float(max(frame_dists)),
+        'mean_dist_from_cal': float(np.mean(frame_dists)),
+        'max_consecutive': float(max(consecutive_dists)) if consecutive_dists else 0,
+        'all_identical': all(d == 0.0 for d in frame_dists),
+    }
+    print(f"  Max dist from cal: {max(frame_dists):.8f}")
+    print(f"  Max consecutive dist: {max(consecutive_dists):.8f}")
+    print(f"  All identical to cal: {all(d == 0.0 for d in frame_dists)}")
+
+    results['clean_consistency'] = clean_consistency
+
+    # ========== 2. Gradual corruption onset ==========
+    print("\n=== Gradual Corruption Onset ===")
+
+    gradual_results = {}
+    for ct in ctypes:
+        # Simulate 30 frames: first 10 clean, then severity ramps 0->1 over frames 10-30
+        frame_distances = []
+        frame_severities = []
+
+        for frame_idx in range(30):
+            if frame_idx < 10:
+                sev = 0.0
+                img = base_img
+            else:
+                sev = (frame_idx - 10) / 20.0  # 0 to 1 over 20 frames
+                img = apply_corruption(base_img, ct, sev)
+
+            emb = extract_hidden(model, processor, img, prompt)
+            d = cosine_dist(cal_emb, emb)
+            frame_distances.append(float(d))
+            frame_severities.append(float(sev))
+
+        # Find first frame where d > various thresholds
+        thresholds = [0.0, 1e-6, 1e-5, 1e-4, 1e-3]
+        first_detection = {}
+        for thresh in thresholds:
+            first_frame = None
+            for i, d in enumerate(frame_distances):
+                if d > thresh:
+                    first_frame = i
+                    break
+            first_detection[str(thresh)] = first_frame
+
+        gradual_results[ct] = {
+            'severities': frame_severities,
+            'distances': frame_distances,
+            'first_detection': first_detection,
+            'max_clean_dist': float(max(frame_distances[:10])),
+            'min_corrupt_dist': float(min(frame_distances[10:])),
         }
-        print(f"  [{di+1}/{total}] drift={drift:.1f}: AUROC={auroc:.3f}, d={cohens_d:.2f}, "
-              f"ID_dist={id_mean:.4f}, centroid_drift={centroid_drift:.4f}", flush=True)
+        print(f"  {ct}: first d>0 at frame {first_detection['0.0']}, "
+              f"first d>1e-4 at frame {first_detection['0.0001']}")
 
-    # Find critical drift point (first AUROC < 0.95)
-    critical_drift = None
-    for drift_str, r in results.items():
-        if r['auroc'] < 0.95:
-            critical_drift = float(drift_str)
-            break
+    results['gradual_onset'] = gradual_results
+
+    # ========== 3. Intermittent corruption ==========
+    print("\n=== Intermittent Corruption ===")
+
+    intermittent_results = {}
+    for ct in ['fog', 'night']:  # Just two types to save time
+        # 40 frames, every Nth frame is corrupted at severity 0.5
+        for N in [2, 3, 5, 10]:
+            frame_distances = []
+            is_corrupt = []
+
+            for frame_idx in range(40):
+                if frame_idx % N == 0 and frame_idx > 0:
+                    img = apply_corruption(base_img, ct, 0.5)
+                    corrupt = True
+                else:
+                    img = base_img
+                    corrupt = False
+
+                emb = extract_hidden(model, processor, img, prompt)
+                d = cosine_dist(cal_emb, emb)
+                frame_distances.append(float(d))
+                is_corrupt.append(corrupt)
+
+            # Detection stats
+            corrupt_dists = [d for d, c in zip(frame_distances, is_corrupt) if c]
+            clean_dists = [d for d, c in zip(frame_distances, is_corrupt) if not c]
+
+            key = f"{ct}_every_{N}"
+            intermittent_results[key] = {
+                'n_corrupt': sum(is_corrupt),
+                'n_clean': sum(not c for c in is_corrupt),
+                'mean_corrupt_dist': float(np.mean(corrupt_dists)) if corrupt_dists else 0,
+                'mean_clean_dist': float(np.mean(clean_dists)),
+                'all_corrupt_detected': all(d > 0 for d in corrupt_dists),
+                'any_false_alarms': any(d > 0 for d in clean_dists),
+            }
+            print(f"  {key}: corrupt detected={all(d > 0 for d in corrupt_dists)}, "
+                  f"false alarms={any(d > 0 for d in clean_dists)}")
+
+    results['intermittent'] = intermittent_results
+
+    # ========== 4. EWMA detector vs single-frame ==========
+    print("\n=== EWMA Detector ===")
+
+    ewma_results = {}
+    for ct in ctypes:
+        # 50 frames: clean(20), corrupt(10), clean(10), corrupt(10)
+        frame_distances = []
+        ground_truth = []
+
+        for frame_idx in range(50):
+            if frame_idx < 20:
+                img = base_img
+                gt = False
+            elif frame_idx < 30:
+                img = apply_corruption(base_img, ct, 0.3)  # mild corruption
+                gt = True
+            elif frame_idx < 40:
+                img = base_img
+                gt = False
+            else:
+                img = apply_corruption(base_img, ct, 0.7)  # strong corruption
+                gt = True
+
+            emb = extract_hidden(model, processor, img, prompt)
+            d = cosine_dist(cal_emb, emb)
+            frame_distances.append(float(d))
+            ground_truth.append(gt)
+
+        # Single-frame detector at various thresholds
+        single_frame = {}
+        for thresh in [0.0, 1e-5, 1e-4, 5e-4, 1e-3]:
+            preds = [d > thresh for d in frame_distances]
+            tp = sum(p and g for p, g in zip(preds, ground_truth))
+            fp = sum(p and not g for p, g in zip(preds, ground_truth))
+            fn = sum(not p and g for p, g in zip(preds, ground_truth))
+            tn = sum(not p and not g for p, g in zip(preds, ground_truth))
+            precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+            recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+            single_frame[str(thresh)] = {
+                'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn,
+                'precision': float(precision),
+                'recall': float(recall),
+            }
+
+        # EWMA detector
+        ewma_detector = {}
+        for alpha in [0.1, 0.3, 0.5, 0.8]:
+            ewma = 0.0
+            ewma_values = []
+            for d in frame_distances:
+                ewma = alpha * d + (1 - alpha) * ewma
+                ewma_values.append(ewma)
+
+            # Use threshold = mean of clean EWMA + 3*std
+            clean_ewma = ewma_values[:20]
+            if np.std(clean_ewma) > 0:
+                ewma_thresh = np.mean(clean_ewma) + 3 * np.std(clean_ewma)
+            else:
+                ewma_thresh = np.mean(clean_ewma) + 1e-7
+
+            preds = [e > ewma_thresh for e in ewma_values]
+            tp = sum(p and g for p, g in zip(preds, ground_truth))
+            fp = sum(p and not g for p, g in zip(preds, ground_truth))
+            fn = sum(not p and g for p, g in zip(preds, ground_truth))
+            tn = sum(not p and not g for p, g in zip(preds, ground_truth))
+            precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+            recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+
+            # Detection latency: first corrupt frame (20) to first detection
+            first_detect = None
+            for i, (p, g) in enumerate(zip(preds, ground_truth)):
+                if p and g and i >= 20:
+                    first_detect = i - 20  # latency in frames
+                    break
+
+            # Recovery latency: first clean after corrupt (30) to false alarm clear
+            recovery = None
+            for i in range(30, 40):
+                if not preds[i]:
+                    recovery = i - 30
+                    break
+
+            ewma_detector[str(alpha)] = {
+                'threshold': float(ewma_thresh),
+                'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn,
+                'precision': float(precision),
+                'recall': float(recall),
+                'detection_latency': first_detect,
+                'recovery_latency': recovery,
+                'ewma_values': ewma_values,
+            }
+
+        ewma_results[ct] = {
+            'frame_distances': frame_distances,
+            'ground_truth': ground_truth,
+            'single_frame': single_frame,
+            'ewma': ewma_detector,
+        }
+        print(f"  {ct}: single@d>0 recall={single_frame['0.0']['recall']:.2f}, "
+              f"EWMA(0.3) recall={ewma_detector['0.3']['recall']:.2f} "
+              f"latency={ewma_detector['0.3']['detection_latency']}")
+
+    results['ewma_detector'] = ewma_results
+
+    # ========== 5. Corruption transition dynamics ==========
+    print("\n=== Corruption Transition Dynamics ===")
+
+    transition_results = {}
+    for ct in ctypes:
+        # Abrupt transition: clean -> corrupt -> clean
+        # How quickly does embedding respond?
+        transition_dists = []
+        for frame_idx in range(20):
+            if frame_idx < 5:
+                img = base_img
+            elif frame_idx < 15:
+                img = apply_corruption(base_img, ct, 0.5)
+            else:
+                img = base_img
+
+            emb = extract_hidden(model, processor, img, prompt)
+            d = cosine_dist(cal_emb, emb)
+            transition_dists.append(float(d))
+
+        # Rise time: frames from first corrupt to stable corrupt distance
+        corrupt_dists = transition_dists[5:15]
+        stable_corrupt = np.mean(corrupt_dists[-3:])
+
+        rise_frame = None
+        for i, d in enumerate(corrupt_dists):
+            if d >= 0.9 * stable_corrupt:
+                rise_frame = i
+                break
+
+        # Fall time: frames from first clean-again to stable clean
+        recovery_dists = transition_dists[15:]
+        fall_frame = None
+        for i, d in enumerate(recovery_dists):
+            if d <= 0.1 * stable_corrupt:
+                fall_frame = i
+                break
+
+        transition_results[ct] = {
+            'distances': transition_dists,
+            'stable_corrupt_dist': float(stable_corrupt),
+            'rise_frames': rise_frame,
+            'fall_frames': fall_frame,
+            'is_instantaneous': rise_frame == 0 and fall_frame == 0,
+        }
+        print(f"  {ct}: rise={rise_frame} frames, fall={fall_frame} frames, "
+              f"instant={rise_frame == 0 and fall_frame == 0}")
+
+    results['transition_dynamics'] = transition_results
 
     # Save
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    output = {
-        'experiment': 'temporal_stability',
-        'experiment_number': 80,
-        'timestamp': timestamp,
-        'n_cal': len(cal_hidden),
-        'n_ood': len(ood_hidden),
-        'drift_levels': drift_levels,
-        'critical_drift': critical_drift,
-        'results': results,
-    }
-    output_path = os.path.join(RESULTS_DIR, f"temporal_stability_{timestamp}.json")
-    with open(output_path, 'w') as f:
-        json.dump(output, f, indent=2)
-    print(f"\nSaved to {output_path}", flush=True)
-
-    # Summary
-    print("\n" + "=" * 70, flush=True)
-    print("TEMPORAL STABILITY SUMMARY", flush=True)
-    print("=" * 70, flush=True)
-    for drift_str, r in results.items():
-        status = "OK" if r['auroc'] >= 0.95 else "DEGRADED"
-        print(f"  drift={drift_str}: AUROC={r['auroc']:.3f} [{status}]", flush=True)
-    if critical_drift is not None:
-        print(f"\n  Critical drift point: {critical_drift}", flush=True)
-    else:
-        print(f"\n  No critical drift point — stable across all levels!", flush=True)
-
+    ts = time.strftime("%Y%m%d_%H%M%S")
+    out_path = f"experiments/temporal_stability_{ts}.json"
+    def convert(obj):
+        if isinstance(obj, (np.floating, np.float32, np.float64)): return float(obj)
+        if isinstance(obj, (np.integer, np.int32, np.int64)): return int(obj)
+        if isinstance(obj, np.ndarray): return obj.tolist()
+        if isinstance(obj, np.bool_): return bool(obj)
+        return obj
+    def recursive_convert(d):
+        if isinstance(d, dict): return {k: recursive_convert(v) for k, v in d.items()}
+        if isinstance(d, list): return [recursive_convert(x) for x in d]
+        return convert(d)
+    results = recursive_convert(results)
+    with open(out_path, 'w') as f:
+        json.dump(results, f, indent=2, default=convert)
+    print(f"\nResults saved to {out_path}")
 
 if __name__ == "__main__":
     main()

@@ -6553,4 +6553,25 @@ We perform a detailed study of the paths between clean and corrupted embeddings,
 
 \textbf{Finding 839}: \textbf{Cross-corruption ``detection valleys'' --- blending fog+noise creates embeddings $14\times$ closer to clean than the fog endpoint.} The fog$\to$noise path minimum ($d = 6.15 \times 10^{-5}$) is far below either endpoint. An adversary could exploit corruption combinations to minimize detection distance.
 
+%% ============================================================
+\subsection{Experiment 347: Temporal Stability and Sequential Detection}
+\label{sec:exp347}
+
+We study detection behavior over sequences of frames, analyzing frame-to-frame consistency, gradual corruption onset, intermittent corruption, EWMA temporal detectors, and transition dynamics.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig356_temporal.png}
+\caption{\textbf{Experiment 347}: Temporal stability analysis. Top-left: clean frames with $\pm 1$ pixel jitter show $d \leq 4.1 \times 10^{-5}$. Top-right: gradual onset shows immediate detection at first corrupt frame. Bottom-left: transition dynamics are instantaneous (rise=fall=0 frames). Bottom-right: EWMA adds no benefit over single-frame detection.}
+\label{fig:exp347}
+\end{figure}
+
+\textbf{Finding 840}: \textbf{Embeddings are memoryless --- rise and fall times are both 0 frames for all 4 types.} Each frame produces an independent embedding with no temporal leakage. Single-frame detection is not just sufficient but \emph{optimal} --- temporal aggregation (EWMA) cannot improve on perfect frame-level discrimination.
+
+\textbf{Finding 841}: \textbf{$\pm 1$ pixel jitter produces $d = 4.14 \times 10^{-5}$ --- non-zero but $100\times$ below typical corruption.} Unlike bit-identical re-embedding ($d=0$), sub-pixel camera noise creates small embedding shifts that establish the true sensor noise floor.
+
+\textbf{Finding 842}: \textbf{Intermittent corruption at any frequency (every 2--10 frames) is perfectly detected with 0\% false alarms.} No temporal filtering is needed --- single-frame detection catches every corrupted frame regardless of surrounding clean frames.
+
+\textbf{Finding 843}: \textbf{EWMA adds zero benefit: both single-frame and EWMA achieve precision=recall=1.0 with latency=0.} Temporal smoothing is unnecessary and only adds recovery lag (EWMA at $\alpha=0.1$ takes multiple frames to reset after corruption ends).
+
 \end{document}
