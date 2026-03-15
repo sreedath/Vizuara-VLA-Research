@@ -16850,3 +16850,39 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 936**: 0/20 random perturbation directions at magnitude 0.3 produced any action change — evasion rate is 0%. The model's action predictions are not sensitive to arbitrary pixel-space perturbations, only to domain-specific corruption patterns (fog, night, noise, blur).
 
 **Finding 937**: The fundamental asymmetry between corruption detection and adversarial evasion is that corruptions that change actions (fog, night, blur) operate through specific visual domain patterns that inherently shift embeddings, while pixel-space perturbations that could theoretically evade detection do not actually affect the model's behavior. There is no "adversarial gap" because perturbations must go through the same bottleneck as corruptions to affect actions.
+
+---
+
+## Experiment 418: Action Token Diversity Under Corruption
+
+**Objective**: Study how corruption affects the diversity of action token predictions across scenes — does corruption collapse actions to a single default or scatter them? What is the relationship between embedding distance and action token diversity?
+
+**Method**: Generate full 7-token action sequences (x, y, z, roll, pitch, yaw, gripper) for 5 scenes × 4 corruptions × 5 severity levels. Measure unique action counts, per-dimension diversity, first-token agreement, token distance from clean baseline, and embedding-action distance correlation.
+
+**Finding 938**: Fog at severity 1.0 collapses 6/7 action dimensions to a SINGLE value across all 5 scenes — only the gripper dimension retains any variation (range=3 bins). The model produces nearly identical wrong actions regardless of scene content, confirming total loss of scene discrimination under fog.
+
+**Finding 939**: Fog shows progressive action collapse: 5→5→5→4→2 unique action vectors from severity 0.2→1.0. The collapse accelerates at high severity, with the sharpest drop between 0.8 (4 unique) and 1.0 (2 unique). Night, noise, and blur maintain 5 unique actions at ALL severity levels — only fog causes action collapse.
+
+**Finding 940**: Fog at severity 1.0 produces actions that are 205 token bins from clean on average — the largest deviation of any corruption. Despite this massive action deviation, fog produces the HIGHEST model confidence (from experiment 414: entropy 0.75 vs clean 2.46), creating a maximally dangerous scenario: confident, consistent, but completely wrong actions.
+
+**Finding 941**: Embedding distance vs action token distance correlation is WEAK (r=0.15) — embedding distance predicts whether actions are corrupted (binary detection) far better than how much they are corrupted (severity). This confirms that embedding distance is a detection signal, not a severity proxy.
+
+**Finding 942**: Night maintains full action diversity (5/5 unique) even at severity 1.0 despite having the largest embedding displacement (0.0084). This means night makes the model uncertain (high entropy, diverse actions) while fog makes it confidently wrong (low entropy, collapsed actions) — opposite failure modes detectable by the same embedding distance.
+
+---
+
+## Experiment 419: Embedding Space Interpolation
+
+**Objective**: Study the geometry between clean and corrupted embeddings by interpolating in image space and checking whether detection boundaries are sharp or gradual, whether the embedding path is linear, and whether all clean-corrupt mixtures are detected.
+
+**Method**: Interpolate between clean and corrupted images at 21 alpha levels (0.0 to 1.0). Measure detection boundary sharpness, embedding-space linearity (actual vs predicted by linear interpolation), cross-corruption midpoint detection, and convexity of the detection region.
+
+**Finding 943**: Night has the sharpest detection boundary — AUROC=1.0 at only α=0.10 (10% corruption mixed in). Fog requires α=0.20, blur α=0.25. Noise requires α=0.95 before detection is perfect, consistent with its weak embedding signal. The boundary width varies from 0.05 (night, sharpest) to 0.15 (noise, most gradual).
+
+**Finding 944**: Fog and noise produce nearly LINEAR embedding trajectories (linearity error 5.6e-5 and 4.5e-5) — image-space interpolation maps to proportional embedding-space interpolation. Night and blur are NONLINEAR (error 1.7e-3 and 1.5e-3, ~30× larger), meaning the vision encoder processes these corruptions through nonlinear pathways.
+
+**Finding 945**: ALL cross-corruption midpoints are detected (AUROC=1.0 for all 6 pairwise midpoints). The midpoint of fog+night, fog+noise, night+noise, blur+fog, blur+night, and blur+noise are all perfectly separable from clean, meaning mixing two different corruptions never creates an undetectable hybrid.
+
+**Finding 946**: Fog/night/blur embedding regions are convex — all mixtures of clean and corrupt (at α=0.3, 0.5, 0.7) are detected at AUROC=1.0. Noise fails the convexity test (min AUROC=0.44 at 30% mixing), meaning a 30% noise mixture is indistinguishable from clean. This is the only corruption where partial mixtures can evade detection.
+
+**Finding 947**: The detection boundary ordering (night < fog < blur << noise) precisely mirrors the sensitivity ordering found in all prior experiments, confirming that noise is consistently the most challenging corruption type and night the easiest to detect across all experimental paradigms.

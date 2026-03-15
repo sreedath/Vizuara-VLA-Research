@@ -8261,4 +8261,44 @@ We test whether an adversary who knows the detector's centroid can craft pixel-s
 
 \textbf{Finding 1192}: \textbf{There is no adversarial gap: corruptions that change actions inherently shift embeddings, and perturbations that could evade detection don't affect behavior.} This fundamental asymmetry means the embedding-based detector cannot be bypassed by an adversary who only controls pixel-space perturbations---the vision encoder's invariance properties that make it robust to perturbations are the same properties that make corruption detection reliable.
 
+\subsection{Experiment 418: Action Token Diversity}
+
+We study how corruption affects the diversity of predicted action tokens across scenes, distinguishing between corruption types that collapse actions to a default versus those that scatter actions unpredictably. We generate full 7-token action sequences (x, y, z, roll, pitch, yaw, gripper) for 5 scenes $\times$ 4 corruptions $\times$ 5 severity levels.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig427_diversity.png}
+\caption{Experiment 418: Action token diversity under corruption. Fog progressively collapses actions: $5 \rightarrow 5 \rightarrow 5 \rightarrow 4 \rightarrow 2$ unique vectors, with 6/7 dimensions collapsing to single values at severity 1.0. Night/noise/blur maintain 5 unique actions at all severities. Fog's token deviation from clean is 205 bins (largest). Embedding-action distance correlation is weak ($r=0.15$).}
+\label{fig:diversity}
+\end{figure}
+
+\textbf{Finding 1193}: \textbf{Fog at severity 1.0 collapses 6/7 action dimensions to a SINGLE value across all 5 scenes---only the gripper dimension retains any variation.} The model produces nearly identical wrong actions regardless of scene content (Figure~\ref{fig:diversity}), confirming total loss of scene discrimination. This is consistent with Experiment 405's finding that fog collapses ALL scenes to identical action bins.
+
+\textbf{Finding 1194}: \textbf{Fog shows progressive action collapse ($5 \rightarrow 5 \rightarrow 5 \rightarrow 4 \rightarrow 2$ unique action vectors from severity 0.2 to 1.0), while night/noise/blur maintain 5 unique actions at ALL severity levels.} Only fog causes action collapse (Figure~\ref{fig:diversity})---night, noise, and blur produce diverse actions even at maximum severity, meaning these corruptions corrupt actions differently rather than collapsing to a default.
+
+\textbf{Finding 1195}: \textbf{Fog at severity 1.0 produces actions 205 token bins from clean---the largest deviation of any corruption, combined with the highest model confidence (entropy 0.75 vs clean 2.46).} This creates a maximally dangerous scenario: confident, consistent, but completely wrong actions (Figure~\ref{fig:diversity}). The detector catches this at AUROC=1.0 while entropy-based methods would miss it entirely (Finding 1173).
+
+\textbf{Finding 1196}: \textbf{Embedding distance vs action token distance correlation is weak ($r=0.15$)---distance predicts corruption presence (binary) far better than action deviation magnitude.} The embedding-based detector is a binary classifier, not a severity estimator (Figure~\ref{fig:diversity}). Large embedding distances don't necessarily mean large action deviations, and vice versa.
+
+\textbf{Finding 1197}: \textbf{Night maintains full action diversity (5/5 unique) even at severity 1.0 despite having the largest embedding displacement (0.0084).} Night and fog represent opposite failure modes: night makes the model uncertain (high entropy, diverse wrong actions) while fog makes it confidently wrong (low entropy, collapsed actions)---yet both are detected by the same embedding distance at AUROC=1.0.
+
+\subsection{Experiment 419: Embedding Space Interpolation}
+
+We study the geometry between clean and corrupted embeddings by interpolating in image space at 21 levels ($\alpha = 0.0$ to $1.0$), measuring detection boundary sharpness, embedding linearity, cross-corruption midpoints, and convexity of the detection region.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig428_interpolation.png}
+\caption{Experiment 419: Embedding space interpolation. Night reaches AUROC=1.0 at only $\alpha$=0.10, fog at 0.20, blur at 0.25, noise at 0.95. Fog/noise trajectories are nearly linear (error $5.6 \times 10^{-5}$), night/blur are nonlinear ($1.7 \times 10^{-3}$). ALL 6 cross-corruption midpoints detected at AUROC=1.0. Noise fails the convexity test (min AUROC=0.44).}
+\label{fig:interpolation}
+\end{figure}
+
+\textbf{Finding 1198}: \textbf{Night has the sharpest detection boundary---AUROC=1.0 at only $\alpha=0.10$ (10\% corruption).} Fog requires $\alpha=0.20$, blur $\alpha=0.25$, noise $\alpha=0.95$ (Figure~\ref{fig:interpolation}). The boundary width varies from 0.05 (night) to 0.15 (noise), meaning the detector can identify night corruption when only 10\% of the image is affected.
+
+\textbf{Finding 1199}: \textbf{Fog and noise produce nearly linear embedding trajectories (error $5.6 \times 10^{-5}$ and $4.5 \times 10^{-5}$), while night and blur are $30\times$ more nonlinear (error $\sim 1.5 \times 10^{-3}$).} Image-space interpolation maps to proportional embedding-space movement for fog/noise but through nonlinear pathways for night/blur (Figure~\ref{fig:interpolation}).
+
+\textbf{Finding 1200}: \textbf{ALL 6 cross-corruption midpoints are detected at AUROC=1.0---mixing two different corruptions never creates an undetectable hybrid.} The midpoints of all pairwise corruption combinations are perfectly separable from clean (Figure~\ref{fig:interpolation}), ruling out the possibility of cancellation between corruption effects.
+
+\textbf{Finding 1201}: \textbf{Noise fails the convexity test (min AUROC=0.44 at 30\% mixing)---partial noise mixtures can evade detection, while fog/night/blur are all convex (AUROC=1.0).} This is the only corruption where the detection region boundary is penetrable by partial mixing (Figure~\ref{fig:interpolation}), consistent with noise's weak embedding displacement identified in all prior experiments.
+
 \end{document}
