@@ -8100,3 +8100,30 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 5. **Night has highest gripper effect (d=1.02)**: Night conditions consistently change the gripper prediction, suggesting the model confuses dark objects with grasp targets.
 
 **Finding**: OOD corruptions affect all 7 action dimensions, with corruption-specific patterns. Night causes dangerous lateral drift (dy delta=0.88), blur disrupts depth estimation (dz Cohen's d=1.41), and noise affects pitch (dpitch delta=0.61). The multi-dimensional nature of the impact reinforces the importance of OOD detection — a single corrupted observation can simultaneously corrupt all 7 action predictions, creating compounding safety risks.
+---
+
+### Finding 203: Online Centroid Adaptation (Experiment 208)
+
+**Experiment**: Test EMA (exponential moving average) centroid adaptation during deployment. Start with a centroid from n=3 calibration samples, then update it as new clean observations arrive using: centroid_new = α·h_new + (1-α)·centroid_old. Test α ∈ {0.01, 0.05, 0.1, 0.2, 0.5} with 20 sequential clean+OOD evaluation steps.
+
+**AUROC Traces by EMA Rate**:
+| α | L1 min AUROC | L1 final | L3 min AUROC | L3 final |
+|------|-------------|----------|-------------|----------|
+| 0.01 | 1.000 | 1.000 | 1.000 | 1.000 |
+| 0.05 | 1.000 | 1.000 | 1.000 | 1.000 |
+| 0.10 | 1.000 | 1.000 | 1.000 | 1.000 |
+| 0.20 | 1.000 | 1.000 | 1.000 | 1.000 |
+| 0.50 | 0.939 | 1.000 | 0.959 | 1.000 |
+
+**Baselines**:
+- Static centroid (n=3): AUROC = 1.000 for both L1 and L3
+- Batch recomputation (n=23): AUROC = 1.000 for both L1 and L3
+
+**Key Findings**:
+1. **Online adaptation is unnecessary**: The static centroid from just n=3 samples already achieves AUROC=1.000. No amount of EMA updating improves upon this.
+2. **Conservative α is safe**: α ≤ 0.2 maintains perfect AUROC at every timestep. The centroid barely moves because clean embeddings cluster tightly.
+3. **Aggressive α causes transient dips**: α=0.5 briefly drops to AUROC=0.939 (L1, t=4) and 0.959 (L3, t=3) before recovering. This is because aggressive EMA can temporarily overweight a single atypical clean sample.
+4. **Rapid recovery**: Even with α=0.5, the dips last only 1-2 timesteps before returning to AUROC=1.0, demonstrating the robustness of the underlying cosine-distance signal.
+5. **Batch vs EMA**: Both converge to identical performance. Batch (recomputing centroid from all samples) has no advantage over EMA.
+
+**Finding**: **Online centroid adaptation provides no benefit** for this detector. The static centroid from n=3 calibration samples is already optimal (AUROC=1.000), confirming the extreme stability discovered in Experiment 202. This simplifies deployment: calibrate once with 3-15 clean frames, compute the centroid, and deploy permanently — no online updates needed. The only risk is with aggressive EMA (α≥0.5), which can cause brief transient sensitivity reduction.

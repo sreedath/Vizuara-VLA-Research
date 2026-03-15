@@ -3912,4 +3912,21 @@ We analyze which of the 7 VLA action dimensions ($\Delta x, \Delta y, \Delta z$,
 \label{fig:action_dimensions}
 \end{figure}
 
+\subsection{Online Centroid Adaptation}
+
+We test whether EMA (exponential moving average) centroid updates during deployment can improve upon the static calibration centroid.
+
+\textbf{Finding 404}: \textbf{Online adaptation is unnecessary.} The static centroid from just $n=3$ calibration samples already achieves AUROC=1.000 at both L1 and L3. EMA updates with $\alpha \leq 0.2$ maintain perfect detection at every timestep, but provide zero improvement over the static baseline.
+
+\textbf{Finding 405}: Aggressive EMA ($\alpha=0.5$) causes \textbf{transient sensitivity dips} (minimum AUROC=0.939 at L1), lasting only 1--2 timesteps before recovery. This occurs because a single atypical clean sample can temporarily shift the centroid. Conservative $\alpha \leq 0.2$ avoids this entirely.
+
+\textbf{Finding 406}: This confirms the extreme centroid stability from the bootstrap analysis (Finding~395): the ID embedding distribution is so tightly clustered that the centroid is essentially a \textbf{fixed point}. The recommended deployment is ``calibrate once, deploy permanently'' with no online updates.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig219_online_adaptation.png}
+\caption{\textbf{Online centroid adaptation.} AUROC traces for EMA rates $\alpha \in \{0.01, 0.05, 0.1, 0.2, 0.5\}$. All rates converge to AUROC=1.0; the static centroid ($n=3$) is already optimal. Aggressive $\alpha=0.5$ shows brief transient dips.}
+\label{fig:online_adaptation}
+\end{figure}
+
 \end{document}
