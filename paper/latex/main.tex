@@ -6509,4 +6509,27 @@ We develop and test a practical multi-scene deployment protocol: nearest-centroi
 
 \textbf{Finding 831}: \textbf{Scene transition detection at 75\% accuracy using $d > 0.001$ threshold.} Automatic scene change detection is feasible but imperfect with a fixed threshold. Multi-frame or adaptive thresholds could improve this further.
 
+%% ============================================================
+\subsection{Experiment 345: Statistical Power Analysis}
+\label{sec:exp345}
+
+We provide rigorous statistical validation: bootstrap confidence intervals for AUROC, Cohen's $d$ effect sizes, detection power curves across severity, Bonferroni-corrected hypothesis testing, and Bayesian detection.
+
+\textbf{Setup.} We use 15 scenes with 4 corruption types at 50\% severity for bootstrap (1000 resamples) and effect size analysis, sweep severity 0.01--1.0 for power curves, perform permutation testing (500 permutations) with Bonferroni correction, and compute Bayesian posteriors with 10\% prior.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig354_statpower.png}
+\caption{\textbf{Figure~354: Statistical power.} (A)~Bootstrap CI = [1.0, 1.0] for all types. (B)~Cohen's $d$ = 5.2--25.3 (all massive). (C)~Power = 1.0 at severity $\geq 0.02$; blur fails only at 0.01. (D)~All $p < 0.002$, Bonferroni significant. (E)~Bayesian: BF=3 with conservative prior. (F)~Summary.}
+\label{fig:statpower}
+\end{figure}
+
+\textbf{Finding 832}: \textbf{Bootstrap 95\% CI = [1.0, 1.0] for all 4 types --- AUROC=1.0 is not a statistical artifact.} Across 1000 bootstrap resamples, 100\% achieve perfect AUROC. The zero-width CI confirms AUROC=1.0 is robust, not a lucky sample.
+
+\textbf{Finding 833}: \textbf{Cohen's $d$ = 5.2--25.3, all exceeding ``large'' (0.8) by $6$--$31\times$.} Night has the largest effect ($d=25.3$), noise the smallest ($d=5.2$). These enormous effect sizes arise from near-zero ID variance combined with consistent OOD shifts.
+
+\textbf{Finding 834}: \textbf{Power = 1.0 at severity $\geq 0.02$ for all types; blur alone fails at 0.01.} At 1\% severity, blur produces occasional negative distances (floating-point artifacts), but at 2\%+ severity, statistical power is 1.0 universally across all corruption types.
+
+\textbf{Finding 835}: \textbf{All $p < 0.002$ survive Bonferroni correction for 4 simultaneous tests ($\alpha_{\text{corrected}} = 0.0125$).} Permutation testing yields the minimum achievable $p$-value ($1/501$). Results are significant under any reasonable multiple testing correction.
+
 \end{document}

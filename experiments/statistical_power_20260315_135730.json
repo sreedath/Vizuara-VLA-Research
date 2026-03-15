@@ -1,0 +1,349 @@
+{
+  "bootstrap": {
+    "fog": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "pct_perfect": 100.0
+    },
+    "night": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "pct_perfect": 100.0
+    },
+    "noise": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "pct_perfect": 100.0
+    },
+    "blur": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "pct_perfect": 100.0
+    }
+  },
+  "severity_power": {
+    "fog_sev0.01": {
+      "auroc": 1.0,
+      "min_distance": 1.5497207641601562e-06,
+      "mean_distance": 2.4259090423583986e-06,
+      "all_detected": true
+    },
+    "night_sev0.01": {
+      "auroc": 1.0,
+      "min_distance": 3.2186508178710938e-06,
+      "mean_distance": 5.263090133666992e-06,
+      "all_detected": true
+    },
+    "noise_sev0.01": {
+      "auroc": 1.0,
+      "min_distance": 1.430511474609375e-06,
+      "mean_distance": 2.8014183044433594e-06,
+      "all_detected": true
+    },
+    "blur_sev0.01": {
+      "auroc": 0.55,
+      "min_distance": -1.1920928955078125e-07,
+      "mean_distance": 1.1920928955078126e-08,
+      "all_detected": false
+    },
+    "fog_sev0.02": {
+      "auroc": 1.0,
+      "min_distance": 2.86102294921875e-06,
+      "mean_distance": 5.40018081665039e-06,
+      "all_detected": true
+    },
+    "night_sev0.02": {
+      "auroc": 1.0,
+      "min_distance": 6.377696990966797e-06,
+      "mean_distance": 8.189678192138672e-06,
+      "all_detected": true
+    },
+    "noise_sev0.02": {
+      "auroc": 1.0,
+      "min_distance": 1.9669532775878906e-06,
+      "mean_distance": 4.559755325317383e-06,
+      "all_detected": true
+    },
+    "blur_sev0.02": {
+      "auroc": 1.0,
+      "min_distance": 6.9141387939453125e-06,
+      "mean_distance": 1.309514045715332e-05,
+      "all_detected": true
+    },
+    "fog_sev0.05": {
+      "auroc": 1.0,
+      "min_distance": 1.1682510375976562e-05,
+      "mean_distance": 1.456141471862793e-05,
+      "all_detected": true
+    },
+    "night_sev0.05": {
+      "auroc": 1.0,
+      "min_distance": 2.4020671844482422e-05,
+      "mean_distance": 2.8836727142333985e-05,
+      "all_detected": true
+    },
+    "noise_sev0.05": {
+      "auroc": 1.0,
+      "min_distance": 3.635883331298828e-06,
+      "mean_distance": 6.014108657836914e-06,
+      "all_detected": true
+    },
+    "blur_sev0.05": {
+      "auroc": 1.0,
+      "min_distance": 9.08970832824707e-05,
+      "mean_distance": 0.00013654232025146485,
+      "all_detected": true
+    },
+    "fog_sev0.1": {
+      "auroc": 1.0,
+      "min_distance": 4.076957702636719e-05,
+      "mean_distance": 5.065798759460449e-05,
+      "all_detected": true
+    },
+    "night_sev0.1": {
+      "auroc": 1.0,
+      "min_distance": 8.082389831542969e-05,
+      "mean_distance": 9.549260139465331e-05,
+      "all_detected": true
+    },
+    "noise_sev0.1": {
+      "auroc": 1.0,
+      "min_distance": 9.357929229736328e-06,
+      "mean_distance": 1.3697147369384766e-05,
+      "all_detected": true
+    },
+    "blur_sev0.1": {
+      "auroc": 1.0,
+      "min_distance": 0.0006542801856994629,
+      "mean_distance": 0.0007349729537963867,
+      "all_detected": true
+    },
+    "fog_sev0.2": {
+      "auroc": 1.0,
+      "min_distance": 0.00016808509826660156,
+      "mean_distance": 0.00018785595893859862,
+      "all_detected": true
+    },
+    "night_sev0.2": {
+      "auroc": 1.0,
+      "min_distance": 0.000335693359375,
+      "mean_distance": 0.00037012100219726565,
+      "all_detected": true
+    },
+    "noise_sev0.2": {
+      "auroc": 1.0,
+      "min_distance": 2.1457672119140625e-05,
+      "mean_distance": 3.502368927001953e-05,
+      "all_detected": true
+    },
+    "blur_sev0.2": {
+      "auroc": 1.0,
+      "min_distance": 0.0018930435180664062,
+      "mean_distance": 0.002230846881866455,
+      "all_detected": true
+    },
+    "fog_sev0.3": {
+      "auroc": 1.0,
+      "min_distance": 0.00036025047302246094,
+      "mean_distance": 0.00038962960243225095,
+      "all_detected": true
+    },
+    "night_sev0.3": {
+      "auroc": 1.0,
+      "min_distance": 0.0007545948028564453,
+      "mean_distance": 0.0008355617523193359,
+      "all_detected": true
+    },
+    "noise_sev0.3": {
+      "auroc": 1.0,
+      "min_distance": 3.552436828613281e-05,
+      "mean_distance": 5.974173545837402e-05,
+      "all_detected": true
+    },
+    "blur_sev0.3": {
+      "auroc": 1.0,
+      "min_distance": 0.003190159797668457,
+      "mean_distance": 0.003644740581512451,
+      "all_detected": true
+    },
+    "fog_sev0.5": {
+      "auroc": 1.0,
+      "min_distance": 0.0008383989334106445,
+      "mean_distance": 0.000984269380569458,
+      "all_detected": true
+    },
+    "night_sev0.5": {
+      "auroc": 1.0,
+      "min_distance": 0.0017763972282409668,
+      "mean_distance": 0.002016758918762207,
+      "all_detected": true
+    },
+    "noise_sev0.5": {
+      "auroc": 1.0,
+      "min_distance": 8.380413055419922e-05,
+      "mean_distance": 0.00012883543968200684,
+      "all_detected": true
+    },
+    "blur_sev0.5": {
+      "auroc": 1.0,
+      "min_distance": 0.004403889179229736,
+      "mean_distance": 0.005015808343887329,
+      "all_detected": true
+    },
+    "fog_sev0.7": {
+      "auroc": 1.0,
+      "min_distance": 0.0014615058898925781,
+      "mean_distance": 0.001658850908279419,
+      "all_detected": true
+    },
+    "night_sev0.7": {
+      "auroc": 1.0,
+      "min_distance": 0.0033153891563415527,
+      "mean_distance": 0.003637653589248657,
+      "all_detected": true
+    },
+    "noise_sev0.7": {
+      "auroc": 1.0,
+      "min_distance": 0.00015753507614135742,
+      "mean_distance": 0.00022709369659423828,
+      "all_detected": true
+    },
+    "blur_sev0.7": {
+      "auroc": 1.0,
+      "min_distance": 0.004674017429351807,
+      "mean_distance": 0.0053143143653869625,
+      "all_detected": true
+    },
+    "fog_sev1.0": {
+      "auroc": 1.0,
+      "min_distance": 0.0026720166206359863,
+      "mean_distance": 0.0029644787311553953,
+      "all_detected": true
+    },
+    "night_sev1.0": {
+      "auroc": 1.0,
+      "min_distance": 0.007649660110473633,
+      "mean_distance": 0.008197879791259766,
+      "all_detected": true
+    },
+    "noise_sev1.0": {
+      "auroc": 1.0,
+      "min_distance": 0.0003466606140136719,
+      "mean_distance": 0.00047240257263183596,
+      "all_detected": true
+    },
+    "blur_sev1.0": {
+      "auroc": 1.0,
+      "min_distance": 0.004858732223510742,
+      "mean_distance": 0.005672067403793335,
+      "all_detected": true
+    }
+  },
+  "effect_sizes": {
+    "fog": {
+      "id_mean": 1.5894571940104166e-08,
+      "id_std": 8.559488943631656e-08,
+      "ood_mean": 0.0009806195894877115,
+      "ood_std": 7.852258221232466e-05,
+      "cohens_d": 17.660935003307983,
+      "glass_delta": 11456.334617329581,
+      "separation": "perfect"
+    },
+    "night": {
+      "id_mean": 1.5894571940104166e-08,
+      "id_std": 8.559488943631656e-08,
+      "ood_mean": 0.002012022336324056,
+      "ood_std": 0.0001124554708147483,
+      "cohens_d": 25.30251265378383,
+      "glass_delta": 23506.151535473018,
+      "separation": "perfect"
+    },
+    "noise": {
+      "id_mean": 1.5894571940104166e-08,
+      "id_std": 8.559488943631656e-08,
+      "ood_mean": 0.00012139479319254558,
+      "ood_std": 3.32274852655724e-05,
+      "cohens_d": 5.1660579697770075,
+      "glass_delta": 1418.0624499890566,
+      "separation": "perfect"
+    },
+    "blur": {
+      "id_mean": 1.5894571940104166e-08,
+      "id_std": 8.559488943631656e-08,
+      "ood_mean": 0.005044670899709066,
+      "ood_std": 0.00033349688876225804,
+      "cohens_d": 21.392161459908927,
+      "glass_delta": 58936.404245143625,
+      "separation": "perfect"
+    }
+  },
+  "multiple_testing": {
+    "alpha": 0.05,
+    "bonferroni_alpha": 0.0125,
+    "K": 4,
+    "per_type": {
+      "fog": {
+        "p_value": 0.001996007984031936,
+        "significant_uncorrected": true,
+        "significant_bonferroni": true
+      },
+      "night": {
+        "p_value": 0.001996007984031936,
+        "significant_uncorrected": true,
+        "significant_bonferroni": true
+      },
+      "noise": {
+        "p_value": 0.001996007984031936,
+        "significant_uncorrected": true,
+        "significant_bonferroni": true
+      },
+      "blur": {
+        "p_value": 0.001996007984031936,
+        "significant_uncorrected": true,
+        "significant_bonferroni": true
+      }
+    }
+  },
+  "bayesian": {
+    "fog": {
+      "prior_corrupt": 0.1,
+      "p_detect_given_corrupt": 1.0,
+      "p_detect_given_clean": 0.3333333333333333,
+      "posterior_corrupt": 0.25,
+      "bayes_factor": 3.0,
+      "log10_bayes_factor": 0.47712125471966244
+    },
+    "night": {
+      "prior_corrupt": 0.1,
+      "p_detect_given_corrupt": 1.0,
+      "p_detect_given_clean": 0.3333333333333333,
+      "posterior_corrupt": 0.25,
+      "bayes_factor": 3.0,
+      "log10_bayes_factor": 0.47712125471966244
+    },
+    "noise": {
+      "prior_corrupt": 0.1,
+      "p_detect_given_corrupt": 1.0,
+      "p_detect_given_clean": 0.3333333333333333,
+      "posterior_corrupt": 0.25,
+      "bayes_factor": 3.0,
+      "log10_bayes_factor": 0.47712125471966244
+    },
+    "blur": {
+      "prior_corrupt": 0.1,
+      "p_detect_given_corrupt": 1.0,
+      "p_detect_given_clean": 0.3333333333333333,
+      "posterior_corrupt": 0.25,
+      "bayes_factor": 3.0,
+      "log10_bayes_factor": 0.47712125471966244
+    }
+  }
+}
