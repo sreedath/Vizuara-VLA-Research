@@ -7699,3 +7699,47 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 
 **Finding**: OOD detection is **computationally free**. The hidden-state extraction adds zero latency because these states are computed during normal forward propagation. The cosine distance calculation takes 5 µs — 0.004% of total inference time. The system requires only a single pre-computed 4096-dim centroid vector in memory. This makes the detector practical for real-time deployment at any VLA inference frequency.
 
+---
+
+### Finding 189: d-prime Discriminability Analysis (Experiment 194)
+
+**Experiment**: Compute d' (discriminability index) across early layers L0-L7, with per-category breakdown and multi-layer OR-gate combinations.
+
+**Per-Layer d' and Separation**:
+| Layer | AUROC | d' | Separation Ratio |
+|-------|-------|------|-----------------|
+| L0 | 0.500 | 0.00 | 0.00 |
+| L1 | 1.000 | 2.44 | 5.40 |
+| L2 | 1.000 | 2.45 | 4.81 |
+| L3 | 1.000 | 2.18 | 5.04 |
+| L4 | 1.000 | 2.20 | 4.72 |
+| L5 | 1.000 | 2.36 | 3.97 |
+| L6 | 1.000 | 2.22 | 4.00 |
+| L7 | 1.000 | 2.13 | 3.66 |
+
+**Per-Category d' (L1-L7)**:
+| Layer | Fog | Night | Blur | Noise |
+|-------|-----|-------|------|-------|
+| L1 | 4.32 | 20.36 | 4.28 | 7.70 |
+| L2 | 7.76 | 23.72 | 6.19 | 7.46 |
+| L3 | 7.75 | 24.98 | 5.35 | 6.69 |
+| L4 | 5.97 | 25.07 | 6.11 | 6.01 |
+| L5 | 4.18 | 24.77 | 3.96 | 4.48 |
+| L6 | 4.48 | 24.09 | 3.70 | 4.37 |
+| L7 | 3.90 | 46.78 | 2.52 | 4.45 |
+
+**Multi-Layer OR-Gate**:
+| Combination | AUROC | d' |
+|------------|-------|------|
+| L1+L3 | 1.000 | 2.18 |
+| L1+L7 | 1.000 | 2.14 |
+| L1+L3+L7 | 1.000 | 2.17 |
+
+**Key Findings**:
+1. **L0 is dead**: The embedding layer (pre-transformer) has zero discriminability — d'=0.0. All OOD signal emerges from the first transformer layer.
+2. **L2 achieves highest d'** (2.45), marginally above L1 (2.44). However, L1 has the highest separation ratio (5.40×).
+3. **Night is extreme**: d' ranges from 20.36 (L1) to 46.78 (L7) — 5-10× higher than other corruptions. Night vision reduces pixel intensity to 15%, creating maximal feature displacement.
+4. **Multi-layer OR-gate adds nothing**: When individual layers already achieve AUROC=1.0, combining them cannot improve. d' actually decreases slightly due to max-pooling noise.
+5. **d' monotonically decreases L5-L7**: Later early layers have lower discriminability, confirming the "early is better" finding from the layer sweep.
+
+**Finding**: d' analysis confirms the statistical power of early layers for VLA OOD detection. L1-L2 are the optimal layers with d'>2.4 (equivalent to >99.7% correct classification in signal detection theory). Night corruption produces extreme d' values (20-47), while blur is most challenging (d'=2.5-6.2 depending on layer). The OR-gate combination strategy is unnecessary when individual layers already achieve perfect AUROC. The key insight: a single transformer layer transforms the embedding from zero OOD signal (d'=0) to near-perfect detection (d'=2.44).

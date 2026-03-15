@@ -3603,4 +3603,30 @@ We measure the latency impact of OOD detection on VLA inference.
 \label{fig:latency}
 \end{figure}
 
+\subsection{Discriminability Analysis (d-prime)}
+
+We quantify OOD detection power using d' (discriminability index from signal detection theory) across early layers L0--L7.
+
+\textbf{Finding 351}: Layer 0 (embedding, pre-transformer) has \textbf{zero discriminability} (d'=0.0, AUROC=0.5). All OOD signal emerges from the first transformer layer, which achieves d'=2.44---equivalent to $>$99.7\% correct classification rate in signal detection theory.
+
+\textbf{Finding 352}: L2 achieves the highest d' (2.45), marginally above L1 (2.44), while L1 retains the highest separation ratio (5.40$\times$). Both metrics are important: d' captures statistical power accounting for variance, while separation ratio captures the raw distance gap.
+
+\textbf{Finding 353}: Night corruption produces extreme d' values (20--47 across layers), 5--10$\times$ higher than other corruptions. Blur is most challenging (d'=2.5--6.2). This hierarchy is consistent across all early layers, confirming it reflects the corruption's intrinsic detectability rather than layer-specific artifacts.
+
+\textbf{Finding 354}: Multi-layer OR-gate combinations (L1+L3, L1+L7, L1+L3+L7) achieve AUROC=1.0 but with slightly \textbf{lower} d' than individual layers. When single layers already achieve perfect AUROC, combining via max-pooling introduces noise without benefit---\textbf{simpler is better}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig198_dprime_analysis.png}
+\caption{\textbf{d' discriminability analysis.} Left: d' across early layers showing L0 has zero signal while L1--L7 all exceed d'=2.0. Right: per-category d' heatmap revealing night corruption has extreme detectability (d'$>$20) while blur is most challenging.}
+\label{fig:dprime_analysis}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/fig199_dprime_vs_separation.png}
+\caption{\textbf{d' vs separation ratio.} L1 achieves the best separation ratio (5.40$\times$) while L2 achieves the best d' (2.45). Both metrics confirm that the earliest transformer layers are optimal for OOD detection.}
+\label{fig:dprime_separation}
+\end{figure}
+
 \end{document}

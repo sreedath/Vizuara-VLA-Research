@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Experiment 195: Mahalanobis distance OOD detection — compare cosine distance
-with Mahalanobis distance (classic OOD baseline from Lee et al. 2018).
+"""Experiment 194: d-prime sensitivity analysis — compute d' (discriminability index)
+across layers 1-7 and compare with multi-layer combination strategies.
 
-Tests whether modeling the full covariance structure improves over simple cosine.
+Establishes the statistical power of each early layer for OOD detection.
 """
 
 import json, os, sys, datetime
@@ -53,17 +53,20 @@ def compute_auroc(id_scores, ood_scores):
     count = sum(float(np.sum(o > id_scores) + 0.5 * np.sum(o == id_scores)) for o in ood_scores)
     return count / (n_id * n_ood)
 
-def mahalanobis_distance(x, mean, cov_inv):
-    """Compute Mahalanobis distance."""
-    diff = x - mean
-    return float(np.sqrt(np.abs(diff @ cov_inv @ diff)))
-
-def l2_distance(a, b):
-    return float(np.linalg.norm(a - b))
+def compute_dprime(id_scores, ood_scores):
+    """Compute d' (discriminability index)."""
+    id_mean = np.mean(id_scores)
+    ood_mean = np.mean(ood_scores)
+    id_std = np.std(id_scores)
+    ood_std = np.std(ood_scores)
+    pooled_std = np.sqrt((id_std**2 + ood_std**2) / 2)
+    if pooled_std < 1e-10:
+        return float('inf') if ood_mean > id_mean else 0.0
+    return float((ood_mean - id_mean) / pooled_std)
 
 def main():
     print("=" * 60)
-    print("Experiment 195: Mahalanobis Distance OOD Detection")
+    print("Experiment 194: d-prime Analysis Across Early Layers")
     print("=" * 60, flush=True)
 
     from transformers import AutoModelForVision2Seq, AutoProcessor
@@ -75,48 +78,29 @@ def main():
     model.eval()
 
     prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
-    layers = [1, 3, 16, 32]
+    layers = list(range(8))  # 0-7
 
     creators = [create_highway, create_urban, create_rural]
-    n_cal = 15  # more calibration for covariance estimation
+    n_cal = 10
     n_test = 8
 
+    # Extract all embeddings
+    print("\n--- Extracting embeddings ---", flush=True)
     def extract_all(image):
         inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
         with torch.no_grad():
             fwd = model(**inputs, output_hidden_states=True)
         return {l: fwd.hidden_states[l][0, -1, :].float().cpu().numpy() for l in layers}
 
-    # Calibration
-    print("\n--- Calibration ---", flush=True)
     cal_arrs = [creators[i%3](i) for i in range(n_cal)]
     cal_embs = {l: [] for l in layers}
-    for i, arr in enumerate(cal_arrs):
+    for arr in cal_arrs:
         h = extract_all(Image.fromarray(arr))
         for l in layers:
             cal_embs[l].append(h[l])
-        print(f"  cal {i+1}/{n_cal}", flush=True)
 
-    # Compute centroids and covariance
-    centroids = {}
-    cov_invs = {}
-    for l in layers:
-        embs = np.array(cal_embs[l])
-        centroids[l] = embs.mean(axis=0)
+    centroids = {l: np.array(cal_embs[l]).mean(axis=0) for l in layers}
 
-        # Regularized covariance inverse via PCA
-        centered = embs - centroids[l]
-        # Use SVD for numerically stable pseudo-inverse
-        U, S, Vt = np.linalg.svd(centered, full_matrices=False)
-        # Keep top-k components where k = min(n_cal-1, 100)
-        k = min(len(S), 100)
-        S_inv = np.zeros_like(S)
-        S_inv[:k] = 1.0 / (S[:k]**2 / (n_cal - 1) + 1e-6)
-        cov_invs[l] = Vt.T @ np.diag(S_inv) @ Vt
-        print(f"  L{l}: centroid computed, cov_inv via SVD (k={k}, max_S={S[0]:.4f})", flush=True)
-
-    # Test ID
-    print("\n--- Test ID ---", flush=True)
     test_arrs = [creators[(i+n_cal)%3](i+n_cal) for i in range(n_test)]
     id_embs = {l: [] for l in layers}
     for arr in test_arrs:
@@ -124,8 +108,6 @@ def main():
         for l in layers:
             id_embs[l].append(h[l])
 
-    # Test OOD
-    print("--- Test OOD ---", flush=True)
     ood_transforms = {
         "fog_60": lambda a: apply_fog(a, 0.6),
         "night": apply_night,
@@ -141,72 +123,60 @@ def main():
                 ood_embs_all[l].append(h[l])
                 ood_embs_per[cat][l].append(h[l])
 
-    # Compare methods
-    print("\n--- Results ---", flush=True)
+    # Compute per-layer metrics
+    print("\n--- Per-layer analysis ---", flush=True)
     results = {}
     for l in layers:
-        layer_results = {}
+        id_dists = [cosine_distance(e, centroids[l]) for e in id_embs[l]]
+        ood_dists = [cosine_distance(e, centroids[l]) for e in ood_embs_all[l]]
 
-        # Cosine distance
-        id_cos = [cosine_distance(e, centroids[l]) for e in id_embs[l]]
-        ood_cos = [cosine_distance(e, centroids[l]) for e in ood_embs_all[l]]
-        layer_results["cosine"] = {
-            "auroc": compute_auroc(id_cos, ood_cos),
-            "id_mean": float(np.mean(id_cos)),
-            "ood_mean": float(np.mean(ood_cos)),
-            "separation": float(np.mean(ood_cos) / (np.mean(id_cos) + 1e-10)),
-        }
+        auroc = compute_auroc(id_dists, ood_dists)
+        dprime = compute_dprime(id_dists, ood_dists)
+        sep = float(np.mean(ood_dists) / (np.mean(id_dists) + 1e-10))
 
-        # L2 distance
-        id_l2 = [l2_distance(e, centroids[l]) for e in id_embs[l]]
-        ood_l2 = [l2_distance(e, centroids[l]) for e in ood_embs_all[l]]
-        layer_results["l2"] = {
-            "auroc": compute_auroc(id_l2, ood_l2),
-            "id_mean": float(np.mean(id_l2)),
-            "ood_mean": float(np.mean(ood_l2)),
-            "separation": float(np.mean(ood_l2) / (np.mean(id_l2) + 1e-10)),
-        }
-
-        # Mahalanobis distance
-        id_maha = [mahalanobis_distance(e, centroids[l], cov_invs[l]) for e in id_embs[l]]
-        ood_maha = [mahalanobis_distance(e, centroids[l], cov_invs[l]) for e in ood_embs_all[l]]
-        layer_results["mahalanobis"] = {
-            "auroc": compute_auroc(id_maha, ood_maha),
-            "id_mean": float(np.mean(id_maha)),
-            "ood_mean": float(np.mean(ood_maha)),
-            "separation": float(np.mean(ood_maha) / (np.mean(id_maha) + 1e-10)),
-        }
-
-        # Per-category breakdown
-        per_cat = {}
+        # Per-category d'
+        per_cat_dprime = {}
         for cat in ood_transforms:
-            cat_cos = [cosine_distance(e, centroids[l]) for e in ood_embs_per[cat][l]]
-            cat_l2 = [l2_distance(e, centroids[l]) for e in ood_embs_per[cat][l]]
-            cat_maha = [mahalanobis_distance(e, centroids[l], cov_invs[l]) for e in ood_embs_per[cat][l]]
-            per_cat[cat] = {
-                "cosine_auroc": compute_auroc(id_cos, cat_cos),
-                "l2_auroc": compute_auroc(id_l2, cat_l2),
-                "mahalanobis_auroc": compute_auroc(id_maha, cat_maha),
-            }
-        layer_results["per_category"] = per_cat
+            cat_dists = [cosine_distance(e, centroids[l]) for e in ood_embs_per[cat][l]]
+            per_cat_dprime[cat] = compute_dprime(id_dists, cat_dists)
 
-        print(f"  L{l}:", flush=True)
-        print(f"    cosine     AUROC={layer_results['cosine']['auroc']:.4f} sep={layer_results['cosine']['separation']:.2f}", flush=True)
-        print(f"    L2         AUROC={layer_results['l2']['auroc']:.4f} sep={layer_results['l2']['separation']:.2f}", flush=True)
-        print(f"    mahalanobis AUROC={layer_results['mahalanobis']['auroc']:.4f} sep={layer_results['mahalanobis']['separation']:.2f}", flush=True)
+        results[str(l)] = {
+            "layer": l,
+            "auroc": auroc,
+            "dprime": dprime,
+            "separation_ratio": sep,
+            "id_mean": float(np.mean(id_dists)),
+            "id_std": float(np.std(id_dists)),
+            "ood_mean": float(np.mean(ood_dists)),
+            "ood_std": float(np.std(ood_dists)),
+            "per_cat_dprime": per_cat_dprime,
+        }
+        print(f"  L{l}: AUROC={auroc:.4f} d'={dprime:.2f} sep={sep:.2f}", flush=True)
+        for cat, dp in per_cat_dprime.items():
+            print(f"    {cat}: d'={dp:.2f}", flush=True)
 
-        results[f"L{l}"] = layer_results
+    # Multi-layer combination: OR-gate
+    print("\n--- Multi-layer OR-gate ---", flush=True)
+    for combo_layers in [[1, 3], [1, 7], [1, 3, 7]]:
+        combo_name = "+".join(f"L{l}" for l in combo_layers)
+        # OR-gate: max distance across layers
+        id_max = [max(cosine_distance(id_embs[l][i], centroids[l]) for l in combo_layers) for i in range(n_test)]
+        ood_max = [max(cosine_distance(ood_embs_all[l][i], centroids[l]) for l in combo_layers) for i in range(len(ood_embs_all[layers[0]]))]
+        auroc_combo = compute_auroc(id_max, ood_max)
+        dprime_combo = compute_dprime(id_max, ood_max)
+        results[f"combo_{combo_name}"] = {"auroc": auroc_combo, "dprime": dprime_combo}
+        print(f"  {combo_name}: AUROC={auroc_combo:.4f} d'={dprime_combo:.2f}", flush=True)
 
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
-        "experiment": "mahalanobis_comparison",
-        "experiment_number": 195,
+        "experiment": "dprime_analysis",
+        "experiment_number": 194,
         "timestamp": ts,
         "n_cal": n_cal, "n_test": n_test,
         "layers": layers,
         "results": results,
     }
-    path = os.path.join(RESULTS_DIR, f"mahalanobis_comparison_{ts}.json")
+    path = os.path.join(RESULTS_DIR, f"dprime_analysis_{ts}.json")
     with open(path, "w") as f:
         json.dump(output, f, indent=2)
     print(f"\nSaved: {path}")
