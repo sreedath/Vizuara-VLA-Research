@@ -7393,3 +7393,73 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 
 **Finding**: The cosine-distance OOD detector with clean-data calibration achieves **perfect cross-corruption transfer**: calibrating from clean driving images and setting a 3σ threshold detects fog, night, blur, noise, snow, and rain at 100% rate. The detector doesn't need to know about corruption types in advance — it detects any deviation from the clean manifold. This is a critical practical advantage: the system generalizes to novel, unseen corruptions without retraining or recalibration.
 
+---
+
+### Finding 179: Prompt Sensitivity Analysis (Experiment 184)
+
+**Experiment**: Test OOD detection with 6 different action prompts (drive forward, navigate, stop, turn left, generic task, minimal) to determine if prompt choice affects detection performance.
+
+**Key Results**:
+| Prompt | L3 AUROC | L3 Sep Ratio | L32 AUROC | L32 Sep Ratio |
+|--------|----------|-------------|-----------|---------------|
+| drive_forward | 1.000 | 5.23 | 1.000 | 2.68 |
+| navigate | 1.000 | 5.47 | 1.000 | 2.67 |
+| stop | 1.000 | 5.28 | 1.000 | 2.63 |
+| turn_left | 1.000 | 5.43 | 1.000 | 2.50 |
+| generic_robot | 1.000 | 5.34 | 1.000 | 2.64 |
+| minimal | 1.000 | 5.20 | 1.000 | 2.46 |
+
+**Cross-prompt centroid distances** (distance between centroids generated with different prompts on same images):
+| Prompt pair | L3 distance | L32 distance |
+|-------------|------------|-------------|
+| drive vs navigate | 0.003 | 0.454 |
+| drive vs stop | 0.003 | 0.461 |
+| drive vs turn_left | 0.004 | 0.532 |
+| drive vs generic | 0.003 | 0.500 |
+| drive vs minimal | 0.005 | 0.522 |
+
+**Key Findings**:
+1. **AUROC = 1.0 for ALL 6 prompts at BOTH layers**: OOD detection is completely prompt-invariant.
+2. **L3 centroids are prompt-insensitive**: Cross-prompt distances only 0.003-0.005 — early layers dominated by visual information.
+3. **L32 centroids are prompt-sensitive**: Cross-prompt distances 0.45-0.53 — comparable to OOD distances! The text prompt substantially reshapes the final-layer representation.
+4. **Despite L32 prompt sensitivity, AUROC remains perfect**: The detector recalibrates per-prompt, so prompt-induced shifts don't degrade detection.
+
+**Finding**: OOD detection with cosine distance is **completely prompt-invariant** — all 6 prompts achieve AUROC=1.0 at both layers. However, the underlying mechanism differs by layer: L3 is visually-dominated (prompt barely changes centroid), while L32 is text-sensitive (prompts shift centroids by 0.45-0.53, comparable to OOD distances). This validates the use of L3 as the primary detector: its visual dominance makes it naturally robust to prompt variation.
+
+---
+
+### Finding 180: Token Position OOD Signal Analysis (Experiment 185)
+
+**Experiment**: Compare OOD detection AUROC across 6 token positions (first, quarter, middle, 3/4, second-last, last) at 3 layers (3, 16, 32) to find where in the sequence the OOD signal is strongest.
+
+**Sequence length**: 280 tokens.
+
+**AUROC by Position and Layer**:
+| Position | L3 | L16 | L32 |
+|----------|-----|------|------|
+| first (0) | 0.500 | 0.500 | 0.500 |
+| quarter (70) | 0.766 | 0.719 | 0.734 |
+| middle (140) | 1.000 | 0.969 | 0.891 |
+| 3/4 (210) | 1.000 | 1.000 | 1.000 |
+| 2nd last (278) | 1.000 | 1.000 | 1.000 |
+| last (279) | 1.000 | 0.938 | 1.000 |
+
+**Separation Ratio by Position**:
+| Position | L3 | L16 | L32 |
+|----------|-----|------|------|
+| first | 0.00 | 1.00 | 0.00 |
+| quarter | 2.17 | 1.99 | 1.96 |
+| middle | 1.97 | 1.92 | 1.52 |
+| 3/4 | 2.57 | 3.40 | 2.99 |
+| 2nd last | 6.14 | 3.57 | 3.23 |
+| last | 5.13 | 3.29 | 2.66 |
+
+**Key Findings**:
+1. **First token carries zero OOD signal** (AUROC=0.5 at all layers): position 0 has no access to visual information.
+2. **OOD signal builds progressively along the sequence**: quarter position is partial (0.72-0.77), middle reaches perfect at L3, three-quarter is perfect everywhere.
+3. **Second-to-last token has the highest separation ratio** (6.14 at L3) — even higher than the last token (5.13). This may be because the last token is more influenced by text prompt instructions.
+4. **L3 achieves perfect AUROC earliest** (at the middle position), while L32 needs the three-quarter position. This confirms L3 processes visual features earlier in the sequence.
+5. **The OOD signal is distributed across the second half of the sequence**: tokens past the midpoint all carry strong signal.
+
+**Finding**: The OOD signal is not concentrated at the last token — it builds progressively along the sequence, achieving perfect AUROC by the midpoint at L3. The second-to-last token actually provides the **best separation ratio** (6.14×), slightly outperforming the last token (5.13×). The first token is completely uninformative (AUROC=0.5), confirming that OOD detection depends on visual token processing. This suggests that early termination after ~50% of tokens could provide strong OOD detection with reduced inference latency.
+

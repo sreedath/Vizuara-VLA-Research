@@ -3463,4 +3463,45 @@ We test whether a detector calibrated on clean data can generalize to all corrup
 \label{fig:cross_centroid}
 \end{figure}
 
+\subsection{Prompt Invariance}
+
+We test whether the choice of text prompt affects OOD detection, using six prompts ranging from specific (``drive forward at 25 m/s'') to minimal (``what action?'').
+
+\textbf{Finding 327}: AUROC = 1.0 for \textbf{all six prompts at both layers}. OOD detection is completely prompt-invariant. Separation ratios are remarkably consistent: $5.2\text{--}5.5\times$ at L3 and $2.5\text{--}2.7\times$ at L32.
+
+\textbf{Finding 328}: L3 centroids are \textbf{prompt-insensitive} (cross-prompt cosine distance 0.003--0.005), while L32 centroids are \textbf{prompt-sensitive} (distance 0.45--0.53, comparable to OOD distances). Early layers are dominated by visual information; later layers integrate text substantially.
+
+\textbf{Finding 329}: The prompt-insensitivity of L3 makes it a naturally robust detection layer---it responds primarily to visual corruption signals regardless of the action instruction. L32's prompt sensitivity means it requires per-prompt calibration, reinforcing L3 as the preferred primary detector.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig186_prompt_separation.png}
+\caption{\textbf{Prompt invariance of OOD detection.} Separation ratios across six different prompts at L3 (left) and L32 (right). All achieve AUROC = 1.0 with consistent separation.}
+\label{fig:prompt_sep}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.65\textwidth]{figures/fig187_cross_prompt_centroids.png}
+\caption{\textbf{Cross-prompt centroid distances.} L3 centroids barely change across prompts (cosine dist $<$0.005), while L32 centroids shift substantially ($\sim$0.5). L3 is visually dominated; L32 integrates text heavily.}
+\label{fig:cross_prompt}
+\end{figure}
+
+\subsection{Token Position Analysis}
+
+We investigate which token positions in the 280-token sequence carry the strongest OOD signal.
+
+\textbf{Finding 330}: The first token carries \textbf{zero OOD signal} (AUROC = 0.5 at all layers), as it has not yet processed visual information. The signal builds progressively: partial at the quarter position (AUROC 0.72--0.77), and perfect ($\geq$0.97) by the three-quarter position at all layers.
+
+\textbf{Finding 331}: The \textbf{second-to-last token achieves the highest separation ratio} (6.14$\times$ at L3), outperforming the last token (5.13$\times$). This suggests the penultimate position concentrates OOD information more effectively, potentially because the final position is more influenced by text instructions.
+
+\textbf{Finding 332}: L3 achieves perfect AUROC \textbf{earlier in the sequence} (at the middle position, token 140) compared to L32 (which requires the three-quarter position). This confirms L3 processes visual features earlier and more directly, making it ideal for low-latency OOD detection. A practical implication: \textbf{early termination} after 50\% of tokens could provide strong OOD detection with reduced inference cost.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig188_token_position_auroc.png}
+\caption{\textbf{OOD signal by token position.} AUROC vs token position for three layers. The signal builds progressively from zero (first token) to perfect (second half). L3 achieves perfect AUROC earliest.}
+\label{fig:token_pos}
+\end{figure}
+
 \end{document}

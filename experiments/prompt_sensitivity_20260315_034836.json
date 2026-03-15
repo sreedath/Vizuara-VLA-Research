@@ -1,0 +1,127 @@
+{
+  "experiment": "prompt_sensitivity",
+  "experiment_number": 184,
+  "timestamp": "20260315_034836",
+  "prompts": {
+    "drive_forward": "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:",
+    "navigate": "In: What action should the robot take to navigate this road?\nOut:",
+    "stop": "In: What action should the robot take to stop the vehicle?\nOut:",
+    "turn_left": "In: What action should the robot take to turn left?\nOut:",
+    "generic_robot": "In: What action should the robot take to complete the task?\nOut:",
+    "minimal": "In: What action should the robot take?\nOut:"
+  },
+  "n_cal": 6,
+  "n_test": 4,
+  "layers": [
+    3,
+    32
+  ],
+  "results": {
+    "drive_forward": {
+      "L3": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.0003857910633087158,
+        "ood_mean_dist": 0.002018645405769348,
+        "separation_ratio": 5.232482228096028
+      },
+      "L32": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.11138302087783813,
+        "ood_mean_dist": 0.29891473427414894,
+        "separation_ratio": 2.6836651731112946
+      }
+    },
+    "navigate": {
+      "L3": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.00043889880180358887,
+        "ood_mean_dist": 0.0024000555276870728,
+        "separation_ratio": 5.468356192791567
+      },
+      "L32": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.1438646912574768,
+        "ood_mean_dist": 0.3844173401594162,
+        "separation_ratio": 2.6720756603453943
+      }
+    },
+    "stop": {
+      "L3": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.00042366981506347656,
+        "ood_mean_dist": 0.002237629145383835,
+        "separation_ratio": 5.281538919393371
+      },
+      "L32": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.13077984750270844,
+        "ood_mean_dist": 0.34397001564502716,
+        "separation_ratio": 2.6301454081057023
+      }
+    },
+    "turn_left": {
+      "L3": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.00045034289360046387,
+        "ood_mean_dist": 0.0024441368877887726,
+        "separation_ratio": 5.4272785910313655
+      },
+      "L32": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.1579275131225586,
+        "ood_mean_dist": 0.39461517333984375,
+        "separation_ratio": 2.4987107394247015
+      }
+    },
+    "generic_robot": {
+      "L3": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.0004170536994934082,
+        "ood_mean_dist": 0.002228952944278717,
+        "separation_ratio": 5.34452137107061
+      },
+      "L32": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.13985013961791992,
+        "ood_mean_dist": 0.36924565583467484,
+        "separation_ratio": 2.640295223011214
+      }
+    },
+    "minimal": {
+      "L3": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.0005279630422592163,
+        "ood_mean_dist": 0.002744704484939575,
+        "separation_ratio": 5.198666848588449
+      },
+      "L32": {
+        "auroc": 1.0,
+        "id_mean_dist": 0.19103240966796875,
+        "ood_mean_dist": 0.4690477102994919,
+        "separation_ratio": 2.455330542441491
+      }
+    },
+    "cross_prompt_centroid_distances": {
+      "navigate": {
+        "L3": 0.0029630661010742188,
+        "L32": 0.45446425676345825
+      },
+      "stop": {
+        "L3": 0.00291287899017334,
+        "L32": 0.46094322204589844
+      },
+      "turn_left": {
+        "L3": 0.004036307334899902,
+        "L32": 0.5318382978439331
+      },
+      "generic_robot": {
+        "L3": 0.0032989978790283203,
+        "L32": 0.5004500150680542
+      },
+      "minimal": {
+        "L3": 0.0052451491355896,
+        "L32": 0.5217009782791138
+      }
+    }
+  }
+}
