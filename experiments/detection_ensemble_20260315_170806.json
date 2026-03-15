@@ -1,0 +1,110 @@
+{
+  "multi_layer_fog": {
+    "individual": {
+      "L1": 1.0,
+      "L3": 1.0,
+      "L8": 1.0,
+      "L16": 1.0,
+      "L24": 1.0
+    },
+    "avg_auroc": 1.0,
+    "max_auroc": 1.0,
+    "vote_auroc": 1.0
+  },
+  "multi_layer_night": {
+    "individual": {
+      "L1": 1.0,
+      "L3": 1.0,
+      "L8": 1.0,
+      "L16": 1.0,
+      "L24": 1.0
+    },
+    "avg_auroc": 1.0,
+    "max_auroc": 1.0,
+    "vote_auroc": 1.0
+  },
+  "multi_layer_noise": {
+    "individual": {
+      "L1": 0.98,
+      "L3": 1.0,
+      "L8": 1.0,
+      "L16": 0.82,
+      "L24": 0.84
+    },
+    "avg_auroc": 1.0,
+    "max_auroc": 1.0,
+    "vote_auroc": 0.98
+  },
+  "multi_layer_blur": {
+    "individual": {
+      "L1": 1.0,
+      "L3": 1.0,
+      "L8": 1.0,
+      "L16": 1.0,
+      "L24": 1.0
+    },
+    "avg_auroc": 1.0,
+    "max_auroc": 1.0,
+    "vote_auroc": 1.0
+  },
+  "multi_prompt_fog": {
+    "individual": {
+      "p0": 1.0,
+      "p1": 1.0,
+      "p2": 1.0,
+      "p3": 1.0,
+      "p4": 1.0
+    },
+    "avg_auroc": 1.0
+  },
+  "multi_prompt_night": {
+    "individual": {
+      "p0": 1.0,
+      "p1": 1.0,
+      "p2": 1.0,
+      "p3": 1.0,
+      "p4": 1.0
+    },
+    "avg_auroc": 1.0
+  },
+  "multi_prompt_noise": {
+    "individual": {
+      "p0": 1.0,
+      "p1": 1.0,
+      "p2": 0.98,
+      "p3": 1.0,
+      "p4": 1.0
+    },
+    "avg_auroc": 1.0
+  },
+  "multi_prompt_blur": {
+    "individual": {
+      "p0": 1.0,
+      "p1": 1.0,
+      "p2": 1.0,
+      "p3": 1.0,
+      "p4": 1.0
+    },
+    "avg_auroc": 1.0
+  },
+  "multi_metric_fog": {
+    "cosine_auroc": 1.0,
+    "euclidean_auroc": 1.0,
+    "avg_auroc": 1.0
+  },
+  "multi_metric_night": {
+    "cosine_auroc": 1.0,
+    "euclidean_auroc": 1.0,
+    "avg_auroc": 1.0
+  },
+  "multi_metric_noise": {
+    "cosine_auroc": 1.0,
+    "euclidean_auroc": 0.98,
+    "avg_auroc": 0.98
+  },
+  "multi_metric_blur": {
+    "cosine_auroc": 1.0,
+    "euclidean_auroc": 1.0,
+    "avg_auroc": 1.0
+  }
+}

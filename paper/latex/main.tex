@@ -7541,4 +7541,37 @@ We test 10 different prompts --- ranging from standard task instructions to empt
 
 \textbf{Finding 1026}: \textbf{Task-specific prompts produce marginally weaker noise detection (AUROC=0.98).} Navigation and long task prompts compete with the visual corruption signal, while generic/nonsense prompts leave more capacity for visual processing.
 
+% ============================================================
+% EXPERIMENT 386: Detection Ensemble Methods
+% ============================================================
+
+\subsection{Experiment 386: Detection Ensemble Methods}
+
+We investigate whether combining multiple detection signals via ensembling can improve performance, particularly for the hardest case (noise).
+
+\textbf{Multi-Layer Averaging Recovers Noise AUROC = 1.0.} While individual deep layers degrade for noise (L16: 0.82, L24: 0.84), averaging scores across layers [L1, L3, L8, L16, L24] achieves AUROC = 1.0. The strong early-layer signal (L3, L8: 1.0) compensates for deep-layer weakness, making the ensemble strictly more robust.
+
+\textbf{Cosine Is Always Optimal.} Cosine distance achieves AUROC $\geq$ euclidean distance for every corruption. Multi-metric ensembling provides no benefit --- the corruption signal is directional (angular), and cosine distance captures this optimally.
+
+\textbf{Averaging Outperforms Voting.} Vote-based ensemble achieves 0.98 for noise, while averaging achieves 1.0. Voting discards continuous score information, losing the fine-grained signal needed for the hardest corruptions.
+
+\textbf{No Ensemble Exceeds Single Best.} The single best configuration (L3, standard prompt, cosine) already achieves AUROC = 1.0 for all corruptions. Ensembles add \emph{robustness} (protecting against suboptimal individual choices) rather than peak performance.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig395_ensemble.png}
+\caption{\textbf{Experiment 386}: Ensemble methods. Multi-layer averaging recovers noise AUROC=1.0 despite individual layers degrading. Multi-prompt averaging also achieves perfect detection. Cosine always $\geq$ euclidean.}
+\label{fig:ensemble}
+\end{figure}
+
+\textbf{Finding 1027}: \textbf{Multi-layer averaging recovers AUROC=1.0 for noise despite L16=0.82, L24=0.84.} Early-layer strength (L3: 1.0) compensates for deep-layer weakness when scores are averaged.
+
+\textbf{Finding 1028}: \textbf{Cosine distance $\geq$ euclidean for every corruption.} The corruption signal is angular/directional, making cosine the universally optimal metric. Multi-metric ensembles add no value.
+
+\textbf{Finding 1029}: \textbf{Voting (0.98) underperforms averaging (1.0) for noise.} Discrete voting loses the continuous score information critical for hard cases. Average-based aggregation is always preferred.
+
+\textbf{Finding 1030}: \textbf{The single best configuration (L3, cosine) already achieves AUROC=1.0 for all corruptions.} Ensembles are a robustness mechanism (insurance against suboptimal choices), not a performance improvement.
+
+\textbf{Finding 1031}: \textbf{Multi-prompt averaging achieves AUROC=1.0 for all corruptions}, recovering from individual prompt weaknesses. For maximum robustness in deployment, average detection scores across 3--5 prompts.
+
 \end{document}

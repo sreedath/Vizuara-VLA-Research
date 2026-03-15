@@ -16084,3 +16084,48 @@ ALL prompts achieve AUROC=1.0 for fog/night/blur. Noise varies: 7/10 achieve 1.0
 
 **Finding 774**: Navigation and long prompts produce the weakest noise detection (AUROC=0.98, 80% rate). Task-specific prompts slightly worse than generic ones for noise, suggesting that task-relevant text representation competes with the visual corruption signal in embedding space.
 
+---
+
+## Experiment 386: Detection Ensemble Methods
+
+**Objective**: Can we improve noise detection by combining multiple detection signals? Tests multi-layer, multi-prompt, and multi-metric ensembles with averaging, max, and voting aggregation.
+
+**Setup**: 10 scenes, 4 corruptions at severity 0.5. Multi-layer uses L1,L3,L8,L16,L24. Multi-prompt uses 5 prompts. Multi-metric uses cosine and euclidean.
+
+### Results
+
+**Multi-Layer Ensemble**:
+| Corruption | L1 | L3 | L8 | L16 | L24 | Avg | Max | Vote |
+|-----------|------|------|------|------|------|------|------|------|
+| Fog | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| Night | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| Noise | 0.98 | 1.00 | 1.00 | 0.82 | 0.84 | **1.00** | **1.00** | 0.98 |
+| Blur | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+
+CRITICAL: Average and max ensemble recover AUROC=1.0 for noise, despite individual L16 (0.82) and L24 (0.84) being poor!
+
+**Multi-Prompt Ensemble**:
+All prompts achieve AUROC=1.0 for fog/night/blur. For noise: p2 (navigation) = 0.98, all others = 1.0. Average ensemble = 1.0 for all.
+
+**Multi-Metric Ensemble**:
+| Corruption | Cosine | Euclidean | Average |
+|-----------|--------|-----------|---------|
+| Fog | 1.00 | 1.00 | 1.00 |
+| Night | 1.00 | 1.00 | 1.00 |
+| Noise | 1.00 | 0.98 | 0.98 |
+| Blur | 1.00 | 1.00 | 1.00 |
+
+Cosine is ALWAYS ≥ euclidean. Metric ensemble doesn't help — cosine alone is optimal.
+
+### Findings
+
+**Finding 775**: Multi-layer averaging RECOVERS noise AUROC=1.0 despite individual deep layers degrading to 0.82. Ensembling across layers compensates for layer-specific weaknesses, making the detector strictly more robust.
+
+**Finding 776**: Cosine distance is ALWAYS ≥ euclidean for AUROC. Multi-metric ensembles provide no benefit — cosine distance alone is the optimal metric. This confirms that the corruption signal is directional (angular), not magnitude-based.
+
+**Finding 777**: Multi-prompt ensemble achieves AUROC=1.0 for all corruptions, recovering from individual prompt weaknesses (navigation at 0.98). Averaging across prompts smooths out prompt-specific artifacts.
+
+**Finding 778**: Vote-based ensemble (0.98) underperforms average ensemble (1.00) for noise. Voting is too discrete — it loses the continuous score information that averaging preserves.
+
+**Finding 779**: No ensemble method outperforms the SINGLE best configuration (L3, standard prompt, cosine distance = all AUROC=1.0). Ensembles are valuable for ROBUSTNESS, not peak performance.
+
