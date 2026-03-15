@@ -1,0 +1,146 @@
+{
+  "domains": [
+    "random",
+    "gradient",
+    "solid",
+    "pattern",
+    "blobs"
+  ],
+  "n_per_domain": {
+    "random": 5,
+    "gradient": 5,
+    "solid": 5,
+    "pattern": 5,
+    "blobs": 5
+  },
+  "mixed_centroid": {
+    "random": {
+      "overall": 1.0,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      }
+    },
+    "gradient": {
+      "overall": 0.63,
+      "per_corruption": {
+        "fog": 0.68,
+        "night": 0.82,
+        "noise": 0.44,
+        "blur": 0.58
+      }
+    },
+    "solid": {
+      "overall": 0.635,
+      "per_corruption": {
+        "fog": 0.64,
+        "night": 1.0,
+        "noise": 0.4,
+        "blur": 0.5
+      }
+    },
+    "pattern": {
+      "overall": 0.49,
+      "per_corruption": {
+        "fog": 0.48,
+        "night": 0.72,
+        "noise": 0.28,
+        "blur": 0.48
+      }
+    },
+    "blobs": {
+      "overall": 0.75,
+      "per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.36,
+        "blur": 0.64
+      }
+    }
+  },
+  "specific_centroids": {
+    "random": 1.0,
+    "gradient": 0.84,
+    "solid": 0.845,
+    "pattern": 0.93,
+    "blobs": 0.95
+  },
+  "leave_one_out": {
+    "random": 0.82,
+    "gradient": 0.52,
+    "solid": 0.555,
+    "pattern": 0.33,
+    "blobs": 0.56
+  },
+  "relative_detection": {
+    "random": 1.0,
+    "gradient": 0.75,
+    "solid": 0.815,
+    "pattern": 0.89,
+    "blobs": 0.95
+  },
+  "direction_alignment": {
+    "fog": {
+      "pairwise": {
+        "random_vs_gradient": 0.5636414289474487,
+        "random_vs_solid": 0.7216366529464722,
+        "random_vs_pattern": 0.6408705711364746,
+        "random_vs_blobs": 0.5698517560958862,
+        "gradient_vs_solid": 0.6326388120651245,
+        "gradient_vs_pattern": 0.5946325063705444,
+        "gradient_vs_blobs": 0.7666360139846802,
+        "solid_vs_pattern": 0.6233812570571899,
+        "solid_vs_blobs": 0.5957478284835815,
+        "pattern_vs_blobs": 0.5929200649261475
+      },
+      "mean_alignment": 0.6301956892013549
+    },
+    "night": {
+      "pairwise": {
+        "random_vs_gradient": 0.6366715431213379,
+        "random_vs_solid": 0.8189733028411865,
+        "random_vs_pattern": 0.6578501462936401,
+        "random_vs_blobs": 0.7069805860519409,
+        "gradient_vs_solid": 0.7311903238296509,
+        "gradient_vs_pattern": 0.6347291469573975,
+        "gradient_vs_blobs": 0.7307962775230408,
+        "solid_vs_pattern": 0.5887771844863892,
+        "solid_vs_blobs": 0.7244110107421875,
+        "pattern_vs_blobs": 0.5159587264060974
+      },
+      "mean_alignment": 0.6746338248252869
+    },
+    "noise": {
+      "pairwise": {
+        "random_vs_gradient": 0.2698887288570404,
+        "random_vs_solid": 0.31671836972236633,
+        "random_vs_pattern": 0.04036373645067215,
+        "random_vs_blobs": 0.4042225778102875,
+        "gradient_vs_solid": 0.7553067803382874,
+        "gradient_vs_pattern": 0.24631235003471375,
+        "gradient_vs_blobs": 0.6922396421432495,
+        "solid_vs_pattern": 0.24570904672145844,
+        "solid_vs_blobs": 0.6986646056175232,
+        "pattern_vs_blobs": 0.20229627192020416
+      },
+      "mean_alignment": 0.3871722109615803
+    },
+    "blur": {
+      "pairwise": {
+        "random_vs_gradient": 0.027726445347070694,
+        "random_vs_solid": 0.0,
+        "random_vs_pattern": 0.7012104988098145,
+        "random_vs_blobs": 0.3362687826156616,
+        "gradient_vs_solid": 0.0,
+        "gradient_vs_pattern": 0.07382936775684357,
+        "gradient_vs_blobs": 0.05032874643802643,
+        "solid_vs_pattern": 0.0,
+        "solid_vs_blobs": 0.0,
+        "pattern_vs_blobs": 0.23963549733161926
+      },
+      "mean_alignment": 0.1428999338299036
+    }
+  }
+}

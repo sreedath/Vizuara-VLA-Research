@@ -17049,3 +17049,123 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 996**: Embedding space geometry is fundamentally low-dimensional — corruption directions are nearly 1D.
 
 **Finding 987**: The model's OOD detection mechanism is robust across prompt variations from 8 to 31 tokens.
+
+---
+
+## Experiment 425: Structured Scene Analysis (CRITICAL FINDING)
+
+**Objective**: Test whether the cosine-distance OOD detection method generalizes beyond random natural images to structured/synthetic scenes (gradients, solid colors, checkerboard, stripes, Gaussian blobs, shapes).
+
+**Method**: Collect hidden-state embeddings from 11 structured images under clean and 4 corruption types (fog, night, noise, blur). Compute per-corruption AUROC using in-domain centroids and cross-domain centroids (trained on random images). Measure domain gap between structured and random image embedding distributions.
+
+**Key Results**:
+- 11 structured images tested: gradients, solid colors, checkerboard, stripes, gaussian blobs, shapes
+- Structured detection COLLAPSES: AUROC 0.52-0.75 (vs 1.0 for random images)
+- Cross-domain centroid (random→structured) FAILS: fog=0.50, noise=0.017 (worse than random!)
+- Only night cross-domain works (0.92) — likely because night dramatically changes all images
+- Domain gap is 113x — structured images perfectly separable from random (AUROC=1.0)
+- Solid colors have ZERO blur sensitivity (Gaussian blur of solid color = same solid color)
+- H_stripes most sensitive to night (0.015), shapes most sensitive to blur (0.006)
+- Gradients have near-zero blur sensitivity (0.00006)
+- Structured images are far more heterogeneous (higher within-group variance)
+- Clean mean distance in structured group: 0.0035 (vs ~0.00004 for random)
+- CRITICAL: Detection centroid is domain-specific. Calibration data MUST match deployment domain.
+
+**Finding 997**: CRITICAL: Structured scene detection collapses to AUROC 0.52-0.75 (vs 1.0 for random images).
+
+**Finding 998**: Cross-domain centroid transfer catastrophically fails — noise gives 0.017 AUROC (worse than random).
+
+**Finding 999**: Domain gap between structured and random images is 113x, perfectly separable.
+
+**Finding 1000**: Solid colors have zero blur sensitivity — Gaussian blur of uniform color is still uniform.
+
+**Finding 1001**: The detection centroid is domain-specific: calibration data MUST match deployment domain.
+
+**Finding 1002**: Within structured images, clean variance is 88x larger than within random images.
+
+**Finding 1003**: Night is the only corruption that partially transfers cross-domain (AUROC=0.92).
+
+**Finding 1004**: H_stripes are most night-sensitive (0.015), shapes most blur-sensitive (0.006).
+
+**Finding 1005**: This is the first evidence of a fundamental limitation: OOD detection requires in-distribution calibration.
+
+**Finding 1006**: The zero-variance property that makes random-image detection perfect breaks down for diverse image types.
+
+---
+
+## Experiment 426: Universal Centroid Investigation
+
+**Objective**: Investigate whether a universal (mixed-domain) centroid can replace domain-specific centroids, and test alternative detection strategies (leave-one-out, relative distance) across 5 image domains.
+
+**Method**: Collect hidden-state embeddings from 5 image domains (random, gradient, solid, pattern, blobs) × 5 images each under clean and 4 corruption types (fog, night, noise, blur). Compute AUROC using domain-specific centroids, mixed centroid, leave-one-out centroid, and relative distance detection. Measure cross-domain corruption direction alignment.
+
+**Key Results**:
+- 5 image domains (random, gradient, solid, pattern, blobs) × 5 images each
+- Domain-specific centroids: random=1.0, blobs=0.95, pattern=0.93, solid=0.845, gradient=0.84
+- Mixed centroid: random=1.0, blobs=0.75, gradient=0.63, solid=0.635, pattern=0.49 (random chance!)
+- Leave-one-out: CATASTROPHIC — pattern=0.33, gradient=0.52, solid=0.555
+- Relative distance detection PARTIALLY FIXES IT: pattern 0.33→0.89, blobs 0.56→0.95
+- Night direction most consistent across domains (alignment 0.67)
+- Fog moderate (0.63), noise weak (0.39), blur nearly random (0.14)
+- Blur-solid and blur-gradient alignments are literally 0.0
+- Relative distance uses deviation-from-own-baseline rather than absolute distance to centroid
+- Domain-specific centroids always outperform any cross-domain strategy
+
+**Finding 1007**: Leave-one-out cross-domain detection catastrophically fails — pattern=0.33 AUROC.
+
+**Finding 1008**: Relative distance detection partially rescues cross-domain performance (pattern: 0.33→0.89).
+
+**Finding 1009**: Night corruption direction is most consistent across domains (alignment 0.67).
+
+**Finding 1010**: Blur corruption direction is nearly random across domains (alignment 0.14).
+
+**Finding 1011**: Blur-solid alignment is exactly 0.0 — blur literally doesn't affect solid colors.
+
+**Finding 1012**: Domain-specific centroids always outperform mixed or cross-domain centroids.
+
+**Finding 1013**: Relative distance (deviation-from-baseline) is a promising domain-agnostic detection strategy.
+
+**Finding 1014**: Mixed centroid degrades pattern detection to random chance (0.49 AUROC).
+
+**Finding 1015**: Night is the most domain-transferable corruption — best detection even with wrong centroid.
+
+**Finding 1016**: The fundamental limitation is that corruption DIRECTIONS vary across image domains, not just magnitudes.
+
+---
+
+## Experiment 427: Multi-Corruption Combination Analysis
+
+**Objective**: Analyze all pairwise, triple, and quadruple corruption combinations to determine whether compound corruptions can escape detection, whether application order matters, and how compound embeddings relate to individual corruption embeddings.
+
+**Key Results**:
+- ALL pairwise, triple, and quadruple corruption combinations achieve AUROC=1.0
+- Compound corruptions are always detectable — no combination escapes detection
+- Application order is NON-commutative for most pairs:
+  - noise+blur: forward=0.0069, reverse=0.00007 — 97x difference!
+  - night+noise: forward=0.0037, reverse=0.0083 — 2.3x difference
+  - fog+night: forward=0.009, reverse=0.006 — 1.6x difference
+- Blur-involving pairs ARE commutative (fog+blur, night+blur)
+- Night+blur has highest amplification (1.16x) — exceeds either individual corruption
+- Fog+noise REDUCES signal (0.51x) — noise attenuates fog's effect
+- Night+noise reduces too (0.44x) — noise attenuates night's effect
+- Compound embeddings are closer to the LAST-applied corruption
+  - fog+night → closer to night
+  - noise+blur → closer to blur
+- All-four stacking distance (0.0087) ≈ night alone (0.0084) — night dominates
+- Last-applied corruption dominates the embedding space position
+
+**Finding 1017**: ALL compound corruption combinations achieve AUROC=1.0 — no escape from detection.
+
+**Finding 1018**: Application order is non-commutative: noise+blur gives 97x different distances depending on order.
+
+**Finding 1019**: Last-applied corruption dominates the compound embedding position.
+
+**Finding 1020**: Night+blur amplifies detection signal (1.16x), while fog+noise attenuates it (0.51x).
+
+**Finding 1021**: Blur-involving pairs are commutative (order doesn't matter), fog/night/noise pairs are not.
+
+**Finding 1022**: All-four stacking produces distance 0.0087 ≈ night alone 0.0084, confirming night dominance.
+
+**Finding 1023**: Noise consistently attenuates other corruptions' signals when applied second (fog+noise: 0.51x, night+noise: 0.44x).
+
+**Finding 1024**: Compound corruption always produces larger or comparable distance to max individual corruption.

@@ -1,0 +1,157 @@
+{
+  "n_structured": 11,
+  "n_random": 5,
+  "structured_detection": {
+    "fog": {
+      "auroc": 0.6033057851239669,
+      "mean_ood_dist": 0.003673360557070399
+    },
+    "night": {
+      "auroc": 0.7520661157024794,
+      "mean_ood_dist": 0.004765147761416253
+    },
+    "noise": {
+      "auroc": 0.6776859504132231,
+      "mean_ood_dist": 0.003740655265003173
+    },
+    "blur": {
+      "auroc": 0.5206611570247934,
+      "mean_ood_dist": 0.003193090162792385
+    },
+    "clean_mean_dist": 0.0035170954236708866
+  },
+  "cross_domain_detection": {
+    "fog": {
+      "auroc": 0.5041322314049587
+    },
+    "night": {
+      "auroc": 0.9173553719008265
+    },
+    "noise": {
+      "auroc": 0.01652892561983471
+    },
+    "blur": {
+      "auroc": 0.5041322314049587
+    }
+  },
+  "per_type_distances": {
+    "h_gradient": {
+      "dist_to_random_centroid": 0.006179111025118367,
+      "dist_to_struct_centroid": 0.001628827412930911
+    },
+    "v_gradient": {
+      "dist_to_random_centroid": 0.006160489298417615,
+      "dist_to_struct_centroid": 0.001615908331216942
+    },
+    "rgb_gradient": {
+      "dist_to_random_centroid": 0.004706691805004826,
+      "dist_to_struct_centroid": 0.0015535591667902304
+    },
+    "solid_red": {
+      "dist_to_random_centroid": 0.0049073763552606176,
+      "dist_to_struct_centroid": 0.0027314791151358264
+    },
+    "solid_green": {
+      "dist_to_random_centroid": 0.005362230256644285,
+      "dist_to_struct_centroid": 0.003204632234081961
+    },
+    "solid_blue": {
+      "dist_to_random_centroid": 0.006157183684766143,
+      "dist_to_struct_centroid": 0.0025495273317278633
+    },
+    "solid_gray": {
+      "dist_to_random_centroid": 0.0071086363266684716,
+      "dist_to_struct_centroid": 0.00231140426875287
+    },
+    "checkerboard": {
+      "dist_to_random_centroid": 0.0067816355607051015,
+      "dist_to_struct_centroid": 0.005992367024191481
+    },
+    "h_stripes": {
+      "dist_to_random_centroid": 0.010923574496565669,
+      "dist_to_struct_centroid": 0.009295686799633551
+    },
+    "gaussian_blobs": {
+      "dist_to_random_centroid": 0.006910566757376557,
+      "dist_to_struct_centroid": 0.0029535067885695376
+    },
+    "shapes": {
+      "dist_to_random_centroid": 0.006780173831156477,
+      "dist_to_struct_centroid": 0.004851151187348579
+    }
+  },
+  "domain_gap": {
+    "struct_to_random_centroid_mean": 0.006543424490698557,
+    "random_to_random_centroid_mean": 5.809217572343428e-05,
+    "domain_gap_ratio": 112.63865415973655,
+    "domain_auroc": 1.0
+  },
+  "type_sensitivity": {
+    "h_gradient": {
+      "fog": 0.0016942545030015355,
+      "night": 0.0031610174703090577,
+      "noise": 0.0038419267508615906,
+      "blur": 6.187723525796773e-05
+    },
+    "v_gradient": {
+      "fog": 0.0015837314707854988,
+      "night": 0.0033500649704633068,
+      "noise": 0.005441432794224044,
+      "blur": 6.587317589246133e-05
+    },
+    "rgb_gradient": {
+      "fog": 0.001958262662492549,
+      "night": 0.005904067770996724,
+      "noise": 0.003153300380309143,
+      "blur": 0.0001453706674087174
+    },
+    "solid_red": {
+      "fog": 0.006379657949688422,
+      "night": 0.006092082087043149,
+      "noise": 0.0039051946385116887,
+      "blur": -2.220446049250313e-16
+    },
+    "solid_green": {
+      "fog": 0.0049718163500062085,
+      "night": 0.0067869070915872465,
+      "noise": 0.002837333334346437,
+      "blur": 0.0
+    },
+    "solid_blue": {
+      "fog": 0.004698545813158872,
+      "night": 0.00387905651332332,
+      "noise": 0.0035278884153008283,
+      "blur": -2.220446049250313e-16
+    },
+    "solid_gray": {
+      "fog": 0.0018754446697231142,
+      "night": 0.00403414786212597,
+      "noise": 0.006909413552019017,
+      "blur": 2.220446049250313e-16
+    },
+    "checkerboard": {
+      "fog": 0.0030798273721815983,
+      "night": 0.010105641943633725,
+      "noise": 0.0010516182885984549,
+      "blur": 0.008661579985804302
+    },
+    "h_stripes": {
+      "fog": 0.0047382444979219285,
+      "night": 0.014535430176591202,
+      "noise": 0.0025198565179832544,
+      "blur": 0.0080209107435808
+    },
+    "gaussian_blobs": {
+      "fog": 0.004595824580273411,
+      "night": 0.0035417313839698483,
+      "noise": 0.004053026116183522,
+      "blur": 8.606424877577457e-05
+    },
+    "shapes": {
+      "fog": 0.0006811314084873565,
+      "night": 0.008762479184931116,
+      "noise": 0.0015094669325638188,
+      "blur": 0.006157311655037856
+    }
+  }
+}

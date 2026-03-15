@@ -1,0 +1,145 @@
+{
+  "n_scenes": 5,
+  "pairwise": {
+    "fog+night": {
+      "auroc": 1.0,
+      "mean_dist": 0.009039391573101786,
+      "c1_mean_dist": 0.0030239892142145397,
+      "c2_mean_dist": 0.008392175991722196,
+      "amplification": 1.0771213070386019
+    },
+    "fog+noise": {
+      "auroc": 1.0,
+      "mean_dist": 0.0015564920362268753,
+      "c1_mean_dist": 0.0030239892142145397,
+      "c2_mean_dist": 0.0002109593930713638,
+      "amplification": 0.5147148107904754
+    },
+    "fog+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.005727571155340438,
+      "c1_mean_dist": 0.0030239892142145397,
+      "c2_mean_dist": 0.006827851838635724,
+      "amplification": 0.8388540481986889
+    },
+    "night+noise": {
+      "auroc": 1.0,
+      "mean_dist": 0.0036871591821425963,
+      "c1_mean_dist": 0.008392175991722196,
+      "c2_mean_dist": 0.0002109593930713638,
+      "amplification": 0.4393567515480497
+    },
+    "night+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.009750347964241568,
+      "c1_mean_dist": 0.008392175991722196,
+      "c2_mean_dist": 0.006827851838635724,
+      "amplification": 1.1618378801706535
+    },
+    "noise+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.006896720564651538,
+      "c1_mean_dist": 0.0002109593930713638,
+      "c2_mean_dist": 0.006827851838635724,
+      "amplification": 1.0100864411887378
+    }
+  },
+  "triples": {
+    "fog+night+noise": {
+      "auroc": 1.0,
+      "mean_dist": 0.003562603606673509
+    },
+    "fog+night+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.009565236640055996
+    },
+    "fog+noise+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.005721575865945705
+    },
+    "night+noise+blur": {
+      "auroc": 1.0,
+      "mean_dist": 0.00887844873293615
+    }
+  },
+  "all_four": {
+    "auroc": 1.0,
+    "mean_dist": 0.00869817319661983
+  },
+  "compound_geometry": {
+    "fog+night": {
+      "dist_to_c1": 0.010252579376364635,
+      "dist_to_c2": 0.00012565137047446662,
+      "dist_to_clean": 0.009106725604718013,
+      "closer_to": "night"
+    },
+    "fog+noise": {
+      "dist_to_c1": 0.0006542895700213825,
+      "dist_to_c2": 0.0021073262955133786,
+      "dist_to_clean": 0.0016114328824787584,
+      "closer_to": "fog"
+    },
+    "fog+blur": {
+      "dist_to_c1": 0.0025424072124232257,
+      "dist_to_c2": 0.005001205191275471,
+      "dist_to_clean": 0.005793886431192119,
+      "closer_to": "fog"
+    },
+    "night+noise": {
+      "dist_to_c1": 0.005794102183881744,
+      "dist_to_c2": 0.003874000910595288,
+      "dist_to_clean": 0.00374735484548816,
+      "closer_to": "noise"
+    },
+    "night+blur": {
+      "dist_to_c1": 0.00028179275279913705,
+      "dist_to_c2": 0.007000560749940798,
+      "dist_to_clean": 0.009807538877076282,
+      "closer_to": "night"
+    },
+    "noise+blur": {
+      "dist_to_c1": 0.007473255486905761,
+      "dist_to_c2": 0.00039427742533326704,
+      "dist_to_clean": 0.0069476794348448225,
+      "closer_to": "blur"
+    }
+  },
+  "order_effects": {
+    "fog+night": {
+      "forward_mean": 0.009039391573101786,
+      "reverse_mean": 0.005717582890404071,
+      "order_difference": 0.0033218086826977133,
+      "commutative": false
+    },
+    "fog+noise": {
+      "forward_mean": 0.0015564920362268753,
+      "reverse_mean": 0.0028539638122259347,
+      "order_difference": 0.0012974717759990594,
+      "commutative": false
+    },
+    "fog+blur": {
+      "forward_mean": 0.005727571155340438,
+      "reverse_mean": 0.005779482436235073,
+      "order_difference": 8.566320295027019e-05,
+      "commutative": true
+    },
+    "night+noise": {
+      "forward_mean": 0.0036871591821425963,
+      "reverse_mean": 0.008340711280012968,
+      "order_difference": 0.004653552097870372,
+      "commutative": false
+    },
+    "night+blur": {
+      "forward_mean": 0.009750347964241568,
+      "reverse_mean": 0.00980452092399271,
+      "order_difference": 5.933521349690274e-05,
+      "commutative": true
+    },
+    "noise+blur": {
+      "forward_mean": 0.006896720564651538,
+      "reverse_mean": 7.377788580646971e-05,
+      "order_difference": 0.006822942678845067,
+      "commutative": false
+    }
+  }
+}
