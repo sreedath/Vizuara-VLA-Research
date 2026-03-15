@@ -7829,4 +7829,25 @@ We examine how attention patterns (32 layers $\times$ 32 heads) change under cor
 
 \textbf{Finding 1086}: \textbf{The attention sensitivity hierarchy (night $>$ blur $>$ fog $>$ noise) matches the hidden state hierarchy.} Consistency across two independent signal types validates that corruption severity ordering is a genuine model property, not a measurement artifact.
 
+\subsection{Experiment 398: Embedding Space Clustering Analysis}
+
+We examine whether corruption types form distinct clusters in embedding space using k-means, DBSCAN, and pairwise linear separability. We extract 85 embeddings (5 scenes $\times$ clean + 4 corruptions $\times$ 4 severities) and project to PCA subspaces.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig407_clustering.png}
+\caption{Experiment 398: Embedding space clustering. (A) K-means binary fails at 35\% (worse than random) because PCA captures inter-scene, not corruption variance. (B) Blur best separated (ratio=4.65), noise worst (0.18). (C) 5/6 corruption pairs perfectly linearly separable. (D) All severity gradients are strictly monotonic. (E) DBSCAN finds 3--6 natural clusters.}
+\label{fig:clustering}
+\end{figure}
+
+\textbf{Finding 1087}: \textbf{K-means on PCA projections achieves only 35.3\% accuracy for clean/corrupt separation---worse than random.} This definitively confirms that PCA captures inter-scene variance, not corruption variance. Standard unsupervised clustering on PCA fundamentally cannot replace the calibrated centroid-based detector.
+
+\textbf{Finding 1088}: \textbf{DBSCAN discovers 3--6 natural clusters with good silhouette scores (best: 0.684).} The natural structure corresponds to scene groupings and major corruption types, not the clean/corrupt binary boundary.
+
+\textbf{Finding 1089}: \textbf{5/6 corruption type pairs are 100\% linearly separable.} Fog-night, fog-noise, fog-blur, night-blur, and noise-blur all achieve perfect separation. Only night-noise falls to 87.5\%. Corruption types occupy distinct, characterizable regions of embedding space.
+
+\textbf{Finding 1090}: \textbf{ALL severity gradients are strictly monotonic across all 4 corruptions.} Cosine distance increases smoothly from severity 0.3 to 1.0, demonstrating that the embedding space encodes corruption severity as a continuous variable, not just a binary presence/absence signal.
+
+\textbf{Finding 1091}: \textbf{The clean cluster is extremely tight (max spread $= 0.0001$) while blur achieves the best separation ratio (4.65$\times$).} The detector succeeds via per-scene calibration that exploits this zero-variance property---something global clustering fundamentally cannot access.
+
 \end{document}

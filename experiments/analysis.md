@@ -16464,3 +16464,21 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 833**: Night corruption causes the largest attention entropy decrease (-0.595 at L31), indicating attention becomes MORE focused under extreme darkness. This is counterintuitive—one might expect degraded input to cause diffuse attention, but the model concentrates on whatever signal remains.
 
 **Finding 834**: The attention sensitivity hierarchy matches the hidden state hierarchy: night > blur > fog > noise. This consistency across two independent signal types (attention patterns vs hidden state embeddings) validates that the corruption severity ordering is a genuine property of the model, not an artifact of the measurement method.
+
+---
+
+## Experiment 398: Embedding Space Clustering Analysis
+
+**Objective**: Examine whether corruption types form distinct clusters in embedding space and whether unsupervised clustering can separate clean from corrupted.
+
+**Method**: Extract embeddings from 5 scenes × (clean + 4 corruptions × 4 severities) = 85 total. Apply k-means, DBSCAN, and pairwise linear separability analysis on PCA projections.
+
+**Finding 835**: K-means binary clustering on PCA projections achieves only 35.3% accuracy — WORSE than random chance. This definitively confirms that PCA captures inter-scene variance, not corruption variance. Standard clustering on PCA projections fundamentally cannot separate clean from corrupted.
+
+**Finding 836**: DBSCAN discovers 3-6 natural clusters in the embedding space with good silhouette scores (best: 0.684 at 2D, ε=0.3). The natural cluster structure corresponds to scene groupings and major corruption types, not the clean/corrupt boundary.
+
+**Finding 837**: 5 out of 6 corruption type pairs are 100% linearly separable (fog-night, fog-noise, fog-blur, night-blur, noise-blur). The exception is night-noise at 87.5%. Corruption types occupy DISTINCT regions of embedding space — they are not simply "away from clean" but in specific corruption-characteristic directions.
+
+**Finding 838**: ALL 4 corruption types show strictly monotonic severity gradients. As severity increases from 0.3 to 1.0, cosine distance from clean centroid increases smoothly: fog (0.0004→0.003), night (0.0007→0.008), noise (0.00007→0.0002), blur (0.004→0.007). The embedding space encodes not just corruption presence but corruption severity as a continuous variable.
+
+**Finding 839**: Blur has the best clean-corrupt separation ratio (4.65) while noise has the worst (0.18). The clean cluster is extremely tight (max spread = 0.0001), confirming that the detector's per-scene centroid approach succeeds precisely because it exploits this zero-variance property that global clustering cannot.
