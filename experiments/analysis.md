@@ -16554,3 +16554,21 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 858**: Night corruption INCREASES entropy (2.46→3.75, +52%) and DECREASES confidence (37%→14%). This is the "safe" failure pattern — the model becomes appropriately uncertain when visual information degrades. In contrast to fog's dangerous confidence, night's uncertainty could trigger a safe fallback.
 
 **Finding 859**: Entropy-distance correlation is 0.515 (moderate positive). Entropy alone is INSUFFICIENT for reliable detection — it fails catastrophically for fog (low entropy despite high corruption). This validates our embedding-based approach: cosine distance captures information that entropy misses.
+
+---
+
+## Experiment 403: Adversarial Perturbation Detection
+
+**Objective**: Test whether the detector can identify adversarial-like perturbations (small, targeted pixel changes vs global corruptions).
+
+**Method**: Apply L-inf uniform noise (ε=1-128), single pixel attacks (1-500 pixels), patch perturbations (4×4 to 112×112), and frequency-domain attacks. Compare detection rates against perceptible corruptions.
+
+**Finding 860**: L-inf uniform noise is UNDETECTED until ε=128/255 (50% of dynamic range). At ε=64, AUROC=0.56 (random). Only massive uniform perturbations that destroy half the image content are detectable. Traditional adversarial ε budgets (1-8/255) are completely invisible.
+
+**Finding 861**: Single pixel attacks FAIL at ALL scales (1-500 pixels, AUROC≈0.5). Even 500 modified pixels (1% of the image) produce zero detectable embedding shift. This confirms the dead pixel result from Experiment 399 and establishes that sparse, local perturbations are fundamentally invisible to the detector.
+
+**Finding 862**: Patch perturbations FAIL even at 112×112 (25% of image area, AUROC=0.52). A quarter of the image can be replaced with random noise without shifting the embedding detectably. The vision transformer's attention mechanism averages out local perturbations.
+
+**Finding 863**: Low-frequency perturbations (smooth gradients) achieve AUROC=1.0 with 5/5 detection, while high-frequency perturbations (checkerboard at ±0.2) achieve only AUROC=0.80 with 0/5 detected. The detector operates as a LOW-FREQUENCY FILTER — it responds to global illumination/contrast changes but not texture changes.
+
+**Finding 864**: The detector's frequency selectivity aligns with the driving domain threat model. Weather/lighting corruptions (fog, night, rain) are inherently low-frequency, global changes — exactly what the detector captures. Adversarial pixel perturbations are high-frequency and local — outside the detector's sensitivity band but also outside the natural driving corruption distribution.
