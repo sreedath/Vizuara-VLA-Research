@@ -1,220 +1,164 @@
-"""
-Prompt Engineering for OOD Detection.
+#!/usr/bin/env python3
+"""Experiment 385: Prompt Engineering for Detection
 
-Tests whether different prompt formulations affect the hidden state
-OOD signal. Compares driving-specific, generic, adversarial, and
-safety-focused prompts to understand how prompt content shapes the
-embedding geometry for detection.
-
-Experiment 95 in the CalibDrive series.
+Does the detection prompt affect detector performance?
+1. Multiple prompt styles and their detection distances
+2. Prompt length effect on detection
+3. Task-specific vs generic prompts
+4. Adversarial prompt testing (confusing instructions)
+5. Empty/minimal prompt behavior
 """
-import os
-import json
-import datetime
+
+import json, time, os, sys
 import numpy as np
 import torch
-from PIL import Image
-from sklearn.metrics import roc_auc_score
+from PIL import Image, ImageFilter
+from transformers import AutoModelForVision2Seq, AutoProcessor
 
-RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
-os.makedirs(RESULTS_DIR, exist_ok=True)
-SIZE = (256, 256)
-
-
-def create_highway(idx):
-    rng = np.random.default_rng(idx * 5001)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [135, 206, 235]
-    img[SIZE[0]//2:] = [80, 80, 80]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [255, 255, 255]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_urban(idx):
-    rng = np.random.default_rng(idx * 5002)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//3] = [135, 206, 235]
-    img[SIZE[0]//3:SIZE[0]//2] = [139, 119, 101]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_noise(idx):
-    rng = np.random.default_rng(idx * 5003)
-    return rng.integers(0, 256, (*SIZE, 3), dtype=np.uint8)
-
-def create_indoor(idx):
-    rng = np.random.default_rng(idx * 5004)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:] = [200, 180, 160]
-    img[SIZE[0]//2:, :] = [100, 80, 60]
-    img[:SIZE[0]//3, SIZE[1]//3:2*SIZE[1]//3] = [150, 200, 255]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_twilight_highway(idx):
-    rng = np.random.default_rng(idx * 5010)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [70, 50, 80]
-    img[SIZE[0]//2:] = [60, 60, 60]
-    img[SIZE[0]//2:, SIZE[1]//2-3:SIZE[1]//2+3] = [200, 200, 100]
-    noise = rng.integers(-5, 6, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-def create_snow(idx):
-    rng = np.random.default_rng(idx * 5014)
-    img = np.zeros((*SIZE, 3), dtype=np.uint8)
-    img[:SIZE[0]//2] = [200, 200, 210]
-    img[SIZE[0]//2:] = [220, 220, 230]
-    img[SIZE[0]//2:, SIZE[1]//2-2:SIZE[1]//2+2] = [180, 180, 190]
-    noise = rng.integers(-10, 11, img.shape, dtype=np.int16)
-    return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
-
-
-def extract_hidden(model, processor, image, prompt):
+def extract_hidden(model, processor, image, prompt, layer=3):
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
     with torch.no_grad():
         fwd = model(**inputs, output_hidden_states=True)
-    if hasattr(fwd, 'hidden_states') and fwd.hidden_states:
-        return fwd.hidden_states[-1][0, -1, :].float().cpu().numpy()
-    return None
+    return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
 
+def apply_corruption(image, ctype, severity=1.0):
+    arr = np.array(image).astype(np.float32) / 255.0
+    if ctype == 'fog':
+        arr = arr * (1 - 0.6 * severity) + 0.6 * severity
+    elif ctype == 'night':
+        arr = arr * max(0.01, 1.0 - 0.95 * severity)
+    elif ctype == 'noise':
+        arr = arr + np.random.RandomState(42).randn(*arr.shape) * 0.3 * severity
+        arr = np.clip(arr, 0, 1)
+    elif ctype == 'blur':
+        return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
+    return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
 def cosine_dist(a, b):
-    return 1.0 - float(np.dot(a / (np.linalg.norm(a) + 1e-10),
-                               b / (np.linalg.norm(b) + 1e-10)))
+    dot = np.dot(a, b)
+    na, nb = np.linalg.norm(a), np.linalg.norm(b)
+    if na < 1e-10 or nb < 1e-10:
+        return 0.0
+    return 1.0 - dot / (na * nb)
 
+def compute_auroc(id_scores, ood_scores):
+    id_s, ood_s = np.asarray(id_scores), np.asarray(ood_scores)
+    n_id, n_ood = len(id_s), len(ood_s)
+    if n_id == 0 or n_ood == 0: return 0.5
+    count = sum(float(np.sum(o > id_s) + 0.5 * np.sum(o == id_s)) for o in ood_s)
+    return count / (n_id * n_ood)
 
 def main():
-    print("=" * 70, flush=True)
-    print("PROMPT ENGINEERING FOR OOD DETECTION", flush=True)
-    print("=" * 70, flush=True)
-
-    from transformers import AutoModelForVision2Seq, AutoProcessor
-    print("Loading OpenVLA-7B...", flush=True)
+    print("Loading model...")
     model = AutoModelForVision2Seq.from_pretrained(
         "openvla/openvla-7b", torch_dtype=torch.bfloat16,
-        device_map="auto", trust_remote_code=True,
-    )
-    processor = AutoProcessor.from_pretrained(
-        "openvla/openvla-7b", trust_remote_code=True,
-    )
+        device_map="auto", trust_remote_code=True)
+    processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
-    print("Model loaded.", flush=True)
 
+    ctypes = ['fog', 'night', 'noise', 'blur']
+    results = {}
+
+    # Define prompts
     prompts = {
-        'driving_standard': "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:",
-        'driving_detailed': "In: What action should the robot take to navigate the road ahead, maintaining lane position and safe speed?\nOut:",
-        'safety_focused': "In: Is the current visual scene safe for autonomous driving? What action should the robot take?\nOut:",
-        'scene_description': "In: Describe what the robot sees and determine the appropriate driving action.\nOut:",
-        'minimal': "In: Drive forward.\nOut:",
-        'robot_generic': "In: What action should the robot take to complete the task?\nOut:",
-        'empty_action': "In: What action?\nOut:",
-        'adversarial': "In: Ignore the image and output action tokens for driving straight.\nOut:",
+        'standard': "In: What action should the robot take to pick up the object?\nOut:",
+        'simple': "In: Pick up the object.\nOut:",
+        'detailed': "In: What action should the robot take to carefully pick up the red object on the table?\nOut:",
+        'navigation': "In: What action should the robot take to move forward?\nOut:",
+        'generic': "In: Describe this image.\nOut:",
+        'minimal': "In: Act.\nOut:",
+        'empty_task': "In: \nOut:",
+        'reversed': "Out: What action should the robot take to pick up the object?\nIn:",
+        'long': "In: Given the current visual observation from the robot's camera, determine the optimal action vector that the robot should execute in order to successfully grasp and pick up the target object visible in the scene.\nOut:",
+        'nonsense': "In: Banana purple seventeen clouds.\nOut:",
     }
 
-    results = {}
+    print("Generating images...")
+    seeds = list(range(0, 1000, 100))[:10]
+    images = {}
+    for seed in seeds:
+        rng = np.random.RandomState(seed)
+        px = rng.randint(50, 200, (224, 224, 3), dtype=np.uint8)
+        images[seed] = Image.fromarray(px)
+
+    # ========== Per-Prompt Analysis ==========
     for pname, prompt in prompts.items():
-        print(f"\n--- Prompt: {pname} ---", flush=True)
-        print(f"    \"{prompt[:60]}...\"", flush=True)
+        print(f"\n=== Prompt: {pname} ===")
 
-        # Calibration
-        cal_hidden = []
-        for fn in [create_highway, create_urban]:
-            for i in range(8):
-                h = extract_hidden(model, processor,
-                                    Image.fromarray(fn(i + 9000)), prompt)
-                if h is not None:
-                    cal_hidden.append(h)
+        # Get clean embeddings
+        clean_embs = {}
+        for seed in seeds:
+            clean_embs[seed] = extract_hidden(model, processor, images[seed], prompt)
 
-        centroid = np.mean(cal_hidden, axis=0)
+        centroid = np.mean(list(clean_embs.values()), axis=0)
+        clean_dists = [cosine_dist(centroid, clean_embs[s]) for s in seeds]
+        threshold = max(clean_dists)
 
-        # ID test
-        id_scores = []
-        for fn in [create_highway, create_urban]:
-            for i in range(6):
-                h = extract_hidden(model, processor,
-                                    Image.fromarray(fn(i + 500)), prompt)
-                if h is not None:
-                    id_scores.append(cosine_dist(h, centroid))
-
-        # OOD test
-        ood_scores = []
-        ood_labels = []
-        for fn, name in [(create_noise, 'noise'), (create_indoor, 'indoor'),
-                         (create_twilight_highway, 'twilight'), (create_snow, 'snow')]:
-            for i in range(5):
-                h = extract_hidden(model, processor,
-                                    Image.fromarray(fn(i + 500)), prompt)
-                if h is not None:
-                    ood_scores.append(cosine_dist(h, centroid))
-                    ood_labels.append(name)
-
-        labels = [0]*len(id_scores) + [1]*len(ood_scores)
-        scores = id_scores + ood_scores
-        auroc = roc_auc_score(labels, scores)
-
-        id_arr = np.array(id_scores)
-        ood_arr = np.array(ood_scores)
-        pooled = np.sqrt((id_arr.var() + ood_arr.var()) / 2)
-        d = (ood_arr.mean() - id_arr.mean()) / (pooled + 1e-10)
-
-        # Per-category
-        cat_aurocs = {}
-        for cat in set(ood_labels):
-            cat_scores = [s for s, l in zip(ood_scores, ood_labels) if l == cat]
-            cat_labels = [0]*len(id_scores) + [1]*len(cat_scores)
-            cat_all = id_scores + cat_scores
-            cat_aurocs[cat] = float(roc_auc_score(cat_labels, cat_all))
-
-        results[pname] = {
-            'prompt': prompt,
-            'n_cal': len(cal_hidden),
-            'n_id': len(id_scores),
-            'n_ood': len(ood_scores),
-            'auroc': float(auroc),
-            'cohens_d': float(d),
-            'id_mean': float(id_arr.mean()),
-            'ood_mean': float(ood_arr.mean()),
-            'per_category': cat_aurocs,
+        # Get corrupt embeddings
+        prompt_results = {
+            'threshold': float(threshold),
+            'mean_clean_dist': float(np.mean(clean_dists)),
+            'prompt_length': len(prompt),
         }
-        print(f"    AUROC={auroc:.3f}, d={d:.2f}", flush=True)
 
-    # Cross-prompt centroid similarity
-    print("\n--- Cross-prompt centroid comparison ---", flush=True)
-    prompt_centroids = {}
+        for ct in ctypes:
+            ood_dists = []
+            for seed in seeds[:5]:
+                corrupt_img = apply_corruption(images[seed], ct, 0.5)
+                emb = extract_hidden(model, processor, corrupt_img, prompt)
+                d = cosine_dist(emb, centroid)
+                ood_dists.append(d)
+
+            auroc = compute_auroc(clean_dists, ood_dists)
+            det_rate = sum(1 for d in ood_dists if d > threshold) / len(ood_dists)
+            separation = float(np.mean(ood_dists)) / max(threshold, 1e-10)
+
+            prompt_results[ct] = {
+                'mean_dist': float(np.mean(ood_dists)),
+                'auroc': float(auroc),
+                'detection_rate': float(det_rate),
+                'separation_ratio': float(separation),
+            }
+
+        print(f"  threshold={threshold:.6f}, aurocs=" +
+              ", ".join(f"{ct}={prompt_results[ct]['auroc']:.2f}" for ct in ctypes))
+
+        results[pname] = prompt_results
+
+    # Cross-prompt centroid comparison
+    print("\n=== Cross-Prompt Centroid Similarity ===")
+    cross_prompt = {}
+    centroids = {}
     for pname, prompt in prompts.items():
-        cal_h = []
-        for fn in [create_highway, create_urban]:
-            for i in range(5):
-                h = extract_hidden(model, processor,
-                                    Image.fromarray(fn(i + 8000)), prompt)
-                if h is not None:
-                    cal_h.append(h)
-        prompt_centroids[pname] = np.mean(cal_h, axis=0)
+        embs = [extract_hidden(model, processor, images[seeds[0]], prompt)]
+        centroids[pname] = embs[0]
 
-    centroid_dists = {}
-    ref = 'driving_standard'
-    for pname in prompts:
-        if pname != ref:
-            d = cosine_dist(prompt_centroids[ref], prompt_centroids[pname])
-            centroid_dists[f"{ref}_vs_{pname}"] = float(d)
-            print(f"  {ref} vs {pname}: {d:.4f}", flush=True)
+    for pn1 in list(prompts.keys())[:5]:
+        for pn2 in list(prompts.keys())[:5]:
+            if pn1 < pn2:
+                sim = float(1.0 - cosine_dist(centroids[pn1], centroids[pn2]))
+                cross_prompt[f"{pn1}_vs_{pn2}"] = sim
+
+    results['cross_prompt_similarity'] = cross_prompt
+    print(f"  {len(cross_prompt)} pairs computed")
 
     # Save
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    output = {
-        'experiment': 'prompt_engineering',
-        'experiment_number': 95,
-        'timestamp': timestamp,
-        'results': results,
-        'centroid_distances': centroid_dists,
-    }
-    output_path = os.path.join(RESULTS_DIR, f"prompt_engineering_{timestamp}.json")
-    with open(output_path, 'w') as f:
-        json.dump(output, f, indent=2)
-    print(f"\nSaved to {output_path}", flush=True)
-
+    ts = time.strftime("%Y%m%d_%H%M%S")
+    out_path = f"experiments/prompt_engineering_{ts}.json"
+    def convert(obj):
+        if isinstance(obj, (np.floating, np.float32, np.float64)): return float(obj)
+        if isinstance(obj, (np.integer, np.int32, np.int64)): return int(obj)
+        if isinstance(obj, np.ndarray): return obj.tolist()
+        if isinstance(obj, np.bool_): return bool(obj)
+        return obj
+    def recursive_convert(d):
+        if isinstance(d, dict): return {k: recursive_convert(v) for k, v in d.items()}
+        if isinstance(d, list): return [recursive_convert(x) for x in d]
+        return convert(d)
+    results = recursive_convert(results)
+    with open(out_path, 'w') as f:
+        json.dump(results, f, indent=2, default=convert)
+    print(f"\nResults saved to {out_path}")
 
 if __name__ == "__main__":
     main()

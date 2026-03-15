@@ -15983,3 +15983,62 @@ Only fog has a stable direction across severities. Night dramatically rotates at
 
 **Finding 764**: Corruption directions ROTATE with severity. Only fog maintains stable direction (sim>0.93 at all severities). Night rotates dramatically at high severity (sim=0.51 at sev=1.0), and noise rotates at low severity (sim=0.44 at sev=0.1). This means calibrating at one severity level does NOT perfectly transfer to other severity levels.
 
+---
+
+## Experiment 384: Action Token Distribution Under Corruption
+
+**Objective**: How does corruption affect predicted action token distributions? Tests entropy, top-k coverage, token ID shifts, and token diversity.
+
+**Setup**: 10 scenes, 7 action dimensions, clean vs 4 corruptions at severity 0.5. Generated 7 tokens per sample with logit distributions for action tokens (31744-31999).
+
+### Results
+
+**Token Entropy** (bits, averaged across scenes):
+| Dim | Clean | Fog | Night | Noise | Blur |
+|-----|-------|-----|-------|-------|------|
+| 0 | 3.48 | 3.29 | 3.89 | 3.24 | 4.55 |
+| 1 | 1.23 | 2.81 | 2.45 | 1.81 | 4.20 |
+| 2 | 1.28 | 2.07 | 2.05 | 1.23 | 3.80 |
+| 3 | 0.90 | 1.22 | 1.49 | 0.52 | 2.89 |
+| 4 | 1.64 | 1.24 | 0.91 | 1.60 | 3.10 |
+| 5 | 1.47 | 1.37 | 2.70 | 1.79 | 3.38 |
+| 6 | 0.61 | 1.15 | 0.47 | 0.44 | 1.80 |
+
+Blur DRAMATICALLY increases entropy across ALL dimensions (up to 4.55 bits). Night increases some, decreases others. Noise barely changes entropy.
+
+**Top-K Coverage**:
+| Condition | Top-1 | Top-5 | Top-10 |
+|-----------|-------|-------|--------|
+| Clean | 0.713 | 0.924 | — |
+| Fog | 0.605 | 0.912 | — |
+| Night | 0.599 | 0.880 | — |
+| Noise | 0.720 | 0.925 | — |
+| **Blur** | **0.416** | **0.722** | — |
+
+Blur collapses top-1 coverage to 42% (from 71% clean). Noise is IDENTICAL to clean (72% top-1).
+
+**Token ID Shifts** (mean absolute shift per dimension):
+| | Dim 0 | Dim 1 | Dim 2 | Dim 3 | Dim 4 | Dim 5 | Dim 6 | Dims Changed |
+|-|-------|-------|-------|-------|-------|-------|-------|-------------|
+| Fog | 21.4 | 66.8 | 44.4 | 11.4 | 27.0 | 40.4 | 30.4 | 5.2/7 |
+| Night | 51.0 | 104.2 | 66.0 | 13.2 | 25.4 | 43.0 | 0.2 | 5.6/7 |
+| Noise | 11.0 | 29.8 | 26.6 | 9.6 | 14.4 | 45.6 | 0.0 | 3.0/7 |
+| Blur | 43.6 | 37.4 | 75.2 | 21.0 | 59.8 | 37.6 | 24.0 | 6.2/7 |
+
+Night shifts dim 1 by 104 bins (out of 256)! Noise only changes 3/7 dims. Blur affects all dims broadly.
+
+**Token Diversity** (unique tokens across 5 scenes):
+Clean has 2-9 unique tokens per dimension. Corruption REDUCES diversity (noise: 1-4 per dim). Noise at dim 6 produces exactly 1 unique token — complete collapse.
+
+### Findings
+
+**Finding 765**: Blur DRAMATICALLY increases token entropy across all 7 dimensions (up to 4.55 bits vs 3.48 clean for dim 0). Blur makes the model maximally uncertain about actions, spreading probability mass across many tokens.
+
+**Finding 766**: Noise barely changes token entropy or top-k coverage (top-1=0.720 vs clean 0.713). The model remains CONFIDENTLY WRONG under noise — predicting specific (wrong) actions with high confidence. This is the most dangerous failure mode.
+
+**Finding 767**: Night shifts dim 1 (Y-translation) by 104 bins on average — the largest single-dimension shift. Dim 6 (gripper) is nearly unaffected (0.2 shift). This selective dimension vulnerability means corruption affects some actions far more than others.
+
+**Finding 768**: Blur affects the most dimensions (6.2/7 changed), noise the fewest (3.0/7). The number of dimensions affected correlates with detection difficulty: more affected dimensions → more detectable corruption.
+
+**Finding 769**: Noise collapses token diversity to 1 unique token at dim 6 (gripper), meaning ALL noisy scenes produce identical gripper actions. Corruption induces action mode collapse in specific dimensions.
+

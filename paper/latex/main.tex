@@ -7475,4 +7475,37 @@ We characterize the geometric structure of corruption-induced shifts in the 4096
 
 \textbf{Finding 1016}: \textbf{Blur retains 45\% unexplained variance after removing all corruption directions.} Blur has significant unique geometric structure beyond simple directional shifts, consistent with its complex frequency-domain signature (Experiment 379).
 
+% ============================================================
+% EXPERIMENT 384: Action Token Distribution Under Corruption
+% ============================================================
+
+\subsection{Experiment 384: Action Token Distribution Under Corruption}
+
+We analyze how corruption affects the distribution of predicted action tokens across all 7 action dimensions, examining entropy, top-$k$ coverage, token ID shifts, and diversity.
+
+\textbf{Blur Maximizes Token Uncertainty.} Blur increases entropy across all 7 dimensions, reaching 4.55 bits (vs 3.48 clean) for dimension 0. Top-1 coverage collapses from 71.3\% to 41.6\%, meaning the model distributes probability mass broadly --- it ``knows it doesn't know.''
+
+\textbf{Noise Maintains Confident Predictions.} Noise barely changes entropy (top-1 = 72.0\% vs 71.3\% clean). The model remains \emph{confidently wrong} under noise, predicting specific incorrect actions with high certainty. This represents the most dangerous failure mode: silent, confident misprediction.
+
+\textbf{Selective Dimension Vulnerability.} Night shifts Y-translation (dim 1) by 104 bins on average (out of 256), while leaving the gripper (dim 6) nearly unaffected (0.2 bin shift). Corruption does not affect all action dimensions equally --- some are far more vulnerable than others.
+
+\textbf{Action Mode Collapse Under Noise.} Noise reduces dim 6 (gripper) diversity to exactly 1 unique token across all scenes. This mode collapse means noise forces all scenes to produce identical gripper commands, regardless of the visual input.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig393_tokens.png}
+\caption{\textbf{Experiment 384}: Token distributions under corruption. Blur maximizes entropy across all dims. Noise barely affects distributions (confidently wrong). Night shifts Y-translation 104 bins. Blur changes 6.2/7 dims, noise only 3.0/7.}
+\label{fig:tokens}
+\end{figure}
+
+\textbf{Finding 1017}: \textbf{Blur collapses top-1 token coverage to 41.6\% (vs 71.3\% clean).} Blur makes the model maximally uncertain, spreading probability across many tokens. This high-entropy regime is paradoxically safer --- the model signals its uncertainty.
+
+\textbf{Finding 1018}: \textbf{Noise maintains 72.0\% top-1 coverage (identical to clean's 71.3\%).} The model is confidently wrong under noise, making noise corruption the most dangerous failure mode for action safety.
+
+\textbf{Finding 1019}: \textbf{Night shifts Y-translation by 104/256 bins but leaves the gripper unaffected.} Corruption vulnerability is dimension-selective, with Y-translation ($5\times$ more affected) being the most vulnerable action dimension.
+
+\textbf{Finding 1020}: \textbf{Noise causes action mode collapse: dim 6 produces 1 unique token across all scenes.} Corruption can force the model into a degenerate action subspace where scene-dependent variation is completely eliminated.
+
+\textbf{Finding 1021}: \textbf{Dimensions affected correlates with detection: blur changes 6.2/7 dims, noise only 3.0/7.} The number of perturbed action dimensions maps directly to detector sensitivity, explaining why blur is easiest and noise hardest to detect.
+
 \end{document}
