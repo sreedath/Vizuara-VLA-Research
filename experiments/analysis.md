@@ -14956,3 +14956,58 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 
 **Finding 659**: Night causes the highest mean action deviation (0.359) despite not having the largest embedding distance, suggesting the action head amplifies night corruption disproportionately.
 
+
+## Experiment 363: Attention Pattern Analysis Under Corruption
+
+**Script**: `scripts/real_vla_attention_analysis.py`
+**Result**: `experiments/attention_analysis_20260315_153049.json`
+**Figure**: `figures/fig372_attention.png`
+
+### Key Results
+
+**Layer-wise Entropy Change (most affected layer)**:
+| Corruption | Most Affected Layer | Entropy Delta |
+|-----------|-------------------|---------------|
+| Fog | Layer 25 | -0.160 bits |
+| Night | Layer 23 | -0.253 bits |
+| Noise | Layer 30 | +0.096 bits |
+| Blur | Layer 27 | +0.509 bits |
+
+**Per-Head Sensitivity (Jensen-Shannon Divergence)**:
+| Corruption | Mean JSD | Max JSD | Top Head |
+|-----------|---------|---------|----------|
+| Fog | 0.0115 | 0.111 | L20_H8 |
+| Night | 0.0238 | 0.287 | L16_H9 |
+| Noise | 0.0322 | 0.530 | L28_H25 |
+| Blur | 0.0750 | 0.582 | L28_H25 |
+
+**Attention Concentration (Top-5 Mass Change)**:
+- Fog/Night: slight increase (+0.003, +0.004) — attention concentrates more
+- Noise/Blur: slight decrease (-0.001, -0.006) — attention disperses
+
+**Severity vs Mean JSD at [0.05, 0.1, 0.5, 1.0]**:
+- Fog: [0.000165, 0.000497, 0.0116, 0.0299]
+- Night: [0.000330, 0.000959, 0.0228, 0.0667]
+- Noise: [0.001232, 0.005366, 0.0326, 0.0371]
+- Blur: [0.008176, 0.031406, 0.0787, 0.0782]
+
+**Early vs Late Layer Sensitivity**:
+| Corruption | Early (L0-15) | Late (L16-31) | Ratio |
+|-----------|--------------|--------------|-------|
+| Fog | 0.0043 | 0.0187 | 4.3x |
+| Night | 0.0102 | 0.0374 | 3.7x |
+| Noise | 0.0166 | 0.0478 | 2.9x |
+| Blur | 0.0382 | 0.1119 | 2.9x |
+
+### Findings
+
+**Finding 660**: Late layers (16-31) are 2.9-4.3x more sensitive to corruption than early layers (0-15) as measured by attention JSD. Fog shows the largest early/late ratio (4.3x), suggesting fog primarily disrupts high-level semantic processing rather than low-level feature extraction.
+
+**Finding 661**: Head L28_H25 is the single most corruption-sensitive head across both noise (JSD=0.530) and blur (JSD=0.582), suggesting a specialized "visual integrity" head that disproportionately responds to input degradation.
+
+**Finding 662**: Blur causes the largest attention disruption (mean JSD=0.075, 6.5x fog's 0.012), consistent with blur's highest Lipschitz constant and earliest action degradation. Blur fundamentally reshapes how the model distributes attention.
+
+**Finding 663**: Fog and night CONCENTRATE attention (top-5 mass increases by +0.003, +0.004), while noise and blur DISPERSE it (-0.001, -0.006). Brightness corruptions sharpen focus; spatial corruptions scatter it.
+
+**Finding 664**: Attention disruption saturates for noise and blur at high severity: noise JSD increases only 14% from sev=0.5 to 1.0, blur actually DECREASES slightly. The attention mechanism has a finite response range that caps disruption.
+

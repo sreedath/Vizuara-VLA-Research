@@ -6889,4 +6889,25 @@ We quantify how corruptions affect the model's actual action outputs, measuring 
 
 \textbf{Finding 911}: \textbf{Night causes the highest mean action deviation (0.359) despite moderate embedding distance.} The action head amplifies night corruption disproportionately, suggesting non-uniform sensitivity in the model's action decoding pathway.
 
+\subsection{Experiment 363: Attention Pattern Analysis Under Corruption}
+
+We investigate how visual corruptions alter the model's internal attention distributions, analyzing entropy changes, per-head sensitivity via Jensen-Shannon divergence (JSD), attention concentration shifts, and the early-versus-late layer sensitivity profile.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig372_attention.png}
+\caption{Attention pattern analysis under corruption. Top-left: layer-wise entropy change shows fog/night decrease entropy (concentrate) while blur increases it (disperse). Top-middle: top-5 most sensitive heads per corruption. Top-right: attention concentration shift. Bottom-left: severity-dependent JSD shows blur saturates. Bottom-middle: late layers are 2.9--4.3$\times$ more sensitive than early layers.}
+\label{fig:attention}
+\end{figure}
+
+\textbf{Finding 912}: \textbf{Late layers (16--31) are 2.9--4.3$\times$ more sensitive to corruption than early layers (0--15).} As measured by attention JSD, fog shows the largest asymmetry (4.3$\times$), indicating it primarily disrupts high-level semantic processing rather than low-level feature extraction.
+
+\textbf{Finding 913}: \textbf{Head L28\_H25 is the single most corruption-sensitive head} across both noise (JSD=0.530) and blur (JSD=0.582). This suggests a specialized ``visual integrity'' head that disproportionately responds to input degradation --- a potential single-head corruption detector.
+
+\textbf{Finding 914}: \textbf{Blur causes the largest attention disruption (mean JSD=0.075, 6.5$\times$ fog's 0.012).} This is consistent with blur's highest Lipschitz constant and earliest action degradation, confirming that blur fundamentally reshapes how the model distributes attention across the input sequence.
+
+\textbf{Finding 915}: \textbf{Fog and night concentrate attention while noise and blur disperse it.} Top-5 attention mass increases by +0.003/+0.004 under fog/night but decreases by $-0.001$/$-0.006$ under noise/blur. Brightness corruptions sharpen focus; spatial corruptions scatter it.
+
+\textbf{Finding 916}: \textbf{Attention disruption saturates at high severity.} Noise JSD increases only 14\% from severity 0.5 to 1.0; blur JSD actually \emph{decreases} slightly. The attention mechanism has a finite response range that caps corruption-induced disruption, unlike the embedding distance which grows monotonically.
+
 \end{document}
