@@ -6233,4 +6233,27 @@ We probe which specific image features drive the OOD embedding signal by isolati
 
 \textbf{Finding 783}: \textbf{Corruption directions are $>$87\% consistent across scenes.} The shift vectors point in nearly identical directions regardless of scene: night=99.4\%, fog=98.8\%, blur=92.7\%, noise=87.2\%. This scene-invariant directionality is what enables the corruption-type identification results in Experiment~331.
 
+%% ============================================================
+\subsection{Experiment 333: Comprehensive Layer Profiling}
+\label{sec:exp333}
+
+We profile detection performance across 14 layers (L0--L32) to characterize signal amplification, cross-scene consistency, and the optimal layer selection strategy.
+
+\textbf{Setup.} We extract embeddings at layers \{0, 1, 2, 3, 4, 5, 8, 12, 16, 20, 24, 28, 31, 32\} for 2 scenes, each under 4 corruptions at 3 severities. We compute per-layer AUROC, signal amplification, direction consistency, and norm profiles.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig342_layers.png}
+\caption{\textbf{Figure~342: Comprehensive layer profiling.} (A)~L1--L5 achieve best cross-scene AUROC (0.917); deep layers fail. (B)~Signal amplification 124--1483$\times$ from L1 to L32 with characteristic L32 spike. (C)~Direction consistency degrades from 93\% (L1--L5) to 42\% (L31--L32). (D)~Clean cross-scene distance overwhelms OOD signal at deep layers. (E)~L32 norm catastrophe: night $-71$\%, blur $-59$\%. (F)~Two uncorrelated processing regimes.}
+\label{fig:layers}
+\end{figure}
+
+\textbf{Finding 784}: \textbf{Early layers (L1--L5) achieve best cross-scene AUROC (0.917); deep layers fail (0.5--0.58).} Deep layers develop scene-specific representations with cross-scene distances ($d=0.03$--$0.17$) that overwhelm corruption signal. At L1, cross-scene distance is only $2 \times 10^{-5}$, preserving the corruption signal's discriminability.
+
+\textbf{Finding 785}: \textbf{Two uncorrelated processing regimes: early (L1--L8) and deep (L16--L32).} Shift vectors between early and deep layers have $\cos \theta \approx 0$ (L1--L32: $-0.02$). Within each regime, adjacent layers are correlated (L2--L3: 0.91, L31--L32: 0.95). The network transforms the corruption signal into an orthogonal representation by mid-depth.
+
+\textbf{Finding 786}: \textbf{L32 norm catastrophe: night $-71$\%, blur $-59$\%; hidden layers $<6$\%.} The output projection layer amplifies corruption into dramatic norm shifts. Night reduces the L32 embedding norm from 92.1 to 26.7 --- a collapse to 29\% of normal. This suggests the output layer is particularly vulnerable to luminance and spatial frequency corruption.
+
+\textbf{Finding 787}: \textbf{Direction consistency degrades monotonically from 93\% (L1--L5) to 42\% (L31--L32).} Corruption shifts become increasingly scene-specific through deeper layers. This gradient explains the optimal detection strategy: use early layers for cross-scene transfer, deep layers only with per-scene calibration.
+
 \end{document}

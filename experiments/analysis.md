@@ -13412,3 +13412,75 @@ Minimum detectable severity: Night=0.1%, Noise=0.1%, Fog=1%, Blur=2%.
 **Finding 530**: **Spatial structure is irrelevant: shuffling ALL pixels produces only 3% of fog's signal.** Completely destroying spatial layout (pixel shuffle) creates d=8.67e-5, while fog produces d=2.71e-3. The embedding captures statistical properties of the pixel distribution (mean, variance, color histogram), not spatial relationships.
 
 **Finding 531**: **Corruption directions are >87% consistent across scenes (night: 99.4%).** The embedding shift vector for each corruption type points in nearly the same direction regardless of scene content. Night is most directionally stable (0.994), noise least (0.872). This scene-invariant direction is what enables per-scene calibration to transfer.
+
+---
+
+## Experiment 333: Comprehensive Layer Profiling (Real OpenVLA-7B)
+
+**Date:** 2025-03-15
+**Script:** `scripts/real_vla_layer_comparison.py`
+**Results:** `experiments/layer_comparison_20260315_130229.json`
+**Figure:** `paper/latex/fig342_layers.png`
+
+Comprehensive analysis across 14 layers (L0-L32) covering AUROC, amplification, direction consistency, norms, and cross-scene behavior.
+
+### Per-Layer Detection AUROC (cross-scene)
+
+| Layer | AUROC | Fog | Night | Noise | Blur |
+|-------|-------|-----|-------|-------|------|
+| L0 | 0.500 | 0.5 | 0.5 | 0.5 | 0.5 |
+| L1-L5 | 0.917 | 1.0 | 1.0 | 0.67 | 1.0 |
+| L8 | 0.833 | 1.0 | 1.0 | 0.33 | 1.0 |
+| L12 | 0.667 | 0.67 | 0.67 | 0.33 | 1.0 |
+| L16+ | 0.5-0.58 | 0.33 | 0.67 | 0-0.33 | 1.0 |
+
+KEY: Early layers (L1-L5) are BEST for cross-scene detection. Deep layers fail because cross-scene distances grow to overwhelm corruption signal.
+
+### Signal Amplification
+
+L0 = zero signal (confirms vision encoder unchanged). Signal grows exponentially through layers:
+- Fog: L1=0.00098 → L32=0.326 (333×)
+- Night: L1=0.0052 → L32=0.694 (134×)
+- Blur: L1=0.0056 → L32=0.695 (124×)
+- Noise: L1=0.00012 → L32=0.178 (1483×)
+
+L32 shows characteristic 2.5× spike (output projection layer).
+
+### Cross-Scene Direction Consistency
+
+Direction consistency DECREASES through layers:
+- L1-L5: ~93% (near-universal)
+- L8: 89%
+- L12: 70%
+- L16: 66%
+- L24: 54%
+- L31-L32: ~42%
+
+CRITICAL: Early layers have scene-invariant corruption directions; deep layers develop scene-specific representations.
+
+### L32 Norm Catastrophe
+
+L32 (output layer) shows extreme norm changes:
+- Night: -71% (from 92.1 to 26.7)
+- Blur: -59% (from 92.1 to 37.4)
+- Fog: +10% (from 92.1 to 101.2)
+- Noise: +5% (from 92.1 to 96.5)
+
+Hidden layers (L1-L31): <6% norm changes.
+
+### Layer Shift Similarity
+
+Two distinct processing regimes:
+- Early (L1-L8): shifts correlated (L2-L3: 0.91, L3-L4: 0.85)
+- Deep (L16-L32): shifts correlated (L28-L31: 0.85, L31-L32: 0.95)
+- Cross-regime: UNCORRELATED (L1-L32: -0.02, L3-L32: -0.01)
+
+### Key Findings
+
+**Finding 532**: **Early layers (L1-L5) achieve best cross-scene detection (AUROC=0.917); deeper layers FAIL (0.5-0.58).** This is because deep layers develop scene-specific representations with cross-scene distances (d=0.03-0.17) that overwhelm the corruption signal (d=0.007-0.07 for weak corruptions). Layer 3's recommendation holds as optimal.
+
+**Finding 533**: **Two distinct processing regimes: early (L1-L8) and deep (L16-L32) with uncorrelated shift directions.** The corruption signal is TRANSFORMED through the network — L1 and L32 shift vectors have cos_sim ≈ -0.02 (orthogonal). The early regime captures universal corruption features; the deep regime develops scene-specific action-relevant representations.
+
+**Finding 534**: **L32 (output layer) shows norm catastrophe: night -71%, blur -59%.** While hidden layers maintain <6% norm changes, the output projection layer amplifies corruption into dramatic norm shifts — particularly for night and blur. Fog slightly increases norm (+10%), suggesting different mechanism.
+
+**Finding 535**: **Cross-scene direction consistency degrades monotonically: 93% at L1-L5, 42% at L31-L32.** Corruption shift vectors become increasingly scene-dependent through deeper layers. This explains why per-scene calibration is essential for deep layers but cross-scene transfer works at early layers.
