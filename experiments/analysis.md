@@ -8075,3 +8075,28 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 4. **Even tiny 64×64 images**: Perfect detection at this extremely low resolution demonstrates the detector operates on semantic content, not pixel-level detail.
 
 **Finding**: OOD detection is **completely resolution-invariant** at early layers. The VLA processor normalizes all inputs to the model's internal resolution (224×224), so the cosine distance detector works identically whether the camera produces 64×64 or 512×512 images. This makes the system deployable across diverse camera hardware without re-calibration for resolution.
+---
+
+### Finding 202: Per-Action-Dimension Analysis (Experiment 207)
+
+**Experiment**: Generate all 7 action tokens (dx, dy, dz, droll, dpitch, dyaw, gripper) for ID and OOD inputs and analyze per-dimension impact.
+
+**Mean Action Delta (|OOD - ID|) per Dimension**:
+| Dimension | Fog | Night | Blur | Noise |
+|-----------|-----|-------|------|-------|
+| dx | 0.13 | 0.20 | 0.32 | 0.38 |
+| dy | 0.16 | 0.88 | 0.45 | 0.29 |
+| dz | 0.22 | 0.47 | 0.42 | 0.53 |
+| droll | 0.39 | 0.45 | 0.25 | 0.38 |
+| dpitch | 0.48 | 0.36 | 0.38 | 0.61 |
+| dyaw | 0.24 | 0.52 | 0.39 | 0.17 |
+| gripper | 0.45 | 0.53 | 0.23 | 0.38 |
+
+**Key Findings**:
+1. **Night causes massive dy shift** (delta=0.88): The lateral dimension is most affected under night conditions. This would cause dangerous lateral drift in driving.
+2. **All 7 dimensions are affected**: No dimension is immune to OOD corruption. Mean deltas range from 0.13 to 0.88 on a [-1,1] scale.
+3. **Different corruptions affect different dimensions**: Fog hits dpitch/gripper, night hits dy/gripper, blur hits dz, noise hits dpitch/dz. The multi-dimensional impact pattern is corruption-specific.
+4. **Blur has highest Cohen's d for dz (1.41)**: The depth prediction is most consistently disrupted by blur — likely because blur removes depth cues.
+5. **Night has highest gripper effect (d=1.02)**: Night conditions consistently change the gripper prediction, suggesting the model confuses dark objects with grasp targets.
+
+**Finding**: OOD corruptions affect all 7 action dimensions, with corruption-specific patterns. Night causes dangerous lateral drift (dy delta=0.88), blur disrupts depth estimation (dz Cohen's d=1.41), and noise affects pitch (dpitch delta=0.61). The multi-dimensional nature of the impact reinforces the importance of OOD detection — a single corrupted observation can simultaneously corrupt all 7 action predictions, creating compounding safety risks.

@@ -3895,4 +3895,21 @@ We test whether detection works across different camera resolutions from 64$\tim
 \label{fig:resolution}
 \end{figure}
 
+\subsection{Per-Action-Dimension Impact}
+
+We analyze which of the 7 VLA action dimensions ($\Delta x, \Delta y, \Delta z$, roll, pitch, yaw, gripper) is most affected by OOD inputs.
+
+\textbf{Finding 401}: \textbf{All 7 action dimensions} are affected by OOD corruptions, with mean deltas ranging from 0.13 to 0.88 on a $[-1,1]$ scale. No dimension is immune, confirming OOD creates systemic prediction disruption.
+
+\textbf{Finding 402}: Night corruption causes a massive \textbf{lateral drift} ($\Delta y$ delta = 0.88)---the most dangerous single-dimension effect. In a driving context, this would translate to sudden lane departure. Blur disrupts depth estimation ($\Delta z$ Cohen's $d$ = 1.41), consistent with blur removing depth cues.
+
+\textbf{Finding 403}: Different corruption types have \textbf{distinct action-space signatures}: fog affects pitch/gripper, night affects lateral/gripper, blur affects depth, noise affects pitch/depth. This corruption-specificity suggests that action-space analysis could complement hidden-state detection for corruption \emph{identification} (not just detection).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig218_action_dimensions.png}
+\caption{\textbf{Per-action-dimension impact.} Left: mean absolute action change per dimension. Right: Cohen's $d$ effect sizes. Night causes dangerous lateral drift ($\Delta y$=0.88), blur disrupts depth ($\Delta z$ $d$=1.41).}
+\label{fig:action_dimensions}
+\end{figure}
+
 \end{document}
