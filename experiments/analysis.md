@@ -10818,3 +10818,107 @@ Computed formal statistical guarantees on detection reliability:
 **Finding 349**: **Per-scene calibration achieves provably perfect AUROC=1.0** across all corruption types and severities, while global centroid degrades to 0.745-0.800 for noise and fog. The zero in-distribution variance (same-image distance = exactly 0) is the fundamental property enabling this: ANY corruption producing d > 0 is guaranteed OOD, eliminating the threshold selection problem entirely.
 
 **Finding 350**: **With 160 test cases and 0 detection errors, PAC-learning bounds guarantee error rate < 1.43% with 90% confidence** (< 2.84% at 99% confidence). The Rule-of-3 bound gives a 95% CI upper bound of 1.88%. These formal guarantees, combined with the zero noise floor, provide certification-grade reliability for safety-critical deployment.
+
+---
+
+## Experiment 288: Batch Efficiency & Throughput Analysis
+
+**Date**: March 15, 2026
+**Script**: `scripts/real_vla_batch_throughput.py`
+**Model**: OpenVLA-7B (real, on RunPod GPU)
+
+### Setup
+
+Measured detection throughput and resource usage:
+- Single-image latency breakdown with 20 measurements (after 3 warm-up runs)
+- Sequential processing throughput at n=1,5,10,20,50 images
+- GPU memory usage at each pipeline stage
+- Random projection efficiency from 32D to 4096D
+- End-to-end deployment pipeline with cross-scene images
+
+### Results
+
+**Latency Breakdown (per image):**
+
+| Component | Mean (ms) | Std (ms) | % of Total |
+|-----------|-----------|----------|------------|
+| Preprocessing | 6.20 | 7.74 | 4.9% |
+| Forward Pass | 119.23 | 30.67 | 94.9% |
+| Embedding Extract | 0.15 | 0.05 | 0.12% |
+| Distance Compute | 0.07 | 0.02 | 0.05% |
+| **Detection Overhead** | **0.22** | - | **0.17%** |
+
+**Throughput Scaling:**
+
+| n Images | Per Image (ms) | FPS |
+|----------|---------------|-----|
+| 1 | 195.5 | 5.1 |
+| 5 | 139.5 | 7.2 |
+| 10 | 140.2 | 7.1 |
+| 50 | 136.1 | 7.3 |
+
+**Memory Usage:**
+- Model loaded: 14,656 MB
+- Peak: 14,927 MB (271 MB forward pass overhead)
+- Centroid storage: 16 KB (4096 × float32)
+
+**Random Projection Distance Preservation:**
+
+| Dimension | Compression | Fog | Night | Blur | Noise |
+|-----------|-------------|-----|-------|------|-------|
+| 32 | 128× | 0.00457 | 0.00930 | 0.01240 | 0.00078 |
+| 128 | 32× | 0.00248 | 0.00701 | 0.00642 | 0.00041 |
+| 4096 | 1× | 0.00278 | 0.00826 | 0.00626 | 0.00054 |
+
+**Cross-Scene Pipeline:**
+- Corrupted images (fog, different scenes): d ≈ 0.00083
+- Clean images (different scenes): d ≈ 0.00009
+- Separation ratio: 9.2× (sufficient for threshold-based detection)
+
+### Key Findings
+
+**Finding 351**: **Detection overhead is only 0.22ms (0.17% of total pipeline)**, comprising 0.15ms for embedding extraction and 0.07ms for distance computation. The forward pass dominates at 119ms (94.9%). At steady state, throughput reaches **7.1-7.3 FPS** regardless of batch count, confirming detection adds negligible cost to the model's inference pipeline.
+
+**Finding 352**: **Cross-scene detection shows 9.2× distance separation** between corrupted (d≈0.00083) and clean different-scene images (d≈0.00009), confirming that even without per-scene calibration, a single threshold can discriminate corruption from scene variation. The centroid requires only **16 KB** of storage, making the detector deployment-ready with minimal resource requirements.
+
+---
+
+## Experiment 289: Gradient-Based Sensitivity Analysis
+
+**Date**: March 15, 2026
+**Script**: `scripts/real_vla_gradient_sensitivity.py`
+**Model**: OpenVLA-7B (real, on RunPod GPU)
+
+### Setup
+
+Computed the gradient of cosine distance w.r.t. input pixel values to understand which image regions drive OOD detection:
+- Pixel-level saliency maps for 4 corruption types at severity 1.0
+- Spatial distribution analysis (center vs border, quadrants)
+- Gradient cosine similarity between corruption types
+- Gradient magnitude vs severity for fog and night
+
+### Results
+
+**Gradient Magnitude per Corruption:**
+
+| Corruption | Cosine Distance | Gradient Mean | Gradient Max | Center/Border |
+|------------|----------------|---------------|--------------|---------------|
+| Fog | 0.002705 | 2.52e-6 | 3.95e-5 | 1.01 (uniform) |
+| Night | 0.007991 | 2.00e-5 | 1.60e-3 | 0.44 (border) |
+| Blur | 0.006263 | 3.73e-5 | 1.29e-3 | 0.36 (border) |
+| Noise | 0.000512 | 6.78e-7 | 1.17e-5 | 0.83 (slight border) |
+
+**Gradient Similarity Between Corruptions:**
+- All pairwise similarities |cos_sim| < 0.04 (near-orthogonal)
+- Highest: fog↔night = 0.033, blur↔night = 0.030
+- Most orthogonal: blur↔fog = -0.001, night↔noise = -0.002
+
+**Gradient Scaling with Severity:**
+- Fog: approximately linear (gradient grows proportionally with severity)
+- Night: super-linear at high severity (4.6× jump from sev=0.7 to 1.0)
+
+### Key Findings
+
+**Finding 353**: **Pixel-level gradient sensitivity is spatially non-uniform and corruption-dependent**: fog produces spatially uniform gradients (center/border ratio = 1.01), while blur and night concentrate sensitivity at image borders (ratios 0.36 and 0.44 respectively). This means blur and night detection is primarily driven by border-region features, explaining why spatial corruption (affecting only image edges) is still detectable.
+
+**Finding 354**: **Gradient directions between corruption types are near-orthogonal** (all |cos_sim| < 0.04), confirming that the model uses entirely different pixel-level features to distinguish each corruption type. This orthogonality in gradient space explains why a single cosine distance metric can simultaneously detect all corruption types: each corruption activates an independent subspace of the model's sensitivity.

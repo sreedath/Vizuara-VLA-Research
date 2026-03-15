@@ -1,0 +1,241 @@
+{
+  "experiment": "batch_throughput",
+  "experiment_number": 288,
+  "timestamp": "20260315_100416",
+  "latency_breakdown": {
+    "preprocess_ms": {
+      "mean": 6.203757738694549,
+      "std": 7.735953404348644
+    },
+    "forward_ms": {
+      "mean": 119.23163700848818,
+      "std": 30.667276829174494
+    },
+    "extract_ms": {
+      "mean": 0.1491790171712637,
+      "std": 0.05024785755669107
+    },
+    "distance_ms": {
+      "mean": 0.06698551587760448,
+      "std": 0.021557240054578302
+    },
+    "total_ms": {
+      "mean": 125.65155928023158,
+      "std": 37.39148456247446
+    },
+    "detection_overhead_ms": 0.21616453304886818,
+    "detection_overhead_pct": 0.17203489895956806
+  },
+  "memory_mb": {
+    "model_loaded": 14655.93896484375,
+    "after_preprocess": 14655.93896484375,
+    "after_forward": 14657.47412109375,
+    "after_extract": 14657.47412109375,
+    "peak": 14926.52099609375,
+    "forward_overhead": 1.53515625,
+    "embedding_size_bytes": 16384,
+    "centroid_size_bytes": 16384
+  },
+  "sequential_processing": {
+    "1": {
+      "total_time_ms": 195.50147652626038,
+      "per_image_ms": 195.50147652626038,
+      "throughput_fps": 5.115050882317386
+    },
+    "5": {
+      "total_time_ms": 697.4615175276995,
+      "per_image_ms": 139.4923035055399,
+      "throughput_fps": 7.16885430141517
+    },
+    "10": {
+      "total_time_ms": 1401.6143716871738,
+      "per_image_ms": 140.16143716871738,
+      "throughput_fps": 7.134630039475579
+    },
+    "20": {
+      "total_time_ms": 2792.56843496114,
+      "per_image_ms": 139.628421748057,
+      "throughput_fps": 7.161865668039863
+    },
+    "50": {
+      "total_time_ms": 6805.625076405704,
+      "per_image_ms": 136.11250152811408,
+      "throughput_fps": 7.346863725030061
+    }
+  },
+  "projection_efficiency": {
+    "32": {
+      "distances": {
+        "fog": 0.004573924083422831,
+        "night": 0.00930036202289275,
+        "blur": 0.01239856082795654,
+        "noise": 0.0007832342546827409
+      },
+      "projection_time_us": 38.422876968979836,
+      "distance_time_us": 21.30633220076561,
+      "total_time_us": 59.729209169745445,
+      "compression_ratio": 128.0
+    },
+    "64": {
+      "distances": {
+        "fog": 0.0028143397587807595,
+        "night": 0.008232196909506162,
+        "blur": 0.007546604070016283,
+        "noise": 0.00047674159357913304
+      },
+      "projection_time_us": 84.50495079159737,
+      "distance_time_us": 16.26485027372837,
+      "total_time_us": 100.76980106532574,
+      "compression_ratio": 64.0
+    },
+    "128": {
+      "distances": {
+        "fog": 0.002479261246402742,
+        "night": 0.007013810230531492,
+        "blur": 0.006424368287534232,
+        "noise": 0.00041105865613200177
+      },
+      "projection_time_us": 89.77251127362251,
+      "distance_time_us": 16.813864931464195,
+      "total_time_us": 106.58637620508671,
+      "compression_ratio": 32.0
+    },
+    "256": {
+      "distances": {
+        "fog": 0.0026889541440051623,
+        "night": 0.008174746710636671,
+        "blur": 0.006873134589023389,
+        "noise": 0.0005778280376039779
+      },
+      "projection_time_us": 140.52540063858032,
+      "distance_time_us": 18.614809960126877,
+      "total_time_us": 159.1402105987072,
+      "compression_ratio": 16.0
+    },
+    "512": {
+      "distances": {
+        "fog": 0.002819010232064767,
+        "night": 0.00823161640113479,
+        "blur": 0.006269948759248911,
+        "noise": 0.0005220819604284666
+      },
+      "projection_time_us": 195.20497880876064,
+      "distance_time_us": 22.99039624631405,
+      "total_time_us": 218.1953750550747,
+      "compression_ratio": 8.0
+    },
+    "1024": {
+      "distances": {
+        "fog": 0.0027189067160037217,
+        "night": 0.00828562958870016,
+        "blur": 0.006375721312997129,
+        "noise": 0.00047233374735100586
+      },
+      "projection_time_us": 299.86328445374966,
+      "distance_time_us": 30.54109402000904,
+      "total_time_us": 330.4043784737587,
+      "compression_ratio": 4.0
+    },
+    "2048": {
+      "distances": {
+        "fog": 0.0025004050552502877,
+        "night": 0.007848600882240042,
+        "blur": 0.006097094272537351,
+        "noise": 0.0005024840173116774
+      },
+      "projection_time_us": 882.269348949194,
+      "distance_time_us": 31.115254387259483,
+      "total_time_us": 913.3846033364534,
+      "compression_ratio": 2.0
+    },
+    "4096": {
+      "distances": {
+        "fog": 0.002774518906249801,
+        "night": 0.008255750140745866,
+        "blur": 0.0062628472950923,
+        "noise": 0.0005347615479072143
+      },
+      "projection_time_us": 1973.944017663598,
+      "distance_time_us": 36.714598536491394,
+      "total_time_us": 2010.6586162000895,
+      "compression_ratio": 1.0
+    }
+  },
+  "pipeline": {
+    "runs": [
+      {
+        "run": 0,
+        "corrupted": true,
+        "distance": 0.0008309483528137207,
+        "decision": "OOD",
+        "time_ms": 265.17998799681664
+      },
+      {
+        "run": 1,
+        "corrupted": false,
+        "distance": 9.834766387939453e-05,
+        "decision": "OOD",
+        "time_ms": 100.2795035019517
+      },
+      {
+        "run": 2,
+        "corrupted": true,
+        "distance": 0.0007877945899963379,
+        "decision": "OOD",
+        "time_ms": 193.11814196407795
+      },
+      {
+        "run": 3,
+        "corrupted": false,
+        "distance": 9.161233901977539e-05,
+        "decision": "OOD",
+        "time_ms": 103.5386472940445
+      },
+      {
+        "run": 4,
+        "corrupted": true,
+        "distance": 0.0008199214935302734,
+        "decision": "OOD",
+        "time_ms": 124.6029520407319
+      },
+      {
+        "run": 5,
+        "corrupted": false,
+        "distance": 8.863210678100586e-05,
+        "decision": "OOD",
+        "time_ms": 149.42879974842072
+      },
+      {
+        "run": 6,
+        "corrupted": true,
+        "distance": 0.0008550286293029785,
+        "decision": "OOD",
+        "time_ms": 116.06876831501722
+      },
+      {
+        "run": 7,
+        "corrupted": false,
+        "distance": 0.00010216236114501953,
+        "decision": "OOD",
+        "time_ms": 103.83629985153675
+      },
+      {
+        "run": 8,
+        "corrupted": true,
+        "distance": 0.0008655786514282227,
+        "decision": "OOD",
+        "time_ms": 176.99172534048557
+      },
+      {
+        "run": 9,
+        "corrupted": false,
+        "distance": 7.224082946777344e-05,
+        "decision": "OOD",
+        "time_ms": 120.02972513437271
+      }
+    ],
+    "mean_time_ms": 145.30745511874557,
+    "std_time_ms": 50.09062957903644,
+    "decisions_correct": 5
+  }
+}
