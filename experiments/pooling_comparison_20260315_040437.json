@@ -1,0 +1,90 @@
+{
+  "experiment": "pooling_comparison",
+  "experiment_number": 189,
+  "timestamp": "20260315_040437",
+  "n_cal": 6,
+  "n_test": 4,
+  "pool_methods": [
+    "last",
+    "mean_all",
+    "mean_second_half",
+    "mean_last_quarter",
+    "max_pool"
+  ],
+  "layers": [
+    3,
+    32
+  ],
+  "results": {
+    "last": {
+      "L3": {
+        "auroc": 1.0,
+        "separation_ratio": 5.118905587006803,
+        "id_mean": 0.0003857910633087158,
+        "ood_mean": 0.001974828541278839
+      },
+      "L32": {
+        "auroc": 1.0,
+        "separation_ratio": 2.671071471468454,
+        "id_mean": 0.11138302087783813,
+        "ood_mean": 0.2975120097398758
+      }
+    },
+    "mean_all": {
+      "L3": {
+        "auroc": 1.0,
+        "separation_ratio": 3.6558911246260313,
+        "id_mean": 0.0007977187633514404,
+        "ood_mean": 0.002916373312473297
+      },
+      "L32": {
+        "auroc": 1.0,
+        "separation_ratio": 2.9049421546203513,
+        "id_mean": 0.017802834510803223,
+        "ood_mean": 0.05171620473265648
+      }
+    },
+    "mean_second_half": {
+      "L3": {
+        "auroc": 1.0,
+        "separation_ratio": 2.6704013007493117,
+        "id_mean": 0.0004820525646209717,
+        "ood_mean": 0.0012872740626335144
+      },
+      "L32": {
+        "auroc": 1.0,
+        "separation_ratio": 2.3761440211096954,
+        "id_mean": 0.035005152225494385,
+        "ood_mean": 0.08317728340625763
+      }
+    },
+    "mean_last_quarter": {
+      "L3": {
+        "auroc": 1.0,
+        "separation_ratio": 2.74915670487677,
+        "id_mean": 8.86768102645874e-05,
+        "ood_mean": 0.00024378672242164612
+      },
+      "L32": {
+        "auroc": 1.0,
+        "separation_ratio": 2.3712942691219467,
+        "id_mean": 0.045480355620384216,
+        "ood_mean": 0.10784730687737465
+      }
+    },
+    "max_pool": {
+      "L3": {
+        "auroc": 0.8671875,
+        "separation_ratio": 4.133841659838658,
+        "id_mean": 1.6391277313232422e-07,
+        "ood_mean": 6.780028343200684e-07
+      },
+      "L32": {
+        "auroc": 1.0,
+        "separation_ratio": 1.8499278168090445,
+        "id_mean": 0.01321442425251007,
+        "ood_mean": 0.024445731192827225
+      }
+    }
+  }
+}

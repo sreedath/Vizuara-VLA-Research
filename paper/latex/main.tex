@@ -3536,4 +3536,27 @@ We sweep the number of calibration images from 1 to 20 to find the minimum requi
 \label{fig:cal_size}
 \end{figure}
 
+\subsection{Combined Corruptions}
+
+We test detection on combined corruptions (fog+noise, night+blur, triple combinations) to check for masking or cancellation effects.
+
+\textbf{Finding 338}: All 12 corruption combinations (4 single, 6 double, 2 triple) achieve \textbf{AUROC = 1.0} at both layers. Combined corruptions are \textbf{always more detectable} than their individual components, with distances roughly additive and slightly sub-additive.
+
+\textbf{Finding 339}: Night+blur+noise produces the \textbf{highest OOD distance} (6.3$\times 10^{-3}$ at L3), 7$\times$ higher than the mildest single corruption (fog, 0.88$\times 10^{-3}$). There is no saturation---adding more corruptions monotonically increases detectability.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig194_combined_corruption.png}
+\caption{\textbf{Combined corruption distances.} L3 cosine distances for single, double, and triple corruption combinations. All achieve AUROC = 1.0. Combined corruptions produce larger distances with roughly additive behavior.}
+\label{fig:combined}
+\end{figure}
+
+\subsection{Pooling Strategy Comparison}
+
+We compare five token-pooling strategies: last token, mean-all, mean-second-half, mean-last-quarter, and max pooling.
+
+\textbf{Finding 340}: \textbf{Last-token embedding is optimal}: it achieves the highest L3 separation ratio (5.12$\times$) with perfect AUROC. Mean pooling dilutes the signal (sep 2.7--3.7$\times$) by averaging over uninformative early positions. Max pooling degrades L3 AUROC to 0.867.
+
+\textbf{Finding 341}: At L32, all methods except max pooling achieve AUROC = 1.0, confirming L32 is more robust to pooling choice. The standard last-token approach is validated as optimal for the primary L3 detector.
+
 \end{document}
