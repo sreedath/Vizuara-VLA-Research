@@ -10033,3 +10033,80 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 295**: dim6 under night achieves entropy 0.001 (clean: 1.63), predicting token 128 with **99.9% confidence** — the wrong answer. This is the most dangerous failure mode: the model is maximally certain about a completely incorrect action dimension.
 
 **Finding 296**: Night and noise both converge to dim6=128 with near-zero entropy (0.001 and 0.017), suggesting a **common failure attractor** in the model's action space where corrupted inputs are mapped to the same confident-wrong prediction.
+
+---
+
+## Experiment 270: Detection Speed Scaling
+
+**Research Question**: How does detection latency scale with number of centroids, embedding dimensionality, and pipeline components?
+
+**Method**: Benchmark each pipeline component separately: model inference, hidden state extraction, distance computation (1-1000 centroids, 32-4096D), and random projection.
+
+**Results**:
+
+| Component | Time (ms) | Fraction |
+|-----------|----------|----------|
+| Model inference | 83.5 | 66.1% |
+| Hidden state extraction overhead | 55.9 | 44.3% |
+| Distance (1 centroid, 4096D) | 0.005 | 0.004% |
+| Random projection (4096→32D) | 0.027 | 0.021% |
+
+**Distance scaling**:
+- 1 centroid: 0.005 ms
+- 100 centroids: 0.46 ms
+- 1000 centroids: 4.83 ms
+- 4096D: 0.005 ms
+- 32D: 0.003 ms
+
+**Key Findings**:
+1. **Distance computation is negligible**: 0.005 ms for 1 centroid at 4096D, which is 0.004% of the total pipeline time. Even 1000 centroids only take 4.8 ms.
+2. **Dimensionality has minimal impact**: 32D distance (0.003 ms) vs 4096D (0.005 ms) — only 37% difference despite 128× more dimensions. Modern CPUs handle vector operations efficiently.
+3. **Random projection is fast**: 0.027 ms for 4096→32D, adding negligible overhead.
+4. **Bottleneck is model inference**: 83.5 ms for a single forward pass, representing 66% of total time. Detection overhead is the hidden state extraction via output_hidden_states=True.
+5. **Full pipeline: 126 ms** (including extraction overhead), vs 83.5 ms inference-only. The detection adds ~43 ms (51% overhead), but this is dominated by the hidden state extraction flag, not the distance computation.
+
+**Finding 297**: Distance computation takes **0.005 ms** for 1 centroid at 4096D — **0.004% of pipeline time**. Even with 1000 per-scene centroids, the total distance computation (4.83 ms) remains negligible compared to model inference (83.5 ms).
+
+**Finding 298**: The detection bottleneck is the **hidden state extraction overhead** (~43 ms), not the distance computation. In deployment, this overhead can be eliminated by using a hook that intercepts hidden states during the normal forward pass, reducing detection to just the 0.005 ms distance computation.
+
+**Finding 299**: Dimensionality reduction via random projection adds only **0.027 ms** (4096→32D), with distance computation dropping from 0.005 ms to 0.003 ms. The total detection overhead with projection is 0.030 ms — **essentially free**.
+
+---
+
+## Experiment 271: Feature Importance for OOD Detection
+
+**Research Question**: Which embedding dimensions are most important for OOD detection? Can a subset of dimensions match full detection performance?
+
+**Method**: Compute per-dimension shift magnitude (corrupted - clean) to identify important features. Test subset detection using top-K dimensions. Measure dimension overlap across corruption types.
+
+**Results**:
+
+**Dims needed for energy thresholds**:
+
+| Corruption | 50% energy | 90% energy | 99% energy | Top dim % |
+|-----------|-----------|-----------|-----------|-----------|
+| Fog | 427 | 1753 | 3007 | 3.9% |
+| Night | 383 | 1716 | 2948 | 6.5% |
+| Noise | 348 | 1670 | 2946 | 5.3% |
+| Blur | 472 | 1788 | 2968 | 1.2% |
+
+**Subset detection (distance as % of full 4096D)**:
+- K=10: 4-11%
+- K=100: 15-22%
+- K=500: 34-50%
+- K=1000: 48-70%
+
+**Top-100 dimension overlap**: 12-33/100 (mean ~19)
+
+**Key Findings**:
+1. **OOD signal is distributed**: 50% of shift energy requires 348-472 dims. No single dim dominates (max 6.5%). This means feature selection cannot efficiently compress the detector.
+2. **Top-K selection is inefficient**: K=100 captures only 15-22% of the distance, K=1000 captures 48-70%. Compare with random projection: 32D achieves AUROC=1.0 (Exp 221). Random projection preserves distances better than feature selection.
+3. **Dimension overlap is low (12-33/100)**: Different corruptions use different dimensions, consistent with the near-orthogonal shift directions (Exp 268). Each corruption type perturbs a different set of features.
+4. **Blur is most diffuse**: Requires 472 dims for 50% energy (highest), with top dim contributing only 1.2% (lowest). Night is most concentrated: 383 dims for 50%, top dim at 6.5%.
+5. **Random projection > feature selection**: This is explained by the distributed signal: random projection captures the low-dimensional subspace (3-5D from Exp 251) regardless of which individual dimensions carry the signal. Feature selection requires knowing which dimensions to select.
+
+**Finding 300**: OOD signal is **distributed across all 4096 dimensions**: 50% of shift energy requires 348-472 dims, with no single dimension contributing more than 6.5%. This explains why random projection at 32D achieves AUROC=1.0 while top-100 feature selection captures only 15-22% of the distance.
+
+**Finding 301**: Different corruption types use **largely non-overlapping dimensions** (12-33/100 overlap in top features), consistent with their near-orthogonal shift directions. Each corruption perturbs a different subset of the 4096 features.
+
+**Finding 302**: Random projection is **strictly superior** to feature selection for compression: it captures the 3-5D intrinsic subspace (Exp 251) regardless of which individual dimensions carry signal, while feature selection requires corruption-specific knowledge that defeats the purpose of an unsupervised detector.

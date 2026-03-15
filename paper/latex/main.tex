@@ -5106,4 +5106,36 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 567}: Night and noise both converge to dim 6 = token 128 with near-zero entropy (0.001 and 0.017 nats), suggesting a \textbf{common failure attractor} in the model's action space. Corrupted inputs are mapped to the same confident-wrong prediction regardless of corruption type, revealing a structural vulnerability in the action decoder.
 
+\subsection{Detection Speed Scaling}
+
+\textbf{Experiment 270: Latency Benchmarks.} We benchmark each pipeline component: model inference, hidden state extraction, distance computation with varying centroids (1--1000) and dimensionality (32--4096D), and random projection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig279_speed.png}
+\caption{(a) Distance computation scales linearly with centroids: 0.005ms for 1, 4.8ms for 1000. (b) Dimensionality has minimal impact: 32D and 4096D differ by only 37\%. (c) Pipeline breakdown: distance computation (0.005ms) is 0.004\% of inference (83.5ms).}
+\end{figure}
+
+\textbf{Finding 568}: Distance computation takes \textbf{0.005ms} for 1 centroid at 4096D --- \textbf{0.004\%} of model inference time (83.5ms). Even with 1000 per-scene centroids, distance computation (4.83ms) remains negligible. The detection algorithm itself adds essentially zero latency.
+
+\textbf{Finding 569}: The practical detection bottleneck is hidden state extraction overhead ($\sim$43ms from \texttt{output\_hidden\_states=True}). In deployment, this can be eliminated by intercepting hidden states via a forward hook during the normal inference pass, reducing actual detection overhead to the 0.005ms distance computation.
+
+\textbf{Finding 570}: Random projection (4096$\rightarrow$32D) adds only \textbf{0.027ms}, with distance dropping from 0.005ms to 0.003ms. Total detection with projection: \textbf{0.030ms} --- effectively free at any practical inference rate.
+
+\subsection{Feature Importance for OOD Detection}
+
+\textbf{Experiment 271: Dimension Analysis.} We identify which embedding dimensions carry the most OOD signal by computing per-dimension shift magnitudes. We test subset detection using the top-$K$ dimensions and measure cross-corruption dimension overlap.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig280_features.png}
+\caption{(a) Top-$K$ feature selection captures distance sublinearly: $K$=100 gets 15--22\%, $K$=1000 gets 48--70\%. (b) 348--472 dimensions needed for 50\% energy; 2946--3007 for 99\%. (c) Low top-100 dimension overlap (12--33\%) between corruption types.}
+\end{figure}
+
+\textbf{Finding 571}: OOD signal is \textbf{distributed across all 4096 dimensions}: 50\% of shift energy requires 348--472 dims, with no single dimension contributing more than 6.5\%. This explains why random projection at 32D achieves AUROC=1.0 (Experiment 221) while top-100 feature selection captures only 15--22\% of the distance --- random projection preserves the low-dimensional subspace structure that feature selection destroys.
+
+\textbf{Finding 572}: Different corruption types use \textbf{largely non-overlapping dimensions}: only 12--33 of the top 100 dimensions are shared between any two corruption types. This is consistent with their near-orthogonal shift directions (Finding 563) and confirms that each corruption perturbs a distinct subset of the 4096 representation features.
+
+\textbf{Finding 573}: Blur has the most \textbf{diffuse} signal (472 dims for 50\% energy, top dim 1.2\%), while night is most \textbf{concentrated} (383 dims, top dim 6.5\%). Despite this, both achieve identical AUROC=1.0, because even the most diffuse signal is perfectly separated from zero in-distribution variance.
+
 \end{document}
