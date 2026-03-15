@@ -1,0 +1,38 @@
+{
+  "experiment": "detection_latency",
+  "experiment_number": 166,
+  "timestamp": "20260315_024348",
+  "n_warmup": 3,
+  "n_bench": 10,
+  "gpu": "A40 48GB",
+  "model": "openvla-7b",
+  "results": {
+    "forward_no_hs_ms": {
+      "mean": 118.89409720897675,
+      "std": 29.31869392213763
+    },
+    "forward_with_hs_ms": {
+      "mean": 121.84615414589643,
+      "std": 34.20858731106053
+    },
+    "extract_ms": {
+      "mean": 0.43827490881085396,
+      "std": 0.10001236465078588
+    },
+    "distance_us": {
+      "mean": 9.916597045958042,
+      "std": 6.5543172722778795
+    },
+    "full_pipeline_ms": {
+      "mean": 140.0545354001224,
+      "std": 43.85915255210211
+    },
+    "generate_7tok_ms": {
+      "mean": 371.6051793657243,
+      "std": 51.706735832980414
+    },
+    "hs_overhead_ms": 2.952056936919689,
+    "hs_overhead_pct": 2.4829297721407846,
+    "detection_overhead_ms": 21.16043819114566
+  }
+}

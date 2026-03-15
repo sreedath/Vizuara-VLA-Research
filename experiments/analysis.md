@@ -6904,3 +6904,39 @@ All 8 categories: **1.000** (20/20 detected for each, including fog_30%)
 - **night+blur+noise produces the highest absolute distance**: L32=0.403, exceeding any single corruption except night alone (0.419)
 
 **Finding**: Corruption interactions are predominantly subadditive — combined corruptions produce less OOD shift than the sum of their individual effects, suggesting the model's embedding space has a saturation effect. This is beneficial for safety: combined real-world corruptions are NOT harder to detect than individual ones. The detector remains effective for all tested combinations.
+
+---
+
+## Finding 159: Embedding Norm Analysis (Experiment 165)
+
+**Objective**: Test whether embedding vector norms carry OOD signal independently of direction.
+
+**Method**: Compared 8 metrics including cosine distance, Euclidean distance, L2/L1/Linf norms, mean activation, norm deviation, and sparsity.
+
+**Key Results**:
+- **Direction-based metrics dominate**: Cosine distance AUROC=0.96/0.97 (L3/L32), Euclidean distance 0.95/0.92
+- **Norms carry almost zero signal**: L2 norm AUROC=0.51/0.52, L1 norm 0.66/0.52, Linf 0.56/0.63 — barely above random
+- **OOD shifts direction, not magnitude**: L2 norms are virtually identical for ID (7.94) and OOD (7.94) at L3; at L32, ID=78.6 OOD=75.1 (overlapping distributions)
+- **Sparsity is a weak signal at L3**: AUROC=0.84 — OOD embeddings are slightly less sparse (0.197 vs 0.202), but not reliable
+- **Norm deviation is weak**: AUROC=0.58/0.64 — deviation from mean calibration norm is not discriminative
+
+**Finding**: OOD corruptions change the DIRECTION of embeddings, not their MAGNITUDE. This is why cosine distance (angle-based) is the correct metric — norm-based metrics like L2 norm are effectively useless for OOD detection. The model preserves embedding scale across distribution shifts while rotating the representation.
+
+---
+
+## Finding 160: Detection Latency (Experiment 166)
+
+**Objective**: Measure computational overhead of the OOD detection pipeline.
+
+**Method**: Benchmarked 10 iterations each of: forward pass (with/without hidden states), embedding extraction, distance computation, full pipeline, and action generation. On A40 GPU with OpenVLA-7B.
+
+**Key Results**:
+- **Hidden state overhead: 3.0ms (2.5%)**: Adding `output_hidden_states=True` costs only 2.5% latency increase
+- **Forward pass: 119ms** without HS, 122ms with HS
+- **Embedding extraction: 0.44ms** — extracting 2 layer embeddings from hidden states
+- **Distance computation: 10μs** — cosine distance on 4096-dim vectors is essentially free
+- **Full detection pipeline: 140ms** — 21ms overhead over baseline forward pass
+- **Action generation: 372ms** — 3.5× longer than single forward pass (autoregressive 7 tokens)
+- **Detection is 62% cheaper than generation**: If the model already generates actions (372ms), detection adds only 21ms (5.6% overhead)
+
+**Finding**: The OOD detection pipeline adds negligible computational overhead (2.5% for hidden states, <1ms for distance computation). The dominant cost is the forward pass itself, which is already required for action prediction. This makes the system practical for real-time deployment at >7 Hz on A40 GPU.

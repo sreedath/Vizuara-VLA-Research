@@ -1,0 +1,145 @@
+{
+  "experiment": "norm_analysis",
+  "experiment_number": 165,
+  "timestamp": "20260315_024222",
+  "n_cal": 8,
+  "n_test_id": 6,
+  "layers": [
+    3,
+    32
+  ],
+  "results": {
+    "L3": {
+      "cosine_dist": {
+        "auroc": 0.9611111111111111,
+        "direction": "higher=OOD",
+        "id_mean": 0.00038159886995951336,
+        "id_std": 8.495016587195513e-05,
+        "ood_mean": 0.0015422662099202475,
+        "ood_std": 0.001054196764502898
+      },
+      "euclidean_dist": {
+        "auroc": 0.95,
+        "direction": "higher=OOD",
+        "id_mean": 0.22384500255187353,
+        "id_std": 0.02791366703202501,
+        "ood_mean": 0.4246487354238828,
+        "ood_std": 0.15159342227071781
+      },
+      "l2_norm": {
+        "auroc": 0.5111111111111111,
+        "direction": "lower=OOD",
+        "id_mean": 7.935070514678955,
+        "id_std": 0.05287459230779769,
+        "ood_mean": 7.936952861150106,
+        "ood_std": 0.09000154261245337
+      },
+      "l1_norm": {
+        "auroc": 0.6555555555555556,
+        "direction": "higher=OOD",
+        "id_mean": 151.66739145914713,
+        "id_std": 0.8533142558651772,
+        "ood_mean": 152.88058725992838,
+        "ood_std": 2.433665572945568
+      },
+      "linf_norm": {
+        "auroc": 0.5583333333333333,
+        "direction": "lower=OOD",
+        "id_mean": 5.682291666666667,
+        "id_std": 0.04199092577238828,
+        "ood_mean": 5.669791666666667,
+        "ood_std": 0.07157243077625784
+      },
+      "mean_activation": {
+        "auroc": 0.6555555555555556,
+        "direction": "higher=OOD",
+        "id_mean": 0.03702817174295584,
+        "id_std": 0.00020832867574833427,
+        "ood_mean": 0.03732436212400595,
+        "ood_std": 0.000594156634019914
+      },
+      "norm_deviation": {
+        "auroc": 0.5777777777777777,
+        "direction": "higher=OOD",
+        "id_mean": 0.0489652951558431,
+        "id_std": 0.021060350993849928,
+        "ood_mean": 0.07252535820007325,
+        "ood_std": 0.05351577832424715
+      },
+      "sparsity": {
+        "auroc": 0.8416666666666667,
+        "direction": "lower=OOD",
+        "id_mean": 0.20161946614583334,
+        "id_std": 0.0016821310716629548,
+        "ood_mean": 0.19659016927083334,
+        "ood_std": 0.005489883762079479
+      }
+    },
+    "L32": {
+      "cosine_dist": {
+        "auroc": 0.9722222222222222,
+        "direction": "higher=OOD",
+        "id_mean": 0.11049781243006389,
+        "id_std": 0.013824662633274852,
+        "ood_mean": 0.2501869797706604,
+        "ood_std": 0.1007676220647732
+      },
+      "euclidean_dist": {
+        "auroc": 0.9166666666666666,
+        "direction": "higher=OOD",
+        "id_mean": 36.41029294331869,
+        "id_std": 4.1670752827777005,
+        "ood_mean": 52.66339505513509,
+        "ood_std": 9.965817441950236
+      },
+      "l2_norm": {
+        "auroc": 0.5222222222222223,
+        "direction": "higher=OOD",
+        "id_mean": 78.59997177124023,
+        "id_std": 6.625821853675467,
+        "ood_mean": 75.12216618855794,
+        "ood_std": 16.73618195492169
+      },
+      "l1_norm": {
+        "auroc": 0.5222222222222223,
+        "direction": "higher=OOD",
+        "id_mean": 3853.1788736979165,
+        "id_std": 347.54338874137,
+        "ood_mean": 3675.8783203125,
+        "ood_std": 844.7210697397479
+      },
+      "linf_norm": {
+        "auroc": 0.6333333333333333,
+        "direction": "lower=OOD",
+        "id_mean": 19.625,
+        "id_std": 1.3228756555322954,
+        "ood_mean": 18.058333333333334,
+        "ood_std": 3.3987564106432937
+      },
+      "mean_activation": {
+        "auroc": 0.5222222222222223,
+        "direction": "higher=OOD",
+        "id_mean": 0.9407174984614054,
+        "id_std": 0.08484946014193603,
+        "ood_mean": 0.8974312305450439,
+        "ood_std": 0.20623072991693064
+      },
+      "norm_deviation": {
+        "auroc": 0.6388888888888888,
+        "direction": "higher=OOD",
+        "id_mean": 5.921204884847005,
+        "id_std": 3.242591880032978,
+        "ood_mean": 12.369078826904296,
+        "ood_std": 12.242244552035297
+      },
+      "sparsity": {
+        "auroc": 0.575,
+        "direction": "higher=OOD",
+        "id_mean": 0.006876627604166667,
+        "id_std": 0.0012873772802373352,
+        "ood_mean": 0.007926432291666667,
+        "ood_std": 0.0028189051654716486
+      }
+    }
+  }
+}

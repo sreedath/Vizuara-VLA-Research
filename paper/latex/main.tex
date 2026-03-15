@@ -3094,4 +3094,40 @@ We test how simultaneous corruptions interact, applying 6 single, 9 double, and 
 \label{fig:corruption_combo}
 \end{figure}
 
+\subsection{Norm-based vs Direction-based Detection}
+
+We test whether embedding vector norms (L2, L1, $L_\infty$) carry OOD information independently of direction.
+
+\textbf{Finding 268}: Direction-based metrics (cosine distance: AUROC = 0.96/0.97, Euclidean distance: 0.95/0.92) vastly outperform norm-based metrics (L2 norm: 0.51/0.52, L1 norm: 0.66/0.52). Norms are barely above random baseline.
+
+\textbf{Finding 269}: OOD corruptions change the \textbf{direction} of embeddings, not their \textbf{magnitude}. At L3, ID and OOD L2 norms are virtually identical (7.94 vs 7.94). This explains why cosine distance (which normalizes magnitude) is the correct detection metric.
+
+\textbf{Finding 270}: Sparsity provides a weak OOD signal at L3 (AUROC = 0.84): OOD embeddings are slightly less sparse than ID. However, this signal is too weak for reliable detection and should only serve as a supplementary feature.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig157_norm_analysis.png}
+\caption{\textbf{Metric comparison.} Cosine and Euclidean distance (direction-based) achieve AUROC $> 0.9$; norms, mean activation, and norm deviation are near random ($\sim$0.5). OOD shifts direction, not magnitude.}
+\label{fig:norm_analysis}
+\end{figure}
+
+\subsection{Detection Latency}
+
+We measure the computational overhead of OOD detection on an A40 GPU.
+
+\textbf{Finding 271}: Enabling \texttt{output\_hidden\_states=True} adds only \textbf{3.0 ms (2.5\%)} to the forward pass latency (119 ms $\to$ 122 ms). This is the only model-level modification required.
+
+\textbf{Finding 272}: The complete OOD detection pipeline (forward pass + embedding extraction + distance computation) takes \textbf{140 ms}, adding 21 ms overhead over a baseline forward pass. This enables real-time operation at $> 7$ Hz.
+
+\textbf{Finding 273}: Distance computation takes \textbf{10 $\mu$s} per cosine distance on a 4096-dimensional vector --- effectively free. The dominant cost is the forward pass itself, which is already required for action prediction.
+
+\textbf{Finding 274}: Compared to action generation (372 ms for 7 tokens), OOD detection adds only 5.6\% overhead. The system can run detection on every frame without impacting the action generation rate.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig158_latency.png}
+\caption{\textbf{Detection latency.} Left: Component latencies (log scale) --- forward pass dominates; distance computation is negligible. Right: Pipeline breakdown --- hidden state overhead is 2.5\% of forward pass time.}
+\label{fig:latency}
+\end{figure}
+
 \end{document}
