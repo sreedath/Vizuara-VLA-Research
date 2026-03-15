@@ -16756,3 +16756,97 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 915**: Binary random projections (+1/-1 scaled by 1/√d) achieve perfect AUROC=1.0 at 32D — the best of all projection types tested. Dense Gaussian achieves 0.999, sparse 1/3 achieves 0.996, sparse 1/√d achieves 0.996. Binary projections are computationally cheapest (no multiplication needed, only additions/subtractions) and achieve the best detection, making them the optimal choice for resource-constrained deployments.
 
 **Finding 916**: The 5 most informative embedding dimensions (by displacement variance) are indices [1512, 3431, 2298, 2393, 339]. These 5 dimensions are stable across all k values from 8 to 256, always appearing as the top-5. Dimension 1512 alone is insufficient (AUROC=0.5), but adding dimension 3431 immediately achieves perfect detection, suggesting these two dimensions capture complementary corruption information.
+
+---
+
+## Experiment 413: Embedding Dimensionality Analysis
+
+**Objective**: Study the effective dimensionality of the embedding space and how corruption detection relates to intrinsic vs. ambient dimensionality.
+
+**Method**: PCA with participation ratio estimation, random Gaussian projections at 12 dimensionalities (1D to 2048D) with 10 trials each, per-corruption dimensionality requirements, top-k feature selection by displacement variance, and comparison of dense Gaussian, sparse, and binary random projections at 32D.
+
+**Finding 911**: Participation ratio is only 2.6 — the embedding space has extremely low effective dimensionality despite ambient dimension of 4096. Only 3 PCA dimensions capture 95% of variance, and 7 dimensions capture 99%. The top 10 dimensions capture 99.5% of total variance.
+
+**Finding 912**: Random projection to 64D guarantees perfect AUROC=1.0 across all trials and all corruptions, while 32D achieves mean AUROC=0.999 (min 0.99, 9/10 trials perfect). Below 32D, detection degrades rapidly: 8D gives 0.984, 4D gives 0.941, 2D gives 0.819.
+
+**Finding 913**: Per-corruption minimum dimensions for perfect AUROC vary dramatically — fog needs only 4D, blur needs 8D, noise needs 64D. Night requires only 4D. Noise's high dimensionality requirement is consistent with its weak per-patch signal distributed across many embedding dimensions.
+
+**Finding 914**: Top-2 variance-selected dimensions achieve AUROC=1.0, but top-1 fails completely (AUROC=0.5). Exactly 2 embedding dimensions (indices 1512 and 3431) are necessary and sufficient for perfect OOD detection when selected by displacement variance.
+
+**Finding 915**: Binary random projections (+1/-1 scaled by 1/√d) achieve perfect AUROC=1.0 at 32D — the best of all projection types tested. Dense Gaussian achieves 0.999, sparse 1/3 achieves 0.996, sparse 1/√d achieves 0.996.
+
+**Finding 916**: The 5 most informative embedding dimensions (by displacement variance) are indices [1512, 3431, 2298, 2393, 339], stable across all k values from 8 to 256.
+
+---
+
+## Experiment 414: Confidence Calibration — Distance vs Token Entropy
+
+**Objective**: Study whether the model's own token-level uncertainty (logit entropy) correlates with our external OOD detector's cosine distance, and whether entropy can serve as a complementary or standalone confidence signal.
+
+**Method**: Extract hidden states AND next-token logits in a single forward pass across 5 scenes × 4 corruptions × 5 severity levels (plus clean). Compute action-token entropy (over 256 action bins), full-vocabulary entropy, top-1 action probability, and compare with cosine distance. Test entropy-only AUROC, distance-only AUROC, joint detection, and per-corruption correlation profiles.
+
+**Finding 917**: Overall distance-entropy correlation is WEAK (r=0.21) — the model's internal uncertainty does NOT correlate with the external OOD detector's distance. Distance and entropy measure fundamentally different aspects of corruption impact.
+
+**Finding 918**: Fog DECREASES entropy from 2.46 to 0.75 (ratio 0.30) — the model becomes MORE confident under fog corruption, which is maximally dangerous. The model concentrates probability mass on a single wrong action token, producing high-confidence wrong predictions that would fool any entropy-based safety check.
+
+**Finding 919**: Night and blur INCREASE entropy (night: 2.46→3.75, blur: 2.46→3.36), indicating the model "knows" something is wrong for these corruptions. Noise barely changes entropy (2.46→2.47, ratio 1.00) — the model is completely unaware of noise corruption.
+
+**Finding 920**: Entropy-only AUROC is catastrophically bad — fog at severity=1.0 achieves only 0.08 AUROC (worse than random), while distance achieves 1.0. Only night_1.0 and blur_1.0 achieve entropy AUROC=1.0. Across all conditions, distance achieves AUROC=1.0 in 17/20 conditions vs entropy in only 2/20.
+
+**Finding 921**: Per-corruption distance-entropy correlations are OPPOSITE in sign — fog has r=-0.71 (more corrupt = more confident), blur has r=+0.53 (more corrupt = less confident), noise has r=-0.17 (no relationship), night has r=+0.21 (weak positive). This means entropy cannot serve as a universal corruption indicator.
+
+**Finding 922**: Joint detection (distance + entropy) HURTS for fog (AUROC=0.2, worse than either alone) because fog's entropy decrease opposes the distance increase. Adding entropy to the detector actively degrades performance for the most dangerous corruption type — the one that makes the model confidently wrong.
+
+**Finding 923**: The model is maximally dangerous under fog — it produces HIGHER confidence (top-1 probability 0.82 vs 0.37 clean) on WRONG actions, while the embedding distance correctly flags the corruption at AUROC=1.0. This demonstrates that entropy-based safety measures would completely miss the most dangerous failure mode, validating the need for external embedding-based detection.
+
+---
+
+## Experiment 415: Corruption Severity Regression from Embeddings
+
+**Objective**: Test whether the embedding distance can predict corruption severity (not just detect corruption), and whether different corruptions follow different distance-severity relationships.
+
+**Method**: Sample 20 severity levels per corruption (0.05 to 1.0, step=0.05), compute mean cosine distance across 5 scenes at each level. Fit linear and quadratic regression models. Test cross-corruption calibration transfer, severity ordering preservation, and just-noticeable-difference thresholds.
+
+**Finding 924**: Distance-severity relationship is nearly perfectly quadratic — fog achieves R²=0.999, night R²=0.993, blur R²=0.988, noise R²=0.971 under quadratic fit. Linear fit is worse (fog 0.968, night 0.918), confirming superlinear distance growth with severity.
+
+**Finding 925**: Fog, night, and blur severity ordering is perfectly preserved (100% pairwise accuracy over 190 pairs), but noise has 3 inversions (95.8%). Higher severity always produces greater distance for fog/night/blur, enabling reliable severity estimation from a single distance measurement.
+
+**Finding 926**: Cross-corruption severity calibration achieves perfect rank correlation (1.0) for all pairs except those involving noise (0.974). A severity model trained on fog perfectly rank-orders night or blur severities, enabling corruption-agnostic severity estimation.
+
+**Finding 927**: Just-noticeable-difference varies 17× across corruptions — blur detectable at severity 0.05, night at 0.10, fog at 0.20, noise not until 0.85. The detection sensitivity ordering (blur > night > fog >> noise) reflects embedding displacement magnitude per unit severity.
+
+**Finding 928**: Night produces the steepest distance-severity slope (8.0e-3 per unit severity), 2.5× fog (3.2e-3) and 62× noise (1.3e-4). Night's large displacement range and perfect monotonicity make it the ideal corruption for severity estimation validation.
+
+---
+
+## Experiment 416: Layer Ensemble Detection
+
+**Objective**: Test whether combining hidden states from multiple transformer layers improves detection beyond any single layer, and characterize the per-layer detection profile across all 33 layers.
+
+**Method**: Extract hidden states from all 33 layers (L0=embedding through L32=final) in single forward passes. Compute per-layer AUROC, pairwise layer correlation matrix, ensemble strategies (mean/max/vote), greedy layer subset selection, and layer diversity analysis.
+
+**Finding 929**: 20/33 layers achieve AUROC=1.0 individually. Layer 0 (embedding) has AUROC=0.5 (random). Layers 1-9 (early) are ALL perfect. Layers 10-21 (middle) dip to 0.89-0.99 with noise as the bottleneck. Layers 22-32 (late) recover to ALL perfect.
+
+**Finding 930**: The middle-layer dip (L10-L21) is caused exclusively by noise detection degradation — fog/night/blur maintain AUROC=1.0 at all layers, but noise drops to 0.92 at L10 (the weakest layer). This bimodal pattern (early and late perfect, middle imperfect) suggests noise information is partially lost during intermediate processing stages.
+
+**Finding 931**: All ensemble strategies (mean, max, vote) achieve AUROC=1.0, but provide ZERO benefit over a single layer — L1 alone already achieves AUROC=1.0. The greedy forward selection algorithm picks L1 first and immediately reaches perfect detection, with no marginal improvement from adding any additional layer.
+
+**Finding 932**: Layer distance patterns are extremely correlated (>0.97 for all non-embedding pairs). L3 correlates at r>0.96 with every other layer from L1-L32. This near-perfect correlation means the information used for detection is remarkably consistent across the entire network.
+
+**Finding 933**: Clean in-distribution distance increases monotonically from L1 (8.1e-6) to L32 (0.065), a 8000× increase. Despite this, AUROC is unaffected because corruption displacements scale proportionally. Later layers have more "ambient noise" in their embeddings but equally strong corruption signals.
+
+---
+
+## Experiment 417: Adversarial Directions in Embedding Space
+
+**Objective**: Test whether structured pixel perturbations can change the model's action predictions while evading the embedding-based OOD detector. Study the geometry of perturbation directions in pixel space and their impact on both embeddings and actions.
+
+**Method**: Apply 5 perturbation types (brightness, darkness, random noise, checkerboard, sinusoidal) at 5 magnitudes (0.05–0.5) across 5 scenes. Additionally, test 20 random perturbation directions at magnitude 0.3, and perform a fine-grained magnitude sweep (15 levels, 0.01–0.5).
+
+**Finding 934**: ALL perturbation types at ALL magnitudes produce ZERO action token changes — the vision encoder is completely robust to generic pixel-space perturbations up to 50% magnitude. No perturbation direction tested changed a single action prediction across any scene.
+
+**Finding 935**: Embedding distances remain within 10% of clean baseline (~5.8e-5) under all perturbation types and magnitudes, with maximum AUROC=0.64 (checkerboard). The perturbations are effectively invisible to the embedding space, producing no detectable shift.
+
+**Finding 936**: 0/20 random perturbation directions at magnitude 0.3 produced any action change — evasion rate is 0%. The model's action predictions are not sensitive to arbitrary pixel-space perturbations, only to domain-specific corruption patterns (fog, night, noise, blur).
+
+**Finding 937**: The fundamental asymmetry between corruption detection and adversarial evasion is that corruptions that change actions (fog, night, blur) operate through specific visual domain patterns that inherently shift embeddings, while pixel-space perturbations that could theoretically evade detection do not actually affect the model's behavior. There is no "adversarial gap" because perturbations must go through the same bottleneck as corruptions to affect actions.

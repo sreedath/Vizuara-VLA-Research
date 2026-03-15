@@ -1,0 +1,345 @@
+{
+  "perturbation_types": {
+    "0.05": {
+      "brightness": {
+        "mean_dist": 5.809217572343428e-05,
+        "auroc": 0.5,
+        "tokens_changed": 0
+      },
+      "darkness": {
+        "mean_dist": 5.9377748899880346e-05,
+        "auroc": 0.56,
+        "tokens_changed": 0
+      },
+      "random": {
+        "mean_dist": 6.148253761653066e-05,
+        "auroc": 0.64,
+        "tokens_changed": 0
+      },
+      "checkerboard": {
+        "mean_dist": 6.201123410634057e-05,
+        "auroc": 0.64,
+        "tokens_changed": 0
+      },
+      "sinusoidal": {
+        "mean_dist": 5.977526998868221e-05,
+        "auroc": 0.56,
+        "tokens_changed": 0
+      }
+    },
+    "0.1": {
+      "brightness": {
+        "mean_dist": 5.809217572343428e-05,
+        "auroc": 0.5,
+        "tokens_changed": 0
+      },
+      "darkness": {
+        "mean_dist": 5.9377748899880346e-05,
+        "auroc": 0.56,
+        "tokens_changed": 0
+      },
+      "random": {
+        "mean_dist": 6.147982645223759e-05,
+        "auroc": 0.6,
+        "tokens_changed": 0
+      },
+      "checkerboard": {
+        "mean_dist": 6.201123410634057e-05,
+        "auroc": 0.64,
+        "tokens_changed": 0
+      },
+      "sinusoidal": {
+        "mean_dist": 5.9390343648590974e-05,
+        "auroc": 0.56,
+        "tokens_changed": 0
+      }
+    },
+    "0.2": {
+      "brightness": {
+        "mean_dist": 5.809217572343428e-05,
+        "auroc": 0.5,
+        "tokens_changed": 0
+      },
+      "darkness": {
+        "mean_dist": 5.9377748899880346e-05,
+        "auroc": 0.56,
+        "tokens_changed": 0
+      },
+      "random": {
+        "mean_dist": 5.9868937401463815e-05,
+        "auroc": 0.56,
+        "tokens_changed": 0
+      },
+      "checkerboard": {
+        "mean_dist": 6.201123410634057e-05,
+        "auroc": 0.64,
+        "tokens_changed": 0
+      },
+      "sinusoidal": {
+        "mean_dist": 5.8728027928944826e-05,
+        "auroc": 0.52,
+        "tokens_changed": 0
+      }
+    },
+    "0.3": {
+      "brightness": {
+        "mean_dist": 5.809217572343428e-05,
+        "auroc": 0.5,
+        "tokens_changed": 0
+      },
+      "darkness": {
+        "mean_dist": 5.9377748899880346e-05,
+        "auroc": 0.56,
+        "tokens_changed": 0
+      },
+      "random": {
+        "mean_dist": 6.028893494363086e-05,
+        "auroc": 0.6,
+        "tokens_changed": 0
+      },
+      "checkerboard": {
+        "mean_dist": 6.201123410634057e-05,
+        "auroc": 0.64,
+        "tokens_changed": 0
+      },
+      "sinusoidal": {
+        "mean_dist": 6.036359109409251e-05,
+        "auroc": 0.6,
+        "tokens_changed": 0
+      }
+    },
+    "0.5": {
+      "brightness": {
+        "mean_dist": 5.809217572343428e-05,
+        "auroc": 0.5,
+        "tokens_changed": 0
+      },
+      "darkness": {
+        "mean_dist": 5.9377748899880346e-05,
+        "auroc": 0.56,
+        "tokens_changed": 0
+      },
+      "random": {
+        "mean_dist": 6.146283575172439e-05,
+        "auroc": 0.64,
+        "tokens_changed": 0
+      },
+      "checkerboard": {
+        "mean_dist": 6.201123410634057e-05,
+        "auroc": 0.64,
+        "tokens_changed": 0
+      },
+      "sinusoidal": {
+        "mean_dist": 5.877341762632327e-05,
+        "auroc": 0.52,
+        "tokens_changed": 0
+      }
+    }
+  },
+  "evasion_analysis": {
+    "0": {
+      "mean_dist": 5.8978747215188144e-05,
+      "max_dist": 0.00010003268212266381,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "1": {
+      "mean_dist": 5.9846037205368854e-05,
+      "max_dist": 0.0001002225662455336,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "2": {
+      "mean_dist": 5.9367783138508655e-05,
+      "max_dist": 9.947056349712824e-05,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "3": {
+      "mean_dist": 6.005968642097681e-05,
+      "max_dist": 0.00010306446036212336,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "4": {
+      "mean_dist": 6.0286617236515736e-05,
+      "max_dist": 0.00010288948567405143,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "5": {
+      "mean_dist": 6.097593247105238e-05,
+      "max_dist": 0.0001039619093695654,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "6": {
+      "mean_dist": 6.004613743813003e-05,
+      "max_dist": 0.0001019630876550881,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "7": {
+      "mean_dist": 5.995786657844171e-05,
+      "max_dist": 0.0001005108511373809,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "8": {
+      "mean_dist": 6.089596985610068e-05,
+      "max_dist": 0.00010485237617363641,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "9": {
+      "mean_dist": 6.157461765543548e-05,
+      "max_dist": 0.0001078315042430944,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "10": {
+      "mean_dist": 5.896805730336574e-05,
+      "max_dist": 0.00010044378622497963,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "11": {
+      "mean_dist": 6.012133340085324e-05,
+      "max_dist": 0.00010242917448954891,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "12": {
+      "mean_dist": 6.031942700073234e-05,
+      "max_dist": 0.00010003534066327369,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "13": {
+      "mean_dist": 6.125176835600766e-05,
+      "max_dist": 0.00010394239112032633,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "14": {
+      "mean_dist": 6.086954358304197e-05,
+      "max_dist": 0.00010621464358540056,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "15": {
+      "mean_dist": 5.830147635648153e-05,
+      "max_dist": 9.906122868996725e-05,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "16": {
+      "mean_dist": 5.943787010982415e-05,
+      "max_dist": 9.84085472547358e-05,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "17": {
+      "mean_dist": 5.950306911943759e-05,
+      "max_dist": 9.956502175623161e-05,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "18": {
+      "mean_dist": 5.798473345501876e-05,
+      "max_dist": 9.97990233304602e-05,
+      "tokens_changed": 0,
+      "detected": false
+    },
+    "19": {
+      "mean_dist": 6.004843471252297e-05,
+      "max_dist": 0.00010319462115415678,
+      "tokens_changed": 0,
+      "detected": false
+    }
+  },
+  "evasion_summary": {
+    "n_trials": 20,
+    "n_action_changing": 0,
+    "n_detected": 0,
+    "n_evasive": 0,
+    "evasion_rate": 0.0
+  },
+  "magnitude_impact": {
+    "0.010": {
+      "mean_dist": 6.069451069585785e-05,
+      "auroc": 0.6,
+      "tokens_changed": 0
+    },
+    "0.045": {
+      "mean_dist": 5.988737729349936e-05,
+      "auroc": 0.64,
+      "tokens_changed": 0
+    },
+    "0.080": {
+      "mean_dist": 5.9384670032125444e-05,
+      "auroc": 0.52,
+      "tokens_changed": 0
+    },
+    "0.115": {
+      "mean_dist": 6.161446053343234e-05,
+      "auroc": 0.64,
+      "tokens_changed": 0
+    },
+    "0.150": {
+      "mean_dist": 6.0399658638932153e-05,
+      "auroc": 0.6,
+      "tokens_changed": 0
+    },
+    "0.185": {
+      "mean_dist": 5.965105597613984e-05,
+      "auroc": 0.56,
+      "tokens_changed": 0
+    },
+    "0.220": {
+      "mean_dist": 5.887283815679823e-05,
+      "auroc": 0.56,
+      "tokens_changed": 0
+    },
+    "0.255": {
+      "mean_dist": 6.138744184960298e-05,
+      "auroc": 0.6,
+      "tokens_changed": 0
+    },
+    "0.290": {
+      "mean_dist": 5.9460218424733924e-05,
+      "auroc": 0.52,
+      "tokens_changed": 0
+    },
+    "0.325": {
+      "mean_dist": 6.0451280426687684e-05,
+      "auroc": 0.64,
+      "tokens_changed": 0
+    },
+    "0.360": {
+      "mean_dist": 5.866678881503162e-05,
+      "auroc": 0.56,
+      "tokens_changed": 0
+    },
+    "0.395": {
+      "mean_dist": 6.019952323845779e-05,
+      "auroc": 0.56,
+      "tokens_changed": 0
+    },
+    "0.430": {
+      "mean_dist": 6.099902682163982e-05,
+      "auroc": 0.6,
+      "tokens_changed": 0
+    },
+    "0.465": {
+      "mean_dist": 6.066646978433177e-05,
+      "auroc": 0.64,
+      "tokens_changed": 0
+    },
+    "0.500": {
+      "mean_dist": 5.9512720637378e-05,
+      "auroc": 0.56,
+      "tokens_changed": 0
+    }
+  }
+}

@@ -1,0 +1,332 @@
+{
+  "experiment": "mahalanobis_vs_cosine",
+  "experiment_number": 145,
+  "timestamp": "20260315_005810",
+  "n_cal": 12,
+  "n_test_id": 10,
+  "n_ood_per_cat": 6,
+  "ood_categories": [
+    "fog_30",
+    "fog_60",
+    "night",
+    "blur",
+    "noise",
+    "occlusion",
+    "snow",
+    "overexpose"
+  ],
+  "layers": [
+    3,
+    32
+  ],
+  "results": {
+    "L3": {
+      "cosine": {
+        "overall": {
+          "auroc": 0.5,
+          "d_prime": 0.0,
+          "id_mean": 1.1920928955078125e-07,
+          "id_std": 0.0,
+          "ood_mean": 1.1920928955078125e-07,
+          "ood_std": 0.0
+        },
+        "per_category": {
+          "fog_30": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 1.1920928955078125e-07,
+            "id_std": 0.0,
+            "ood_mean": 1.1920928955078125e-07,
+            "ood_std": 0.0
+          },
+          "fog_60": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 1.1920928955078125e-07,
+            "id_std": 0.0,
+            "ood_mean": 1.1920928955078125e-07,
+            "ood_std": 0.0
+          },
+          "night": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 1.1920928955078125e-07,
+            "id_std": 0.0,
+            "ood_mean": 1.1920928955078125e-07,
+            "ood_std": 0.0
+          },
+          "blur": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 1.1920928955078125e-07,
+            "id_std": 0.0,
+            "ood_mean": 1.1920928955078125e-07,
+            "ood_std": 0.0
+          },
+          "noise": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 1.1920928955078125e-07,
+            "id_std": 0.0,
+            "ood_mean": 1.1920928955078125e-07,
+            "ood_std": 0.0
+          },
+          "occlusion": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 1.1920928955078125e-07,
+            "id_std": 0.0,
+            "ood_mean": 1.1920928955078125e-07,
+            "ood_std": 0.0
+          },
+          "snow": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 1.1920928955078125e-07,
+            "id_std": 0.0,
+            "ood_mean": 1.1920928955078125e-07,
+            "ood_std": 0.0
+          },
+          "overexpose": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 1.1920928955078125e-07,
+            "id_std": 0.0,
+            "ood_mean": 1.1920928955078125e-07,
+            "ood_std": 0.0
+          }
+        }
+      },
+      "mahalanobis": {
+        "overall": {
+          "auroc": 0.5,
+          "d_prime": 0.0,
+          "id_mean": 0.0,
+          "id_std": 0.0,
+          "ood_mean": 0.0,
+          "ood_std": 0.0
+        },
+        "per_category": {
+          "fog_30": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "fog_60": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "night": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "blur": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "noise": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "occlusion": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "snow": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "overexpose": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          }
+        }
+      }
+    },
+    "L32": {
+      "cosine": {
+        "overall": {
+          "auroc": 0.5,
+          "d_prime": 0.0,
+          "id_mean": 5.960464477539063e-08,
+          "id_std": 0.0,
+          "ood_mean": 5.960464477539063e-08,
+          "ood_std": 0.0
+        },
+        "per_category": {
+          "fog_30": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 5.960464477539063e-08,
+            "id_std": 0.0,
+            "ood_mean": 5.960464477539063e-08,
+            "ood_std": 0.0
+          },
+          "fog_60": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 5.960464477539063e-08,
+            "id_std": 0.0,
+            "ood_mean": 5.960464477539063e-08,
+            "ood_std": 0.0
+          },
+          "night": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 5.960464477539063e-08,
+            "id_std": 0.0,
+            "ood_mean": 5.960464477539063e-08,
+            "ood_std": 0.0
+          },
+          "blur": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 5.960464477539063e-08,
+            "id_std": 0.0,
+            "ood_mean": 5.960464477539063e-08,
+            "ood_std": 0.0
+          },
+          "noise": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 5.960464477539063e-08,
+            "id_std": 0.0,
+            "ood_mean": 5.960464477539063e-08,
+            "ood_std": 0.0
+          },
+          "occlusion": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 5.960464477539063e-08,
+            "id_std": 0.0,
+            "ood_mean": 5.960464477539063e-08,
+            "ood_std": 0.0
+          },
+          "snow": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 5.960464477539063e-08,
+            "id_std": 0.0,
+            "ood_mean": 5.960464477539063e-08,
+            "ood_std": 0.0
+          },
+          "overexpose": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 5.960464477539063e-08,
+            "id_std": 0.0,
+            "ood_mean": 5.960464477539063e-08,
+            "ood_std": 0.0
+          }
+        }
+      },
+      "mahalanobis": {
+        "overall": {
+          "auroc": 0.5,
+          "d_prime": 0.0,
+          "id_mean": 0.0,
+          "id_std": 0.0,
+          "ood_mean": 0.0,
+          "ood_std": 0.0
+        },
+        "per_category": {
+          "fog_30": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "fog_60": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "night": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "blur": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "noise": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "occlusion": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "snow": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          },
+          "overexpose": {
+            "auroc": 0.5,
+            "d_prime": 0.0,
+            "id_mean": 0.0,
+            "id_std": 0.0,
+            "ood_mean": 0.0,
+            "ood_std": 0.0
+          }
+        }
+      }
+    }
+  }
+}

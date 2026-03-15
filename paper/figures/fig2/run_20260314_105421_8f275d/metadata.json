@@ -1,0 +1,25 @@
+{
+  "run_id": "run_20260314_105421_8f275d",
+  "timestamp": "2026-03-14T10:55:05.603447",
+  "vlm_provider": "gemini",
+  "vlm_model": "gemini-2.0-flash",
+  "image_provider": "google_imagen",
+  "image_model": "gemini-3-pro-image-preview",
+  "refinement_iterations": 2,
+  "seed": null,
+  "config_snapshot": {
+    "vlm_provider": "gemini",
+    "vlm_model": "gemini-2.0-flash",
+    "image_provider": "google_imagen",
+    "image_model": "gemini-3-pro-image-preview",
+    "num_retrieval_examples": 10,
+    "refinement_iterations": 2,
+    "output_resolution": "2k",
+    "reference_set_path": "data/reference_sets",
+    "guidelines_path": "data/guidelines",
+    "output_dir": "/home/ubuntu/agents/VLA research/Vizuara-VLA-Research/paper/figures/fig2",
+    "save_iterations": true,
+    "openrouter_api_key": null,
+    "skip_ssl_verification": false
+  }
+}

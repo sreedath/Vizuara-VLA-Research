@@ -1,14 +1,14 @@
 """
 Action Token Entropy and Distribution Shape Analysis.
 
-Examines how the action token distribution (256-bin) changes
-between ID and OOD inputs across all 7 action dimensions.
+Examines how the first action token distribution changes between ID
+and OOD inputs. Uses the full vocabulary logits rather than assuming
+specific action token IDs.
 
 Tests:
-1. Per-dimension entropy comparison (ID vs OOD)
+1. Full vocabulary entropy comparison (ID vs OOD)
 2. Top-1 token concentration (peakiness)
-3. Distribution shape (uniform-like vs peaked)
-4. Cross-dimension correlation
+3. Per-scenario entropy profiles
 
 Experiment 73 in the CalibDrive series.
 """
@@ -23,7 +23,6 @@ from sklearn.metrics import roc_auc_score
 RESULTS_DIR = "/workspace/Vizuara-VLA-Research/experiments"
 os.makedirs(RESULTS_DIR, exist_ok=True)
 SIZE = (256, 256)
-ACTION_TOKEN_IDS = list(range(32000, 32256))  # OpenVLA action bins
 
 
 def create_highway(idx):
@@ -61,47 +60,59 @@ def create_blackout(idx):
     return np.zeros((*SIZE, 3), dtype=np.uint8)
 
 
-def extract_action_dist(model, processor, image, prompt, n_tokens=7):
-    """Extract per-dimension action token distributions via autoregressive generation."""
+def extract_logit_features(model, processor, image, prompt):
+    """Extract distribution features from the output logits."""
     inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-    input_ids = inputs['input_ids']
-    attention_mask = inputs.get('attention_mask', None)
 
-    distributions = []
-    generated_ids = input_ids.clone()
-    gen_attn = attention_mask.clone() if attention_mask is not None else None
+    with torch.no_grad():
+        fwd = model(**inputs)
 
-    for dim in range(n_tokens):
-        with torch.no_grad():
-            outputs = model(input_ids=generated_ids, attention_mask=gen_attn)
+    logits = fwd.logits[0, -1, :].float().cpu().numpy()
+    vocab_size = len(logits)
 
-        logits = outputs.logits[0, -1, :]  # Last token logits
-        # Extract action token logits only
-        action_logits = logits[ACTION_TOKEN_IDS].float().cpu().numpy()
-        # Softmax over action tokens
-        action_logits_shifted = action_logits - action_logits.max()
-        probs = np.exp(action_logits_shifted) / np.sum(np.exp(action_logits_shifted))
+    # Full vocabulary softmax
+    logits_shifted = logits - logits.max()
+    probs = np.exp(logits_shifted) / np.sum(np.exp(logits_shifted))
 
-        entropy = -np.sum(probs * np.log(probs + 1e-10))
-        top1 = float(np.max(probs))
-        top5 = float(np.sum(np.sort(probs)[-5:]))
-        argmax_bin = int(np.argmax(probs))
+    # Entropy
+    entropy = -np.sum(probs * np.log(probs + 1e-10))
+    max_entropy = np.log(vocab_size)
+    normalized_entropy = entropy / max_entropy
 
-        distributions.append({
-            'entropy': float(entropy),
-            'top1': top1,
-            'top5': top5,
-            'argmax_bin': argmax_bin,
-            'probs': probs.tolist(),
-        })
+    # Top-k concentration
+    sorted_probs = np.sort(probs)[::-1]
+    top1 = float(sorted_probs[0])
+    top5 = float(np.sum(sorted_probs[:5]))
+    top10 = float(np.sum(sorted_probs[:10]))
+    top50 = float(np.sum(sorted_probs[:50]))
 
-        # Greedy select and append
-        next_token = torch.tensor([[ACTION_TOKEN_IDS[argmax_bin]]], device=model.device)
-        generated_ids = torch.cat([generated_ids, next_token], dim=1)
-        if gen_attn is not None:
-            gen_attn = torch.cat([gen_attn, torch.ones(1, 1, device=model.device, dtype=gen_attn.dtype)], dim=1)
+    # Energy score
+    energy = float(np.log(np.sum(np.exp(logits_shifted))) + logits.max())
 
-    return distributions
+    # Logit statistics
+    logit_mean = float(np.mean(logits))
+    logit_std = float(np.std(logits))
+    logit_max = float(np.max(logits))
+    logit_min = float(np.min(logits))
+
+    # Top token ID
+    top_id = int(np.argmax(probs))
+
+    return {
+        'entropy': float(entropy),
+        'norm_entropy': float(normalized_entropy),
+        'top1': top1,
+        'top5': top5,
+        'top10': top10,
+        'top50': top50,
+        'energy': energy,
+        'logit_mean': logit_mean,
+        'logit_std': logit_std,
+        'logit_max': logit_max,
+        'logit_min': logit_min,
+        'top_token_id': top_id,
+        'vocab_size': vocab_size,
+    }
 
 
 def main():
@@ -124,11 +135,11 @@ def main():
     prompt = "In: What action should the robot take to drive forward at 25 m/s safely?\nOut:"
 
     test_fns = {
-        'highway': (create_highway, False, 8),
-        'urban': (create_urban, False, 8),
-        'noise': (create_noise, True, 6),
-        'indoor': (create_indoor, True, 6),
-        'blackout': (create_blackout, True, 4),
+        'highway': (create_highway, False, 10),
+        'urban': (create_urban, False, 10),
+        'noise': (create_noise, True, 8),
+        'indoor': (create_indoor, True, 8),
+        'blackout': (create_blackout, True, 6),
     }
 
     all_data = []
@@ -137,16 +148,15 @@ def main():
     for scene, (fn, is_ood, n) in test_fns.items():
         for i in range(n):
             cnt += 1
-            dists = extract_action_dist(model, processor,
-                                        Image.fromarray(fn(i + 800)), prompt)
-            record = {
-                'scenario': scene,
-                'is_ood': is_ood,
-                'dims': dists,
-            }
-            all_data.append(record)
+            feats = extract_logit_features(model, processor,
+                                           Image.fromarray(fn(i + 800)), prompt)
+            feats['scenario'] = scene
+            feats['is_ood'] = is_ood
+            all_data.append(feats)
             if cnt % 5 == 0:
-                print(f"  [{cnt}/{total}] {scene}", flush=True)
+                print(f"  [{cnt}/{total}] {scene}: entropy={feats['entropy']:.2f} "
+                      f"top1={feats['top1']:.4f} top_id={feats['top_token_id']}",
+                      flush=True)
 
     print(f"\nCollected {len(all_data)} samples.", flush=True)
 
@@ -155,77 +165,65 @@ def main():
     print("RESULTS", flush=True)
     print("=" * 70, flush=True)
 
-    # Per-dimension entropy
-    print("\n  Per-dimension entropy (ID vs OOD):", flush=True)
-    dim_results = {}
-    for dim in range(7):
-        id_entropies = [d['dims'][dim]['entropy'] for d in all_data if not d['is_ood']]
-        ood_entropies = [d['dims'][dim]['entropy'] for d in all_data if d['is_ood']]
-        id_top1 = [d['dims'][dim]['top1'] for d in all_data if not d['is_ood']]
-        ood_top1 = [d['dims'][dim]['top1'] for d in all_data if d['is_ood']]
+    id_data = [d for d in all_data if not d['is_ood']]
+    ood_data = [d for d in all_data if d['is_ood']]
 
-        # AUROC using entropy
-        labels = [0]*len(id_entropies) + [1]*len(ood_entropies)
-        scores = id_entropies + ood_entropies
-        auroc_ent = roc_auc_score(labels, scores)
+    # Per-metric AUROC
+    print("\n  Detection AUROC by logit feature:", flush=True)
+    results = {}
+    labels = [0]*len(id_data) + [1]*len(ood_data)
 
-        # AUROC using -top1 (lower top1 = more OOD)
-        scores_top1 = [-t for t in id_top1] + [-t for t in ood_top1]
-        auroc_top1 = roc_auc_score(labels, scores_top1)
+    for metric in ['entropy', 'norm_entropy', 'top1', 'top5', 'top10',
+                    'energy', 'logit_std', 'logit_max']:
+        if metric in ['top1', 'top5', 'top10']:
+            # Lower top-k = more uncertain = OOD
+            scores = [-d[metric] for d in id_data] + [-d[metric] for d in ood_data]
+        elif metric == 'energy':
+            scores = [-d[metric] for d in id_data] + [-d[metric] for d in ood_data]
+        else:
+            scores = [d[metric] for d in id_data] + [d[metric] for d in ood_data]
 
-        dim_results[dim] = {
-            'id_entropy_mean': float(np.mean(id_entropies)),
-            'id_entropy_std': float(np.std(id_entropies)),
-            'ood_entropy_mean': float(np.mean(ood_entropies)),
-            'ood_entropy_std': float(np.std(ood_entropies)),
-            'id_top1_mean': float(np.mean(id_top1)),
-            'ood_top1_mean': float(np.mean(ood_top1)),
-            'auroc_entropy': float(auroc_ent),
-            'auroc_top1': float(auroc_top1),
-        }
-        print(f"    Dim {dim}: ID_ent={np.mean(id_entropies):.3f} "
-              f"OOD_ent={np.mean(ood_entropies):.3f} "
-              f"AUROC_ent={auroc_ent:.3f} AUROC_top1={auroc_top1:.3f}", flush=True)
-
-    # Aggregated entropy across all dims
-    print("\n  Aggregated (mean across dims):", flush=True)
-    id_agg = [np.mean([d['dims'][dim]['entropy'] for dim in range(7)]) for d in all_data if not d['is_ood']]
-    ood_agg = [np.mean([d['dims'][dim]['entropy'] for dim in range(7)]) for d in all_data if d['is_ood']]
-    labels_agg = [0]*len(id_agg) + [1]*len(ood_agg)
-    auroc_agg = roc_auc_score(labels_agg, id_agg + ood_agg)
-    print(f"    Mean entropy AUROC: {auroc_agg:.3f}", flush=True)
-    print(f"    ID: {np.mean(id_agg):.3f}±{np.std(id_agg):.3f}", flush=True)
-    print(f"    OOD: {np.mean(ood_agg):.3f}±{np.std(ood_agg):.3f}", flush=True)
+        auroc = roc_auc_score(labels, scores)
+        results[metric] = float(auroc)
+        print(f"    {metric:<15}: AUROC={auroc:.3f}", flush=True)
 
     # Per-scenario
-    print("\n  Per-scenario mean entropy:", flush=True)
+    print("\n  Per-scenario statistics:", flush=True)
+    print(f"    {'Scene':<12} {'Entropy':>8} {'Top1':>8} {'Top5':>8} {'Energy':>8} {'LogStd':>8}",
+          flush=True)
+    per_scenario = {}
     for scene in ['highway', 'urban', 'noise', 'indoor', 'blackout']:
-        ents = [np.mean([d['dims'][dim]['entropy'] for dim in range(7)])
-                for d in all_data if d['scenario'] == scene]
-        print(f"    {scene:<12}: {np.mean(ents):.3f}±{np.std(ents):.3f}", flush=True)
+        sd = [d for d in all_data if d['scenario'] == scene]
+        per_scenario[scene] = {
+            'entropy': float(np.mean([d['entropy'] for d in sd])),
+            'top1': float(np.mean([d['top1'] for d in sd])),
+            'top5': float(np.mean([d['top5'] for d in sd])),
+            'energy': float(np.mean([d['energy'] for d in sd])),
+            'logit_std': float(np.mean([d['logit_std'] for d in sd])),
+        }
+        print(f"    {scene:<12} {per_scenario[scene]['entropy']:>8.2f} "
+              f"{per_scenario[scene]['top1']:>8.4f} {per_scenario[scene]['top5']:>8.4f} "
+              f"{per_scenario[scene]['energy']:>8.2f} {per_scenario[scene]['logit_std']:>8.3f}",
+              flush=True)
 
-    # Save (without full probability distributions to save space)
+    # Top token analysis
+    print("\n  Most common top token IDs:", flush=True)
+    for group_name, group in [('ID', id_data), ('OOD', ood_data)]:
+        top_ids = [d['top_token_id'] for d in group]
+        unique, counts = np.unique(top_ids, return_counts=True)
+        sorted_idx = np.argsort(-counts)
+        top3 = [(int(unique[i]), int(counts[i])) for i in sorted_idx[:3]]
+        print(f"    {group_name}: {top3}", flush=True)
+
+    # Save
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
         'experiment': 'action_token_entropy',
         'experiment_number': 73,
         'timestamp': timestamp,
         'n_samples': len(all_data),
-        'dim_results': dim_results,
-        'aggregated': {
-            'auroc': float(auroc_agg),
-            'id_mean': float(np.mean(id_agg)),
-            'ood_mean': float(np.mean(ood_agg)),
-        },
-        'per_scenario': {
-            scene: {
-                'mean_entropy': float(np.mean([
-                    np.mean([d['dims'][dim]['entropy'] for dim in range(7)])
-                    for d in all_data if d['scenario'] == scene
-                ])),
-            }
-            for scene in ['highway', 'urban', 'noise', 'indoor', 'blackout']
-        },
+        'auroc_by_metric': results,
+        'per_scenario': per_scenario,
     }
     output_path = os.path.join(RESULTS_DIR, f"action_token_entropy_{timestamp}.json")
     with open(output_path, 'w') as f:
