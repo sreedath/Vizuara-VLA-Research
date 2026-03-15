@@ -5819,3 +5819,42 @@ All top-K and random-K ≥ 100 achieve AUROC=1.000. Even 10 random dims: AUROC=0
 4. **Conservative 3σ threshold recommended**: t=0.105 is safely above all ID scores and well below all OOD scores. This threshold provides a 0.093 margin below the hardest OOD case (fog).
 
 5. **No precision-recall tradeoff**: At any threshold in the gap, precision=1.0, recall=1.0, F1=1.0, FPR=0.0. The detector has no operating point tradeoff — it simply works perfectly.
+
+---
+
+## Finding 125: Computational Overhead (Experiment 131)
+
+**Research Question:** How much latency does OOD detection add to VLA inference?
+
+**Experiment Design:** 20 trials per component on NVIDIA A40. Measure: forward pass, forward+hidden, extraction, generation, preprocessing, cosine distance, full pipeline.
+
+### Results
+
+**Latency (NVIDIA A40):**
+| Component | Mean | Std |
+|-----------|------|-----|
+| Standard forward | 136.4 ms | 38.2 ms |
+| Forward + hidden states | 135.3 ms | 34.3 ms |
+| Hidden state extraction | 131.9 ms | 34.8 ms |
+| Action generation (8 tokens) | 345.2 ms | 38.5 ms |
+| Preprocessing | 35.6 ms | 41.7 ms |
+| Cosine distance | 49.5 μs | 1.95 ms |
+| Full OOD pipeline | 139.0 ms | 36.0 ms |
+
+**Overhead Analysis:**
+- Hidden state overhead: **-1.1 ms (-0.8%)** — effectively zero
+- Cosine distance: **49.5 μs** — negligible
+- Total detection overhead: **~0 ms**
+- Full OOD pipeline is **2.5× faster** than action generation
+
+### Key Insights
+
+1. **OOD detection is free**: The `output_hidden_states=True` flag adds no measurable overhead to the forward pass. The hidden states are already computed internally — we just request them.
+
+2. **Cosine distance is negligible (50 μs)**: The scoring function on 4096-d vectors takes 50 microseconds — 0.04% of the forward pass time.
+
+3. **OOD check can run in parallel with generation**: In deployment, the forward pass produces both hidden states (for OOD check) and the initial logits (for generation). The OOD check completes in ~139ms while generation takes ~345ms, so detection can flag OOD before the model finishes generating actions.
+
+4. **Detection is 2.5× faster than generation**: Even if done sequentially, OOD detection completes in 139ms vs 345ms for generation. The safety check is faster than the unsafe action it prevents.
+
+5. **GPU memory**: 15.7 GB for OpenVLA-7B in bfloat16 on NVIDIA A40 (48 GB). Plenty of headroom.

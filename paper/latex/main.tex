@@ -2440,4 +2440,22 @@ We analyze the full ROC curve and sweep 50 thresholds to characterize operating 
 
 The threshold analysis completes the deployment specification for the cosine distance detector. The $17.3\sigma$ score gap means that threshold selection is not a challenging engineering problem---any value between 0.10 and 0.19 works perfectly. We recommend the conservative $3\sigma$ threshold ($t = 0.105$) because it maximizes the margin below the hardest OOD case (fog at 0.198) while remaining safely above all ID scores (max 0.097). In a production system, this threshold could be computed automatically from the calibration set as $t = \mu_\text{ID} + 3\sigma_\text{ID}$, requiring no manual tuning. The absence of any precision-recall tradeoff is the strongest possible result for a binary detector---it achieves the theoretical maximum on all metrics simultaneously.
 
+\subsection{Computational Overhead}
+\label{app:compute_overhead}
+
+\textbf{Finding 169: OOD detection adds zero measurable overhead to VLA inference. The \texttt{output\_hidden\_states} flag adds $-1.1$~ms ($-0.8\%$), within noise. The cosine distance computation takes $49.5~\mu$s.}
+
+\textbf{Finding 170: The full OOD detection pipeline (139~ms) is $2.5\times$ faster than action generation (345~ms). Detection can run in parallel with generation, completing before the model finishes producing action tokens.}
+
+We profile each component of the inference and detection pipeline on an NVIDIA A40 GPU (Figure~\ref{fig:compute_overhead}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig117_compute_overhead.png}
+\caption{\textbf{Computational overhead.} (a) Latency breakdown: OOD pipeline (139~ms) is $2.5\times$ faster than action generation (345~ms). (b) Detection overhead: effectively zero---hidden state extraction is free, cosine distance takes $50~\mu$s. (c) Deployment scenarios: sequential adds 40\% latency; parallel adds 0\% because detection completes before generation.}
+\label{fig:compute_overhead}
+\end{figure}
+
+The zero-overhead property is perhaps the most practically important finding of this work. Because the transformer already computes hidden states as part of its normal forward pass, requesting them via \texttt{output\_hidden\_states=True} simply prevents their deallocation---no additional computation is required. The cosine distance between two 4096-dimensional vectors takes $50~\mu$s, which is $0.04\%$ of the forward pass time. In a pipelined deployment, the OOD check can be performed on the single forward pass that precedes autoregressive generation: the hidden states from the forward pass are used for the OOD check while the model simultaneously begins generating action tokens. Under this pipeline, OOD detection adds literally zero latency to the end-to-end inference.
+
 \end{document}

@@ -1,0 +1,42 @@
+{
+  "experiment": "compute_overhead",
+  "experiment_number": 131,
+  "timestamp": "20260315_000301",
+  "n_trials": 20,
+  "timings_ms": {
+    "forward": {
+      "mean": 136.402070755139,
+      "std": 34.71576586965571
+    },
+    "forward_hidden": {
+      "mean": 135.34514624625444,
+      "std": 34.26690945411438
+    },
+    "extract": {
+      "mean": 131.86920322477818,
+      "std": 34.78416001159616
+    },
+    "generate": {
+      "mean": 345.2243725769222,
+      "std": 38.53089725640321
+    },
+    "preprocess": {
+      "mean": 35.622195061296225,
+      "std": 41.705139881832615
+    },
+    "cosine_us": {
+      "mean": 49.47549197822809,
+      "std": 1951.520565718517
+    },
+    "pipeline": {
+      "mean": 138.99078969843686,
+      "std": 36.015540294986465
+    }
+  },
+  "overhead": {
+    "hidden_state_ms": -1.0569245088845602,
+    "hidden_state_pct": -0.7748595773020844
+  },
+  "gpu": "NVIDIA A40",
+  "gpu_memory_gb": 15.67520512
+}
