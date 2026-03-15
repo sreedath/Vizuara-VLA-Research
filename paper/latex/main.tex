@@ -4774,4 +4774,38 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 510}: Night corruption produces the \textbf{largest statistical shifts} across all moments (mean +6.1\%, std +2.7\%, kurtosis +1.7\%), consistent with it having the largest cosine distance (0.0034). Fog produces the smallest shifts ($<$1\%), consistent with its smallest distance (0.0007).
 
+\subsection{Temporal Drift and Layer Signal-to-Noise}
+
+\textbf{Experiment 248: Temporal Drift.} We process the same image 50 times and 20 different images to measure temporal stability and natural variation across layers.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig257_temporal_drift.png}
+\caption{Left: same-image embeddings are \textbf{bit-identical} across 50 frames (zero drift). Center: different images show natural variation that increases dramatically with layer depth. Right: Layer 3 has the best signal-to-noise ratio (7.5$\times$) for OOD detection.}
+\end{figure}
+
+\textbf{Finding 511}: The model is \textbf{perfectly deterministic}: same image produces bit-identical embeddings across 50 frames at L15 and L31 (cosine distance $=$0.0). L3 shows constant 1.19$\times$10$^{-7}$ (floating-point quantization noise). The centroid never needs temporal recalibration.
+
+\textbf{Finding 512}: Layer 3 has the \textbf{optimal signal-to-noise ratio} for OOD detection. Natural image variation at L3 is 9.3$\times$10$^{-5}$ (SNR$=$7.5$\times$ vs fog corruption), while L15 variation is 0.014 (154$\times$ larger) and L31 is 0.058 (630$\times$ larger). Later layers amplify \textit{all} input changes, not just corruptions.
+
+\textbf{Finding 513}: The 630$\times$ increase in natural variation from L3 to L31 explains a fundamental trade-off: early layers preserve \textbf{visual identity} (similar images $\rightarrow$ similar embeddings), while later layers extract \textbf{semantic features} that vary with content. OOD detection benefits from early layers' conservative feature space.
+
+\subsection{Full Layer Distance Profile}
+
+\textbf{Experiment 249: 33-Layer Profile.} We measure cosine distance at all 33 hidden states (embedding layer L0 + 32 transformer layers) to characterize the complete layer-wise corruption sensitivity.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig258_layer_profile.png}
+\caption{Full 33-layer distance profile. Left: characteristic S-curve --- flat early (L0--L9), rapid growth (L10--L18), plateau (L19--L31), massive L32 spike. Center: log-scale early layers showing the S-curve onset. Right: L32 (LM head) produces 2.4--2.5$\times$ spike over L31.}
+\end{figure}
+
+\textbf{Finding 514}: Cosine distance follows a \textbf{characteristic S-curve} across the 33 layers: flat early (L0--L9), rapid growth (L10--L18), plateau (L19--L31), and a 2.5$\times$ spike at L32 (the LM head). This S-curve reveals how corruption signal is progressively amplified through the transformer stack.
+
+\textbf{Finding 515}: The embedding layer (L0) is \textbf{completely blind} to corruption: distance$=$0.0 for all four corruption types. The visual encoder produces identical token embeddings regardless of corruption. All corruption discrimination emerges from the transformer layers.
+
+\textbf{Finding 516}: Night and blur show a \textbf{peak-then-decay} pattern (night peaks at L20: 0.332, decays to L31: 0.258), while fog and noise distances increase monotonically. This suggests deeper layers partially compensate for brightness and blur changes but not for additive contamination.
+
+\textbf{Finding 517}: The LM head (L32) produces a consistent \textbf{2.4--2.5$\times$ distance spike} over L31 across all corruption types (night: 0.258$\rightarrow$0.628, blur: 0.196$\rightarrow$0.468, fog: 0.018$\rightarrow$0.045, noise: 0.033$\rightarrow$0.083). The final projection layer maximally amplifies embedding perturbations.
+
 \end{document}
