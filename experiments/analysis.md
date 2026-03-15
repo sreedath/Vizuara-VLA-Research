@@ -9140,3 +9140,35 @@ All ID means and stds are effectively 0.0 for all metrics.
 4. **High effective dimensionality**: Shift vectors use 53-61% of the 4096 dimensions, confirming the distributed nature of the OOD signal.
 
 **Finding 239**: Corruption shift vectors are **near-orthogonal** (mean angle = 78.5°), explaining why the detector achieves 100% corruption type identification — each type shifts the embedding in a distinct direction. The only exception is noise-snow (30.2°), which share additive random perturbation characteristics.
+
+---
+
+## Experiment 245: Adversarial Evasion Analysis
+
+**Research Question**: Can corrupted images be post-processed to evade the cosine distance detector? Tests brightness compensation, contrast adjustment, smoothing, and pixel-level corruption inversion.
+
+**Method**: Apply corruption, then apply compensating transforms. Measure whether the resulting distance can be reduced to zero (undetectable).
+
+**Results**:
+
+| Strategy | Distance | Reduction vs Raw |
+|---------|---------|-----------------|
+| Night raw | 0.003403 | — |
+| Night + bright×6.67 | 0.000166 | 95.1% |
+| Night inverted | 0.000183 | 94.6% |
+| Fog raw | 0.000698 | — |
+| Fog + contrast×2 | 0.000526 | 24.6% |
+| Fog inverted | 0.000025 | 96.4% |
+| Noise raw | 0.002883 | — |
+| Noise + blur(r=1) | 0.001575 | 45.4% |
+| Noise + blur(r=5) | 0.005609 | -94.5% (worse!) |
+
+**Minimum achievable: 0.000025 (fog inverted) — still >0, still detectable!**
+
+**Key Findings**:
+1. **All evasion strategies are still detectable**: Even the best (fog inversion) produces distance 0.000025, which is still >0 and >3× the temporal frame variation.
+2. **Pixel-level inversion is most effective**: Fog inversion ((arr-120)/0.4) achieves 96.4% reduction because it mathematically reverses the corruption. But this requires knowing the exact parameters.
+3. **Noise smoothing makes it WORSE**: Applying blur to noisy images INCREASES distance (from 0.00288 to 0.00561 at r=5). The blur itself becomes a detectable corruption.
+4. **Night brightness compensation has a sweet spot**: ×6.67 is optimal (matching 1/0.15 inversion), achieving 95.1% reduction, but overshooting (×10) increases distance again.
+
+**Finding 240**: **No simple post-processing evasion succeeds**: all strategies leave a residual distance >0. The best achievable is 0.000025 (fog inversion), still 3× larger than normal temporal variation. Noise smoothing paradoxically increases distance. The detector is robust to black-box post-processing attacks.

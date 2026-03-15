@@ -8,7 +8,7 @@
 
 Vision-Language-Action (VLA) models like OpenVLA-7B produce confident action predictions even under visual corruption (fog, night, blur, noise) --- silently outputting **wrong and dangerous actions**. We discover that a simple cosine distance metric on the model's hidden-state embeddings achieves **perfect OOD detection (AUROC=1.0)** with just **one clean calibration image**.
 
-## Key Results (465 Findings, 31 Experiments on Real OpenVLA-7B)
+## Key Results (501 Findings, 44 Experiments on Real OpenVLA-7B)
 
 | Property | Result |
 |----------|--------|
@@ -48,9 +48,9 @@ Our detector catches **100% of these** at AUROC=1.0, preventing dangerous robot 
 ## Repository Structure
 
 ```
-scripts/              # 31 experiment scripts (real OpenVLA-7B on GPU)
-experiments/          # JSON results + analysis.md (226 findings)
-paper/latex/          # NeurIPS-format paper (465 findings, 241 figures)
+scripts/              # 44 experiment scripts (real OpenVLA-7B on GPU)
+experiments/          # JSON results + analysis.md (239 findings)
+paper/latex/          # NeurIPS-format paper (501 findings, 253 figures)
 ```
 
 ## Experiments Run on Real OpenVLA-7B
@@ -81,6 +81,19 @@ paper/latex/          # NeurIPS-format paper (465 findings, 241 figures)
 | 229 | Per-Scene Centroid | Recovers AUROC=1.0 from 0.88 |
 | 230 | Severity Threshold | Detectable at 1% severity |
 | 231 | Adversarial Patches | All 9 patch types AUROC=1.0 |
+| 232 | Temporal Stability | L3 bit-identical across 20 passes |
+| 233 | Severity Estimation | Linear R²=0.93-0.98, MAE=0.035-0.066 |
+| 234 | Corruption Clustering | 100% type identification (6 types) |
+| 235 | Cross-Prompt Type ID | 100% prompt-invariant identification |
+| 236 | Embedding Norm | L2 norm also AUROC=1.0 (all layers) |
+| 237 | Online Detection | 0-1 frame detection latency |
+| 238 | Logit Analysis | Entropy fails as detector (noise: 3.3× overconfident) |
+| 239 | Recovery Detection | Bidirectional corruption tracking |
+| 240 | Mixture Decomposition | 83.3% dual-corruption identification |
+| 241 | Occlusion Maps | OOD signal spatially distributed |
+| 242 | Resolution Invariance | AUROC=1.0 at 64×64 to 1024×1024 |
+| 243 | Novel Scene Detection | Per-scene calibration needed (AUROC=0.67→1.0) |
+| 244 | Embedding Geometry | Shift vectors near-orthogonal (78.5°) |
 
 ## License
 

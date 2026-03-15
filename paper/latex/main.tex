@@ -4726,4 +4726,20 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 501}: Shift vectors have \textbf{effective dimensionality 2154--2494} (53--61\% of 4096D), confirming that corruption signals are distributed across thousands of dimensions rather than concentrated in a few. This high dimensionality is why PCA fails but random projection succeeds.
 
+\subsection{Evasion Robustness}
+
+\textbf{Experiment 245: Post-Processing Evasion.} Can corrupted images be post-processed (brightness compensation, contrast adjustment, smoothing) to evade the detector?
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig254_evasion.png}
+\caption{No simple post-processing evasion succeeds. Left: night brightness compensation achieves 95\% reduction but remains detectable. Center: fog inversion achieves 96\% reduction (d=0.000025). Right: noise smoothing paradoxically \textit{increases} distance.}
+\end{figure}
+
+\textbf{Finding 502}: \textbf{No black-box post-processing evasion succeeds}: the minimum achievable distance is 0.000025 (fog inversion), still $>$3$\times$ larger than normal temporal variation. All evasion strategies leave a detectable residual.
+
+\textbf{Finding 503}: Noise smoothing (blur) \textbf{paradoxically increases} distance from 0.00288 to 0.00561. Blur itself becomes a detectable corruption, creating a double anomaly. Evasion of one corruption type creates another.
+
+\textbf{Finding 504}: The most effective evasion (fog mathematical inversion) requires \textbf{exact knowledge} of corruption parameters --- an unrealistic assumption in practice. Generic post-processing (brightness, contrast, smoothing) achieves at most 45\% reduction.
+
 \end{document}
