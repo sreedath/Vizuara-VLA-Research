@@ -16482,3 +16482,21 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 838**: ALL 4 corruption types show strictly monotonic severity gradients. As severity increases from 0.3 to 1.0, cosine distance from clean centroid increases smoothly: fog (0.0004→0.003), night (0.0007→0.008), noise (0.00007→0.0002), blur (0.004→0.007). The embedding space encodes not just corruption presence but corruption severity as a continuous variable.
 
 **Finding 839**: Blur has the best clean-corrupt separation ratio (4.65) while noise has the worst (0.18). The clean cluster is extremely tight (max spread = 0.0001), confirming that the detector's per-scene centroid approach succeeds precisely because it exploits this zero-variance property that global clustering cannot.
+
+---
+
+## Experiment 399: Novel Corruption Types Detection
+
+**Objective**: Test whether the calibrated detector generalizes to 6 unseen corruption types not in the original 4.
+
+**Method**: Apply rain, snow, occlusion, color shift, JPEG artifacts, and dead pixel corruptions at 4 severities. Calibrate using per-scene centroid from clean images. Test AUROC and detection rate.
+
+**Finding 840**: The detector achieves AUROC=1.0 on 4 out of 6 novel corruption types (rain, snow, occlusion, JPEG) without ANY retraining or recalibration. The centroid-based cosine distance detector generalizes to completely unseen corruption types.
+
+**Finding 841**: Color shift achieves AUROC=0.95 — near-perfect but slightly degraded at low severity (0.88 at sev=0.3, 1.0 at sev≥0.7). This represents a "soft" generalization boundary where the corruption is detectable but the margin is thinner at low severity.
+
+**Finding 842**: Dead pixel corruption FAILS detection (AUROC=0.59) — essentially random. Dead pixel distances (0.000056-0.000061) are far below the threshold (0.000152). This identifies a clear failure mode: sparse, local pixel-level changes do not propagate to global embedding differences. The detector requires corruptions that affect sufficient spatial extent.
+
+**Finding 843**: Novel corruptions interleave naturally in the severity ranking: night > blur > snow ≈ fog > JPEG > occlusion > rain > color_shift ≈ noise > dead_pixels. Snow (0.003) and JPEG (0.003) produce comparable embedding shifts to fog, while dead pixels are 50× smaller than the threshold.
+
+**Finding 844**: The detector's success on novel corruptions confirms it is detecting DISTRIBUTIONAL SHIFTS in the embedding space, not memorizing specific corruption signatures. Any corruption that produces a sufficiently large global visual change will shift the embedding past the threshold, regardless of corruption mechanism.

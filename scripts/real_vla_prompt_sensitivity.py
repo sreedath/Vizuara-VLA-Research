@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Experiment 350: Prompt Sensitivity Deep Dive
+"""Experiment 400: Prompt Sensitivity Analysis
 
-Extended prompt analysis with 15 diverse prompts:
-1. Detection AUROC across all prompts
-2. Embedding distance magnitude variation
-3. Cross-prompt embedding similarity (do prompts share detection space?)
-4. Adversarial prompt construction (minimize detection signal)
-5. Prompt length vs detection sensitivity
+How do different prompts affect OOD detection performance?
+Tests whether the detection system depends on the specific prompt used.
+
+Tests:
+1. Multiple prompt formulations for the same task
+2. Completely different task descriptions
+3. Minimal vs verbose prompts
+4. Prompt with/without instruction formatting
+5. Cross-prompt detection transfer
 """
 
 import json, time, os, sys
@@ -21,6 +24,22 @@ def extract_hidden(model, processor, image, prompt, layer=3):
         fwd = model(**inputs, output_hidden_states=True)
     return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
 
+def cosine_dist(a, b):
+    a, b = np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64)
+    na, nb = np.linalg.norm(a), np.linalg.norm(b)
+    if na < 1e-12 or nb < 1e-12:
+        return 1.0
+    return 1.0 - np.dot(a, b) / (na * nb)
+
+def compute_auroc(id_scores, ood_scores):
+    id_s = np.asarray(id_scores)
+    ood_s = np.asarray(ood_scores)
+    n_id, n_ood = len(id_s), len(ood_s)
+    if n_id == 0 or n_ood == 0:
+        return 0.5
+    count = sum(float(np.sum(o > id_s) + 0.5 * np.sum(o == id_s)) for o in ood_s)
+    return count / (n_id * n_ood)
+
 def apply_corruption(image, ctype, severity=1.0):
     arr = np.array(image).astype(np.float32) / 255.0
     if ctype == 'fog':
@@ -34,22 +53,6 @@ def apply_corruption(image, ctype, severity=1.0):
         return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
     return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
-def cosine_dist(a, b):
-    dot = np.dot(a, b)
-    na, nb = np.linalg.norm(a), np.linalg.norm(b)
-    if na < 1e-10 or nb < 1e-10:
-        return 0.0
-    return 1.0 - dot / (na * nb)
-
-def compute_auroc(id_scores, ood_scores):
-    id_s = np.asarray(id_scores)
-    ood_s = np.asarray(ood_scores)
-    n_id, n_ood = len(id_s), len(ood_s)
-    if n_id == 0 or n_ood == 0:
-        return 0.5
-    count = sum(float(np.sum(o > id_s) + 0.5 * np.sum(o == id_s)) for o in ood_s)
-    return count / (n_id * n_ood)
-
 def main():
     print("Loading model...")
     model = AutoModelForVision2Seq.from_pretrained(
@@ -58,194 +61,159 @@ def main():
     processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
 
-    # 15 diverse prompts
+    # Different prompt formulations
     prompts = {
-        'standard': "In: What action should the robot take to pick up the object?\nOut:",
-        'drive': "In: What action should the robot take to drive forward safely?\nOut:",
-        'place': "In: What action should the robot take to place the cup on the table?\nOut:",
-        'push': "In: What action should the robot take to push the block left?\nOut:",
-        'open': "In: What action should the robot take to open the drawer?\nOut:",
-        'pour': "In: What action should the robot take to pour water into the glass?\nOut:",
-        'stack': "In: What action should the robot take to stack the blocks?\nOut:",
-        'minimal': "In: Act.\nOut:",
-        'verbose': "In: Given the current visual observation, what is the optimal 7-dimensional action vector the robot should execute to accomplish the grasping task?\nOut:",
-        'no_context': "In: What should happen next?\nOut:",
-        'imperative': "In: Pick up the red block now.\nOut:",
-        'question': "In: How should the arm move?\nOut:",
-        'third_person': "In: Describe the robot's next action to grasp the object.\nOut:",
-        'navigate': "In: What action should the robot take to navigate to the door?\nOut:",
-        'avoid': "In: What action should the robot take to avoid the obstacle?\nOut:",
+        "standard": "In: What action should the robot take to pick up the object?\nOut:",
+        "short": "In: Pick up the object.\nOut:",
+        "verbose": "In: Given the current visual observation, what is the optimal action the robot should take to successfully grasp and pick up the target object?\nOut:",
+        "navigate": "In: What action should the robot take to navigate to the goal?\nOut:",
+        "place": "In: What action should the robot take to place the object on the table?\nOut:",
+        "minimal": "In: Action?\nOut:",
+        "no_format": "Pick up the object",
+        "question_only": "What should the robot do?",
     }
+
+    corruptions = ['fog', 'night', 'noise', 'blur']
+
+    # Use multiple scenes
+    scenes = []
+    for seed in [42, 123, 456]:
+        scenes.append(Image.fromarray(
+            np.random.RandomState(seed).randint(0, 255, (224, 224, 3), dtype=np.uint8)))
 
     results = {}
-    ctypes = ['fog', 'night', 'noise', 'blur']
 
-    # Base scenes
-    seeds = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900]
-    scenes = {}
-    for seed in seeds:
-        rng = np.random.RandomState(seed)
-        px = rng.randint(50, 200, (224, 224, 3), dtype=np.uint8)
-        scenes[seed] = Image.fromarray(px)
-
-    # ========== 1. Per-prompt detection performance ==========
-    print("\n=== Per-Prompt Detection Performance ===")
-
-    prompt_results = {}
-    prompt_embeddings = {}  # store for cross-prompt analysis
-
+    # === Test 1: Per-prompt detection performance ===
+    print("=== Per-Prompt Detection ===")
     for pname, prompt in prompts.items():
-        print(f"  Testing prompt: {pname}...")
+        print(f"\n  Prompt: '{pname}'")
 
-        cal_embs = {}
-        for seed in seeds:
-            cal_embs[seed] = extract_hidden(model, processor, scenes[seed], prompt)
+        # Clean embeddings
+        clean_embs = []
+        for scene in scenes:
+            emb = extract_hidden(model, processor, scene, prompt)
+            clean_embs.append(emb)
+        centroid = np.mean(clean_embs, axis=0)
+        clean_dists = [cosine_dist(e, centroid) for e in clean_embs]
 
-        # ID distances
-        id_dists = []
-        for seed in seeds:
-            emb = extract_hidden(model, processor, scenes[seed], prompt)
-            id_dists.append(float(cosine_dist(cal_embs[seed], emb)))
+        prompt_results = {"clean_dists": [float(d) for d in clean_dists]}
 
-        # OOD distances per type
-        per_type = {}
-        for ct in ctypes:
-            ood_dists = []
-            for seed in seeds:
-                img = apply_corruption(scenes[seed], ct, 0.5)
-                emb = extract_hidden(model, processor, img, prompt)
-                ood_dists.append(float(cosine_dist(cal_embs[seed], emb)))
+        for c in corruptions:
+            corrupt_dists = []
+            for scene in scenes:
+                corrupted = apply_corruption(scene, c, 1.0)
+                emb = extract_hidden(model, processor, corrupted, prompt)
+                d = cosine_dist(emb, centroid)
+                corrupt_dists.append(d)
 
-            auroc = compute_auroc(id_dists, ood_dists)
-            per_type[ct] = {
-                'auroc': float(auroc),
-                'mean_dist': float(np.mean(ood_dists)),
-                'min_dist': float(min(ood_dists)),
-                'max_dist': float(max(ood_dists)),
+            auroc = compute_auroc(clean_dists, corrupt_dists)
+            prompt_results[c] = {
+                "corrupt_dists": [float(d) for d in corrupt_dists],
+                "mean_dist": float(np.mean(corrupt_dists)),
+                "auroc": float(auroc)
             }
+            print(f"    {c}: mean={np.mean(corrupt_dists):.6f}, auroc={auroc:.3f}")
 
-        # Store one scene's embeddings for cross-prompt analysis
-        seed0 = seeds[0]
-        prompt_embeddings[pname] = {
-            'clean': cal_embs[seed0],
-            'fog': extract_hidden(model, processor, apply_corruption(scenes[seed0], 'fog', 0.5), prompt),
-        }
+        results[pname] = prompt_results
 
-        all_aurocs = [per_type[ct]['auroc'] for ct in ctypes]
-        prompt_results[pname] = {
-            'prompt_length': len(prompt),
-            'id_mean': float(np.mean(id_dists)),
-            'id_max': float(max(id_dists)),
-            'per_type': per_type,
-            'mean_auroc': float(np.mean(all_aurocs)),
-            'min_auroc': float(min(all_aurocs)),
-            'all_perfect': all(a == 1.0 for a in all_aurocs),
-        }
-        auroc_strs = ', '.join(str(ct) + '=' + format(per_type[ct]['auroc'], '.3f') for ct in ctypes)
-        print(f"    AUROCs: {auroc_strs}")
-
-    results['per_prompt'] = prompt_results
-
-    # ========== 2. Cross-prompt embedding similarity ==========
+    # === Test 2: Cross-prompt embedding similarity ===
     print("\n=== Cross-Prompt Embedding Similarity ===")
+    ref_scene = scenes[0]
+    prompt_embs = {}
+    for pname, prompt in prompts.items():
+        prompt_embs[pname] = extract_hidden(model, processor, ref_scene, prompt)
 
     cross_prompt = {}
-    pnames = list(prompts.keys())
-
-    for i, p1 in enumerate(pnames):
-        for j, p2 in enumerate(pnames):
-            if i >= j:
+    for p1 in prompts:
+        for p2 in prompts:
+            if p1 >= p2:
                 continue
-            # Clean embedding similarity
-            clean_sim = cosine_dist(prompt_embeddings[p1]['clean'], prompt_embeddings[p2]['clean'])
-            # Fog embedding similarity
-            fog_sim = cosine_dist(prompt_embeddings[p1]['fog'], prompt_embeddings[p2]['fog'])
-
+            d = cosine_dist(prompt_embs[p1], prompt_embs[p2])
             key = f"{p1}_vs_{p2}"
-            cross_prompt[key] = {
-                'clean_distance': float(clean_sim),
-                'fog_distance': float(fog_sim),
-            }
+            cross_prompt[key] = float(d)
 
-    # Summary stats
-    clean_dists_cross = [v['clean_distance'] for v in cross_prompt.values()]
-    fog_dists_cross = [v['fog_distance'] for v in cross_prompt.values()]
-    cross_summary = {
-        'mean_clean_dist': float(np.mean(clean_dists_cross)),
-        'max_clean_dist': float(max(clean_dists_cross)),
-        'mean_fog_dist': float(np.mean(fog_dists_cross)),
-        'max_fog_dist': float(max(fog_dists_cross)),
-        'n_pairs': len(cross_prompt),
+    # How much do prompts change embeddings vs corruptions?
+    std_emb = prompt_embs["standard"]
+    prompt_dists = {p: float(cosine_dist(prompt_embs[p], std_emb)) for p in prompts if p != "standard"}
+
+    fog_emb = extract_hidden(model, processor,
+                             apply_corruption(ref_scene, 'fog', 1.0),
+                             prompts["standard"])
+    fog_dist = float(cosine_dist(fog_emb, std_emb))
+
+    results["cross_prompt"] = {
+        "pairwise": cross_prompt,
+        "vs_standard": prompt_dists,
+        "fog_dist_for_comparison": fog_dist
     }
-    print(f"  Mean cross-prompt clean dist: {np.mean(clean_dists_cross):.6f}")
-    print(f"  Max cross-prompt clean dist: {max(clean_dists_cross):.6f}")
+    print(f"  Prompt variation range: {min(prompt_dists.values()):.6f} - {max(prompt_dists.values()):.6f}")
+    print(f"  Fog corruption dist: {fog_dist:.6f}")
 
-    results['cross_prompt'] = {'pairs': cross_prompt, 'summary': cross_summary}
+    # === Test 3: Cross-prompt detection transfer ===
+    print("\n=== Cross-Prompt Detection Transfer ===")
+    # Calibrate on one prompt, test on another
+    transfer = {}
+    cal_prompt = "standard"
+    cal_clean_embs = []
+    for scene in scenes:
+        emb = extract_hidden(model, processor, scene, prompts[cal_prompt])
+        cal_clean_embs.append(emb)
+    cal_centroid = np.mean(cal_clean_embs, axis=0)
+    cal_clean_dists = [cosine_dist(e, cal_centroid) for e in cal_clean_embs]
 
-    # ========== 3. Prompt length correlation ==========
-    print("\n=== Prompt Length vs Detection ===")
+    for test_prompt_name, test_prompt in prompts.items():
+        if test_prompt_name == cal_prompt:
+            continue
 
-    length_corr = {}
-    for pname in pnames:
-        pr = prompt_results[pname]
-        length_corr[pname] = {
-            'length': pr['prompt_length'],
-            'mean_auroc': pr['mean_auroc'],
-            'fog_dist': pr['per_type']['fog']['mean_dist'],
-            'night_dist': pr['per_type']['night']['mean_dist'],
+        # Test with different prompt
+        test_clean_dists = []
+        for scene in scenes:
+            emb = extract_hidden(model, processor, scene, test_prompt)
+            d = cosine_dist(emb, cal_centroid)
+            test_clean_dists.append(d)
+
+        test_corrupt_dists = []
+        for scene in scenes:
+            corrupted = apply_corruption(scene, 'fog', 1.0)
+            emb = extract_hidden(model, processor, corrupted, test_prompt)
+            d = cosine_dist(emb, cal_centroid)
+            test_corrupt_dists.append(d)
+
+        auroc = compute_auroc(test_clean_dists, test_corrupt_dists)
+        # False positive rate: clean samples exceeding calibration threshold
+        cal_thresh = max(cal_clean_dists) * 1.5
+        fpr = sum(1 for d in test_clean_dists if d > cal_thresh) / len(test_clean_dists)
+
+        transfer[test_prompt_name] = {
+            "auroc": float(auroc),
+            "fpr": float(fpr),
+            "mean_clean_dist": float(np.mean(test_clean_dists)),
+            "mean_corrupt_dist": float(np.mean(test_corrupt_dists))
+        }
+        print(f"  {cal_prompt}->{test_prompt_name}: auroc={auroc:.3f}, fpr={fpr:.1%}")
+
+    results["cross_prompt_transfer"] = transfer
+
+    # === Test 4: Prompt length vs detection ===
+    print("\n=== Prompt Length Analysis ===")
+    length_analysis = {}
+    for pname, prompt in prompts.items():
+        n_chars = len(prompt)
+        # Get mean AUROC across corruptions
+        aurocs = [results[pname][c]["auroc"] for c in corruptions]
+        mean_auroc = np.mean(aurocs)
+        length_analysis[pname] = {
+            "n_chars": n_chars,
+            "mean_auroc": float(mean_auroc)
         }
 
-    # Compute correlation
-    lengths = [length_corr[p]['length'] for p in pnames]
-    fog_dists_len = [length_corr[p]['fog_dist'] for p in pnames]
-    # Pearson correlation
-    if np.std(lengths) > 0 and np.std(fog_dists_len) > 0:
-        corr = np.corrcoef(lengths, fog_dists_len)[0, 1]
-    else:
-        corr = 0.0
-
-    results['length_correlation'] = {
-        'per_prompt': length_corr,
-        'pearson_r_fog': float(corr),
-    }
-    print(f"  Pearson r (length vs fog dist): {corr:.4f}")
-
-    # ========== 4. Distance magnitude ranking ==========
-    print("\n=== Distance Magnitude Ranking ===")
-
-    ranking = {}
-    for ct in ctypes:
-        sorted_prompts = sorted(pnames, key=lambda p: prompt_results[p]['per_type'][ct]['mean_dist'], reverse=True)
-        ranking[ct] = {
-            'most_sensitive': sorted_prompts[0],
-            'least_sensitive': sorted_prompts[-1],
-            'max_dist': prompt_results[sorted_prompts[0]]['per_type'][ct]['mean_dist'],
-            'min_dist': prompt_results[sorted_prompts[-1]]['per_type'][ct]['mean_dist'],
-            'ratio': prompt_results[sorted_prompts[0]]['per_type'][ct]['mean_dist'] /
-                     max(prompt_results[sorted_prompts[-1]]['per_type'][ct]['mean_dist'], 1e-10),
-        }
-        print(f"  {ct}: most={sorted_prompts[0]} ({ranking[ct]['max_dist']:.6f}), "
-              f"least={sorted_prompts[-1]} ({ranking[ct]['min_dist']:.6f}), "
-              f"ratio={ranking[ct]['ratio']:.2f}x")
-
-    results['ranking'] = ranking
+    results["length_analysis"] = length_analysis
 
     # Save
-    ts = time.strftime("%Y%m%d_%H%M%S")
-    out_path = f"experiments/prompt_sensitivity_{ts}.json"
-    def convert(obj):
-        if isinstance(obj, (np.floating, np.float32, np.float64)): return float(obj)
-        if isinstance(obj, (np.integer, np.int32, np.int64)): return int(obj)
-        if isinstance(obj, np.ndarray): return obj.tolist()
-        if isinstance(obj, np.bool_): return bool(obj)
-        return obj
-    def recursive_convert(d):
-        if isinstance(d, dict): return {k: recursive_convert(v) for k, v in d.items()}
-        if isinstance(d, list): return [recursive_convert(x) for x in d]
-        return convert(d)
-    results = recursive_convert(results)
+    out_path = "/workspace/Vizuara-VLA-Research/experiments/prompt_sensitivity_" + \
+               time.strftime("%Y%m%d_%H%M%S") + ".json"
     with open(out_path, 'w') as f:
-        json.dump(results, f, indent=2, default=convert)
+        json.dump(results, f, indent=2)
     print(f"\nResults saved to {out_path}")
 
 if __name__ == "__main__":

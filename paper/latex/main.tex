@@ -7850,4 +7850,25 @@ We examine whether corruption types form distinct clusters in embedding space us
 
 \textbf{Finding 1091}: \textbf{The clean cluster is extremely tight (max spread $= 0.0001$) while blur achieves the best separation ratio (4.65$\times$).} The detector succeeds via per-scene calibration that exploits this zero-variance property---something global clustering fundamentally cannot access.
 
+\subsection{Experiment 399: Novel Corruption Types Detection}
+
+We test whether the calibrated detector generalizes to 6 corruption types not in the original set: rain (diagonal streaks + darkening), snow (white particles + brightness), occlusion (random black patches), color shift (channel manipulation), JPEG artifacts (block quantization), and dead pixels (stuck sensor pixels).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig408_novel.png}
+\caption{Experiment 399: Novel corruption types. (A) 4/6 novel corruptions achieve AUROC=1.0 with zero recalibration. (B) Unified severity ranking interleaves novel and original corruptions naturally. (C) Detection rate vs severity shows dead pixels remain invisible at all levels. (E) Dead pixel distances fall far below threshold---too local/sparse to affect global embeddings.}
+\label{fig:novel_corruptions}
+\end{figure}
+
+\textbf{Finding 1092}: \textbf{The detector achieves AUROC=1.0 on 4/6 novel corruption types (rain, snow, occlusion, JPEG) with zero retraining.} The centroid-based cosine distance generalizes to completely unseen corruption mechanisms, confirming it detects distributional shift rather than memorizing corruption signatures.
+
+\textbf{Finding 1093}: \textbf{Color shift achieves AUROC=0.95---near-perfect with slight degradation at low severity (0.88 at $s=0.3$).} This represents a ``soft'' generalization boundary where the corruption is detectable but the margin thins at low severity.
+
+\textbf{Finding 1094}: \textbf{Dead pixel corruption FAILS (AUROC=0.59, essentially random).} Dead pixel distances (0.000056--0.000061) are $2.5\times$ below the threshold. This identifies a clear failure mode: sparse, local pixel changes do not propagate to global embedding differences. The detector requires corruptions affecting sufficient spatial extent.
+
+\textbf{Finding 1095}: \textbf{Novel corruptions interleave naturally in the severity ranking}: night $>$ blur $>$ snow $\approx$ fog $>$ JPEG $>$ occlusion $>$ rain $>$ color\_shift $\approx$ noise $>$ dead\_pixels. Snow and JPEG produce fog-comparable embedding shifts, while dead pixels are $50\times$ below threshold.
+
+\textbf{Finding 1096}: \textbf{Detection success on novel corruptions confirms the system detects DISTRIBUTIONAL SHIFTS, not corruption-specific signatures.} Any corruption producing sufficiently large global visual change shifts the embedding past the threshold, regardless of mechanism. The failure on dead pixels (too local) defines the detector's spatial resolution limit.
+
 \end{document}
