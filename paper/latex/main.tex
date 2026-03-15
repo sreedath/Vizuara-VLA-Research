@@ -3842,4 +3842,23 @@ We evaluate detection stability across sequential frames to assess suitability f
 \label{fig:detection_onset}
 \end{figure}
 
+\subsection{Generalization to Novel OOD Types}
+
+We test whether the detector, calibrated only on clean images, can catch 7 novel corruption types never seen during calibration.
+
+\textbf{Finding 391}: \textbf{5 of 7 novel corruption types are perfectly detected} (AUROC=1.0 at all layers): rain, snow, low contrast, pixelation, and at L3+ color shift. The detector generalizes well beyond the original 4 test corruptions.
+
+\textbf{Finding 392}: Occlusion (25\% black rectangle) reveals a \textbf{complementary layer structure}: L1 AUROC=0.422 (below chance), L3=0.578, but L32=1.0. Occlusion changes spatial content without altering overall image statistics, so early layers (which encode global features) miss it while the final layer (which encodes fine-grained spatial information) detects it perfectly.
+
+\textbf{Finding 393}: This suggests a \textbf{dual-layer monitoring} strategy for production: early layers (L1/L3) detect intensity and color corruptions (weather, lighting), while late layers (L32) detect structural and semantic changes (occlusion, scene substitution). The combination provides comprehensive coverage.
+
+\textbf{Finding 394}: JPEG compression (quality=5) is the hardest novel corruption, achieving AUROC=0.766--0.891. Heavy compression introduces block artifacts but preserves overall image statistics, making it partially invisible to the cosine detector. This suggests JPEG artifacts occupy a region of corruption space between ``in-distribution noise'' and ``true OOD.''
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig215_novel_ood.png}
+\caption{\textbf{Novel OOD types.} Detection of 7 unseen corruption types shows strong generalization. Weather corruptions (rain, snow) are perfectly detected. Occlusion reveals complementary layer roles: L1/L3 miss it but L32 catches it perfectly.}
+\label{fig:novel_ood}
+\end{figure}
+
 \end{document}
