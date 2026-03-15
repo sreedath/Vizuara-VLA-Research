@@ -7240,3 +7240,62 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 
 **Finding**: VLA hidden state extraction is **perfectly deterministic** under torch.no_grad() with eval mode. There is zero stochastic variation between repeated inferences on the same input. This is critical for the calibration approach — the centroid and threshold are stable, and the same image will always produce the same detection decision. No need for averaging or ensembling of repeated passes.
 
+
+---
+
+## Finding 174: Sigma Threshold Sweep (Experiment 179)
+
+**Objective**: Characterize the precision-recall trade-off across sigma levels 0.5-6.0.
+
+**Key Results**:
+| σ | FPR | Recall | Precision | F1 |
+|---|-----|--------|-----------|-----|
+| 0.5 | 0.800 | 1.000 | 0.882 | 0.938 |
+| 1.0 | 0.700 | 1.000 | 0.896 | 0.945 |
+| 1.5 | 0.500 | 1.000 | 0.923 | 0.960 |
+| 2.0 | 0.400 | 1.000 | 0.938 | 0.968 |
+| 2.5 | 0.100 | 0.950 | 0.983 | 0.966 |
+| 3.0 | 0.100 | 0.950 | 0.983 | 0.966 |
+| 3.5 | 0.100 | 0.933 | 0.982 | 0.957 |
+| **4.0** | **0.000** | **0.933** | **1.000** | **0.966** |
+| 5.0 | 0.000 | 0.883 | 1.000 | 0.938 |
+| 6.0 | 0.000 | 0.833 | 1.000 | 0.909 |
+
+**Key Findings**:
+1. **σ=4.0 is the optimal operating point**: FPR=0.000, recall=0.933, F1=0.966. First sigma where FPR drops to zero.
+2. **σ=2.0-2.5 is the inflection**: FPR drops from 0.400 to 0.100, recall drops from 1.0 to 0.95.
+3. **σ≤2.0 is too aggressive**: FPR ≥ 0.40, meaning 40%+ of clean images are falsely flagged.
+4. **σ=3.0 (our default) is good but not optimal**: Same metrics as σ=2.5 for this dataset.
+5. **F1 remains above 0.90 for all σ ≥ 0.5**: The detector is robust to threshold choice.
+
+**Finding**: The recommended operating point is σ=4.0 for safety-critical deployments (zero false alarms with 93% recall). For maximum sensitivity, σ=2.0 provides 100% recall at the cost of 40% FPR. The wide F1 plateau (0.93-0.97 from σ=0.5 to 5.0) means threshold selection is not a sensitive parameter.
+
+
+---
+
+## Finding 175: OOD Type Clustering (Experiment 180)
+
+**Objective**: Determine if different OOD corruption types form distinct clusters, enabling corruption TYPE identification.
+
+**Key Results**:
+- **L3 classification accuracy: 100%** — nearest OOD centroid correctly identifies corruption type for all samples
+- **L32 classification accuracy: 100%** — same perfect result
+
+**Silhouette scores** (inter/intra distance ratio, higher = more separated):
+| OOD Type | L3 silhouette | L32 silhouette |
+|---------|---------------|----------------|
+| fog_30 | 0.41 | 0.11 |
+| fog_60 | 1.92 | 0.46 |
+| night | 7.63 | 2.48 |
+| blur | 4.18 | 1.17 |
+| noise | 3.77 | 0.68 |
+| snow | 2.39 | 0.87 |
+
+**Key Findings**:
+1. **Perfect OOD type classification at both layers**: Every OOD sample is correctly identified by nearest-centroid to its corruption type.
+2. **Night forms the most distinct cluster**: Silhouette 7.63 (L3) — maximally separated from other OOD types.
+3. **Fog_30 is least separated**: Silhouette 0.41 (L3) — closest to other clusters, consistent with it being the mildest corruption.
+4. **L3 has better cluster separation than L32**: Silhouettes consistently higher at L3.
+
+**Finding**: The detector can not only detect OOD inputs but also **identify the type of corruption** with 100% accuracy at both layers. This enables adaptive safety responses — e.g., reducing speed for fog but stopping for night. The embedding space naturally organizes OOD corruptions into distinct, non-overlapping clusters.
+

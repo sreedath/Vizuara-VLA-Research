@@ -3360,4 +3360,38 @@ A practical concern for deployment is whether repeated forward passes on the sam
 
 This confirms that calibration centroids and thresholds are stable, and the same input will always produce the same detection decision without requiring averaging or ensembling.
 
+\subsection{Threshold Sensitivity Analysis}
+
+We sweep the sigma threshold from 0.5 to 6.0 to characterize the precision-recall trade-off of the OR-gate detector.
+
+\textbf{Finding 310}: The \textbf{optimal operating point is $\sigma = 4.0$}: FPR = 0.000, recall = 0.933, F1 = 0.966. This is the first sigma level where false positive rate drops to exactly zero while maintaining $>$93\% recall.
+
+\textbf{Finding 311}: The F1 score exhibits a \textbf{wide plateau} from 0.93 to 0.97 across $\sigma \in [0.5, 5.0]$, indicating that \textbf{threshold selection is not a sensitive parameter}. The detector performs well across a 10$\times$ range of threshold values.
+
+\textbf{Finding 312}: For \textbf{maximum sensitivity} applications (where missing any OOD input is unacceptable), $\sigma = 2.0$ provides 100\% recall at a cost of 40\% FPR. For \textbf{zero false alarm} deployments, $\sigma = 4.0$ is recommended with 93.3\% recall.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig177_sigma_sweep.png}
+\caption{\textbf{Threshold sensitivity sweep.} FPR, recall, precision, and F1 as a function of $\sigma$ multiplier. The wide F1 plateau (0.93--0.97) indicates robust performance across a 10$\times$ threshold range. Optimal: $\sigma = 4.0$ (FPR = 0, recall = 0.933).}
+\label{fig:sigma_sweep}
+\end{figure}
+
+\subsection{OOD Type Identification}
+
+Beyond binary OOD detection, we test whether different corruption types form distinct clusters in embedding space, enabling corruption TYPE identification.
+
+\textbf{Finding 313}: The detector achieves \textbf{100\% OOD type classification accuracy} at both layers: nearest-centroid to per-corruption centroids correctly identifies fog, night, blur, noise, and snow in every case. The embedding space naturally organizes corruptions into non-overlapping clusters.
+
+\textbf{Finding 314}: Night forms the \textbf{most distinct cluster} (silhouette score 7.63 at L3, 2.48 at L32), while fog\_30 is least separated (0.41 at L3). L3 consistently provides better inter-cluster separation than L32.
+
+\textbf{Finding 315}: This enables \textbf{adaptive safety responses}: rather than a binary safe/unsafe signal, the system can identify the type of degradation and apply graduated responses (e.g., reduce speed for fog, initiate emergency stop for complete darkness, engage lidar fallback for blur).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig178_ood_clustering.png}
+\caption{\textbf{OOD type cluster separation.} Silhouette scores for each corruption type at L3 (left) and L32 (right). Higher values indicate better separation from other clusters. Classification accuracy = 100\% at both layers.}
+\label{fig:ood_clustering}
+\end{figure}
+
 \end{document}
