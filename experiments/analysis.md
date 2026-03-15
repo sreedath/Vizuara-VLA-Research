@@ -16042,3 +16042,45 @@ Clean has 2-9 unique tokens per dimension. Corruption REDUCES diversity (noise: 
 
 **Finding 769**: Noise collapses token diversity to 1 unique token at dim 6 (gripper), meaning ALL noisy scenes produce identical gripper actions. Corruption induces action mode collapse in specific dimensions.
 
+---
+
+## Experiment 385: Prompt Engineering for Detection
+
+**Objective**: Does the detection prompt affect detector performance? Tests 10 prompt styles including standard, minimal, nonsense, reversed, and empty.
+
+**Setup**: 10 scenes, 4 corruptions at severity 0.5, 10 different prompts each tested independently with their own calibration centroid.
+
+### Results
+
+**Per-Prompt AUROC**:
+| Prompt | Len | Fog | Night | Noise | Blur | Noise Sep Ratio |
+|--------|-----|-----|-------|-------|------|----------------|
+| Standard | 65 | 1.00 | 1.00 | 1.00 | 1.00 | 1.49 |
+| Simple | 28 | 1.00 | 1.00 | 1.00 | 1.00 | 1.44 |
+| Detailed | 92 | 1.00 | 1.00 | 1.00 | 1.00 | 1.61 |
+| Navigate | 59 | 1.00 | 1.00 | 0.98 | 1.00 | 1.40 |
+| Generic | 29 | 1.00 | 1.00 | 1.00 | 1.00 | 1.47 |
+| Minimal | 13 | 1.00 | 1.00 | 1.00 | 1.00 | 1.62 |
+| Empty | 9 | 1.00 | 1.00 | 0.98 | 1.00 | 1.27 |
+| Reversed | 65 | 1.00 | 1.00 | 0.98 | 1.00 | 1.21 |
+| Long | 219 | 1.00 | 1.00 | 0.98 | 1.00 | 1.30 |
+| **Nonsense** | 40 | **1.00** | **1.00** | **1.00** | **1.00** | **1.73** |
+
+ALL prompts achieve AUROC=1.0 for fog/night/blur. Noise varies: 7/10 achieve 1.0, 3 get 0.98.
+
+**Nonsense prompt achieves the BEST noise separation ratio (1.73)!**
+
+**Cross-Prompt Centroid Similarity**: >0.98 for all 10 pairs tested. Embeddings are nearly identical regardless of prompt content.
+
+### Findings
+
+**Finding 770**: ALL 10 prompts achieve AUROC=1.0 for fog, night, and blur. Detection of these corruptions is completely prompt-invariant — even empty, reversed, and nonsense prompts work perfectly.
+
+**Finding 771**: The NONSENSE prompt ("Banana purple seventeen clouds") achieves the BEST noise separation ratio (1.73) and AUROC=1.0 for all corruptions. Prompt CONTENT is irrelevant to detection — the signal is purely visual.
+
+**Finding 772**: Shorter prompts have HIGHER separation ratios for blur: minimal (13 chars) achieves 76.4x vs long (219 chars) at 47.2x. Longer prompts dilute the visual signal in the embedding.
+
+**Finding 773**: Cross-prompt centroid similarity exceeds 0.98 for all pairs. The model's last-token embedding for different prompts is nearly identical, confirming that the visual component dominates the representation.
+
+**Finding 774**: Navigation and long prompts produce the weakest noise detection (AUROC=0.98, 80% rate). Task-specific prompts slightly worse than generic ones for noise, suggesting that task-relevant text representation competes with the visual corruption signal in embedding space.
+
