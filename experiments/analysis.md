@@ -8324,3 +8324,27 @@ snow       0     0     0     0      0     0     6
 5. **Scene diversity > sample size**: 5 diverse samples (1 per scene) outperform 4 homogeneous samples from a single scene type. Diversity matters more than quantity.
 
 **Finding**: **Calibration set diversity is critical** for cross-scene generalization. Same-scene calibration achieves near-perfect detection, but cross-scene calibration can drop to random-chance (AUROC=0.5). Mixed calibration with 1 image per scene type recovers most performance. The practical recommendation is to **calibrate with diverse scene samples** rather than many samples from a single environment. Tunnel/dark scenes are the most challenging and require explicit representation in the calibration set.
+---
+
+### Finding 211: Attention Pattern Analysis (Experiment 216)
+
+**Experiment**: Extract attention weights from 6 layers (L0, L1, L3, L7, L15, L31) and compare attention entropy and concentration between clean and corrupted inputs.
+
+**Attention Entropy by Layer (nats)**:
+| Layer | Clean | Fog | Night | Blur | Noise |
+|-------|-------|-----|-------|------|-------|
+| L0 | 4.531 | 4.531 | 4.531 | 4.531 | 4.562 |
+| L1 | 3.375 | 3.422 | 3.438 | 3.391 | 3.387 |
+| L3 | 0.303 | 0.248 | 0.249 | 0.330 | 0.318 |
+| L7 | 0.625 | 0.629 | 0.527 | 0.578 | 0.604 |
+| L15 | 0.762 | 0.742 | 0.652 | 0.766 | 0.798 |
+| L31 | 1.367 | 1.336 | 1.391 | 1.453 | 1.372 |
+
+**Key Findings**:
+1. **L0 attention is corruption-invariant**: Entropy=4.53 (maximum, near-uniform attention) for all conditions. The first layer doesn't discriminate between clean and corrupted inputs.
+2. **Night sharpens attention at L3-L15**: Entropy decreases by 16-18% (ratio 0.82-0.86), meaning the model becomes MORE focused under night corruption, likely concentrating on the few remaining bright features.
+3. **Fog slightly sharpens L3 attention**: Fog reduces L3 entropy by 18% (0.248 vs 0.303), while blur increases it by 9%. Different corruptions have opposite effects on attention patterns.
+4. **Attention changes are subtle**: Maximum entropy ratio change is only 18% (night at L3), far smaller than the hidden-state cosine distance changes. Attention entropy is a weaker OOD signal than hidden-state distance.
+5. **L3 has the most concentrated attention**: Entropy=0.303 (clean), max_attn=0.957. The model pays attention to almost entirely one token at this layer, making it highly sensitive to which token gets the attention.
+
+**Finding**: Corruption induces **subtle but systematic attention pattern changes**, particularly at L3-L15 where night reduces entropy by 16-18% (attention becomes more concentrated). However, these changes are much weaker signals than hidden-state cosine distances. Attention entropy could complement hidden-state detection but is not a reliable standalone detector. The finding that night SHARPENS attention (rather than diffusing it) is consistent with the model concentrating on fewer surviving visual features in dark scenes.

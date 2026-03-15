@@ -4040,4 +4040,21 @@ We test the critical practical question: what happens when calibration images co
 \label{fig:cal_diversity}
 \end{figure}
 
+\subsection{Attention Pattern Analysis}
+
+We extract attention weights from 6 layers and compare attention entropy between clean and corrupted inputs.
+
+\textbf{Finding 424}: L0 attention is \textbf{completely corruption-invariant} (entropy=4.53 for all conditions---near-uniform). This matches the L0 hidden state's inability to detect OOD (AUROC=0.5, Finding~381).
+
+\textbf{Finding 425}: Night corruption \textbf{sharpens attention} at L3--L15 (entropy decreases 16--18\%), while blur \textbf{slightly diffuses} it (+9\% at L3). The model concentrates on fewer surviving features in dark scenes rather than spreading attention uniformly.
+
+\textbf{Finding 426}: Attention entropy changes ($\leq$18\%) are a far weaker OOD signal than hidden-state cosine distances, which achieve infinite separation ratios. Attention analysis complements but cannot replace hidden-state detection.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig228_attention.png}
+\caption{\textbf{Attention pattern analysis.} Left: attention entropy profile across layers. Right: entropy ratio (OOD/clean). Night sharpens attention (ratio 0.82--0.86), while L0 remains invariant.}
+\label{fig:attention}
+\end{figure}
+
 \end{document}
