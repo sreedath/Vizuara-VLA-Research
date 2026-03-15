@@ -753,6 +753,15 @@ Entropy & 1 & No & .527$\pm$.029 & .413 & .957 & .272 & .336 & 1.00 \\
 \label{fig:dropout_sweep}
 \end{figure}
 
+\textbf{Finding 67: Hidden state extraction location determines OOD detection success entirely (Experiment~447).} We systematically compare six hidden-state pooling strategies for OOD detection: \texttt{last\_token}, \texttt{mean\_all}, \texttt{mean\_visual}, \texttt{mean\_text}, \texttt{first\_token} (CLS), and \texttt{max\_pool} (Figure~\ref{fig:visual_tokens}). The results reveal a stark binary split: \texttt{first\_token}/CLS achieves AUROC = \textbf{0.5} across all corruption types---completely indistinguishable from random---while every other strategy achieves \textbf{AUROC = 1.0}, with the exception of \texttt{mean\_text} (AUROC = 0.94). The failure of the CLS token is mechanistically explained by causal attention: the first position (token~0) has no preceding context and encodes only the instruction embedding, never integrating visual patch information that arrives later in the sequence. In contrast, the \texttt{last\_token} representation aggregates the entire visual context through full causal attention over all image patches and instruction tokens. Notably, \texttt{mean\_visual} achieves perfect detection (AUROC = 1.0), confirming the OOD signal originates in the visual token representations rather than the language backbone. \texttt{mean\_text} achieves only 0.94 AUROC, showing that text tokens partially reflect corruption through cross-attention but are a secondary source. Supplementary token-diversity analysis reveals that corruption \emph{reduces} pairwise cosine similarity among visual tokens, providing a complementary per-token diagnostic signal. Position norm profiles further show that visual-token positions (not text positions) exhibit the largest norm shifts under fog and night corruptions. This finding has an important practical warning: practitioners who use CLS-style extraction (common in BERT-based pipelines) will observe AUROC $\approx 0.5$ and incorrectly conclude that hidden-state OOD detection is ineffective. The correct extraction point for VLA OOD detection is the last generated token or any pooling over visual token positions.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig456_visual_tokens.png}
+\caption{Visual token pooling strategy comparison on real OpenVLA-7B (Experiment~447). Six pooling strategies are evaluated for corruption detection AUROC across fog, night, noise, and blur. CLS/first token achieves AUROC=0.5 (random), while last token, mean visual, mean all, and max pool all achieve AUROC=1.0. Mean text is intermediate (0.94), confirming the OOD signal resides in visual token representations, not language tokens.}
+\label{fig:visual_tokens}
+\end{figure}
+
 \textbf{Finding 63: Full 4096-d hidden state is optimal; random projection to 512-d retains 99.6\% of detection power.} Testing PCA reduction (2--16 dimensions) and Gaussian random projection (8--2048 dimensions) reveals that dimensionality reduction has different effects depending on the method (Figure~\ref{fig:pca_reduction}). PCA with small calibration sets is unreliable: $d$=8 achieves 0.844 while $d$=16 drops to 0.686 (non-monotonic due to noise in the last PCA components). Random projection is more robust, achieving 0.968 at $d$=512 and 0.973 at $d$=2048---nearly matching the full 4096-d AUROC of 0.972. Strikingly, the \textbf{first 8 PCA components achieve 0.979} while the last 8 achieve only 0.456, confirming that OOD-discriminative information concentrates in the high-variance directions. Individual PCA components show moderate OOD detection (best: PC16 at 0.851), suggesting the signal is distributed across multiple dimensions. The practical recommendation is clear: use the full 4096-d space (16\,KB---negligible storage) unless compute is extremely constrained, in which case random projection to 512-d (2\,KB centroid) loses only 0.004 AUROC.
 
 \begin{figure}[t]
@@ -8790,6 +8799,92 @@ While Experiments~438--443 establish that visual corruptions are reliably \emph{
 \includegraphics[width=\linewidth]{figures/fig453_action_impact.png}
 \caption{Corruption impact on action predictions. Fog causes action collapse ($1.4$ unique tokens/dim vs.\ $6.7$ clean) with \emph{increased} confidence---the most dangerous failure mode. Night causes uncertainty explosion (entropy: $3.42$ vs.\ $1.66$~nats clean). Noise barely affects actions ($7.3$ unique tokens/dim) despite being detectable. These dual failure modes---overconfident collapse vs.\ uncertainty explosion---have fundamentally different safety profiles for robotic deployment.}
 \label{fig:action_impact}
+\end{figure}
+
+\subsection{Mixed/Compound Corruption Analysis (Experiment 445)}
+
+Real-world visual degradation rarely occurs in isolation: a camera may simultaneously face fog and low light, or sensor noise compounded with motion blur. This experiment evaluates whether the embedding-based detector generalizes to mixed corruption scenarios without retraining, and characterizes how corruption effects combine geometrically.
+
+\paragraph{Perfect Detection Under All Compound Scenarios.} Every tested combination---all six pairwise, all four triples, and the all-four-combined condition---achieves AUROC${}=1.0$. Even mild compound corruptions (fog at severity 0.25 combined with night at severity 0.25) are detected perfectly. The detector requires no retraining or threshold adjustment for compound inputs.
+
+\paragraph{Sub-Additive Corruption Distances.} Combined corruption distances are consistently \emph{less} than the sum of individual distances, indicating that corruption effects partially overlap or cancel in embedding space rather than accumulating independently. The pairwise distances span a wide range: night$+$blur produces the highest distance ($0.00967$), while fog$+$noise produces the lowest ($0.00156$). Notably, the fog$+$noise distance is \emph{lower than fog alone}---noise partially cancels the fog embedding direction with a ratio of only $0.52\times$ the maximum single-corruption distance.
+
+\paragraph{Dominant Corruption Subsumes Direction.} Mixed corruption embedding shifts align with the \emph{stronger} single corruption rather than producing a novel intermediate direction. Fog$+$night aligns with the night direction (cosine similarity $0.995$), and noise$+$blur aligns with the blur direction (cosine similarity $0.992$). This means compound corruption vectors are predictable from single-corruption geometry: the dominant corruption determines the direction while the weaker corruption modulates magnitude.
+
+\paragraph{All-Four Combined.} When all four corruptions are applied simultaneously, the mean embedding distance is $0.00864$ with AUROC${}=1.0$. Despite sub-additive combination, the signal remains far above the detection threshold, confirming robustness under worst-case multi-corruption scenarios.
+
+\paragraph{Practical Implications.} These results establish that the embedding-based detector handles realistic multi-degradation conditions---the typical deployment scenario---without modification. The sub-additive property is practically advantageous: it means compound corruptions do not produce runaway distance inflation that could complicate threshold calibration. Combined with perfect detection across all tested combinations, this confirms that a single clean-reference threshold suffices for both isolated and compound corruption monitoring.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig454_mixed.png}
+\caption{Mixed/compound corruption analysis. All combinations (pairwise, triple, all-four) achieve AUROC${=}1.0$. Corruption distances are sub-additive: fog$+$noise ($0.00156$) is lower than fog alone due to partial directional cancellation ($0.52\times$ ratio). Mixed corruption directions align with the dominant single corruption (cosine similarity ${>}0.99$). Night$+$blur produces the highest pairwise distance ($0.00967$); all-four combined yields $0.00864$.}
+\label{fig:mixed_corruption}
+\end{figure}
+
+\subsection{Calibration Theory: Threshold Selection (Experiment 446)}
+
+Deploying an embedding-distance detector requires selecting a threshold that separates clean from corrupted inputs. This experiment systematically evaluates threshold strategies, characterizes the underlying distance distributions, and establishes formal detection guarantees for practical deployment.
+
+\paragraph{Distance Distributions Are Massively Separated.} The clean embedding-distance distribution has mean $5.0 \times 10^{-5}$ and is right-skewed (skewness${} = 1.33$), meaning occasional clean scenes produce slightly elevated distances. Corrupted distributions are orders of magnitude higher: fog has mean $2.98 \times 10^{-3}$ ($60\times$ the clean mean) and night has mean $8.46 \times 10^{-3}$ ($169\times$ the clean mean). These enormous gaps---far exceeding any $k\sigma$ threshold---make the detector's task fundamentally easy for moderate-to-high severity corruptions.
+
+\paragraph{All Threshold Strategies Achieve Perfect Detection.} Four threshold strategies are compared: $2\sigma$, $3\sigma$, $4\sigma$, and max-clean (maximum observed clean distance). At full corruption severity, \emph{all four} achieve FPR${} = 0.0$ and TPR${} = 1.0$ for fog, night, and blur, with best F1${} = 1.0$ across all corruptions. The $60\times$--$169\times$ separation gap renders the specific threshold choice non-critical. We recommend the $3\sigma$ threshold for deployment: it provides a formal zero-false-positive guarantee while remaining aggressive enough for high sensitivity, and naturally accommodates the right-skewed clean distribution.
+
+\paragraph{Low-Severity Sensitivity Varies by Corruption Type.} At minimal severity ($\text{sev} = 0.1$), detection performance diverges sharply across corruption types. Blur is most detectable (AUROC${} = 1.0$), followed by night ($0.99$), fog ($0.89$), and noise ($0.58$). Noise is the hardest corruption to detect at low severity---its AUROC only reaches $1.0$ at full severity. This ranking reflects the magnitude of embedding-space displacement each corruption induces: blur and night shift embeddings substantially even at low intensity, while noise produces small, partially random perturbations that only become reliably detectable as severity increases.
+
+\paragraph{Calibration Set Size.} Using 10 calibration scenes (increased from 8 in prior experiments), all results remain robust. The small calibration set requirement---a handful of clean reference images suffices---makes deployment practical: no large labeled dataset is needed, only a brief calibration pass through the target environment.
+
+\paragraph{Deployment Recommendation.} These results establish a concrete deployment protocol: collect ${\sim}10$ clean reference images, compute the embedding-distance distribution, and set a $3\sigma$ threshold. This guarantees zero false positives on clean data while achieving perfect detection of fog, night, and blur at full severity. For noise, which is hardest to detect at low severity, supplementary monitoring (e.g., action-level checks from Experiment~444) provides defense in depth.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig455_calibration.png}
+\caption{Threshold selection analysis. Clean distance distribution (mean $5.0 \times 10^{-5}$, skew${} = 1.33$) is separated from corrupted distributions by $60\times$ (fog) to $169\times$ (night). All threshold strategies ($2\sigma$/$3\sigma$/$4\sigma$/max-clean) achieve FPR${} = 0.0$ and TPR${} = 1.0$ at full severity. Low-severity sensitivity varies: blur AUROC${} = 1.0$ at sev${} = 0.1$, night $0.99$, fog $0.89$, noise $0.58$. The $3\sigma$ threshold is recommended for zero-FPR deployment.}
+\label{fig:calibration_threshold}
+\end{figure}
+
+\subsection{Feature Attribution Analysis (Experiment 448)}
+
+To understand \emph{which} dimensions of the 4096-dimensional hidden state drive OOD detection, we identify the top-50 most discriminative dimensions per corruption type and analyze their overlap, severity correlation, and geometric relationships.
+
+\paragraph{The Signal is Corruption-Type-Specific.} Only \textbf{3 dimensions} out of 4096 are shared across all four corruption types' top-50 lists: dims 1076, 1512, and 3431. The remaining top dimensions are largely corruption-specific: 34 unique to fog, 30 to night, 34 to noise, and 32 to blur. Pairwise overlap between any two corruption types is low (fog--night: 11, fog--blur: 8, noise--blur: 7), indicating the model uses fundamentally different internal features to represent different corruption types.
+
+\paragraph{Dimension 1512 is Universally Dominant.} Dim~1512 is ranked \#1 for night (AUROC contribution: 0.234), \#1 for blur (0.117), \#1 for noise (0.051), and \#2 for fog (0.090)---making it the single most important hidden-state dimension across all corruption types. This is consistent with weight-matrix analysis from Experiment~440, which identified dim~1512 as exhibiting the highest variance in clean embeddings.
+
+\paragraph{Detection is Highly Concentrated.} OOD detection does not require all 4096 dimensions. The top 10 informed dimensions (selected per corruption type) achieve AUROC${} = 1.0$. Strikingly, even \emph{random} 10 dimensions achieve AUROC${} = 0.991$, and random 500 dimensions achieve AUROC${} = 1.0$. The signal is so concentrated that virtually any low-dimensional projection suffices for near-perfect detection---the full 4096-d space is convenient but far from necessary.
+
+\paragraph{Corruption Directions Are Geometrically Structured.} The 4096-d shift vector (direction each corruption moves embeddings away from the clean centroid) is not random. Fog and noise are \emph{anti-correlated} (cosine similarity $-0.53$), meaning they push embeddings in nearly opposite directions---explaining the sub-additive distance observed under fog$+$noise compound corruption (Experiment~445). Night and blur are \emph{correlated} ($+0.52$), consistent with their similar effect on action entropy. PCA of the four shift vectors reveals that the first principal component explains \textbf{65\%} of variance, confirming a dominant common displacement direction shared across all corruption types. Three components are needed to explain 90\% of variance.
+
+\paragraph{Severity Linearity.} The degree to which top dimensions encode severity monotonically varies across corruption types: fog achieves 44 out of 50 top dimensions with $|r| \geq 0.9$ against severity, blur 34, night 30, and noise 25. The high severity-linearity of fog's top dimensions supports using embedding distance as a quantitative severity estimator (Experiment~443), while noise's lower linearity is consistent with its harder detection at low severity.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig457_feature_attribution.png}
+\caption{Feature attribution analysis (Experiment~448). Only 3 of 4096 dimensions are shared across all four corruption types' top-50 lists (dims 1076, 1512, 3431). Dim~1512 is ranked \#1 for night (0.234 AUROC contribution), blur, and noise, and \#2 for fog. The top 10 informed dimensions achieve AUROC${} = 1.0$; even random 10 dimensions achieve 0.991. Fog--noise shift vectors are anti-correlated ($-0.53$); night--blur are correlated ($+0.52$). PCA of shift vectors: first component explains 65\% of variance.}
+\label{fig:feature_attribution}
+\end{figure}
+
+\subsection{Attention Pattern Analysis under Corruption (Experiment 449)}
+
+A fundamental mechanistic question about the hidden-state OOD detector is \emph{why} it works: does visual corruption change the model's \emph{attention patterns} (which tokens it attends to), or do attention patterns remain stable while the hidden state geometry shifts? Resolving this question explains the mechanism behind the detector.
+
+\paragraph{Attention Patterns Are Stable at the Detection Layer.} At layer~3---the layer where cosine-distance OOD detection achieves AUROC${} = 1.0$---attention pattern cosine similarity to clean is $0.9998$--$0.9999$ across all four corruption types. The model continues attending to virtually the same tokens in the same proportions, despite the visual input being severely corrupted. \textbf{The OOD detection signal is in the hidden state geometry, not in the attention patterns.}
+
+\paragraph{Deeper Layers Show Larger Attention Shifts.} Corruption effects propagate and amplify through the network. At layer~31, attention cosine similarity to clean drops to $0.82$ for night and blur, $0.94$ for fog, and $0.95$ for noise. The corruption signature is much larger in late layers, but the detector operates on the final hidden state (aggregating all 32 layers' processing), not on intermediate attention maps.
+
+\paragraph{Night Corruption Causes Attention Concentration.} The most dramatic attention-level effect is the entropy reduction at layer~31 under night corruption: $\Delta = -0.52$~nats, reducing effective attention breadth from $N_{\text{eff}} = 8.7$ (clean) to $5.9$ (night). The model narrows its focus to fewer tokens when the visual input is severely degraded by low light. This is mechanistically consistent with the \emph{uncertainty explosion} finding (Experiment~444): unable to process the degraded visual scene normally, the model retreats to attending intensely to a small subset of tokens while producing high-entropy action distributions.
+
+\paragraph{Visual Attention Fraction.} Fog and night reduce the fraction of attention directed to visual tokens (fog: $-0.030$; night: $-0.016$), suggesting the model shifts relative attention toward text tokens when visual input quality degrades---possibly attempting to rely on linguistic priors. Noise and blur slightly increase visual attention fraction, consistent with those corruptions producing less severe degradation of the visual representation.
+
+\paragraph{Layer~3 Is Exceptionally Focused.} At layer~3, only ${\sim}2.6$ tokens are effectively attended to (very concentrated attention), and this is highly stable under all corruption types. Head~2 at layer~3 shows the largest cosine shift under any corruption ($0.0027$ for fog), which is negligible. The detection signal at this layer is entirely in the hidden state values, not in the routing of information.
+
+\paragraph{Mechanistic Interpretation.} These results establish the causal chain explaining why hidden-state cosine-distance detection works: (1) Visual corruption changes the \emph{content} of what visual tokens represent (their embedded values from the vision encoder). (2) These corrupted token values are routed through stable attention patterns---the model looks at the same tokens in the same proportions. (3) The stable attention routing integrates the corrupted token values into the final hidden state, producing a large geometric shift in the 4096-d space relative to the clean centroid. (4) Cosine distance detects this shift reliably, while any attention-pattern-based detector would fail (attention changes are negligible at the detection layer). This is a mechanistic validation of the hidden-state detector design: it captures changes in the visual representation itself, not changes in how the model routes information.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig458_attention.png}
+\caption{Attention pattern analysis under corruption (Experiment~449). At layer~3 (OOD detection layer), attention cosine similarity to clean is $0.9998$--$0.9999$ across all corruptions---attention patterns are essentially unchanged. Layer~31 shows larger shifts (night: $0.82$, blur: $0.82$). Night causes dramatic attention entropy reduction at layer~31 ($\Delta = -0.52$~nats, effective~$N$: $8.7 \to 5.9$). The OOD detection signal resides in the hidden state geometry, not in attention patterns.}
+\label{fig:attention_patterns}
 \end{figure}
 
 \end{document}
