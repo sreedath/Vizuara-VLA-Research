@@ -1,0 +1,318 @@
+{
+  "experiment": 455,
+  "title": "Information-Theoretic Analysis of OOD Detection",
+  "timestamp": "2026-03-15T21:53:13.155003",
+  "config": {
+    "seeds": [
+      42,
+      123,
+      456,
+      789,
+      1000,
+      2000,
+      3000,
+      4000
+    ],
+    "corruptions": [
+      "fog",
+      "night",
+      "noise",
+      "blur"
+    ],
+    "hidden_layer": 3,
+    "knn_k": 3
+  },
+  "embedding_entropy": {
+    "projected_dims": 7,
+    "clean": -19.681211761348013,
+    "fog": -27.365530981018704,
+    "fog_delta": -7.684319219670691,
+    "night": -24.046423846595292,
+    "night_delta": -4.365212085247279,
+    "noise": -20.998345352451345,
+    "noise_delta": -1.3171335911033317,
+    "blur": -10.38596060650214,
+    "blur_delta": 9.295251154845873
+  },
+  "kl_divergence": {
+    "fog": {
+      "kl_corrupt_given_clean": 25.32222361938373,
+      "kl_clean_given_corrupt": 17.7261106365822,
+      "kl_symmetric": 21.524167127982963
+    },
+    "night": {
+      "kl_corrupt_given_clean": 25.852996741042137,
+      "kl_clean_given_corrupt": 21.522008110515362,
+      "kl_symmetric": 23.68750242577875
+    },
+    "noise": {
+      "kl_corrupt_given_clean": 9.39073389257688,
+      "kl_clean_given_corrupt": 8.240884121391726,
+      "kl_symmetric": 8.815809006984303
+    },
+    "blur": {
+      "kl_corrupt_given_clean": 11.090567828077038,
+      "kl_clean_given_corrupt": 20.367612884916806,
+      "kl_symmetric": 15.729090356496922
+    },
+    "ranking_by_symmetric_kl": [
+      "night",
+      "fog",
+      "blur",
+      "noise"
+    ]
+  },
+  "information_bottleneck": {
+    "K_values": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "variance_fraction_by_K": [
+      0.4419726740435729,
+      0.5953896614768147,
+      0.7064170508201143,
+      0.8098153329115828,
+      0.885523681211261,
+      0.9459863680937828,
+      0.9999998757120148
+    ],
+    "fisher_fraction_by_K": [
+      0.00034818988722968756,
+      0.00035722474008040745,
+      0.0005445289831160138,
+      0.0009826469491491434,
+      0.000988938733682134,
+      0.0010859739406866029,
+      0.0011924473702789636
+    ],
+    "singular_values_top20": [
+      0.16277143359184265,
+      0.09589970111846924,
+      0.08158223330974579,
+      0.07872944325208664,
+      0.0673678070306778,
+      0.06020385026931763,
+      0.05690254271030426,
+      6.866630082105616e-17
+    ],
+    "n_effective_components": 7,
+    "total_variance": 0.059946104884147644
+  },
+  "mutual_information": {
+    "n_classes": 5,
+    "H_corruption_bits": 2.321928094887362,
+    "note_MI_upper_bound": "Perfect classification -> MI = H(corruption) = log2(5) bits",
+    "accuracy_full_dim": 1.0,
+    "accuracy_projected_7pc": 1.0,
+    "H_conditional_full_fano_bound": 3.666197610905958e-09,
+    "H_conditional_projected_fano_bound": 3.666197610905958e-09,
+    "MI_lower_bound_full_dim_bits": 2.3219280912211646,
+    "MI_lower_bound_projected_bits": 2.3219280912211646,
+    "MI_upper_bound_bits": 2.321928094887362
+  },
+  "rate_distortion": {
+    "bit_levels": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "mean_auroc_by_bits": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "per_corruption_auroc_by_bits": {
+      "fog": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "night": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "noise": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "blur": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "min_bits_per_dim_for_auroc_0_95": 1
+  },
+  "channel_capacity": {
+    "model": "Binary Symmetric Channel (BSC)",
+    "note": "AUROC=1.0 \u2192 C=1 bit; AUROC=0.5 \u2192 C=0 bits",
+    "capacity_at_auroc_1_0": 1.0,
+    "capacity_at_auroc_0_5": 0.0,
+    "by_severity": {
+      "0.1": {
+        "severity": 0.1,
+        "auroc_per_corruption": {
+          "fog": 0.84375,
+          "night": 0.984375,
+          "noise": 0.5,
+          "blur": 1.0
+        },
+        "capacity_per_corruption": {
+          "fog": 0.37473759477657687,
+          "night": 0.8838849246952303,
+          "noise": 0.0,
+          "blur": 0.9999999965338024
+        },
+        "mean_auroc": 0.83203125,
+        "mean_capacity_bits": 0.5646556290014024
+      },
+      "0.25": {
+        "severity": 0.25,
+        "auroc_per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.609375,
+          "blur": 1.0
+        },
+        "capacity_per_corruption": {
+          "fog": 0.9999999965338024,
+          "night": 0.9999999965338024,
+          "noise": 0.03479830124993438,
+          "blur": 0.9999999965338024
+        },
+        "mean_auroc": 0.90234375,
+        "mean_capacity_bits": 0.7586995727128354
+      },
+      "0.5": {
+        "severity": 0.5,
+        "auroc_per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.71875,
+          "blur": 1.0
+        },
+        "capacity_per_corruption": {
+          "fog": 0.9999999965338024,
+          "night": 0.9999999965338024,
+          "noise": 0.1428515625716284,
+          "blur": 0.9999999965338024
+        },
+        "mean_auroc": 0.9296875,
+        "mean_capacity_bits": 0.7857128880432589
+      },
+      "0.75": {
+        "severity": 0.75,
+        "auroc_per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 0.96875,
+          "blur": 1.0
+        },
+        "capacity_per_corruption": {
+          "fog": 0.9999999965338024,
+          "night": 0.9999999965338024,
+          "noise": 0.7993776756872853,
+          "blur": 0.9999999965338024
+        },
+        "mean_auroc": 0.9921875,
+        "mean_capacity_bits": 0.9498444163221732
+      },
+      "1.0": {
+        "severity": 1.0,
+        "auroc_per_corruption": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "capacity_per_corruption": {
+          "fog": 0.9999999965338024,
+          "night": 0.9999999965338024,
+          "noise": 0.9999999965338024,
+          "blur": 0.9999999965338024
+        },
+        "mean_auroc": 1.0,
+        "mean_capacity_bits": 0.9999999965338024
+      }
+    }
+  },
+  "baseline_auroc_severity_1": {
+    "fog": {
+      "auroc": 1.0,
+      "capacity_bits": 0.9999999965338024
+    },
+    "night": {
+      "auroc": 1.0,
+      "capacity_bits": 0.9999999965338024
+    },
+    "noise": {
+      "auroc": 1.0,
+      "capacity_bits": 0.9999999965338024
+    },
+    "blur": {
+      "auroc": 1.0,
+      "capacity_bits": 0.9999999965338024
+    },
+    "mean_auroc": 1.0,
+    "mean_capacity_bits": 0.9999999965338024
+  },
+  "summary": {
+    "n_scenes": 8,
+    "embedding_dim": 4096,
+    "knn_projected_dims": 7,
+    "entropy_clean_nats": -19.681211761348013,
+    "entropy_deltas_nats": {
+      "fog": -7.684319219670691,
+      "night": -4.365212085247279,
+      "noise": -1.3171335911033317,
+      "blur": 9.295251154845873
+    },
+    "kl_symmetric_per_corruption": {
+      "fog": 21.524167127982963,
+      "night": 23.68750242577875,
+      "noise": 8.815809006984303,
+      "blur": 15.729090356496922
+    },
+    "kl_ranking": [
+      "night",
+      "fog",
+      "blur",
+      "noise"
+    ],
+    "effective_svd_components": 7,
+    "variance_fraction_top7_pcs": 0.9999998757120148,
+    "fisher_fraction_top7_pcs": 0.0011924473702789636,
+    "variance_fraction_top50_pcs": 0.9999998757120148,
+    "mi_lower_bound_full_dim_bits": 2.3219280912211646,
+    "mi_upper_bound_bits": 2.321928094887362,
+    "nc_accuracy_full_dim": 1.0,
+    "min_bits_per_dim_for_detection": 1,
+    "baseline_mean_auroc": 1.0,
+    "baseline_mean_channel_capacity_bits": 0.9999999965338024
+  }
+}

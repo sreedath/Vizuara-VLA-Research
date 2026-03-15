@@ -1,294 +1,604 @@
-#!/usr/bin/env python3
-"""Experiment 325: Embedding Dynamics Under Gradual Corruption (Real OpenVLA-7B)
-
-Tests how embeddings evolve as corruption is gradually applied frame-by-frame:
-1. Gradual onset: fog appearing slowly (0→100% over 50 steps)
-2. Sudden onset: instant corruption appearance
-3. Recovery dynamics: corruption→clean transition speed
-4. Oscillation: alternating clean/corrupt frames
-5. Severity ramps: continuous severity increase
-6. Multi-corruption transition: smooth morphing between corruption types
-7. Hysteresis: does the path matter? (increasing vs decreasing severity)
 """
+Embedding Dynamics Across Model Depth on Real OpenVLA-7B.
 
-import json, time, os, sys
-import numpy as np
+Traces how the embedding of a single image evolves across ALL transformer
+layers, and how corruption affects this trajectory. Gives insight into WHERE
+in the model the corruption signal first emerges.
+
+Analyses:
+  1. Layer-to-Layer Cosine Similarity
+  2. Corruption Divergence Emergence
+  3. Embedding Velocity (L2 norm of consecutive-layer diffs)
+  4. Representational Similarity Analysis (RSA)
+  5. Corruption Signal Amplification
+  6. Layer Clustering (silhouette score, NN accuracy)
+
+Experiment 456 in the CalibDrive series.
+"""
 import torch
+import json
+import os
+import sys
+import numpy as np
 from PIL import Image, ImageFilter
 from transformers import AutoModelForVision2Seq, AutoProcessor
+from datetime import datetime
 
-def extract_hidden(model, processor, image, prompt, layer=3):
-    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-    with torch.no_grad():
-        fwd = model(**inputs, output_hidden_states=True)
-    return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
+# ---------------------------------------------------------------------------
+# Config
+# ---------------------------------------------------------------------------
+RESULTS_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "experiments",
+)
+os.makedirs(RESULTS_DIR, exist_ok=True)
+
+SEEDS = [42, 123, 456, 789, 1000, 2000, 3000, 4000]
+CORRUPTION_TYPES = ["fog", "night", "noise", "blur"]
+SEVERITY = 1.0
+PROMPT = "In: What action should the robot take to drive forward safely?\nOut:"
+
+
+# ---------------------------------------------------------------------------
+# Image helpers
+# ---------------------------------------------------------------------------
+
+def make_image(seed=42):
+    rng = np.random.RandomState(seed)
+    return Image.fromarray(rng.randint(0, 255, (224, 224, 3), dtype=np.uint8))
+
 
 def apply_corruption(image, ctype, severity=1.0):
     arr = np.array(image).astype(np.float32) / 255.0
-    if ctype == 'fog':
+    if ctype == "fog":
         arr = arr * (1 - 0.6 * severity) + 0.6 * severity
-    elif ctype == 'night':
+    elif ctype == "night":
         arr = arr * max(0.01, 1.0 - 0.95 * severity)
-    elif ctype == 'noise':
+    elif ctype == "noise":
         arr = arr + np.random.RandomState(42).randn(*arr.shape) * 0.3 * severity
         arr = np.clip(arr, 0, 1)
-    elif ctype == 'blur':
+    elif ctype == "blur":
         return image.filter(ImageFilter.GaussianBlur(radius=10 * severity))
     return Image.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
 
-def cosine_dist(a, b):
-    dot = np.dot(a, b)
-    na, nb = np.linalg.norm(a), np.linalg.norm(b)
-    if na < 1e-10 or nb < 1e-10:
-        return 0.0
-    return 1.0 - dot / (na * nb)
 
-def cosine_sim(a, b):
-    na, nb = np.linalg.norm(a), np.linalg.norm(b)
-    if na < 1e-10 or nb < 1e-10:
+# ---------------------------------------------------------------------------
+# Forward pass — extract all hidden layers in one pass
+# ---------------------------------------------------------------------------
+
+def extract_all_layers(model, processor, image, prompt):
+    """Return list of per-layer last-token embeddings as float32 numpy arrays."""
+    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
+    with torch.no_grad():
+        fwd = model(**inputs, output_hidden_states=True)
+    return [h[0, -1, :].float().cpu().numpy() for h in fwd.hidden_states]
+
+
+# ---------------------------------------------------------------------------
+# Math helpers (no sklearn)
+# ---------------------------------------------------------------------------
+
+def cosine_similarity(a, b):
+    """Scalar cosine similarity between two 1-D arrays."""
+    na = np.linalg.norm(a)
+    nb = np.linalg.norm(b)
+    if na < 1e-12 or nb < 1e-12:
         return 0.0
-    return np.dot(a, b) / (na * nb)
+    return float(np.dot(a, b) / (na * nb))
+
+
+def cosine_distance(a, b):
+    return 1.0 - cosine_similarity(a, b)
+
+
+def pairwise_cosine_distances(matrix):
+    """
+    matrix: (N, D) float array.
+    Returns (N, N) cosine distance matrix.
+    """
+    matrix = np.asarray(matrix, dtype=np.float64)
+    norms = np.linalg.norm(matrix, axis=1, keepdims=True)
+    norms = np.where(norms < 1e-12, 1e-12, norms)
+    normed = matrix / norms
+    sim = normed @ normed.T
+    sim = np.clip(sim, -1.0, 1.0)
+    return 1.0 - sim
+
+
+def pearson_correlation(x, y):
+    """Scalar Pearson r between two 1-D arrays."""
+    x = np.asarray(x, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+    if x.std() < 1e-12 or y.std() < 1e-12:
+        return 0.0
+    return float(np.corrcoef(x, y)[0, 1])
+
+
+# ---------------------------------------------------------------------------
+# Hand-written silhouette score (no sklearn)
+# ---------------------------------------------------------------------------
+
+def silhouette_score_handwritten(embeddings, labels):
+    """
+    Compute mean silhouette coefficient without sklearn.
+
+    s(i) = (b(i) - a(i)) / max(a(i), b(i))
+
+    a(i): mean intra-cluster cosine distance (excluding self).
+    b(i): mean cosine distance to nearest other cluster.
+
+    Returns mean silhouette over all samples, or 0.0 if only one cluster.
+    """
+    embeddings = np.asarray(embeddings, dtype=np.float64)
+    labels = np.asarray(labels)
+    unique_labels = np.unique(labels)
+    if len(unique_labels) < 2:
+        return 0.0
+
+    n = len(embeddings)
+    dist_mat = pairwise_cosine_distances(embeddings)
+
+    silhouettes = []
+    for i in range(n):
+        lbl_i = labels[i]
+
+        # a(i): mean intra-cluster distance
+        same_mask = (labels == lbl_i)
+        same_mask[i] = False  # exclude self
+        if same_mask.sum() == 0:
+            a_i = 0.0
+        else:
+            a_i = float(dist_mat[i, same_mask].mean())
+
+        # b(i): mean distance to nearest other cluster
+        b_i = np.inf
+        for other_lbl in unique_labels:
+            if other_lbl == lbl_i:
+                continue
+            other_mask = (labels == other_lbl)
+            mean_dist = float(dist_mat[i, other_mask].mean())
+            if mean_dist < b_i:
+                b_i = mean_dist
+
+        if np.isinf(b_i):
+            b_i = 0.0
+
+        denom = max(a_i, b_i)
+        s_i = (b_i - a_i) / denom if denom > 1e-12 else 0.0
+        silhouettes.append(s_i)
+
+    return float(np.mean(silhouettes))
+
+
+def nearest_neighbor_accuracy(embeddings, labels):
+    """
+    1-NN leave-one-out accuracy using cosine distance.
+    """
+    embeddings = np.asarray(embeddings, dtype=np.float64)
+    labels = np.asarray(labels)
+    n = len(embeddings)
+    dist_mat = pairwise_cosine_distances(embeddings)
+    np.fill_diagonal(dist_mat, np.inf)
+
+    correct = 0
+    for i in range(n):
+        nn_idx = int(np.argmin(dist_mat[i]))
+        if labels[nn_idx] == labels[i]:
+            correct += 1
+    return correct / n
+
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
 
 def main():
-    print("Loading model...")
+    print("=" * 70, flush=True)
+    print("EXPERIMENT 456: EMBEDDING DYNAMICS ACROSS MODEL DEPTH", flush=True)
+    print("=" * 70, flush=True)
+
+    # ------------------------------------------------------------------
+    # Load model
+    # ------------------------------------------------------------------
+    print("\nLoading OpenVLA-7B...", flush=True)
     model = AutoModelForVision2Seq.from_pretrained(
-        "openvla/openvla-7b", torch_dtype=torch.bfloat16,
-        device_map="auto", trust_remote_code=True)
-    processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
+        "openvla/openvla-7b",
+        torch_dtype=torch.bfloat16,
+        device_map="auto",
+        trust_remote_code=True,
+    )
+    processor = AutoProcessor.from_pretrained(
+        "openvla/openvla-7b",
+        trust_remote_code=True,
+    )
     model.eval()
+    print("Model loaded.", flush=True)
 
-    np.random.seed(42)
-    pixels = np.random.randint(50, 200, (224, 224, 3), dtype=np.uint8)
-    base_img = Image.fromarray(pixels)
-    prompt = "In: What action should the robot take to pick up the object?\nOut:"
+    # ------------------------------------------------------------------
+    # Collect all embeddings
+    # conditions: "clean" + 4 corruption types  => 5 per scene
+    # scenes: 8 seeds
+    # total forward passes: 40
+    # ------------------------------------------------------------------
+    conditions = ["clean"] + CORRUPTION_TYPES
+    n_scenes = len(SEEDS)
+    n_conditions = len(conditions)
+    total_passes = n_scenes * n_conditions
 
-    clean_emb = extract_hidden(model, processor, base_img, prompt)
-    results = {}
+    print(f"\nScenes: {n_scenes}  |  Conditions: {n_conditions}  "
+          f"|  Total forward passes: {total_passes}", flush=True)
 
-    # ========== 1. Gradual onset (0→100% over 20 steps) ==========
-    print("\n=== Gradual Onset ===")
-    gradual_results = {}
-    for ctype in ['fog', 'night', 'noise', 'blur']:
-        steps = np.linspace(0, 1.0, 21)
-        distances = []
-        for sev in steps:
-            if sev == 0:
-                d = 0.0
+    # all_layers[scene_idx][condition_idx] = list of per-layer numpy arrays
+    all_layers = []
+    n_layers = None
+    pass_idx = 0
+
+    for s_idx, seed in enumerate(SEEDS):
+        scene_rows = []
+        base_image = make_image(seed)
+        for c_idx, cond in enumerate(conditions):
+            pass_idx += 1
+            if cond == "clean":
+                image = base_image
             else:
-                img = apply_corruption(base_img, ctype, sev)
-                emb = extract_hidden(model, processor, img, prompt)
-                d = cosine_dist(clean_emb, emb)
-            distances.append(float(d))
-        gradual_results[ctype] = {
-            'severities': [float(s) for s in steps],
-            'distances': distances,
-            'monotonic': all(distances[i] <= distances[i+1] + 1e-10 for i in range(len(distances)-1)),
-            'max_distance': float(max(distances)),
-        }
-        print(f"  {ctype}: max_d={max(distances):.6f}, monotonic={gradual_results[ctype]['monotonic']}")
+                image = apply_corruption(base_image, cond, SEVERITY)
 
-    results['gradual_onset'] = gradual_results
+            print(f"  [{pass_idx}/{total_passes}] scene seed={seed}  "
+                  f"condition={cond}", flush=True)
 
-    # ========== 2. Sudden onset vs gradual ==========
-    print("\n=== Sudden vs Gradual Detection ===")
-    onset_results = {}
-    for ctype in ['fog', 'night', 'blur']:
-        # Gradual: distance at 10% severity
-        img_10 = apply_corruption(base_img, ctype, 0.1)
-        d_10 = cosine_dist(clean_emb, extract_hidden(model, processor, img_10, prompt))
+            layers = extract_all_layers(model, processor, image, PROMPT)
 
-        # Sudden: distance at 100% severity
-        img_100 = apply_corruption(base_img, ctype, 1.0)
-        d_100 = cosine_dist(clean_emb, extract_hidden(model, processor, img_100, prompt))
+            if n_layers is None:
+                n_layers = len(layers)
+                print(f"  -> {n_layers} hidden layers detected.", flush=True)
 
-        onset_results[ctype] = {
-            'd_at_10pct': float(d_10),
-            'd_at_100pct': float(d_100),
-            'ratio': float(d_100 / d_10) if d_10 > 0 else 0,
-            'both_detected': bool(d_10 > 0 and d_100 > 0),
-        }
-        print(f"  {ctype}: d@10%={d_10:.6f}, d@100%={d_100:.6f}, ratio={d_100/d_10:.1f}")
+            scene_rows.append(layers)
+        all_layers.append(scene_rows)
 
-    results['onset_comparison'] = onset_results
+    print(f"\nAll embeddings collected. n_layers={n_layers}", flush=True)
 
-    # ========== 3. Oscillation: alternating clean/corrupt ==========
-    print("\n=== Oscillation Pattern ===")
-    osc_results = {}
-    for ctype in ['fog', 'blur']:
-        distances = []
-        for frame in range(20):
-            if frame % 2 == 0:
-                # Clean frame
-                d = cosine_dist(clean_emb, extract_hidden(model, processor, base_img, prompt))
-            else:
-                # Corrupt frame
-                img = apply_corruption(base_img, ctype, 0.5)
-                d = cosine_dist(clean_emb, extract_hidden(model, processor, img, prompt))
-            distances.append(float(d))
+    # ------------------------------------------------------------------
+    # Index helpers
+    # ------------------------------------------------------------------
+    CLEAN_IDX = 0  # conditions[0] == "clean"
 
-        osc_results[ctype] = {
-            'distances': distances,
-            'clean_frames_zero': all(d == 0 for i, d in enumerate(distances) if i % 2 == 0),
-            'corrupt_frames_positive': all(d > 0 for i, d in enumerate(distances) if i % 2 == 1),
-            'instant_detection': True,  # zero-latency detection
-        }
-        print(f"  {ctype}: clean_zero={osc_results[ctype]['clean_frames_zero']}, corrupt_pos={osc_results[ctype]['corrupt_frames_positive']}")
+    # ------------------------------------------------------------------
+    # Analysis 1: Layer-to-Layer Cosine Similarity
+    # For each pair of adjacent layers (L_i, L_{i+1}), compute cosine
+    # similarity. Compare clean vs corrupted trajectories.
+    # ------------------------------------------------------------------
+    print("\n" + "=" * 70, flush=True)
+    print("ANALYSIS 1: Layer-to-Layer Cosine Similarity", flush=True)
+    print("=" * 70, flush=True)
+    print("  (mean adjacent-layer cosine similarity across all scenes)", flush=True)
+    header = f"  {'Layer':>6}  {'Clean':>8}  " + \
+             "  ".join(f"{c:>8}" for c in CORRUPTION_TYPES)
+    print(header, flush=True)
+    print("  " + "-" * (len(header) - 2), flush=True)
 
-    results['oscillation'] = osc_results
+    adj_cos_per_layer = {cond: [] for cond in conditions}
 
-    # ========== 4. Hysteresis: increasing vs decreasing severity ==========
-    print("\n=== Hysteresis Test ===")
-    hysteresis_results = {}
-    for ctype in ['fog', 'night', 'blur']:
-        up_steps = np.linspace(0, 1.0, 11)
-        down_steps = np.linspace(1.0, 0, 11)
+    for layer_i in range(n_layers - 1):
+        row_parts = [f"  {layer_i:>6}"]
+        for c_idx, cond in enumerate(conditions):
+            sims = []
+            for s_idx in range(n_scenes):
+                h_curr = all_layers[s_idx][c_idx][layer_i]
+                h_next = all_layers[s_idx][c_idx][layer_i + 1]
+                sims.append(cosine_similarity(h_curr, h_next))
+            mean_sim = float(np.mean(sims))
+            adj_cos_per_layer[cond].append(mean_sim)
+            row_parts.append(f"{mean_sim:>8.4f}")
+        print("  ".join(row_parts), flush=True)
 
-        up_distances = []
-        for sev in up_steps:
-            if sev == 0:
-                d = 0.0
-            else:
-                img = apply_corruption(base_img, ctype, sev)
-                d = cosine_dist(clean_emb, extract_hidden(model, processor, img, prompt))
-            up_distances.append(float(d))
+    # ------------------------------------------------------------------
+    # Analysis 2: Corruption Divergence Emergence
+    # At each layer, compute cosine distance between clean and corrupted
+    # embedding (same scene). Where does the corruption signal first
+    # appear? Where is it strongest?
+    # ------------------------------------------------------------------
+    print("\n" + "=" * 70, flush=True)
+    print("ANALYSIS 2: Corruption Divergence Emergence", flush=True)
+    print("=" * 70, flush=True)
+    print("  (mean cosine distance between clean & corrupted embedding per layer)", flush=True)
+    header = f"  {'Layer':>6}  " + \
+             "  ".join(f"{c:>8}" for c in CORRUPTION_TYPES)
+    print(header, flush=True)
+    print("  " + "-" * (len(header) - 2), flush=True)
 
-        down_distances = []
-        for sev in down_steps:
-            if sev == 0:
-                d = 0.0
-            else:
-                img = apply_corruption(base_img, ctype, sev)
-                d = cosine_dist(clean_emb, extract_hidden(model, processor, img, prompt))
-            down_distances.append(float(d))
+    divergence_per_layer = {ctype: [] for ctype in CORRUPTION_TYPES}
 
-        # Compare at same severity points
-        max_diff = max(abs(u - d) for u, d in zip(up_distances, reversed(down_distances)))
+    for layer_i in range(n_layers):
+        row_parts = [f"  {layer_i:>6}"]
+        for c_idx, ctype in enumerate(CORRUPTION_TYPES, start=1):
+            dists = []
+            for s_idx in range(n_scenes):
+                h_clean = all_layers[s_idx][CLEAN_IDX][layer_i]
+                h_corr = all_layers[s_idx][c_idx][layer_i]
+                dists.append(cosine_distance(h_clean, h_corr))
+            mean_dist = float(np.mean(dists))
+            divergence_per_layer[ctype].append(mean_dist)
+            row_parts.append(f"{mean_dist:>8.4f}")
+        print("  ".join(row_parts), flush=True)
 
-        hysteresis_results[ctype] = {
-            'up_distances': up_distances,
-            'down_distances': down_distances,
-            'max_difference': float(max_diff),
-            'hysteresis_free': bool(max_diff < 1e-6),
-        }
-        print(f"  {ctype}: max_diff={max_diff:.10f}, hysteresis_free={max_diff < 1e-6}")
+    print("\n  Peak divergence layer per corruption type:", flush=True)
+    peak_divergence_layers = {}
+    emergence_layers = {}
+    for ctype in CORRUPTION_TYPES:
+        traj = divergence_per_layer[ctype]
+        peak_layer = int(np.argmax(traj))
+        peak_divergence_layers[ctype] = peak_layer
+        # Emergence: first layer where divergence exceeds 10% of peak value
+        threshold = 0.10 * traj[peak_layer]
+        emergence_layer = next(
+            (i for i, v in enumerate(traj) if v > threshold), peak_layer
+        )
+        emergence_layers[ctype] = emergence_layer
+        print(f"    {ctype:<8}: peak_layer={peak_layer}  "
+              f"emergence_layer={emergence_layer}  "
+              f"peak_dist={traj[peak_layer]:.4f}", flush=True)
 
-    results['hysteresis'] = hysteresis_results
+    # ------------------------------------------------------------------
+    # Analysis 3: Embedding Velocity
+    # velocity(L) = ||h_{L+1} - h_L||_2
+    # Measures how fast the representation changes across depth.
+    # Compare clean vs corrupted velocity profiles.
+    # ------------------------------------------------------------------
+    print("\n" + "=" * 70, flush=True)
+    print("ANALYSIS 3: Embedding Velocity  ||h_{L+1} - h_L||_2", flush=True)
+    print("=" * 70, flush=True)
+    header = f"  {'Layer':>6}  {'Clean':>10}  " + \
+             "  ".join(f"{c:>10}" for c in CORRUPTION_TYPES)
+    print(header, flush=True)
+    print("  " + "-" * (len(header) - 2), flush=True)
 
-    # ========== 5. Cross-corruption morphing ==========
-    print("\n=== Cross-Corruption Morphing ===")
-    morph_results = {}
-    morph_pairs = [('fog', 'night'), ('fog', 'blur'), ('night', 'blur')]
+    velocity_per_layer = {cond: [] for cond in conditions}
 
-    for ct1, ct2 in morph_pairs:
-        alphas = np.linspace(0, 1.0, 11)
-        distances = []
-        for alpha in alphas:
-            # Blend corrupted images: (1-alpha)*corrupt1 + alpha*corrupt2
-            img1 = apply_corruption(base_img, ct1, 0.5)
-            img2 = apply_corruption(base_img, ct2, 0.5)
-            arr = (1 - alpha) * np.array(img1).astype(float) + alpha * np.array(img2).astype(float)
-            blend = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
-            emb = extract_hidden(model, processor, blend, prompt)
-            d = cosine_dist(clean_emb, emb)
-            distances.append(float(d))
+    for layer_i in range(n_layers - 1):
+        row_parts = [f"  {layer_i:>6}"]
+        for c_idx, cond in enumerate(conditions):
+            vels = []
+            for s_idx in range(n_scenes):
+                h_curr = all_layers[s_idx][c_idx][layer_i]
+                h_next = all_layers[s_idx][c_idx][layer_i + 1]
+                vels.append(float(np.linalg.norm(h_next - h_curr)))
+            mean_vel = float(np.mean(vels))
+            velocity_per_layer[cond].append(mean_vel)
+            row_parts.append(f"{mean_vel:>10.3f}")
+        print("  ".join(row_parts), flush=True)
 
-        morph_results[f"{ct1}_to_{ct2}"] = {
-            'alphas': [float(a) for a in alphas],
-            'distances': distances,
-            'monotonic': False,
-            'min_distance': float(min(distances)),
-            'max_distance': float(max(distances)),
-        }
-        # Check if there's a minimum in between (indicating potential evasion via blending)
-        mid_min = min(distances[1:-1]) if len(distances) > 2 else distances[0]
-        edge_min = min(distances[0], distances[-1])
-        morph_results[f"{ct1}_to_{ct2}"]['interior_minimum'] = bool(mid_min < edge_min * 0.9)
-        print(f"  {ct1}→{ct2}: min_d={min(distances):.6f}, max_d={max(distances):.6f}, interior_min={mid_min < edge_min * 0.9}")
+    # ------------------------------------------------------------------
+    # Analysis 4: Representational Similarity Analysis (RSA)
+    # At each layer, compute the pairwise cosine distance matrix between
+    # all 40 conditions (8 scenes x 5 conditions). Correlate these RDMs
+    # across adjacent layers and against layer 0.
+    # ------------------------------------------------------------------
+    print("\n" + "=" * 70, flush=True)
+    print("ANALYSIS 4: RSA — Cross-Layer Geometry Correlation", flush=True)
+    print("=" * 70, flush=True)
+    print("  Pearson r of flattened pairwise distance matrices between layers.", flush=True)
+    print("  Adj_r: correlation of RDM(L) vs RDM(L-1).", flush=True)
+    print("  ToL0_r: correlation of RDM(L) vs RDM(0).", flush=True)
 
-    results['morphing'] = morph_results
+    # Project onto first RSA_MAX_DIM dims to keep computation tractable
+    RSA_MAX_DIM = 512
 
-    # ========== 6. Detection latency analysis ==========
-    print("\n=== Detection Latency (frames to detect) ===")
-    latency_results = {}
+    rsa_adjacent_corr = []
+    rsa_to_layer0_corr = []
+    rdm_layer0_flat = None
+    prev_rdm_flat = None
 
-    # Simulate a stream: 10 clean, then corruption onset at various severities
-    for ctype in ['fog', 'night', 'blur', 'noise']:
-        for sev in [0.05, 0.1, 0.5, 1.0]:
-            # Frame at onset severity
-            if sev > 0:
-                img = apply_corruption(base_img, ctype, sev)
-                emb = extract_hidden(model, processor, img, prompt)
-                d = cosine_dist(clean_emb, emb)
-            else:
-                d = 0.0
+    for layer_i in range(n_layers):
+        mat = []
+        for s_idx in range(n_scenes):
+            for c_idx in range(n_conditions):
+                h = all_layers[s_idx][c_idx][layer_i][:RSA_MAX_DIM]
+                mat.append(h)
+        mat = np.asarray(mat, dtype=np.float64)  # (n_scenes*n_conditions, RSA_MAX_DIM)
+        rdm = pairwise_cosine_distances(mat)
+        idx_upper = np.triu_indices(len(mat), k=1)
+        rdm_flat = rdm[idx_upper]
 
-            key = f"{ctype}_sev{sev}"
-            latency_results[key] = {
-                'distance': float(d),
-                'detected_first_frame': bool(d > 0),
-                'latency_frames': 0 if d > 0 else -1,
-            }
+        if layer_i == 0:
+            rdm_layer0_flat = rdm_flat.copy()
+            rsa_to_layer0_corr.append(1.0)
+            rsa_adjacent_corr.append(float("nan"))
+        else:
+            r_to_0 = pearson_correlation(rdm_flat, rdm_layer0_flat)
+            rsa_to_layer0_corr.append(r_to_0)
+            r_adj = pearson_correlation(rdm_flat, prev_rdm_flat)
+            rsa_adjacent_corr.append(r_adj)
 
-    results['detection_latency'] = latency_results
-    detected_count = sum(1 for v in latency_results.values() if v['detected_first_frame'])
-    print(f"  {detected_count}/{len(latency_results)} detected on first frame")
+        prev_rdm_flat = rdm_flat.copy()
 
-    # ========== 7. Embedding velocity (rate of change) ==========
-    print("\n=== Embedding Velocity ===")
-    velocity_results = {}
-    for ctype in ['fog', 'night', 'blur']:
-        steps = np.linspace(0.05, 1.0, 20)
-        embs = []
-        for sev in steps:
-            img = apply_corruption(base_img, ctype, sev)
-            emb = extract_hidden(model, processor, img, prompt)
-            embs.append(emb)
+    print(f"\n  {'Layer':>6}  {'Adj_r':>8}  {'ToL0_r':>8}", flush=True)
+    print("  " + "-" * 28, flush=True)
+    for layer_i in range(n_layers):
+        adj_val = rsa_adjacent_corr[layer_i]
+        if isinstance(adj_val, float) and adj_val != adj_val:  # nan
+            adj_str = "     N/A"
+        else:
+            adj_str = f"{adj_val:>8.4f}"
+        print(f"  {layer_i:>6}  {adj_str}  "
+              f"{rsa_to_layer0_corr[layer_i]:>8.4f}", flush=True)
 
-        # Velocity = distance between consecutive embeddings / severity step
-        velocities = []
-        for i in range(1, len(embs)):
-            d = cosine_dist(embs[i-1], embs[i])
-            ds = steps[i] - steps[i-1]
-            velocities.append(float(d / ds))
+    # Largest representational change: layer with lowest adjacent r
+    valid_adj = [(i, v) for i, v in enumerate(rsa_adjacent_corr)
+                 if isinstance(v, float) and v == v]  # exclude nan
+    if valid_adj:
+        min_adj_layer, min_adj_val = min(valid_adj, key=lambda x: x[1])
+        print(f"\n  Largest representational change: layer {min_adj_layer - 1} -> "
+              f"{min_adj_layer}  (adj_r={min_adj_val:.4f})", flush=True)
 
-        velocity_results[ctype] = {
-            'severities': [float(s) for s in steps[1:]],
-            'velocities': velocities,
-            'max_velocity': float(max(velocities)),
-            'min_velocity': float(min(velocities)),
-            'velocity_ratio': float(max(velocities) / min(velocities)) if min(velocities) > 0 else 0,
-        }
-        print(f"  {ctype}: max_vel={max(velocities):.6f}, min_vel={min(velocities):.6f}, ratio={max(velocities)/max(min(velocities),1e-10):.1f}")
+    # ------------------------------------------------------------------
+    # Analysis 5: Corruption Signal Amplification
+    # ratio(L) = corruption_divergence(L) / clean_variance(L)
+    # clean_variance: mean pairwise cosine distance among 8 clean embeds.
+    # ------------------------------------------------------------------
+    print("\n" + "=" * 70, flush=True)
+    print("ANALYSIS 5: Corruption Signal Amplification", flush=True)
+    print("=" * 70, flush=True)
+    print("  ratio = corruption_divergence[L] / clean_variance[L]", flush=True)
 
-    results['embedding_velocity'] = velocity_results
+    clean_variance_per_layer = []
+    for layer_i in range(n_layers):
+        clean_mat = np.asarray(
+            [all_layers[s_idx][CLEAN_IDX][layer_i] for s_idx in range(n_scenes)],
+            dtype=np.float64,
+        )
+        rdm_clean = pairwise_cosine_distances(clean_mat)
+        idx_upper = np.triu_indices(n_scenes, k=1)
+        clean_variance_per_layer.append(float(rdm_clean[idx_upper].mean()))
 
-    # Save
-    ts = time.strftime("%Y%m%d_%H%M%S")
-    out_path = f"experiments/embed_dynamics_{ts}.json"
+    header = f"  {'Layer':>6}  {'CleanVar':>10}  " + \
+             "  ".join(f"{c:>10}" for c in CORRUPTION_TYPES)
+    print(header, flush=True)
+    print("  " + "-" * (len(header) - 2), flush=True)
 
-    def convert(obj):
-        if isinstance(obj, (np.floating, np.float32, np.float64)):
-            return float(obj)
-        if isinstance(obj, (np.integer, np.int32, np.int64)):
-            return int(obj)
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        if isinstance(obj, np.bool_):
-            return bool(obj)
-        return obj
+    amplification_per_layer = {ctype: [] for ctype in CORRUPTION_TYPES}
 
-    def recursive_convert(d):
-        if isinstance(d, dict):
-            return {k: recursive_convert(v) for k, v in d.items()}
-        if isinstance(d, list):
-            return [recursive_convert(x) for x in d]
-        return convert(d)
+    for layer_i in range(n_layers):
+        clean_var = clean_variance_per_layer[layer_i]
+        row_parts = [f"  {layer_i:>6}", f"{clean_var:>10.4f}"]
+        for ctype in CORRUPTION_TYPES:
+            div = divergence_per_layer[ctype][layer_i]
+            ratio = div / (clean_var + 1e-12)
+            amplification_per_layer[ctype].append(float(ratio))
+            row_parts.append(f"{ratio:>10.3f}")
+        print("  ".join(row_parts), flush=True)
 
-    results = recursive_convert(results)
+    print("\n  Layer of maximum amplification per corruption type:", flush=True)
+    peak_amplification_layers = {}
+    for ctype in CORRUPTION_TYPES:
+        traj = amplification_per_layer[ctype]
+        peak_layer = int(np.argmax(traj))
+        peak_amplification_layers[ctype] = peak_layer
+        print(f"    {ctype:<8}: layer={peak_layer}  "
+              f"ratio={traj[peak_layer]:.3f}", flush=True)
 
-    with open(out_path, 'w') as f:
-        json.dump(results, f, indent=2, default=convert)
-    print(f"\nResults saved to {out_path}")
+    # ------------------------------------------------------------------
+    # Analysis 6: Layer Clustering
+    # At each layer: silhouette score and 1-NN accuracy for 5-class
+    # clustering (clean + 4 corruption types), 40 embeddings total.
+    # Silhouette is hand-written (no sklearn).
+    # ------------------------------------------------------------------
+    print("\n" + "=" * 70, flush=True)
+    print("ANALYSIS 6: Layer Clustering (Silhouette + NN Accuracy)", flush=True)
+    print("=" * 70, flush=True)
+    print("  5-class clustering: clean + 4 corruption types.", flush=True)
+    print("  40 embeddings per layer (8 scenes x 5 conditions).", flush=True)
+    print("  Hand-written silhouette: s(i) = (b(i)-a(i)) / max(a(i),b(i))", flush=True)
+    print(f"\n  {'Layer':>6}  {'Silhouette':>12}  {'NN_Acc':>8}", flush=True)
+    print("  " + "-" * 32, flush=True)
+
+    # Labels: condition index (0=clean, 1=fog, 2=night, 3=noise, 4=blur)
+    labels = np.array(
+        [c_idx for s_idx in range(n_scenes) for c_idx in range(n_conditions)]
+    )
+
+    silhouette_per_layer = []
+    nn_acc_per_layer = []
+
+    for layer_i in range(n_layers):
+        embeddings = [
+            all_layers[s_idx][c_idx][layer_i]
+            for s_idx in range(n_scenes)
+            for c_idx in range(n_conditions)
+        ]
+        sil = silhouette_score_handwritten(embeddings, labels)
+        nn_acc = nearest_neighbor_accuracy(embeddings, labels)
+        silhouette_per_layer.append(sil)
+        nn_acc_per_layer.append(nn_acc)
+        print(f"  {layer_i:>6}  {sil:>12.4f}  {nn_acc:>8.4f}", flush=True)
+
+    best_sil_layer = int(np.argmax(silhouette_per_layer))
+    best_nn_layer = int(np.argmax(nn_acc_per_layer))
+    print(f"\n  Best silhouette layer: {best_sil_layer}  "
+          f"(sil={silhouette_per_layer[best_sil_layer]:.4f})", flush=True)
+    print(f"  Best NN-accuracy layer: {best_nn_layer}  "
+          f"(acc={nn_acc_per_layer[best_nn_layer]:.4f})", flush=True)
+
+    # ------------------------------------------------------------------
+    # Summary
+    # ------------------------------------------------------------------
+    print("\n" + "=" * 70, flush=True)
+    print("SUMMARY", flush=True)
+    print("=" * 70, flush=True)
+    print(f"  n_layers: {n_layers}", flush=True)
+    print(f"  n_scenes: {n_scenes}", flush=True)
+    print(f"  conditions: {conditions}", flush=True)
+    print(f"  Peak divergence layers: {peak_divergence_layers}", flush=True)
+    print(f"  Corruption emergence layers (10% threshold): {emergence_layers}", flush=True)
+    print(f"  Peak amplification layers: {peak_amplification_layers}", flush=True)
+    print(f"  Best silhouette layer: {best_sil_layer}", flush=True)
+    print(f"  Best NN-accuracy layer: {best_nn_layer}", flush=True)
+
+    # ------------------------------------------------------------------
+    # Save results as valid JSON
+    # ------------------------------------------------------------------
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    def to_json_safe(v):
+        """Recursively convert numpy types and nan/inf to JSON-safe values."""
+        if isinstance(v, dict):
+            return {k: to_json_safe(val) for k, val in v.items()}
+        if isinstance(v, list):
+            return [to_json_safe(x) for x in v]
+        if isinstance(v, (np.floating, np.integer)):
+            v = v.item()
+        if isinstance(v, float):
+            if v != v:    # nan
+                return None
+            if v == float("inf") or v == float("-inf"):
+                return None
+        return v
+
+    output = {
+        "experiment": "embedding_dynamics_across_model_depth",
+        "experiment_number": 456,
+        "timestamp": timestamp,
+        "config": {
+            "seeds": SEEDS,
+            "corruption_types": CORRUPTION_TYPES,
+            "severity": SEVERITY,
+            "prompt": PROMPT,
+            "n_layers": n_layers,
+            "n_scenes": n_scenes,
+            "n_conditions": n_conditions,
+            "conditions": conditions,
+            "rsa_max_dim": RSA_MAX_DIM,
+        },
+        "analysis_1_layer_cosine_similarity": {
+            cond: adj_cos_per_layer[cond] for cond in conditions
+        },
+        "analysis_2_corruption_divergence": divergence_per_layer,
+        "analysis_2_peak_divergence_layers": peak_divergence_layers,
+        "analysis_2_emergence_layers": emergence_layers,
+        "analysis_3_embedding_velocity": {
+            cond: velocity_per_layer[cond] for cond in conditions
+        },
+        "analysis_4_rsa_adjacent_corr": rsa_adjacent_corr,
+        "analysis_4_rsa_to_layer0_corr": rsa_to_layer0_corr,
+        "analysis_5_clean_variance_per_layer": clean_variance_per_layer,
+        "analysis_5_amplification": amplification_per_layer,
+        "analysis_5_peak_amplification_layers": peak_amplification_layers,
+        "analysis_6_silhouette_per_layer": silhouette_per_layer,
+        "analysis_6_nn_accuracy_per_layer": nn_acc_per_layer,
+        "analysis_6_best_silhouette_layer": best_sil_layer,
+        "analysis_6_best_nn_accuracy_layer": best_nn_layer,
+    }
+
+    output = to_json_safe(output)
+
+    output_path = os.path.join(
+        RESULTS_DIR, f"embedding_dynamics_{timestamp}.json"
+    )
+    with open(output_path, "w") as f:
+        json.dump(output, f, indent=2)
+
+    print(f"\nResults saved to {output_path}", flush=True)
+    print("Done.", flush=True)
+
 
 if __name__ == "__main__":
     main()
