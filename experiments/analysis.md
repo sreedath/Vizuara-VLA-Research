@@ -14600,3 +14600,56 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 **Finding 618**: **Natural textures produce the highest detection distances for 3/4 corruption types — spatially correlated images amplify the OOD signal.** Upscaled coarse noise (approximating natural textures) consistently yields the strongest detection signal, suggesting real-world images will be even more detectable than our random-pixel baseline.
 
 **Finding 619**: **Urban grid patterns maximize blur detection (d=0.0078) — sharp high-frequency content makes blur corruption most visible.** This is physically intuitive: blurring sharp edges destroys more information than blurring already-smooth content, and the embedding captures this.
+
+## Experiment 355: Calibration Set Size Analysis
+
+**Script**: `scripts/real_vla_calibration_size.py`
+**Result**: `experiments/calibration_size_20260315_150004.json`
+**Figure**: `figures/fig364_calsize.png`
+
+### Key Results
+
+**One-Shot Per-Scene Calibration**:
+- All 10 test scenes × 4 corruption types = 40/40 detected
+- ID distances: exactly 0.0 or ±1.19e-7 (floating point noise)
+- One-shot calibration is SUFFICIENT for 100% detection
+
+**Centroid Calibration vs Set Size**:
+| n_cal | Fog AUROC | Night AUROC | Noise AUROC | Blur AUROC |
+|-------|-----------|-------------|-------------|------------|
+| 1     | 1.000     | 1.000       | 0.926±0.099 | 1.000      |
+| 2     | 1.000     | 1.000       | 0.942±0.103 | 1.000      |
+| 3     | 1.000     | 1.000       | 0.971±0.050 | 1.000      |
+| 5     | 1.000     | 1.000       | 0.978±0.019 | 1.000      |
+| 10    | 1.000     | 1.000       | 0.988±0.013 | 1.000      |
+| 15    | 1.000     | 1.000       | 0.990±0.009 | 1.000      |
+| 20    | 1.000     | 1.000       | 0.991±0.006 | 1.000      |
+| 30    | 1.000     | 1.000       | 0.990±0.000 | 1.000      |
+
+**Centroid Stability**:
+| n_cal | Mean Centroid Dist | Max Centroid Dist | Improvement |
+|-------|-------------------|-------------------|-------------|
+| 1     | 8.32e-5           | 1.94e-4           | baseline    |
+| 2     | 3.60e-5           | 6.34e-5           | 2.3×        |
+| 5     | 1.36e-5           | 2.57e-5           | 6.1×        |
+| 10    | 5.64e-6           | 1.07e-5           | 14.7×       |
+| 20    | 1.52e-6           | 3.10e-6           | 54.7×       |
+
+**Nearest vs Global vs Self-Calibration**:
+- Nearest neighbor: 19/40 wins (47.5%)
+- Self-calibration: 11/40 wins (27.5%)
+- Global centroid: 10/40 wins (25.0%)
+- No single method dominates — all competitive
+
+### Findings
+
+**Finding 620**: One-shot per-scene calibration achieves 100% detection (40/40) across all corruption types, confirming that a single calibration image per scene is sufficient when the scene is known.
+
+**Finding 621**: Noise is the ONLY corruption where centroid calibration quality depends on set size. AUROC increases from 0.926 (n=1) to 0.991 (n=20), while fog/night/blur maintain AUROC=1.0 at ALL sizes including n=1.
+
+**Finding 622**: Centroid stability improves as O(1/n) with calibration set size — variance drops 55× from n=1 (8.32e-5) to n=20 (1.52e-6), confirming classical concentration behavior.
+
+**Finding 623**: No single calibration strategy dominates: nearest-neighbor wins 47.5%, self-calibration 27.5%, global centroid 25.0%. The optimal method depends on scene-corruption pairing, suggesting an ensemble approach.
+
+**Finding 624**: Noise detection under centroid calibration has high variance at small n (std=0.099 at n=1) with worst-case AUROC=0.65, but variance collapses to 0.006 by n=20 with worst-case 0.98. This means n≥5 is the practical minimum for reliable noise detection.
+

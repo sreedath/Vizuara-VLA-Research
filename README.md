@@ -8,7 +8,7 @@
 
 Vision-Language-Action (VLA) models like OpenVLA-7B produce confident action predictions even under visual corruption (fog, night, blur, noise) --- silently outputting **wrong and dangerous actions**. We discover that a simple cosine distance metric on the model's hidden-state embeddings achieves **perfect OOD detection (AUROC=1.0)** with just **one clean calibration image**.
 
-## Key Results (871 Findings, 150 Experiments on Real OpenVLA-7B)
+## Key Results (876 Findings, 151 Experiments on Real OpenVLA-7B)
 
 | Property | Result |
 |----------|--------|
@@ -49,8 +49,8 @@ Our detector catches **100% of these** at AUROC=1.0, preventing dangerous robot 
 
 ```
 scripts/              # 80+ experiment scripts (real OpenVLA-7B on GPU)
-experiments/          # JSON results + analysis.md (358 findings)
-paper/latex/          # NeurIPS-format paper (629 findings, 300 figures)
+experiments/          # JSON results + analysis.md (363 findings)
+paper/latex/          # NeurIPS-format paper (634 findings, 301 figures)
 ```
 
 ## Experiments Run on Real OpenVLA-7B
@@ -195,6 +195,16 @@ paper/latex/          # NeurIPS-format paper (629 findings, 300 figures)
 | 343 | Camera Pipeline Effects | Exposure ±2EV=4.5×10⁻³ (=severe corruption); motion blur k=3 already significant; WB safe |
 | 344 | Multi-Scene Protocol | Nearest-centroid AUROC=1.0; bank≥5 perfect; 20% drift tolerance; 75% transition detection |
 | 345 | Statistical Power | Bootstrap CI=[1.0,1.0]; Cohen's d=5-25; power=1.0 at sev≥0.02; all p<0.002 Bonferroni sig |
+| 346 | Embedding Interpolation | Noise non-monotone (curv 2.77); blur 10× Lipschitz; night action-resilient; detection valleys |
+| 347 | Temporal Stability | Memoryless (0-frame rise/fall); EWMA adds nothing; ±1 jitter d=4e-5 |
+| 348 | Information Theory | MI=1.0 bit; 100% multiclass; ~4 severity bits; k=2 PCA sufficient |
+| 349 | Action Topology | Blur 70 reversals; fog=night at sev 0.3; dim 7 resistant; +0.9 bits entropy |
+| 350 | Prompt Sensitivity | 15/15 AUROC=1.0; r=-0.78 length vs distance; minimal prompt 2× more sensitive |
+| 351 | Layer Profile | L0=0.5/L1+=1.0; mean pooling best; L32 amplifies 45× |
+| 352 | Safety Certificates | 700/700; conformal 100%; 7 failure modes; fog-on-white detectable |
+| 353 | Metric Geometry | Triangle inequality violated 2%; norms unchanged; noise within clean diameter |
+| 354 | Structured Scenes | 6/6 AUROC=1.0; noise 40× variation; natural textures amplify |
+| 355 | Calibration Set Size | One-shot 40/40; noise n≥5 for 0.95+; centroid O(1/n); no best method |
 
 ## License
 

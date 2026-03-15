@@ -6721,4 +6721,25 @@ We test detection on 6 scene types beyond random pixels: gradients, checkerboard
 
 \textbf{Finding 871}: \textbf{Urban grids maximize blur detection ($d=0.0078$) --- sharp edges amplify blur sensitivity.} High-frequency content makes blur destruction most visible to the model, a physically intuitive result.
 
+\subsection{Experiment 355: Calibration Set Size Analysis}
+
+We systematically investigate how many calibration images are needed for reliable OOD detection, comparing one-shot per-scene calibration, centroid-based calibration with varying set sizes (1--30), centroid stability, and nearest-neighbor vs global centroid strategies.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig364_calsize.png}
+\caption{Calibration set size analysis. Top-left: AUROC vs calibration set size --- fog/night/blur maintain AUROC=1.0 at all sizes while noise improves from 0.926 to 0.991. Top-right: centroid stability improves as $O(1/n)$. Bottom-left: noise detection worst-case (min AUROC) improves dramatically from 0.65 to 0.99. Bottom-right: no single calibration method dominates.}
+\label{fig:calsize}
+\end{figure}
+
+\textbf{Finding 872}: \textbf{One-shot per-scene calibration achieves 100\% detection (40/40).} When the deployment scene is known, a single calibration image suffices for perfect detection across all corruption types, because clean embeddings are bit-identical (zero in-distribution variance).
+
+\textbf{Finding 873}: \textbf{Noise is the ONLY corruption where centroid quality depends on calibration set size.} AUROC improves from 0.926 (n=1) to 0.991 (n=20), while fog, night, and blur maintain AUROC=1.0 at all sizes including n=1.
+
+\textbf{Finding 874}: \textbf{Centroid stability follows classical $O(1/n)$ concentration.} Pairwise centroid variance drops $55\times$ from $8.32 \times 10^{-5}$ (n=1) to $1.52 \times 10^{-6}$ (n=20), with max distance dropping from $1.94 \times 10^{-4}$ to $3.10 \times 10^{-6}$.
+
+\textbf{Finding 875}: \textbf{No single calibration strategy dominates.} Nearest-neighbor wins 47.5\% (19/40), self-calibration 27.5\% (11/40), and global centroid 25.0\% (10/40). The optimal method depends on scene-corruption pairing, suggesting an ensemble or adaptive approach.
+
+\textbf{Finding 876}: \textbf{$n \geq 5$ is the practical minimum for reliable noise detection.} At n=1, noise AUROC variance is 0.099 with worst-case 0.65; by n=5, variance drops to 0.019 with worst-case 0.95; by n=20, variance is 0.006 with worst-case 0.98.
+
 \end{document}
