@@ -1,0 +1,1070 @@
+{
+  "per_prompt": {
+    "standard": {
+      "prompt_length": 65,
+      "id_mean": 1.1920928955078126e-08,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.000984269380569458,
+          "min_dist": 0.0008383989334106445,
+          "max_dist": 0.0010852217674255371
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.002016758918762207,
+          "min_dist": 0.0017763972282409668,
+          "max_dist": 0.0021813511848449707
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00012883543968200684,
+          "min_dist": 8.380413055419922e-05,
+          "max_dist": 0.00019663572311401367
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.005015808343887329,
+          "min_dist": 0.004403889179229736,
+          "max_dist": 0.0058097243309021
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "drive": {
+      "prompt_length": 67,
+      "id_mean": 0.0,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0009868264198303223,
+          "min_dist": 0.0008572936058044434,
+          "max_dist": 0.0010782480239868164
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.0020210206508636474,
+          "min_dist": 0.0018229484558105469,
+          "max_dist": 0.0022092461585998535
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00013210177421569825,
+          "min_dist": 8.612871170043945e-05,
+          "max_dist": 0.00018799304962158203
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.0048775911331176754,
+          "min_dist": 0.004374980926513672,
+          "max_dist": 0.0055389404296875
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "place": {
+      "prompt_length": 73,
+      "id_mean": 3.5762786865234374e-08,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0009595632553100586,
+          "min_dist": 0.0008207559585571289,
+          "max_dist": 0.001085519790649414
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.0019851088523864745,
+          "min_dist": 0.0017502903938293457,
+          "max_dist": 0.002153933048248291
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00012647509574890137,
+          "min_dist": 8.624792098999023e-05,
+          "max_dist": 0.00017899274826049805
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.004974472522735596,
+          "min_dist": 0.004383265972137451,
+          "max_dist": 0.005821168422698975
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "push": {
+      "prompt_length": 66,
+      "id_mean": -2.384185791015625e-08,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0009882450103759766,
+          "min_dist": 0.0008478760719299316,
+          "max_dist": 0.0010551810264587402
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.0020913124084472657,
+          "min_dist": 0.0018104314804077148,
+          "max_dist": 0.0023017525672912598
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00014516115188598633,
+          "min_dist": 8.690357208251953e-05,
+          "max_dist": 0.00020456314086914062
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.00503571629524231,
+          "min_dist": 0.0044651031494140625,
+          "max_dist": 0.005747795104980469
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "open": {
+      "prompt_length": 62,
+      "id_mean": -5.960464477539063e-08,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0010026156902313232,
+          "min_dist": 0.0008423328399658203,
+          "max_dist": 0.0010893940925598145
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.0020270347595214844,
+          "min_dist": 0.001801609992980957,
+          "max_dist": 0.002219259738922119
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00013540983200073243,
+          "min_dist": 9.244680404663086e-05,
+          "max_dist": 0.0002067089080810547
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.005101257562637329,
+          "min_dist": 0.004453778266906738,
+          "max_dist": 0.005879640579223633
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "pour": {
+      "prompt_length": 72,
+      "id_mean": -1.1920928955078126e-08,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0009650945663452149,
+          "min_dist": 0.0007770061492919922,
+          "max_dist": 0.0010546445846557617
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.0019553482532501222,
+          "min_dist": 0.0017051100730895996,
+          "max_dist": 0.0021254420280456543
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00013143420219421386,
+          "min_dist": 7.665157318115234e-05,
+          "max_dist": 0.0001862049102783203
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.005063009262084961,
+          "min_dist": 0.004481196403503418,
+          "max_dist": 0.005777120590209961
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "stack": {
+      "prompt_length": 63,
+      "id_mean": 2.384185791015625e-08,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0009361803531646729,
+          "min_dist": 0.000782012939453125,
+          "max_dist": 0.0010253190994262695
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.002001464366912842,
+          "min_dist": 0.0017461180686950684,
+          "max_dist": 0.0022078752517700195
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.0001389622688293457,
+          "min_dist": 9.03010368347168e-05,
+          "max_dist": 0.00022214651107788086
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.004883813858032227,
+          "min_dist": 0.004385471343994141,
+          "max_dist": 0.005728304386138916
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "minimal": {
+      "prompt_length": 13,
+      "id_mean": 0.0,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0016887724399566651,
+          "min_dist": 0.0015133023262023926,
+          "max_dist": 0.0017808079719543457
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.0032345354557037354,
+          "min_dist": 0.0028648972511291504,
+          "max_dist": 0.003453969955444336
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00019445419311523438,
+          "min_dist": 0.00012445449829101562,
+          "max_dist": 0.00027292966842651367
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.008508145809173584,
+          "min_dist": 0.007507026195526123,
+          "max_dist": 0.009481608867645264
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "verbose": {
+      "prompt_length": 152,
+      "id_mean": -2.9802322387695312e-08,
+      "id_max": 5.960464477539063e-08,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0007861554622650146,
+          "min_dist": 0.0007003545761108398,
+          "max_dist": 0.0008537769317626953
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.0017236053943634033,
+          "min_dist": 0.0015406012535095215,
+          "max_dist": 0.0018715858459472656
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00010727047920227051,
+          "min_dist": 7.2479248046875e-05,
+          "max_dist": 0.00015056133270263672
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.0037411928176879885,
+          "min_dist": 0.003333151340484619,
+          "max_dist": 0.004266858100891113
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "no_context": {
+      "prompt_length": 33,
+      "id_mean": -2.384185791015625e-08,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0014135777950286866,
+          "min_dist": 0.0011951923370361328,
+          "max_dist": 0.0015199780464172363
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.002787351608276367,
+          "min_dist": 0.0024971961975097656,
+          "max_dist": 0.002980649471282959
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00016567707061767578,
+          "min_dist": 0.00010538101196289062,
+          "max_dist": 0.00025153160095214844
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.0067186117172241214,
+          "min_dist": 0.005995273590087891,
+          "max_dist": 0.007618546485900879
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "imperative": {
+      "prompt_length": 35,
+      "id_mean": -1.1920928955078126e-08,
+      "id_max": 0.0,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0011291325092315674,
+          "min_dist": 0.0009849071502685547,
+          "max_dist": 0.0012489557266235352
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.0022472500801086425,
+          "min_dist": 0.001949608325958252,
+          "max_dist": 0.002485215663909912
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00015444755554199218,
+          "min_dist": 0.00010865926742553711,
+          "max_dist": 0.00018721818923950195
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.006481951475143433,
+          "min_dist": 0.005446255207061768,
+          "max_dist": 0.0075637102127075195
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "question": {
+      "prompt_length": 33,
+      "id_mean": -5.960464477539063e-08,
+      "id_max": 0.0,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0012021422386169433,
+          "min_dist": 0.001019895076751709,
+          "max_dist": 0.0012935996055603027
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.002340954542160034,
+          "min_dist": 0.002069830894470215,
+          "max_dist": 0.0025143027305603027
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00015151500701904297,
+          "min_dist": 9.435415267944336e-05,
+          "max_dist": 0.0002117156982421875
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.005725651979446411,
+          "min_dist": 0.005117297172546387,
+          "max_dist": 0.0065007805824279785
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "third_person": {
+      "prompt_length": 62,
+      "id_mean": -2.384185791015625e-08,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0009193480014801026,
+          "min_dist": 0.0007779598236083984,
+          "max_dist": 0.000988781452178955
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.0021689355373382567,
+          "min_dist": 0.001783907413482666,
+          "max_dist": 0.002426445484161377
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00013991594314575196,
+          "min_dist": 0.0001016855239868164,
+          "max_dist": 0.0001901388168334961
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.00580824613571167,
+          "min_dist": 0.0050057172775268555,
+          "max_dist": 0.006655633449554443
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "navigate": {
+      "prompt_length": 67,
+      "id_mean": -3.5762786865234374e-08,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0009608566761016846,
+          "min_dist": 0.0008807182312011719,
+          "max_dist": 0.0011057257652282715
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.0019910335540771484,
+          "min_dist": 0.0017569661140441895,
+          "max_dist": 0.002142012119293213
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00012238621711730958,
+          "min_dist": 8.046627044677734e-05,
+          "max_dist": 0.00018221139907836914
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.004841834306716919,
+          "min_dist": 0.0042133331298828125,
+          "max_dist": 0.005695760250091553
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    },
+    "avoid": {
+      "prompt_length": 65,
+      "id_mean": 2.384185791015625e-08,
+      "id_max": 1.1920928955078125e-07,
+      "per_type": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0009704887866973877,
+          "min_dist": 0.0008477568626403809,
+          "max_dist": 0.0010494589805603027
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.0020490825176239015,
+          "min_dist": 0.0018298625946044922,
+          "max_dist": 0.002196013927459717
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00012755393981933594,
+          "min_dist": 7.796287536621094e-05,
+          "max_dist": 0.0001817941665649414
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.004931443929672241,
+          "min_dist": 0.004423379898071289,
+          "max_dist": 0.005681812763214111
+        }
+      },
+      "mean_auroc": 1.0,
+      "min_auroc": 1.0,
+      "all_perfect": true
+    }
+  },
+  "cross_prompt": {
+    "pairs": {
+      "standard_vs_drive": {
+        "clean_distance": 0.0034021735191345215,
+        "fog_distance": 0.0036929845809936523
+      },
+      "standard_vs_place": {
+        "clean_distance": 0.0017260909080505371,
+        "fog_distance": 0.0018412470817565918
+      },
+      "standard_vs_push": {
+        "clean_distance": 0.0015024542808532715,
+        "fog_distance": 0.0016505718231201172
+      },
+      "standard_vs_open": {
+        "clean_distance": 0.0011044144630432129,
+        "fog_distance": 0.0012337565422058105
+      },
+      "standard_vs_pour": {
+        "clean_distance": 0.002492547035217285,
+        "fog_distance": 0.002731502056121826
+      },
+      "standard_vs_stack": {
+        "clean_distance": 0.0011551976203918457,
+        "fog_distance": 0.0012546777725219727
+      },
+      "standard_vs_minimal": {
+        "clean_distance": 0.016589760780334473,
+        "fog_distance": 0.015805363655090332
+      },
+      "standard_vs_verbose": {
+        "clean_distance": 0.005849123001098633,
+        "fog_distance": 0.006410419940948486
+      },
+      "standard_vs_no_context": {
+        "clean_distance": 0.007227599620819092,
+        "fog_distance": 0.007246673107147217
+      },
+      "standard_vs_imperative": {
+        "clean_distance": 0.01861429214477539,
+        "fog_distance": 0.018072187900543213
+      },
+      "standard_vs_question": {
+        "clean_distance": 0.0034515857696533203,
+        "fog_distance": 0.0035303831100463867
+      },
+      "standard_vs_third_person": {
+        "clean_distance": 0.021152019500732422,
+        "fog_distance": 0.02057015895843506
+      },
+      "standard_vs_navigate": {
+        "clean_distance": 0.0010930895805358887,
+        "fog_distance": 0.0012106895446777344
+      },
+      "standard_vs_avoid": {
+        "clean_distance": 0.0013988018035888672,
+        "fog_distance": 0.0015884041786193848
+      },
+      "drive_vs_place": {
+        "clean_distance": 0.004336059093475342,
+        "fog_distance": 0.00463634729385376
+      },
+      "drive_vs_push": {
+        "clean_distance": 0.002857208251953125,
+        "fog_distance": 0.0030909180641174316
+      },
+      "drive_vs_open": {
+        "clean_distance": 0.0032607316970825195,
+        "fog_distance": 0.0034519433975219727
+      },
+      "drive_vs_pour": {
+        "clean_distance": 0.003008723258972168,
+        "fog_distance": 0.003213822841644287
+      },
+      "drive_vs_stack": {
+        "clean_distance": 0.0032262802124023438,
+        "fog_distance": 0.0033989548683166504
+      },
+      "drive_vs_minimal": {
+        "clean_distance": 0.01718205213546753,
+        "fog_distance": 0.016690492630004883
+      },
+      "drive_vs_verbose": {
+        "clean_distance": 0.004577040672302246,
+        "fog_distance": 0.00487971305847168
+      },
+      "drive_vs_no_context": {
+        "clean_distance": 0.005560874938964844,
+        "fog_distance": 0.005582630634307861
+      },
+      "drive_vs_imperative": {
+        "clean_distance": 0.02059394121170044,
+        "fog_distance": 0.020236432552337646
+      },
+      "drive_vs_question": {
+        "clean_distance": 0.0036793947219848633,
+        "fog_distance": 0.003883659839630127
+      },
+      "drive_vs_third_person": {
+        "clean_distance": 0.025009453296661377,
+        "fog_distance": 0.024429678916931152
+      },
+      "drive_vs_navigate": {
+        "clean_distance": 0.0030669569969177246,
+        "fog_distance": 0.0032066702842712402
+      },
+      "drive_vs_avoid": {
+        "clean_distance": 0.0019553303718566895,
+        "fog_distance": 0.0020675063133239746
+      },
+      "place_vs_push": {
+        "clean_distance": 0.0017222166061401367,
+        "fog_distance": 0.001866757869720459
+      },
+      "place_vs_open": {
+        "clean_distance": 0.001194775104522705,
+        "fog_distance": 0.0013219714164733887
+      },
+      "place_vs_pour": {
+        "clean_distance": 0.0018486380577087402,
+        "fog_distance": 0.001958012580871582
+      },
+      "place_vs_stack": {
+        "clean_distance": 0.0014795660972595215,
+        "fog_distance": 0.0016033649444580078
+      },
+      "place_vs_minimal": {
+        "clean_distance": 0.01730048656463623,
+        "fog_distance": 0.01640951633453369
+      },
+      "place_vs_verbose": {
+        "clean_distance": 0.005088746547698975,
+        "fog_distance": 0.005604863166809082
+      },
+      "place_vs_no_context": {
+        "clean_distance": 0.009028732776641846,
+        "fog_distance": 0.009016573429107666
+      },
+      "place_vs_imperative": {
+        "clean_distance": 0.01908332109451294,
+        "fog_distance": 0.018585145473480225
+      },
+      "place_vs_question": {
+        "clean_distance": 0.004002213478088379,
+        "fog_distance": 0.004128634929656982
+      },
+      "place_vs_third_person": {
+        "clean_distance": 0.021942853927612305,
+        "fog_distance": 0.021410703659057617
+      },
+      "place_vs_navigate": {
+        "clean_distance": 0.0010655522346496582,
+        "fog_distance": 0.0012028217315673828
+      },
+      "place_vs_avoid": {
+        "clean_distance": 0.002102375030517578,
+        "fog_distance": 0.002279520034790039
+      },
+      "push_vs_open": {
+        "clean_distance": 0.0012282729148864746,
+        "fog_distance": 0.0013823509216308594
+      },
+      "push_vs_pour": {
+        "clean_distance": 0.002317667007446289,
+        "fog_distance": 0.0025196075439453125
+      },
+      "push_vs_stack": {
+        "clean_distance": 0.0010622143745422363,
+        "fog_distance": 0.0011194944381713867
+      },
+      "push_vs_minimal": {
+        "clean_distance": 0.0163080096244812,
+        "fog_distance": 0.015492856502532959
+      },
+      "push_vs_verbose": {
+        "clean_distance": 0.0052759647369384766,
+        "fog_distance": 0.005734264850616455
+      },
+      "push_vs_no_context": {
+        "clean_distance": 0.007005214691162109,
+        "fog_distance": 0.006916463375091553
+      },
+      "push_vs_imperative": {
+        "clean_distance": 0.018374979496002197,
+        "fog_distance": 0.017893612384796143
+      },
+      "push_vs_question": {
+        "clean_distance": 0.0030074119567871094,
+        "fog_distance": 0.0030388832092285156
+      },
+      "push_vs_third_person": {
+        "clean_distance": 0.022220849990844727,
+        "fog_distance": 0.021786808967590332
+      },
+      "push_vs_navigate": {
+        "clean_distance": 0.0013474225997924805,
+        "fog_distance": 0.0014888644218444824
+      },
+      "push_vs_avoid": {
+        "clean_distance": 0.0012995004653930664,
+        "fog_distance": 0.0014585256576538086
+      },
+      "open_vs_pour": {
+        "clean_distance": 0.00203549861907959,
+        "fog_distance": 0.0021131038665771484
+      },
+      "open_vs_stack": {
+        "clean_distance": 0.000910639762878418,
+        "fog_distance": 0.0010187029838562012
+      },
+      "open_vs_minimal": {
+        "clean_distance": 0.015842199325561523,
+        "fog_distance": 0.015047192573547363
+      },
+      "open_vs_verbose": {
+        "clean_distance": 0.005418062210083008,
+        "fog_distance": 0.005890309810638428
+      },
+      "open_vs_no_context": {
+        "clean_distance": 0.0072713494300842285,
+        "fog_distance": 0.007162690162658691
+      },
+      "open_vs_imperative": {
+        "clean_distance": 0.01879185438156128,
+        "fog_distance": 0.018503546714782715
+      },
+      "open_vs_question": {
+        "clean_distance": 0.0029677748680114746,
+        "fog_distance": 0.0030625462532043457
+      },
+      "open_vs_third_person": {
+        "clean_distance": 0.02169954776763916,
+        "fog_distance": 0.02134007215499878
+      },
+      "open_vs_navigate": {
+        "clean_distance": 0.0008146762847900391,
+        "fog_distance": 0.000933527946472168
+      },
+      "open_vs_avoid": {
+        "clean_distance": 0.001219332218170166,
+        "fog_distance": 0.0013028383255004883
+      },
+      "pour_vs_stack": {
+        "clean_distance": 0.002135336399078369,
+        "fog_distance": 0.002283751964569092
+      },
+      "pour_vs_minimal": {
+        "clean_distance": 0.01821964979171753,
+        "fog_distance": 0.017504453659057617
+      },
+      "pour_vs_verbose": {
+        "clean_distance": 0.004779815673828125,
+        "fog_distance": 0.005227148532867432
+      },
+      "pour_vs_no_context": {
+        "clean_distance": 0.008671998977661133,
+        "fog_distance": 0.008669376373291016
+      },
+      "pour_vs_imperative": {
+        "clean_distance": 0.019411027431488037,
+        "fog_distance": 0.01906031370162964
+      },
+      "pour_vs_question": {
+        "clean_distance": 0.004475831985473633,
+        "fog_distance": 0.0045555830001831055
+      },
+      "pour_vs_third_person": {
+        "clean_distance": 0.022542119026184082,
+        "fog_distance": 0.022087812423706055
+      },
+      "pour_vs_navigate": {
+        "clean_distance": 0.0016860365867614746,
+        "fog_distance": 0.0017868280410766602
+      },
+      "pour_vs_avoid": {
+        "clean_distance": 0.0018963217735290527,
+        "fog_distance": 0.00205385684967041
+      },
+      "stack_vs_minimal": {
+        "clean_distance": 0.016675233840942383,
+        "fog_distance": 0.015647709369659424
+      },
+      "stack_vs_verbose": {
+        "clean_distance": 0.005380570888519287,
+        "fog_distance": 0.005774855613708496
+      },
+      "stack_vs_no_context": {
+        "clean_distance": 0.007354736328125,
+        "fog_distance": 0.007066130638122559
+      },
+      "stack_vs_imperative": {
+        "clean_distance": 0.01897650957107544,
+        "fog_distance": 0.018481075763702393
+      },
+      "stack_vs_question": {
+        "clean_distance": 0.0031827688217163086,
+        "fog_distance": 0.003104269504547119
+      },
+      "stack_vs_third_person": {
+        "clean_distance": 0.021966397762298584,
+        "fog_distance": 0.02153003215789795
+      },
+      "stack_vs_navigate": {
+        "clean_distance": 0.0011082887649536133,
+        "fog_distance": 0.0012648701667785645
+      },
+      "stack_vs_avoid": {
+        "clean_distance": 0.0012803077697753906,
+        "fog_distance": 0.0013865828514099121
+      },
+      "minimal_vs_verbose": {
+        "clean_distance": 0.02315598726272583,
+        "fog_distance": 0.023051440715789795
+      },
+      "minimal_vs_no_context": {
+        "clean_distance": 0.009788811206817627,
+        "fog_distance": 0.009329676628112793
+      },
+      "minimal_vs_imperative": {
+        "clean_distance": 0.008582472801208496,
+        "fog_distance": 0.009232699871063232
+      },
+      "minimal_vs_question": {
+        "clean_distance": 0.010593533515930176,
+        "fog_distance": 0.00998067855834961
+      },
+      "minimal_vs_third_person": {
+        "clean_distance": 0.015543758869171143,
+        "fog_distance": 0.015986263751983643
+      },
+      "minimal_vs_navigate": {
+        "clean_distance": 0.016346752643585205,
+        "fog_distance": 0.015724480152130127
+      },
+      "minimal_vs_avoid": {
+        "clean_distance": 0.017176508903503418,
+        "fog_distance": 0.016633152961730957
+      },
+      "verbose_vs_no_context": {
+        "clean_distance": 0.011992871761322021,
+        "fog_distance": 0.012431085109710693
+      },
+      "verbose_vs_imperative": {
+        "clean_distance": 0.023834168910980225,
+        "fog_distance": 0.02380436658859253
+      },
+      "verbose_vs_question": {
+        "clean_distance": 0.007315456867218018,
+        "fog_distance": 0.007913589477539062
+      },
+      "verbose_vs_third_person": {
+        "clean_distance": 0.025750815868377686,
+        "fog_distance": 0.025405287742614746
+      },
+      "verbose_vs_navigate": {
+        "clean_distance": 0.005524873733520508,
+        "fog_distance": 0.0060045719146728516
+      },
+      "verbose_vs_avoid": {
+        "clean_distance": 0.004178345203399658,
+        "fog_distance": 0.0044768452644348145
+      },
+      "no_context_vs_imperative": {
+        "clean_distance": 0.020821034908294678,
+        "fog_distance": 0.020521104335784912
+      },
+      "no_context_vs_question": {
+        "clean_distance": 0.0029265284538269043,
+        "fog_distance": 0.0028991103172302246
+      },
+      "no_context_vs_third_person": {
+        "clean_distance": 0.028015553951263428,
+        "fog_distance": 0.027374446392059326
+      },
+      "no_context_vs_navigate": {
+        "clean_distance": 0.007781267166137695,
+        "fog_distance": 0.0077086687088012695
+      },
+      "no_context_vs_avoid": {
+        "clean_distance": 0.006737470626831055,
+        "fog_distance": 0.006805896759033203
+      },
+      "imperative_vs_question": {
+        "clean_distance": 0.017841219902038574,
+        "fog_distance": 0.017581284046173096
+      },
+      "imperative_vs_third_person": {
+        "clean_distance": 0.0030884742736816406,
+        "fog_distance": 0.0031644105911254883
+      },
+      "imperative_vs_navigate": {
+        "clean_distance": 0.01847708225250244,
+        "fog_distance": 0.018157362937927246
+      },
+      "imperative_vs_avoid": {
+        "clean_distance": 0.019385099411010742,
+        "fog_distance": 0.01901191473007202
+      },
+      "question_vs_third_person": {
+        "clean_distance": 0.02354288101196289,
+        "fog_distance": 0.02311265468597412
+      },
+      "question_vs_navigate": {
+        "clean_distance": 0.00356900691986084,
+        "fog_distance": 0.0036815404891967773
+      },
+      "question_vs_avoid": {
+        "clean_distance": 0.003416717052459717,
+        "fog_distance": 0.003531515598297119
+      },
+      "third_person_vs_navigate": {
+        "clean_distance": 0.021058738231658936,
+        "fog_distance": 0.02063220739364624
+      },
+      "third_person_vs_avoid": {
+        "clean_distance": 0.02218836545944214,
+        "fog_distance": 0.02162623405456543
+      },
+      "navigate_vs_avoid": {
+        "clean_distance": 0.0012701749801635742,
+        "fog_distance": 0.0013093948364257812
+      }
+    },
+    "summary": {
+      "mean_clean_dist": 0.009209505149296351,
+      "max_clean_dist": 0.028015553951263428,
+      "mean_fog_dist": 0.009150271188645136,
+      "max_fog_dist": 0.027374446392059326,
+      "n_pairs": 105
+    }
+  },
+  "length_correlation": {
+    "per_prompt": {
+      "standard": {
+        "length": 65,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.000984269380569458,
+        "night_dist": 0.002016758918762207
+      },
+      "drive": {
+        "length": 67,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0009868264198303223,
+        "night_dist": 0.0020210206508636474
+      },
+      "place": {
+        "length": 73,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0009595632553100586,
+        "night_dist": 0.0019851088523864745
+      },
+      "push": {
+        "length": 66,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0009882450103759766,
+        "night_dist": 0.0020913124084472657
+      },
+      "open": {
+        "length": 62,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0010026156902313232,
+        "night_dist": 0.0020270347595214844
+      },
+      "pour": {
+        "length": 72,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0009650945663452149,
+        "night_dist": 0.0019553482532501222
+      },
+      "stack": {
+        "length": 63,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0009361803531646729,
+        "night_dist": 0.002001464366912842
+      },
+      "minimal": {
+        "length": 13,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0016887724399566651,
+        "night_dist": 0.0032345354557037354
+      },
+      "verbose": {
+        "length": 152,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0007861554622650146,
+        "night_dist": 0.0017236053943634033
+      },
+      "no_context": {
+        "length": 33,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0014135777950286866,
+        "night_dist": 0.002787351608276367
+      },
+      "imperative": {
+        "length": 35,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0011291325092315674,
+        "night_dist": 0.0022472500801086425
+      },
+      "question": {
+        "length": 33,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0012021422386169433,
+        "night_dist": 0.002340954542160034
+      },
+      "third_person": {
+        "length": 62,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0009193480014801026,
+        "night_dist": 0.0021689355373382567
+      },
+      "navigate": {
+        "length": 67,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0009608566761016846,
+        "night_dist": 0.0019910335540771484
+      },
+      "avoid": {
+        "length": 65,
+        "mean_auroc": 1.0,
+        "fog_dist": 0.0009704887866973877,
+        "night_dist": 0.0020490825176239015
+      }
+    },
+    "pearson_r_fog": -0.7785263110220345
+  },
+  "ranking": {
+    "fog": {
+      "most_sensitive": "minimal",
+      "least_sensitive": "verbose",
+      "max_dist": 0.0016887724399566651,
+      "min_dist": 0.0007861554622650146,
+      "ratio": 2.1481405663596043
+    },
+    "night": {
+      "most_sensitive": "minimal",
+      "least_sensitive": "verbose",
+      "max_dist": 0.0032345354557037354,
+      "min_dist": 0.0017236053943634033,
+      "ratio": 1.8766101952810257
+    },
+    "noise": {
+      "most_sensitive": "minimal",
+      "least_sensitive": "verbose",
+      "max_dist": 0.00019445419311523438,
+      "min_dist": 0.00010727047920227051,
+      "ratio": 1.81274656887259
+    },
+    "blur": {
+      "most_sensitive": "minimal",
+      "least_sensitive": "verbose",
+      "max_dist": 0.008508145809173584,
+      "min_dist": 0.0037411928176879885,
+      "ratio": 2.2741799804992446
+    }
+  }
+}

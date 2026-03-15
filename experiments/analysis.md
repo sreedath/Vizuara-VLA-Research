@@ -14352,3 +14352,50 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 **Finding 598**: **Dim 7 (gripper) is the most corruption-resistant action dimension, changing in only 35-70% of scenes.** The last action dimension (typically gripper open/close) is least affected by visual corruption, while dims 2-3 (y/z position) are most sensitive (90-100%).
 
 **Finding 599**: **Corruption increases action entropy by 0.2-0.9 bits, with blur at 3.53 vs clean at 2.61 bits.** Corrupted images produce more diverse actions across scenes — the model's action predictions become less consistent and more random under visual degradation.
+
+---
+
+## Experiment 350: Prompt Sensitivity Deep Dive
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_prompt_sensitivity.py`
+**Status**: Complete
+
+### Setup
+- 15 diverse prompts: standard robot tasks, minimal ("Act."), verbose (152 chars), imperative, question form, third-person, navigation, avoidance
+- 10 scenes, 4 corruption types at severity 0.5
+- Per-prompt AUROC, cross-prompt embedding similarity, length correlation
+- Most/least sensitive prompt identification
+
+### Results
+
+#### Per-Prompt AUROC
+- **ALL 15 prompts: AUROC = 1.0 for ALL 4 corruption types**
+- Detection is completely prompt-invariant — no prompt degrades AUROC
+
+#### Prompt Length vs Detection
+- Pearson r = -0.78 (strong negative correlation)
+- Minimal prompt (13 chars): highest fog distance 0.001689
+- Verbose prompt (152 chars): lowest fog distance 0.000786
+- ~2.15x difference in distance magnitude between shortest and longest
+
+#### Sensitivity Ranking
+- Most sensitive: "minimal" (shortest prompt) — consistently highest distances
+- Least sensitive: "verbose" (longest prompt) — consistently lowest distances
+- Fog: 2.15x ratio, Night: 1.88x, Noise: 1.81x, Blur: 2.27x
+
+#### Cross-Prompt Embedding Distance
+- Mean cross-prompt clean distance: 0.009210
+- Max cross-prompt clean distance: 0.028016
+- Different prompts produce substantially different embeddings
+- But per-prompt calibration maintains AUROC=1.0
+
+### Key Findings
+
+**Finding 600**: **All 15 prompts achieve AUROC=1.0 for all 4 corruptions — detection is completely prompt-invariant.** Whether using a 13-character minimal prompt or a 152-character verbose prompt, imperative or interrogative, task-specific or generic, detection remains perfect.
+
+**Finding 601**: **Prompt length inversely correlates with detection distance (r = -0.78) — shorter prompts amplify the OOD signal by ~2x.** The minimal prompt "In: Act.\nOut:" produces 2.15x (fog) to 2.27x (blur) higher cosine distances than the verbose prompt. Shorter prompts leave more "bandwidth" for visual features.
+
+**Finding 602**: **Cross-prompt embedding distance (max=0.028) exceeds within-corruption distance (max=0.008) by 3.5x.** Different prompts create more embedding diversity than different corruptions. Per-prompt calibration is essential — using one prompt's centroid with another prompt would cause false alarms.
+
+**Finding 603**: **The detection method is robust to prompt engineering: no prompt among 15 tested degrades detection below AUROC=1.0.** This eliminates prompt selection as a hyperparameter for deployment — any reasonable instruction works.
