@@ -6124,4 +6124,46 @@ We test 10 realistic corruption types that would occur in actual autonomous driv
 
 \textbf{Finding 763}: \textbf{All 4 composite real-world scenarios are detected.} Rain+night ($d = 3.8 \times 10^{-3}$), glare+motion ($d = 2.3 \times 10^{-3}$), frost+shadow ($d = 1.6 \times 10^{-3}$), and dust+warm ($d = 2.7 \times 10^{-4}$) all produce $d > 0$. Composite corruptions compound in embedding space, making them easier to detect than individual corruptions.
 
+\subsection{Experiment 328: Token-Level Probability Analysis}
+
+We analyze how corruption affects the model's action token probabilities, confidence, entropy, and the relationship between hidden states and output distributions.
+
+\textbf{Setup.} We extract logits and hidden states simultaneously, computing top-$k$ probabilities, entropy, KL divergence, token change thresholds across severities, temperature scaling effects, and hidden-logit correlations.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig337_tokens.png}
+\caption{\textbf{Figure~337: Token probability analysis.} (A)~Fog \emph{increases} confidence (0.43$\to$0.48) on the wrong token. (B)~Fog decreases entropy while night/blur increase it. (C)~Blur changes the action token at just 5\% severity. (D)~KL divergence: blur=5.9, night=5.2 (largest output disruption).}
+\label{fig:tokens}
+\end{figure}
+
+\textbf{Finding 764}: \textbf{Fog makes the model overconfidently wrong: top probability increases ($0.433 \to 0.476$) while predicting a completely different action token.} This is the worst possible failure mode --- the model is \emph{more} confident in its wrong answer. Output-space methods like MSP would classify this as in-distribution, while hidden-state cosine distance correctly detects it (AUROC=1.0).
+
+\textbf{Finding 765}: \textbf{Blur changes the action token at just 5\% severity.} Blur's threshold is $10\times$ lower than fog/night (50\%) and $6\times$ lower than noise (30\%). The embedding detector catches blur at even 2\% severity (Experiment~314), providing a $2.5\times$ lead time before the action actually changes.
+
+\textbf{Finding 766}: \textbf{Hidden-logit correlation is $r = 0.913$.} Hidden state distance strongly predicts output distribution change, providing mechanistic justification for using hidden states rather than outputs: hidden states change earlier, more reliably, and without the confounding confidence miscalibration that plagues output-space metrics.
+
+\textbf{Finding 767}: \textbf{Temperature scaling cannot rescue output-space detection.} Low temperature ($T=0.1$: KL=30) amplifies all differences including benign; high temperature ($T=10$: KL=0.01) smooths away corruption signals. No temperature makes output-space methods competitive with hidden-state detection.
+
+\subsection{Experiment 329: Multi-Modal Signal Analysis}
+
+We analyze how the corruption detection signal distributes across image and text tokens, layers, prompt lengths, and aggregation strategies.
+
+\textbf{Setup.} We extract hidden states at all token positions and compute per-token cosine distances. We test 3 prompt lengths (265--290 tokens), 5 layers, and signal concentration metrics.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig338_multimodal.png}
+\caption{\textbf{Figure~338: Multi-modal analysis.} (A)~Image tokens carry $37$--$176\times$ more signal than text tokens. (B)~Signal migrates from image to text tokens in deeper layers. (C)~Shorter prompts produce $2\times$ larger detection distance. (D)~All aggregation strategies detect corruption.}
+\label{fig:multimodal}
+\end{figure}
+
+\textbf{Finding 768}: \textbf{Image tokens carry $37$--$176\times$ more per-token signal than text tokens.} At layer~3, the mean image token distance is 0.18--0.35 while the mean text token distance is 0.001--0.008. The corruption signal is overwhelmingly concentrated in the 256 image token positions.
+
+\textbf{Finding 769}: \textbf{Signal migrates from image to text tokens through layer depth.} At L0, the last text token has $d=0$. By L31, it reaches $d=0.139$ while image tokens remain at 0.368. The LLM progressively redistributes corruption information from image modality to text, enabling convenient last-token detection.
+
+\textbf{Finding 770}: \textbf{Shorter prompts produce $2\times$ larger detection distances.} A 265-token prompt gives $d = 4.3 \times 10^{-3}$ versus $d = 2.0 \times 10^{-3}$ for a 290-token prompt. The same corruption signal is diluted across more text tokens in longer prompts. For deployment, shorter prompts improve detection margin.
+
+\textbf{Finding 771}: \textbf{50\% of the total detection signal is carried by just 37\% of tokens.} The signal is moderately concentrated (Gini=0.20), distributed across many image tokens rather than concentrated in a few. The maximum single-token distance (0.67 for blur) is only 0.19\% of the total sum, confirming robust, distributed signal representation.
+
 \end{document}

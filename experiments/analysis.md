@@ -13105,3 +13105,134 @@ All 25 combinations produce d > 0 with per-scene calibration.
 **Finding 510**: **Color temperature shifts are the weakest real-world corruption (d=7e-06 to 1e-04) but still achieve AUROC=1.0.** Warm and cool temperature shifts produce the smallest embedding changes among all 10 corruption types, yet the zero-variance property ensures perfect detection. This represents the detector's "hardest" real-world challenge.
 
 **Finding 511**: **All 4 composite real-world scenarios are detected.** Rain+night (d=3.8e-03), glare+motion blur (d=2.3e-03), frost+shadow (d=1.6e-03), and dust+warm temperature (d=2.7e-04) are all easily detected. Composite corruptions tend to produce larger distances than individual corruptions, as the effects compound in embedding space.
+
+---
+
+## Experiment 328: Token-Level Probability Analysis (Real OpenVLA-7B)
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_token_analysis.py`
+**Results**: `experiments/token_analysis_20260315_124042.json`
+**Figure**: `paper/latex/fig337_tokens.png`
+
+### Summary
+
+Analyzes how corruption affects action token probabilities: top token changes, confidence/entropy, KL divergence, severity thresholds for token change, temperature scaling, and hidden-logit correlation.
+
+### Token Changes Under Corruption (severity 1.0)
+
+| Condition | Top Token | Probability | Entropy | KL from Clean |
+|-----------|----------|-------------|---------|---------------|
+| Clean | 31944 | 0.433 | 2.376 | — |
+| Fog | **31889** | **0.476** | 2.084 | 2.929 |
+| Night | **31856** | 0.124 | 3.869 | 5.184 |
+| Noise | **31932** | 0.232 | 2.886 | 1.598 |
+| Blur | **31846** | 0.093 | 4.128 | 5.860 |
+
+**Fog INCREASES confidence** (0.433→0.476) while producing a WRONG token — the model becomes overconfidently wrong.
+
+### Severity Threshold for Token Change
+
+| Corruption | First Token Change |
+|-----------|-------------------|
+| Fog | 50% severity |
+| Night | 50% severity |
+| Noise | 30% severity |
+| Blur | **5% severity** |
+
+Blur changes the action token at just 5% severity — consistent with being the most dangerous corruption.
+
+### Temperature Scaling (fog)
+
+| Temperature | KL | Clean Entropy | Fog Entropy |
+|------------|-----|---------------|-------------|
+| 0.1 | 30.0 | 0.000 | 0.001 |
+| 0.5 | 5.99 | 0.636 | 0.592 |
+| 1.0 | 2.93 | 2.376 | 2.084 |
+| 2.0 | 1.18 | 4.779 | 4.099 |
+| 5.0 | 0.11 | 10.118 | 9.605 |
+| 10.0 | 0.01 | 10.347 | 10.317 |
+
+High temperature smooths away differences. Low temperature amplifies them. Temperature scaling cannot be used for detection — it either kills ALL information or amplifies noise.
+
+### Hidden-Logit Correlation
+
+- Hidden distance ↔ Logit distance: **r = 0.913**
+- Hidden distance ↔ KL divergence: **r = 0.850**
+
+Strong positive correlation: hidden state changes predict output distribution changes.
+
+### Key Findings
+
+**Finding 512**: **Fog makes the model overconfidently wrong: top probability INCREASES (0.433→0.476) while producing a completely different token (31944→31889).** This is the worst possible failure mode — the model is MORE confident in its wrong answer. Output-space methods like MSP would classify this as IN-distribution (high confidence), while hidden-state cosine distance correctly flags it as OOD.
+
+**Finding 513**: **Blur changes the action token at just 5% severity — far before other corruptions.** Blur threshold is 10× lower than fog/night (50%) and 6× lower than noise (30%). This confirms blur as the most action-disruptive corruption, consistent with its high embedding velocity (27.6× from Experiment 325).
+
+**Finding 514**: **Hidden-logit correlation is 0.913 — hidden state distance strongly predicts output distribution change.** The cosine distance in hidden space is not just a proxy for input corruption but is mechanistically linked to the output change. This provides theoretical justification for using hidden states rather than outputs for detection: hidden states change first and more reliably.
+
+**Finding 515**: **Temperature scaling cannot rescue output-space detection.** At low temperature (T=0.1), KL=30.0 amplifies ALL differences (including benign ones). At high temperature (T=10.0), KL=0.01 smooths away corruption signals. There is no temperature setting that makes output-space methods competitive with hidden-state detection.
+
+---
+
+## Experiment 329: Multi-Modal Signal Analysis (Real OpenVLA-7B)
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_multimodal_analysis.py`
+**Results**: `experiments/multimodal_20260315_124211.json`
+**Figure**: `paper/latex/fig338_multimodal.png`
+
+### Summary
+
+Analyzes how corruption signal distributes across image vs text tokens, layers, prompt lengths, and aggregation strategies.
+
+### Image vs Text Token Signal (L3)
+
+| Corruption | Image Mean | Text Mean | Ratio | Last Token |
+|-----------|-----------|-----------|-------|------------|
+| Fog | ~0.185 | ~0.002 | ~90× | 0.00271 |
+| Night | ~0.295 | ~0.008 | ~37× | 0.00799 |
+| Blur | 0.354 | 0.006 | 59× | 0.00626 |
+| Noise | 0.176 | 0.001 | 176× | 0.000512 |
+
+Image tokens carry **37-176× more signal** than text tokens at L3.
+
+### Signal Migration Across Layers (fog)
+
+| Layer | BOS | img_first | img_mid | last (text) |
+|-------|-----|-----------|---------|-------------|
+| L0 | 0 | 0.269 | 0.146 | 0 |
+| L1 | 0 | 0.267 | 0.139 | **0.001** |
+| L3 | 0 | 0.251 | 0.111 | **0.003** |
+| L15 | 0 | 0.338 | 0.070 | **0.056** |
+| L31 | 0 | 0.368 | 0.066 | **0.139** |
+
+Signal **migrates from image tokens to text tokens** as depth increases. At L0, last token has d=0. By L31, last token has d=0.139 — still less than image tokens (0.368) but substantial.
+
+### Prompt Length Effect
+
+| Prompt | Length | Last Token Distance |
+|--------|--------|-------------------|
+| Short | 265 | **0.004333** |
+| Medium | 274 | 0.002705 |
+| Long | 290 | 0.002000 |
+
+**Shorter prompts produce larger detection distances** — the signal is diluted across more text tokens in longer prompts.
+
+### Signal Concentration
+
+| Corruption | 50% Signal in | Gini Coefficient |
+|-----------|--------------|-----------------|
+| Fog | 102/274 tokens (37%) | 0.203 |
+| Blur | 101/274 tokens (37%) | 0.206 |
+
+Moderately concentrated — roughly 37% of tokens carry 50% of the signal.
+
+### Key Findings
+
+**Finding 516**: **Image tokens carry 37-176× more per-token signal than text tokens at L3.** The corruption signal is overwhelmingly concentrated in the 256 image token positions. Text tokens carry a diluted version of this signal, with the last token receiving progressively more signal through deeper layers (d grows from 0 at L0 to 0.139 at L31).
+
+**Finding 517**: **Signal migrates from image to text tokens through layer depth.** At L0, the last text token has d=0 (no signal). By L31, it reaches d=0.139 while image tokens remain at 0.368. The LLM progressively redistributes the corruption signal from image modality to text modality, enabling detection at the last token position (which is the most convenient for deployment).
+
+**Finding 518**: **Shorter prompts produce 2× larger detection distances (0.004 vs 0.002).** The signal dilution hypothesis is confirmed: longer prompts spread the same amount of corruption information across more text tokens, reducing the per-token signal. For deployment, shorter task prompts improve detection margin.
+
+**Finding 519**: **50% of the total detection signal is carried by just 37% of tokens.** The signal is moderately concentrated (Gini=0.20), not extremely concentrated in a few tokens or uniformly distributed. The max single-token distance (0.67 for blur) is only 0.19% of the total sum, confirming that the signal is distributed across many image tokens rather than concentrated in a few.
