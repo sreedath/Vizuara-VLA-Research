@@ -16310,3 +16310,32 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 
 **Finding 804**: The detection-confidence anti-correlation (r=-0.58) means higher detection distances correlate with LOWER confidence, but confidence itself is a POOR safety proxy because it has near-zero correlation with actual action divergence (r=0.05).
 
+---
+
+## Experiment 392: Information-Theoretic Analysis of Detection Channel
+
+**Objective**: Formalize the detection system as an information channel and measure capacity, mutual information, Fisher information, and distributional separation.
+
+**Method**: Collected 15 clean and 15 corrupted embeddings per corruption at L3. Computed KL divergence, mutual information (binary and 5-class), Fisher information across severity levels, BSC channel capacity, decision entropy, and separation metrics (Bhattacharyya, Hellinger, Cohen's d).
+
+**Key Results**:
+- Binary MI = 1.0 bits for ALL corruptions — maximum possible
+- 5-class MI = 1.92 bits (83% of theoretical max 2.32 bits) from detection distance alone
+- BSC channel capacity = 1.0 bits for all corruptions (zero error probability)
+- Decision entropy = 0.0 at all severity levels (except noise at sev ≤ 0.1)
+- Fisher information spans 3000× range: night (51.6M) >> blur (19.8M) >> fog (5.7M) >> noise (17.4K)
+- Cohen's d: night=501, fog=226, blur=188, noise=63 — ALL astronomical (>0.8 = "large")
+- Bhattacharyya distance: night=31403, fog=6361, blur=4406, noise=492
+- Hellinger distance = 1.0 for ALL corruptions (complete distributional separation)
+- Blur Fisher info DECREASES with severity (peaks early); night INCREASES (peaks late)
+
+**Finding 805**: The detection channel operates at MAXIMUM capacity (1.0 bits) for all corruptions. Binary mutual information is 1.0 bits — every bit of corruption label information passes through the detection distance without loss.
+
+**Finding 806**: A SINGLE scalar (detection distance) carries 1.92 bits of multi-class information, identifying corruption TYPE with 83% of theoretical maximum capacity (5 classes = 2.32 bits). The remaining 17% gap represents the noise-fog overlap region.
+
+**Finding 807**: Fisher information spans a 3000× range across corruptions: night (51.6M) vs noise (17.4K). This quantifies why noise is the hardest corruption to detect — the detection distance changes 3000× less per unit severity change compared to night.
+
+**Finding 808**: Blur Fisher information DECREASES with severity (48.9M→2.3M) while night INCREASES (7.8M→139M). Blur detection saturates early (diminishing returns), while night becomes EASIER to detect at higher severity — opposite information dynamics.
+
+**Finding 809**: All Cohen's d values exceed 62 (noise) to 501 (night), representing effect sizes 78–626× larger than the "large effect" threshold (d=0.8). Hellinger distance = 1.0 confirms ZERO distributional overlap. The detection signal is not marginally significant — it is overwhelmingly decisive.
+

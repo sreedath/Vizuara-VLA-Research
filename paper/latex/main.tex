@@ -7703,4 +7703,25 @@ We analyze the relationship between detection distance and action divergence acr
 
 \textbf{Finding 1056}: \textbf{Rotation dimensions (4, 5) are most vulnerable; gripper (dim 6) is most stable.} Wrist rotation shifts by up to 0.62 under blur while gripper shifts only 0.02. This vulnerability hierarchy could inform dimension-specific action validation.
 
+\subsection{Experiment 392: Information-Theoretic Analysis of Detection Channel}
+
+We formalize the cosine distance detector as an information channel and measure its theoretical properties. This provides rigorous bounds on detection quality beyond empirical AUROC.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig401_inftheory.png}
+\caption{Information-theoretic analysis. (A) Channel capacity = 1.0 bits for all corruptions. (B) Fisher information spans 3000$\times$ (noise to night). (C) Fisher vs severity: blur peaks early, night late. (D) Cohen's $d$ values are 78--626$\times$ the ``large effect'' threshold. (E) Bhattacharyya distances confirm complete separation. (F) Detection distance distributions show zero overlap.}
+\label{fig:inftheory}
+\end{figure}
+
+\textbf{Finding 1057}: \textbf{The detection channel operates at maximum capacity (1.0 bits) for all corruptions.} Binary mutual information is exactly 1.0 bits---every bit of corruption-label information passes through the detection distance without loss. The channel is error-free.
+
+\textbf{Finding 1058}: \textbf{A single scalar carries 1.92 bits of multi-class information (83\% of 5-class maximum).} Detection distance alone can identify corruption TYPE, not just presence. The remaining 17\% gap represents the noise-fog overlap region where distances are similar.
+
+\textbf{Finding 1059}: \textbf{Fisher information spans 3000$\times$ across corruptions: night (51.6M) vs noise (17.4K).} This formally quantifies why noise is hardest to detect---the detection distance changes 3000$\times$ less per unit severity change. Fisher information is the fundamental limit on parameter estimation precision.
+
+\textbf{Finding 1060}: \textbf{Blur Fisher info DECREASES with severity while night INCREASES.} Blur detection saturates (48.9M$\rightarrow$2.3M) while night amplifies (7.8M$\rightarrow$139M). These opposite information dynamics reflect fundamentally different encoding of corruption severity in the embedding space.
+
+\textbf{Finding 1061}: \textbf{Cohen's $d$ ranges from 63 to 501, representing 78--626$\times$ the ``large effect'' threshold.} Hellinger distance is exactly 1.0 (complete distributional separation). The detection signal is not marginally significant---it is overwhelmingly decisive by any statistical standard.
+
 \end{document}
