@@ -1,0 +1,252 @@
+{
+  "n_prompts": 6,
+  "n_scenes": 3,
+  "cross_prompt_similarity": {
+    "standard_vs_verbose": {
+      "mean_dist": 0.005258596167049305,
+      "max_dist": 0.005365397508041325
+    },
+    "short_vs_standard": {
+      "mean_dist": 0.017011676906885615,
+      "max_dist": 0.01749459597062164
+    },
+    "short_vs_verbose": {
+      "mean_dist": 0.022023280742358153,
+      "max_dist": 0.022479108934804537
+    },
+    "different_task_vs_standard": {
+      "mean_dist": 0.0012630747566089544,
+      "max_dist": 0.0012908834001137404
+    },
+    "different_task_vs_short": {
+      "mean_dist": 0.017677327189912957,
+      "max_dist": 0.01820710006781101
+    },
+    "different_task_vs_verbose": {
+      "mean_dist": 0.006081492374344226,
+      "max_dist": 0.006219862734559101
+    },
+    "different_task_vs_minimal": {
+      "mean_dist": 0.017404778654959634,
+      "max_dist": 0.01752092119926496
+    },
+    "different_task_vs_place": {
+      "mean_dist": 0.0013887089125631895,
+      "max_dist": 0.0014101128931387485
+    },
+    "minimal_vs_standard": {
+      "mean_dist": 0.01770517428304182,
+      "max_dist": 0.017892863458750963
+    },
+    "minimal_vs_short": {
+      "mean_dist": 0.005408123151129633,
+      "max_dist": 0.005461905095855646
+    },
+    "minimal_vs_verbose": {
+      "mean_dist": 0.023298838950078782,
+      "max_dist": 0.02358875716182951
+    },
+    "minimal_vs_place": {
+      "mean_dist": 0.016462449747133363,
+      "max_dist": 0.01665235275443555
+    },
+    "place_vs_standard": {
+      "mean_dist": 0.0007396584269191431,
+      "max_dist": 0.0007713117426132454
+    },
+    "place_vs_short": {
+      "mean_dist": 0.01691987300743551,
+      "max_dist": 0.01741994697432281
+    },
+    "place_vs_verbose": {
+      "mean_dist": 0.005872220290064771,
+      "max_dist": 0.005948496334065911
+    }
+  },
+  "per_prompt_detection": {
+    "standard": {
+      "overall_auroc": 1.0,
+      "clean_mean_dist": 3.700113754730635e-05,
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.0031335845549211503
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.008554145240670552
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.0002497884947028443
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.007155883715501095
+        }
+      }
+    },
+    "short": {
+      "overall_auroc": 1.0,
+      "clean_mean_dist": 4.265317373008948e-05,
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.004300284039932952
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.010602576909347369
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00040940069062900264
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.008955485113686712
+        }
+      }
+    },
+    "verbose": {
+      "overall_auroc": 1.0,
+      "clean_mean_dist": 2.6217041979692546e-05,
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.002473748193096833
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.006467881528923229
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00017605098974556496
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.005675251858510329
+        }
+      }
+    },
+    "different_task": {
+      "overall_auroc": 1.0,
+      "clean_mean_dist": 3.4931022718565075e-05,
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.003200213728490812
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.008692537596328967
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00023827473074955474
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.007299497778848048
+        }
+      }
+    },
+    "minimal": {
+      "overall_auroc": 1.0,
+      "clean_mean_dist": 4.5286588157093334e-05,
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.005631566397633033
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.014150839922365543
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.0004098366180994943
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.01193161534871845
+        }
+      }
+    },
+    "place": {
+      "overall_auroc": 1.0,
+      "clean_mean_dist": 3.285405899370689e-05,
+      "per_corruption": {
+        "fog": {
+          "auroc": 1.0,
+          "mean_dist": 0.003115656255324395
+        },
+        "night": {
+          "auroc": 1.0,
+          "mean_dist": 0.008489641050218285
+        },
+        "noise": {
+          "auroc": 1.0,
+          "mean_dist": 0.00022364137231093797
+        },
+        "blur": {
+          "auroc": 1.0,
+          "mean_dist": 0.007250987175247969
+        }
+      }
+    }
+  },
+  "agnostic_detection": {
+    "standard": {
+      "auroc": 1.0
+    },
+    "short": {
+      "auroc": 1.0
+    },
+    "verbose": {
+      "auroc": 0.9444444444444444
+    },
+    "different_task": {
+      "auroc": 1.0
+    },
+    "minimal": {
+      "auroc": 1.0
+    },
+    "place": {
+      "auroc": 1.0
+    }
+  },
+  "prompt_length": {
+    "standard": {
+      "token_length": 18,
+      "char_length": 65,
+      "auroc": 1.0
+    },
+    "short": {
+      "token_length": 11,
+      "char_length": 28,
+      "auroc": 1.0
+    },
+    "verbose": {
+      "token_length": 31,
+      "char_length": 138,
+      "auroc": 1.0
+    },
+    "different_task": {
+      "token_length": 17,
+      "char_length": 61,
+      "auroc": 1.0
+    },
+    "minimal": {
+      "token_length": 8,
+      "char_length": 13,
+      "auroc": 1.0
+    },
+    "place": {
+      "token_length": 17,
+      "char_length": 63,
+      "auroc": 1.0
+    }
+  }
+}

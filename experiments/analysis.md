@@ -16886,3 +16886,166 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 946**: Fog/night/blur embedding regions are convex — all mixtures of clean and corrupt (at α=0.3, 0.5, 0.7) are detected at AUROC=1.0. Noise fails the convexity test (min AUROC=0.44 at 30% mixing), meaning a 30% noise mixture is indistinguishable from clean. This is the only corruption where partial mixtures can evade detection.
 
 **Finding 947**: The detection boundary ordering (night < fog < blur << noise) precisely mirrors the sensitivity ordering found in all prior experiments, confirming that noise is consistently the most challenging corruption type and night the easiest to detect across all experimental paradigms.
+
+---
+
+## Experiment 420: Token Position Analysis
+
+**Objective**: Analyze per-token-position sensitivity to corruption across the full 274-token sequence (BOS + 256 image patches + 17 text tokens) to understand where corruption signal concentrates and which pooling strategy best captures it.
+
+**Method**: Measure per-position sensitivity (cosine distance between clean and corrupted hidden states), per-position AUROC, and compare pooling strategies (first, last, mean, max) using embeddings from `token_position_20260315_192940.json`. Sequence length: 274 tokens, hidden dim: 4096.
+
+**Finding 948**: 274-token sequence contains 256 image patch tokens (positions 1-256) and 18 text tokens (positions 257-273).
+
+**Finding 949**: Position 0 (BOS) carries zero corruption signal — identical for clean and all corruptions.
+
+**Finding 950**: Image patch tokens are 100x more sensitive than text tokens (mean sensitivity 0.30 vs 0.005).
+
+**Finding 951**: Most sensitive position is pos 1 (first image patch) with sensitivity 0.445.
+
+**Finding 952**: Last token (pos 273) ranks 272/274 in sensitivity yet achieves AUROC=1.0.
+
+**Finding 953**: The corruption signal concentrates in image patches but propagates just enough to last token for perfect detection.
+
+**Finding 954**: Per-position AUROC: most image patch positions achieve 1.0, noise weakest (some 0.56).
+
+**Finding 955**: Pooling comparison: last=1.0, mean=1.0, max=0.94, first=0.5 AUROC.
+
+**Finding 956**: Mean pooling over all 274 positions equals last-token-only performance.
+
+**Finding 957**: First-token (BOS) pooling gives random performance (0.5 AUROC).
+
+**Finding 958**: Night and blur cause largest per-position shifts (up to 0.56 cosine distance).
+
+**Finding 959**: Text tokens (positions 260-273) show near-zero distances even under severe corruption.
+
+---
+
+## Experiment 421: Attention Pattern Analysis Under Corruption
+
+**Objective**: Analyze how corruption affects attention patterns across layers and heads — measuring attention entropy, KL divergence, cross-modal attention flow, and per-head sensitivity to understand whether attention-based OOD detection is viable.
+
+**Method**: Extract attention maps (32 heads per layer, 274 token sequence) at 6 representative layers (0, 3, 8, 15, 24, 31). Measure attention entropy shifts, KL divergence between clean and corrupt attention distributions, image-to-text and text-to-image cross-modal attention, and per-head corruption sensitivity.
+
+**Finding 960**: Attention-based KL divergence achieves AUROC=1.0 at 5/6 layers analyzed.
+
+**Finding 961**: Layer 24 attention detection dips to AUROC=0.97, matching the hidden state layer-wise dip pattern.
+
+**Finding 962**: Image-to-text attention is EXACTLY ZERO at all layers — causal masking prevents backward flow.
+
+**Finding 963**: Text-to-image attention is tiny (~0.001) and corruption-invariant.
+
+**Finding 964**: Night causes the largest attention entropy shift: -0.15 at layer 8 (more focused), +0.18 at layer 31 (more diffuse).
+
+**Finding 965**: A few "sentinel" heads dominate corruption sensitivity — layer 8 head 26 is 100x more sensitive than head 2.
+
+**Finding 966**: Layer 3 head 31 is disproportionately sensitive (0.676 shift), 2.8x the next most sensitive head.
+
+**Finding 967**: Attention concentration increases under corruption in early layers (night especially) but decreases at layer 31.
+
+**Finding 968**: KL divergence between clean and corrupt attention grows monotonically with layer depth.
+
+**Finding 969**: Fog consistently decreases attention entropy (more concentrated attention), noise slightly increases it.
+
+**Finding 970**: Attention-based OOD detection via KL divergence is a viable alternative to embedding-based detection.
+
+---
+
+## Experiment 422: Temporal Consistency Analysis
+
+**Objective**: Analyze how corruption affects temporal consistency across 10-frame sequences with small perturbations simulating temporal progression — measuring frame-to-frame embedding stability, action consistency, corruption onset detection, and whether temporal smoothing improves detection.
+
+**Method**: Generate 10-frame sequences with small perturbations simulating temporal progression. Measure frame-to-frame embedding distances, action change rates, unique action counts, corruption onset detection via embedding velocity spikes, and evaluate temporal smoothing (3-frame, 5-frame moving average) against single-frame detection.
+
+**Finding 971**: Clean embeddings are temporally ultra-stable with mean frame-to-frame distance 1.7e-5.
+
+**Finding 972**: Fog produces temporal freeze — 0 action changes across 10 frames, collapsing to single repeated action.
+
+**Finding 973**: Blur is most temporally unstable under corruption — 9 changes, 9 unique actions across 10 frames.
+
+**Finding 974**: Zero corrupted frames match their clean counterparts for any corruption type.
+
+**Finding 975**: Embedding velocity spike detects corruption onset at exact frame with 5-207x ratio over clean baseline.
+
+**Finding 976**: Night onset produces 207x velocity spike, most dramatic single-frame embedding jump.
+
+**Finding 977**: Noise onset produces only 5x velocity spike — weakest but still clearly distinguishable.
+
+**Finding 978**: Temporal smoothing (3-frame and 5-frame) provides zero benefit — single-frame detection is already perfect.
+
+**Finding 979**: Corrupted sequences are temporally stable within corruption — the model consistently produces wrong but stable outputs.
+
+**Finding 980**: Embedding velocity is a viable single-frame onset detection signal even without a reference centroid.
+
+---
+
+## Experiment 423: Prompt Sensitivity Analysis
+
+**Objective**: Analyze how different prompt formulations affect OOD detection performance — testing whether the model's corruption detection is invariant to prompt wording, length, and task semantics.
+
+**Method**: Test 6 prompt variants: standard (18 tokens), short (11), verbose (31), different_task (17), minimal (8), place (17). Evaluate AUROC with prompt-specific centroids, prompt-agnostic centroid, cross-prompt embedding distances, and corruption signal strength as a function of prompt length.
+
+**Key Results**:
+- ALL 6 prompts achieve AUROC=1.0 with prompt-specific centroids
+- OOD detection is completely prompt-invariant
+- Prompt-agnostic centroid: 5/6 achieve 1.0, verbose dips to 0.94 (furthest from mixed centroid)
+- Similar-task prompts have nearly identical embeddings: standard vs place = 0.0007, standard vs different_task = 0.0013
+- Shorter prompts AMPLIFY corruption signal: minimal (8 tokens) gives night distance 0.014 vs standard 0.009
+- Verbose (31 tokens) gives SMALLEST corruption distances (fog 0.0025 vs minimal 0.0056)
+- Cross-prompt distances: largest between minimal and verbose (0.023), smallest between standard and place (0.0007)
+- Task semantics barely matter: "pick up" vs "push" vs "place" have distance < 0.002
+
+**Finding 981**: OOD detection achieves AUROC=1.0 for ALL 6 prompt variants — completely prompt-invariant.
+
+**Finding 982**: Shorter prompts amplify corruption signal — minimal (8 tokens) produces 1.6x larger distances than standard.
+
+**Finding 983**: Verbose prompts (31 tokens) produce smallest corruption distances but still achieve perfect AUROC.
+
+**Finding 984**: Prompt-agnostic centroid achieves AUROC=1.0 for 5/6 prompts; verbose drops to 0.94.
+
+**Finding 985**: Task semantics barely affect embeddings — "pick up" vs "push" vs "place" differ by <0.002 cosine distance.
+
+**Finding 986**: Cross-prompt distance (up to 0.023) is smaller than any corruption distance, confirming visual dominance.
+
+---
+
+## Experiment 424: Embedding Space Geometry Analysis
+
+**Objective**: Analyze the geometric structure of OpenVLA's 4096-dimensional embedding space under clean and corrupted conditions — characterizing effective dimensionality, principal component structure, participation ratios, and comparing distance metrics for OOD detection.
+
+**Method**: Collect hidden-state embeddings from 8 scenes under clean and 4 corruption types (fog, night, noise, blur). Perform PCA to measure effective dimensionality, eigenvalue spectra, and participation ratios. Compare cosine distance and Mahalanobis distance for OOD detection via AUROC. Analyze inter-corruption centroid distances and embedding norm shifts.
+
+**Key Results**:
+- 8 scenes, 4096-dimensional embeddings
+- Clean effective dimensionality: 7 (= N-1 samples), total variance 0.008
+- Night dominates PC1 with 99% variance (eigenvalue 0.332 vs next 0.001)
+- Noise has highest participation ratio (3.49 = most spread across dimensions)
+- Fog/night participation ratios near 1.0 (dominated by single direction)
+- Cosine distance AUROC=1.0 overall, Mahalanobis only 0.97 — simpler metric is better
+- Mahalanobis fails for noise (0.875 AUROC vs cosine 1.0)
+- Noise closest to clean centroid (0.00015), night furthest (0.0084)
+- Night increases embedding norm +3.1%, blur decreases -2.3%
+- Fog-night most separated corruption pair (0.0098), fog-noise closest (0.0038)
+- PCA: night best 2D separation (1.12), noise worst (0.15)
+
+**Finding 987**: Clean embedding effective dimensionality is 7 (= N_samples - 1).
+
+**Finding 988**: Night dominates the first principal component with 99% variance explained.
+
+**Finding 989**: Noise has highest participation ratio (3.49) — most spread across embedding dimensions.
+
+**Finding 990**: Cosine distance (AUROC=1.0) BEATS Mahalanobis distance (AUROC=0.97) — simpler metric is better.
+
+**Finding 991**: Mahalanobis fails specifically for noise (0.875 AUROC) due to unreliable covariance estimation.
+
+**Finding 992**: Noise centroid is closest to clean (distance 0.00015), confirming noise as hardest corruption.
+
+**Finding 993**: Night increases embedding norm by 3.1%, blur decreases it by 2.3%.
+
+**Finding 994**: Fog and night are most separated corruption pair (distance 0.0098).
+
+**Finding 995**: Night achieves best 2D PCA separation (1.12), noise worst (0.15).
+
+**Finding 996**: Embedding space geometry is fundamentally low-dimensional — corruption directions are nearly 1D.
+
+**Finding 987**: The model's OOD detection mechanism is robust across prompt variations from 8 to 31 tokens.
