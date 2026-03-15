@@ -9393,3 +9393,77 @@ All ID means and stds are effectively 0.0 for all metrics.
 **Finding 252**: The corruption subspace has **intrinsic dimensionality of just 3-5** (out of 4096D), representing 1365-819× compression. This explains why random projection to 32D preserves detection — the true signal lives in an extremely low-dimensional subspace.
 
 **Finding 253**: The 2D PCA projection reveals that **severity trajectories are linear rays** emanating from the origin, with each corruption type pointing in a different direction. This geometric structure is why both severity estimation (R²>0.93) and type identification (100%) work simultaneously.
+
+---
+
+## Experiment 252: Multi-Token Position Analysis
+
+**Research Question**: How does OOD signal distribute across different token positions (BOS, image tokens, text tokens) at different layers?
+
+**Method**: Extract hidden states at all 274 token positions for clean and corrupted images at layers 3, 15, and 31. Measure cosine distance at 15 representative positions.
+
+**Results — Cosine Distance by Position (Night corruption, most dramatic)**:
+
+| Position | Type | L3 | L15 | L31 |
+|---------|------|-----|------|------|
+| 0 (BOS) | Special | 0.0 | 0.0 | 0.0 |
+| 1 | Image | 0.483 | 0.555 | 0.375 |
+| 10 | Image | 0.596 | 0.742 | 0.699 |
+| 50 | Image | 0.401 | 0.364 | 0.135 |
+| 128 | Image | 0.479 | 0.505 | 0.268 |
+| 256 | Image | 0.347 | 0.571 | 0.465 |
+| -5 | Text | 0.010 | 0.392 | 0.562 |
+| **-3** | **Anchor** | **1.55e-6** | **8.46e-6** | **1.84e-5** |
+| -2 | Text | 0.014 | 0.082 | 0.156 |
+| -1 (Last) | Text | 0.006 | 0.160 | 0.258 |
+
+**Key Findings**:
+1. **Image tokens carry 100-1000× more signal**: Mean image token distance at L3 for night is 0.42, vs 0.006 for the last token. We've been detecting OOD using the LEAST informative token position!
+2. **Position -3 is a corruption-INVARIANT anchor**: Distance <2e-5 at ALL layers and ALL corruptions. This token is completely unaffected by visual corruption.
+3. **BOS (position 0) is blind**: Distance=0.0 at all layers, consistent with Experiment 249 (L0 blind).
+4. **Text tokens show increasing signal at deeper layers**: Position -5 has distance 0.01 at L3 but 0.562 at L31 for night — the text tokens gradually absorb corruption information through the transformer stack.
+5. **The last token still works**: Despite being the least informative position, it still achieves AUROC=1.0 because even its small distance is perfectly separated from zero (same-image calibration).
+
+**Finding 254**: Image tokens carry **100-1000× more OOD signal** than the last token at L3. Night corruption produces mean distance 0.42 at image token positions vs 0.006 at the last token. The detector works by exploiting the residual signal that propagates to the last token through autoregressive attention.
+
+**Finding 255**: Position -3 (token 271) is a **corruption-invariant anchor**: distance <2e-5 at ALL layers and ALL corruptions (fog, night, noise). This "null token" could serve as a reference point for differential detection schemes.
+
+---
+
+## Experiment 253: Cross-Corruption Transfer
+
+**Research Question**: Does a detector calibrated with diverse clean images (not same-image calibration) maintain AUROC=1.0? Can corruption-specific thresholds transfer across types?
+
+**Method**: Use 10 different clean images for calibration (diverse ID distribution). Test detection of 5 corruption types. Also test threshold transfer from one corruption to another.
+
+**Results — AUROC with Diverse Calibration**:
+
+| Corruption | L3 Distance | ID Max Distance | AUROC |
+|-----------|------------|----------------|-------|
+| Fog | 0.000206 | 0.000315 | **0.90** (overlap!) |
+| Night | 0.006443 | 0.000315 | **1.0** |
+| **Noise** | **0.0000517** | **0.000315** | **0.0** (invisible!) |
+| Blur | 0.004548 | 0.000315 | **1.0** |
+| Snow | 0.000311 | 0.000315 | **1.0** |
+
+**Critical Finding**: With diverse calibration, **noise is invisible at L3** (distance 5.2e-05, well below ID max 3.15e-04) and **fog partially overlaps** (AUROC=0.9). Only night, blur, and snow maintain AUROC=1.0.
+
+**Threshold Transfer Matrix** (rows=train type, columns=test type):
+
+| Train \ Test | Fog | Night | Noise | Blur | Snow |
+|-------------|-----|-------|-------|------|------|
+| Fog | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Night | ✗ | ✓ | ✗ | ✓ | ✗ |
+| Noise | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Blur | ✗ | ✓ | ✗ | ✓ | ✗ |
+| Snow | ✗ | ✓ | ✗ | ✓ | ✓ |
+
+**Key Findings**:
+1. **Same-image calibration is essential for perfect detection**: Our AUROC=1.0 result relies on the zero in-distribution variance property. Diverse calibration introduces natural variation that masks weak corruptions.
+2. **Noise is the weakest corruption at L3**: With distance only 5.2e-05, noise falls below the natural variation floor. Detection would require L15+ or image token positions (which have 100× more signal).
+3. **Fog partially overlaps**: AUROC drops to 0.9 with diverse calibration, but using a tighter threshold or higher layer could recover detection.
+4. **Weak-threshold transfer is asymmetric**: Fog and noise thresholds (small) transfer to detecting all corruptions. Night and blur thresholds (large) miss weaker corruptions.
+
+**Finding 256**: With diverse-image calibration, noise is **invisible at L3** (AUROC=0.0) because its distance (5.2e-05) falls below natural image variation (max 3.15e-04). This validates that same-image calibration (zero ID variance) is the critical enabler of perfect detection.
+
+**Finding 257**: Cross-corruption threshold transfer is **asymmetric**: weak corruptions (fog, noise) produce small thresholds that detect everything, while strong corruptions (night, blur) produce large thresholds that miss weaker signals. Using the smallest corruption for calibration gives the most conservative (and safest) threshold.

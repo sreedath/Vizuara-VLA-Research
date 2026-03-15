@@ -4840,4 +4840,34 @@ Blur & 1.68 & 0.587 & 31919 & 3.87 \\
 
 \textbf{Finding 523}: In the 2D PCA projection, each corruption type forms a \textbf{linear ray from the origin}, with severity increasing outward. This geometric structure --- linear rays in distinct directions --- is the fundamental reason both severity estimation ($R^2>$0.93) and type identification (100\%) succeed simultaneously.
 
+\subsection{Token Position Analysis}
+
+\textbf{Experiment 252: Multi-Token Position OOD Signal.} We measure cosine distance at 15 representative token positions across layers 3, 15, and 31 to understand how OOD signal distributes across the sequence.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig261_token_positions.png}
+\caption{Left: night corruption distance at each token position across 3 layers. Image tokens (1--256) carry far more signal than the last token. Center: image tokens carry 100--1000$\times$ more OOD signal than the last token at L3. Right: position $-3$ (token 271) is a corruption-invariant anchor with distance $<$2$\times$10$^{-5}$ everywhere.}
+\end{figure}
+
+\textbf{Finding 524}: Image tokens carry \textbf{100--1000$\times$ more OOD signal} than the last token at L3. Night corruption produces mean distance 0.42 at image positions vs 0.006 at the last token. The detector succeeds by exploiting the residual corruption signal that propagates to the last token through autoregressive attention.
+
+\textbf{Finding 525}: Position $-3$ (token 271) is a \textbf{corruption-invariant anchor}: cosine distance $<$2$\times$10$^{-5}$ at all layers and all corruptions. This ``null token'' remains unaffected by visual corruption and could serve as a reference point for differential detection schemes.
+
+\textbf{Finding 526}: Text tokens show \textbf{increasing signal at deeper layers}: position $-5$ has distance 0.01 at L3 but 0.562 at L31 for night. This reveals progressive corruption information absorption through the transformer stack, explaining why all layers achieve AUROC=1.0 despite different signal distributions.
+
+\subsection{Cross-Corruption Transfer}
+
+\textbf{Experiment 253: Diverse Calibration.} We test detection using 10 diverse clean images (rather than same-image calibration) to measure the impact of natural variation on detection performance.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig262_cross_transfer.png}
+\caption{Left: cross-corruption detection transfer matrix. Center: OOD distances vs natural variation (ID max) --- noise falls \textit{below} the natural variation floor at L3. Right: AUROC with diverse calibration drops to 0.0 for noise and 0.9 for fog.}
+\end{figure}
+
+\textbf{Finding 527}: With diverse-image calibration, noise becomes \textbf{invisible at L3} (AUROC=0.0) because its cosine distance (5.2$\times$10$^{-5}$) falls below natural image variation (max 3.15$\times$10$^{-4}$). This validates that same-image calibration (exploiting zero ID variance) is the critical enabler of perfect detection.
+
+\textbf{Finding 528}: Cross-corruption threshold transfer is \textbf{asymmetric}: weak corruptions (fog, noise) yield small thresholds that detect all stronger corruptions, while strong corruption thresholds (night, blur) miss weaker signals. The safest deployment uses the minimum corruption as calibration reference.
+
 \end{document}

@@ -1,0 +1,241 @@
+{
+  "experiment": "cross_transfer",
+  "experiment_number": 253,
+  "timestamp": "20260315_080251",
+  "layer": 3,
+  "results": {
+    "id_distances": [
+      6.616e-05,
+      9.65e-05,
+      8.786e-05,
+      7.784e-05,
+      6.36e-05,
+      7.737e-05,
+      0.0001123,
+      0.00031543,
+      7.617e-05,
+      6.568e-05
+    ],
+    "ood_distances": {
+      "fog": 0.00020617,
+      "night": 0.00644326,
+      "noise": 5.168e-05,
+      "blur": 0.00454754,
+      "snow": 0.00062352
+    },
+    "transfer_matrix": {
+      "fog": {
+        "fog": {
+          "detected": true,
+          "threshold": 0.00010309,
+          "test_distance": 0.00020617,
+          "auroc": 0.9
+        },
+        "night": {
+          "detected": true,
+          "threshold": 0.00010309,
+          "test_distance": 0.00644326,
+          "auroc": 1.0
+        },
+        "noise": {
+          "detected": false,
+          "threshold": 0.00010309,
+          "test_distance": 5.168e-05,
+          "auroc": 0.0
+        },
+        "blur": {
+          "detected": true,
+          "threshold": 0.00010309,
+          "test_distance": 0.00454754,
+          "auroc": 1.0
+        },
+        "snow": {
+          "detected": true,
+          "threshold": 0.00010309,
+          "test_distance": 0.00062352,
+          "auroc": 1.0
+        }
+      },
+      "night": {
+        "fog": {
+          "detected": false,
+          "threshold": 0.00322163,
+          "test_distance": 0.00020617,
+          "auroc": 0.9
+        },
+        "night": {
+          "detected": true,
+          "threshold": 0.00322163,
+          "test_distance": 0.00644326,
+          "auroc": 1.0
+        },
+        "noise": {
+          "detected": false,
+          "threshold": 0.00322163,
+          "test_distance": 5.168e-05,
+          "auroc": 0.0
+        },
+        "blur": {
+          "detected": true,
+          "threshold": 0.00322163,
+          "test_distance": 0.00454754,
+          "auroc": 1.0
+        },
+        "snow": {
+          "detected": false,
+          "threshold": 0.00322163,
+          "test_distance": 0.00062352,
+          "auroc": 1.0
+        }
+      },
+      "noise": {
+        "fog": {
+          "detected": true,
+          "threshold": 2.584e-05,
+          "test_distance": 0.00020617,
+          "auroc": 0.9
+        },
+        "night": {
+          "detected": true,
+          "threshold": 2.584e-05,
+          "test_distance": 0.00644326,
+          "auroc": 1.0
+        },
+        "noise": {
+          "detected": true,
+          "threshold": 2.584e-05,
+          "test_distance": 5.168e-05,
+          "auroc": 0.0
+        },
+        "blur": {
+          "detected": true,
+          "threshold": 2.584e-05,
+          "test_distance": 0.00454754,
+          "auroc": 1.0
+        },
+        "snow": {
+          "detected": true,
+          "threshold": 2.584e-05,
+          "test_distance": 0.00062352,
+          "auroc": 1.0
+        }
+      },
+      "blur": {
+        "fog": {
+          "detected": false,
+          "threshold": 0.00227377,
+          "test_distance": 0.00020617,
+          "auroc": 0.9
+        },
+        "night": {
+          "detected": true,
+          "threshold": 0.00227377,
+          "test_distance": 0.00644326,
+          "auroc": 1.0
+        },
+        "noise": {
+          "detected": false,
+          "threshold": 0.00227377,
+          "test_distance": 5.168e-05,
+          "auroc": 0.0
+        },
+        "blur": {
+          "detected": true,
+          "threshold": 0.00227377,
+          "test_distance": 0.00454754,
+          "auroc": 1.0
+        },
+        "snow": {
+          "detected": false,
+          "threshold": 0.00227377,
+          "test_distance": 0.00062352,
+          "auroc": 1.0
+        }
+      },
+      "snow": {
+        "fog": {
+          "detected": false,
+          "threshold": 0.00031176,
+          "test_distance": 0.00020617,
+          "auroc": 0.9
+        },
+        "night": {
+          "detected": true,
+          "threshold": 0.00031176,
+          "test_distance": 0.00644326,
+          "auroc": 1.0
+        },
+        "noise": {
+          "detected": false,
+          "threshold": 0.00031176,
+          "test_distance": 5.168e-05,
+          "auroc": 0.0
+        },
+        "blur": {
+          "detected": true,
+          "threshold": 0.00031176,
+          "test_distance": 0.00454754,
+          "auroc": 1.0
+        },
+        "snow": {
+          "detected": true,
+          "threshold": 0.00031176,
+          "test_distance": 0.00062352,
+          "auroc": 1.0
+        }
+      }
+    },
+    "specific_centroids": {
+      "fog": {
+        "clean_to_mid": 5.132e-05,
+        "corrupt_to_mid": 5.15e-05,
+        "other_distances": {
+          "night": 0.0059703,
+          "noise": 0.00014067,
+          "blur": 0.00408465,
+          "snow": 0.00066203
+        }
+      },
+      "night": {
+        "clean_to_mid": 0.00163823,
+        "corrupt_to_mid": 0.0015862,
+        "other_distances": {
+          "fog": 0.00131488,
+          "noise": 0.00176674,
+          "blur": 0.00319856,
+          "snow": 0.00265551
+        }
+      },
+      "noise": {
+        "clean_to_mid": 1.305e-05,
+        "corrupt_to_mid": 1.323e-05,
+        "other_distances": {
+          "fog": 0.0002566,
+          "night": 0.00653177,
+          "blur": 0.00459522,
+          "snow": 0.00063378
+        }
+      },
+      "blur": {
+        "clean_to_mid": 0.00112927,
+        "corrupt_to_mid": 0.00114602,
+        "other_distances": {
+          "fog": 0.00082207,
+          "night": 0.00462109,
+          "noise": 0.00121528,
+          "snow": 0.0014627
+        }
+      },
+      "snow": {
+        "clean_to_mid": 0.00015539,
+        "corrupt_to_mid": 0.00015676,
+        "other_distances": {
+          "fog": 0.00034821,
+          "night": 0.00698769,
+          "noise": 0.00020373,
+          "blur": 0.00441247
+        }
+      }
+    }
+  }
+}
