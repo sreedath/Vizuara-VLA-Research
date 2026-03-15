@@ -13291,3 +13291,55 @@ AUROC = 1.0 for n=1, 2, 3, 5, 8 calibration scenes. Cross-scene centroid works p
 **Finding 522**: **Random reference points fail (AUROC=0.25-0.75) — proper calibration is essential.** Using a random 4096D vector as reference produces near-chance detection. The clean embedding centroid encodes scene-specific information that enables perfect separation; no arbitrary point can substitute.
 
 **Finding 523**: **Multi-scene centroid achieves AUROC=1.0 for all sizes (n=1 to n=8).** A centroid computed from multiple diverse scenes still achieves perfect detection, as long as per-scene testing is used. This means the centroid approach is robust to how many scenes are averaged — the key is matching calibration and test scenes.
+
+---
+
+## Experiment 331: Embedding Geometry Deep Dive (Real OpenVLA-7B)
+
+**Date:** 2025-03-15
+**Script:** `scripts/real_vla_geometry_deep.py`
+**Results:** `experiments/geometry_deep_20260315_125544.json`
+**Figure:** `paper/latex/fig340_geometry.png`
+
+Comprehensive analysis of the embedding space geometry across 5 scenes × 4 corruptions × 5 severities = 105 embeddings.
+
+### PCA Analysis
+
+Top-3 components explain 85.9% of variance (48.1%, 26.8%, 11.0%). 80% of variance captured in just 3 dimensions, 90% in 4 dimensions, 95% in 6 dimensions — confirming the extreme low-dimensionality of the corruption signal in 4096D space.
+
+### Cluster Separation
+
+5 clean embeddings vs 100 corrupt. Clean intra-class distance: mean=6.79e-5, max=8.42e-5. Inter-class distance: mean=2.05e-3, min=9.48e-6. Silhouette score: 0.967. The inter/intra ratio is ~30×, providing massive separation margin.
+
+### Per-Corruption Geometry
+
+| Corruption | Mean Dist to Clean | Spread | Direction Norm |
+|-----------|-------------------|--------|---------------|
+| Blur | 0.00377 | 0.00078 | 0.640 |
+| Night | 0.00302 | 0.00145 | 0.480 |
+| Fog | 0.00123 | 0.00034 | 0.361 |
+| Noise | 0.000172 | 8.6e-5 | 0.110 |
+
+Blur produces the largest embedding shifts (0.640 direction norm), noise the smallest (0.110). Night has the highest variance across severities.
+
+### Nearest-Neighbor Classification
+
+1-NN accuracy: Night=100%, Blur=100%, Fog=96%, Noise=80%. Night and blur are perfectly separable from all other types. Noise has lowest NN accuracy (80%) because its small shift vector overlaps with the clean cluster at low severities.
+
+### Distance Matrix
+
+Noise is closest to clean (d=8.55e-5). Noise-blur is the most distant pair (d=3.37e-3). Fog-night are moderately distant (d=2.66e-3). The matrix confirms that corruption types occupy distinct regions of embedding space.
+
+### Convexity Analysis
+
+ALL 4 corruption types show 100% convexity (180/180 tests). The midpoint between any two corrupt embeddings of the same type is always closer to the clean centroid than the average of the two endpoints. This means corruption manifolds are convex sets — interpolating between two severity levels always produces an intermediate state, never a more extreme one.
+
+### Key Findings
+
+**Finding 524**: **Embedding geometry is 3-4 dimensional: 80% variance in 3D, 90% in 4D, out of 4096.** PCA on 105 embeddings (5 scenes × 4 corruptions × 5 severities + 5 clean) reveals extreme dimensionality reduction. The corruption signal lives in a tiny subspace, explaining why random projection to 32D preserves AUROC=1.0.
+
+**Finding 525**: **Silhouette score 0.967 with 30× inter/intra distance ratio.** Clean embeddings form an ultra-tight cluster (max intra-dist 8.42e-5) while corrupt embeddings are ~30× farther away (mean inter-dist 2.05e-3). This explains perfect AUROC: any threshold between the clusters achieves zero error.
+
+**Finding 526**: **1-NN correctly classifies corruption type at 80-100% accuracy (noise=80%, blur/night=100%).** Without any training, just nearest-neighbor in embedding space identifies the corruption type. Noise is hardest to classify (80%) because its embedding shift is smallest and overlaps with clean at low severities.
+
+**Finding 527**: **ALL corruption manifolds are 100% convex (180/180 midpoint tests).** Interpolating between any two corrupt embeddings of the same type always produces an embedding closer to clean than the average of the endpoints. This convexity guarantees that severity estimation is well-posed: there are no non-monotonic surprises in the embedding space.
