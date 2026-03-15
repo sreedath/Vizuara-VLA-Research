@@ -1,0 +1,195 @@
+{
+  "experiment": "false_positive_analysis",
+  "experiment_number": 225,
+  "timestamp": "20260315_063035",
+  "n_cal": 10,
+  "n_test": 8,
+  "benign_types": [
+    "brightness_up",
+    "brightness_down",
+    "contrast",
+    "jpeg_q50",
+    "jpeg_q10",
+    "slight_blur",
+    "sharpen",
+    "flip_h"
+  ],
+  "corruption_types": [
+    "fog",
+    "night",
+    "blur",
+    "noise"
+  ],
+  "benign_results": {
+    "brightness_up": {
+      "L1": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 9e-05,
+        "max_dist": 9e-05,
+        "id_max": -0.0,
+        "would_false_alarm": false
+      },
+      "L3": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 0.000128,
+        "max_dist": 0.000128,
+        "id_max": 0.0,
+        "would_false_alarm": true
+      }
+    },
+    "brightness_down": {
+      "L1": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 8.2e-05,
+        "max_dist": 8.2e-05,
+        "id_max": -0.0,
+        "would_false_alarm": false
+      },
+      "L3": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 0.000188,
+        "max_dist": 0.000188,
+        "id_max": 0.0,
+        "would_false_alarm": true
+      }
+    },
+    "contrast": {
+      "L1": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 2.3e-05,
+        "max_dist": 2.3e-05,
+        "id_max": -0.0,
+        "would_false_alarm": false
+      },
+      "L3": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 5e-05,
+        "max_dist": 5e-05,
+        "id_max": 0.0,
+        "would_false_alarm": false
+      }
+    },
+    "jpeg_q50": {
+      "L1": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 9.2e-05,
+        "max_dist": 9.2e-05,
+        "id_max": -0.0,
+        "would_false_alarm": false
+      },
+      "L3": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 0.000125,
+        "max_dist": 0.000125,
+        "id_max": 0.0,
+        "would_false_alarm": true
+      }
+    },
+    "jpeg_q10": {
+      "L1": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 0.000255,
+        "max_dist": 0.000255,
+        "id_max": -0.0,
+        "would_false_alarm": true
+      },
+      "L3": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 0.000354,
+        "max_dist": 0.000354,
+        "id_max": 0.0,
+        "would_false_alarm": true
+      }
+    },
+    "slight_blur": {
+      "L1": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 6.2e-05,
+        "max_dist": 6.2e-05,
+        "id_max": -0.0,
+        "would_false_alarm": false
+      },
+      "L3": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 9.9e-05,
+        "max_dist": 9.9e-05,
+        "id_max": 0.0,
+        "would_false_alarm": false
+      }
+    },
+    "sharpen": {
+      "L1": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 0.000112,
+        "max_dist": 0.000112,
+        "id_max": -0.0,
+        "would_false_alarm": true
+      },
+      "L3": {
+        "auroc_vs_clean": 1.0,
+        "mean_dist": 0.000137,
+        "max_dist": 0.000137,
+        "id_max": 0.0,
+        "would_false_alarm": true
+      }
+    },
+    "flip_h": {
+      "L1": {
+        "auroc_vs_clean": 0.5,
+        "mean_dist": -0.0,
+        "max_dist": -0.0,
+        "id_max": -0.0,
+        "would_false_alarm": false
+      },
+      "L3": {
+        "auroc_vs_clean": 0.5,
+        "mean_dist": 0.0,
+        "max_dist": 0.0,
+        "id_max": 0.0,
+        "would_false_alarm": false
+      }
+    }
+  },
+  "corruption_results": {
+    "fog": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.000424
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.000698
+      }
+    },
+    "night": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.002066
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.003403
+      }
+    },
+    "blur": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.000581
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.001068
+      }
+    },
+    "noise": {
+      "L1": {
+        "auroc": 1.0,
+        "mean_dist": 0.002262
+      },
+      "L3": {
+        "auroc": 1.0,
+        "mean_dist": 0.004354
+      }
+    }
+  }
+}

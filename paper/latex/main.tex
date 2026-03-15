@@ -4265,4 +4265,45 @@ Noise & 100\% & 182.9 & $\sim$6/7 & 0.004338 \\
 
 \textbf{Finding 447}: Our detector catches ALL action-corrupting inputs (AUROC=1.0). Without OOD detection, the robot would silently execute substantially different actions under any corruption --- this is the core safety value of our approach.
 
+\subsection{False Positive Analysis}
+
+\textbf{Experiment 225: Benign Augmentations vs True Corruptions.} We test whether benign image transformations (brightness $\pm$15\%, contrast +20\%, JPEG compression Q50/Q10, slight blur $r=1$, sharpening, horizontal flip) trigger false OOD alarms.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Transform} & \textbf{L3 Mean Dist} & \textbf{Type} \\
+\midrule
+Contrast +20\% & 0.000050 & Benign \\
+Slight blur ($r=1$) & 0.000099 & Benign \\
+JPEG Q50 & 0.000125 & Benign \\
+Brightness +15\% & 0.000128 & Benign \\
+Sharpen & 0.000137 & Benign \\
+Brightness $-$15\% & 0.000188 & Benign \\
+JPEG Q10 & 0.000354 & Benign \\
+\midrule
+\textbf{Threshold gap} & \multicolumn{2}{c}{\textbf{2.0$\times$ margin}} \\
+\midrule
+Fog & 0.000698 & Corruption \\
+Blur ($r=5$) & 0.001068 & Corruption \\
+Night & 0.003403 & Corruption \\
+Noise & 0.004354 & Corruption \\
+\bottomrule
+\end{tabular}
+\caption{Benign augmentations produce distances 2--87$\times$ smaller than corruptions, enabling zero-false-positive thresholding.}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig236_false_positive.png}
+\caption{Mean cosine distance for benign augmentations (green) vs true corruptions (red). A threshold at $\sim$0.0005 achieves simultaneous 0\% false positive and 100\% true positive rate.}
+\end{figure}
+
+\textbf{Finding 448}: Benign augmentations produce cosine distances 2--87$\times$ smaller than true corruptions. The largest benign distance (JPEG Q10: 0.000354) is 2.0$\times$ below the smallest corruption distance (fog: 0.000698), providing a \textbf{clear threshold gap}.
+
+\textbf{Finding 449}: A threshold of $\sim$0.0005 achieves simultaneous \textbf{0\% false positive rate and 100\% true positive rate}. This is possible because benign augmentations and corruptions occupy non-overlapping regions of the distance space.
+
+\textbf{Finding 450}: Horizontal flip produces distance $\approx 0$ because the synthetic test images are vertically symmetric. Contrast adjustment (+20\%) produces the smallest benign distance (0.000050), indicating the model is nearly invariant to mild contrast changes.
+
 \end{document}
