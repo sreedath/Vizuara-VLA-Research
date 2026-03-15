@@ -2530,4 +2530,40 @@ We extend the cross-prompt analysis (Experiment~122) to 8 diverse prompts spanni
 
 The stability of the separation ratio across prompts ($2.3$--$2.8$) reveals a structural property of the VLA embedding space: regardless of the task prompt, ID and OOD inputs are mapped to regions with a consistent geometric relationship. This ratio is determined by the visual features, not the language features, of the input. The semantic clustering of centroids (stop/park/reverse forming a tight group at 0.82--0.85 similarity) confirms that the VLA has learned meaningful prompt semantics---yet this semantic organization does not compromise OOD detection because the ID-OOD separation axis is orthogonal to the prompt-conditioning axis.
 
+\subsection{Action Token Position Analysis}
+\label{app:action_position}
+
+\textbf{Finding 179: The best single action dimension (x\_translation, AUROC$=$0.889) and combined 7-dim action vector (AUROC$=$0.787) are far inferior to embedding-based detection (AUROC$=$1.000), confirming that action space is a lossy projection that discards OOD signal.}
+
+\textbf{Finding 180: All 7 action dimensions shift negative under OOD, with x\_translation shifting $-40.5$ bins. OOD inputs systematically produce more conservative, near-neutral actions.}
+
+We test whether individual or combined action token values can serve as OOD detectors, comparing each of the 7 action dimensions and their L2 combination to the embedding-based detector (Figure~\ref{fig:action_position}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig122_action_token_position.png}
+\caption{\textbf{Action token analysis.} (a) Per-dimension AUROC: x\_translation is best at 0.889; gripper is at chance (0.484). Combined 7-dim achieves only 0.787. (b) ID vs OOD profiles: all dimensions shift toward neutral under OOD. (c) Per-dimension shift: x\_translation ($-40.5$) and y\_translation ($-43.2$) show the largest shifts.}
+\label{fig:action_position}
+\end{figure}
+
+The comparison between action-based and embedding-based OOD detection is stark: $d{=}1.1$ vs $d{\approx}50$---a $45\times$ difference in separation strength. This gap arises because the 7-dimensional action space is a highly compressed projection of the 4096-dimensional hidden state. The model must project the rich, OOD-discriminative embedding into a narrow action space optimized for control, not for uncertainty quantification. This information bottleneck is precisely why monitoring hidden states rather than outputs is essential for OOD detection in VLA systems.
+
+\subsection{Hidden State Norm Analysis}
+\label{app:norm_analysis}
+
+\textbf{Finding 181: The final layer (L32) norm achieves AUROC$=$0.963 ($d{=}2.6$) for OOD detection---a useful signal, but $20\times$ weaker than cosine distance ($d{=}52$), confirming that the OOD signal is primarily directional, not in the magnitude.}
+
+\textbf{Finding 182: Hidden state norms grow monotonically from 0.9 (L0) to 112.8 (L28) then drop to 75.5 at L32. OOD inputs have 14\% larger final-layer norms (86.1 vs 75.5), the only layer with strong norm separation.}
+
+We test whether hidden state norms alone---without centroid reference---can serve as OOD detectors across 7 layers (Figure~\ref{fig:norms}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig123_hidden_state_norms.png}
+\caption{\textbf{Norm analysis.} (a) ID vs OOD norms across layers: norms grow with depth, with OOD diverging only at layers 16 and 32. (b) Norm-based AUROC: most layers are at chance; only L32 achieves 0.963. (c) Comparison: norm-based methods (AUROC$\leq$0.963) are far weaker than cosine distance (AUROC$=$1.000).}
+\label{fig:norms}
+\end{figure}
+
+This result decomposes the OOD signal into magnitude and direction components. The norm captures only the magnitude component, explaining why it achieves $d{=}2.6$ compared to cosine distance's $d{=}52$. Cosine distance is invariant to norm and captures the directional shift exclusively, which accounts for $95\%$ of the total OOD signal. The practical implication is that while norms provide a crude OOD signal requiring zero calibration (no centroid needed), cosine distance is overwhelmingly superior and should always be preferred when even a single calibration sample is available.
+
 \end{document}

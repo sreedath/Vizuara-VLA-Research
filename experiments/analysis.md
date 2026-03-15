@@ -6028,3 +6028,85 @@ Do different text prompts create qualitatively different embedding landscapes? H
 4. **Separation ratio is remarkably stable**: All 8 prompts achieve ratio ∈ [2.3, 2.8], suggesting a fundamental geometric property of the VLA embedding space — the ID-OOD gap is always ~2.5× the ID cluster radius.
 
 5. **D-prime varies 2× across prompts**: From 32.7 (turn_left) to 67.4 (park). However, all are far above the threshold for perfect detection. The variation reflects differences in ID cluster tightness rather than detection quality.
+
+---
+
+## Finding 130: Action Token Position OOD Discrimination (Experiment 136)
+
+### Research Question
+Can individual action token dimensions discriminate ID from OOD? Which of the 7 action dimensions carries the strongest OOD signal?
+
+### Setup
+- **Model**: OpenVLA-7B (bfloat16, NVIDIA A40)
+- **Data**: 30 ID (15 highway + 15 urban) + 60 OOD (15 each: noise, indoor, twilight, snow)
+- **Metric**: For each dim, AUROC using |value - ID_mean| as OOD score; also combined 7-dim L2
+
+### Results
+
+| Dimension | ID Mean±Std | OOD Mean±Std | Shift | AUROC | D-prime |
+|-----------|-----------|-------------|-------|-------|---------|
+| x_trans | 168.5±17.0 | 128.0±22.1 | -40.5 | 0.889 | 2.2 |
+| y_trans | 150.9±38.6 | 107.8±42.6 | -43.2 | 0.743 | 0.9 |
+| z_trans | 159.9±19.1 | 140.0±41.5 | -19.9 | 0.709 | 1.7 |
+| x_rot | 133.5±27.9 | 128.0±25.4 | -5.4 | 0.612 | 0.1 |
+| y_rot | 122.8±17.6 | 109.2±28.9 | -13.6 | 0.660 | 0.9 |
+| z_rot | 121.8±19.3 | 110.3±21.3 | -11.5 | 0.667 | 0.5 |
+| gripper | 104.8±54.8 | 76.2±60.1 | -28.6 | 0.484 | 0.2 |
+| **Combined 7-dim** | — | — | — | **0.787** | **1.1** |
+
+### Key Insights
+
+1. **Action-based OOD detection is poor**: Even the best single dimension (x_translation, AUROC=0.889) is far below the embedding-based detector (AUROC=1.000). Combined 7-dim achieves only 0.787.
+
+2. **x_translation carries the strongest action signal**: OOD shifts x_translation by -40.5 bins (from 168.5 to 128.0). This is consistent with Exp 126 which found OOD biases x_translation toward neutral.
+
+3. **All OOD shifts are negative**: Every dimension shifts toward lower values (toward neutral 128 or below). OOD inputs produce more conservative, neutral actions.
+
+4. **Gripper is uninformative (AUROC=0.484)**: The gripper dimension has high variance for both ID and OOD, making it worse than random chance.
+
+5. **Key comparison**: Embedding-based detection (d≈50, AUROC=1.000) vs action-based detection (d=1.1, AUROC=0.787). The hidden state contains 50× more OOD signal than the action output. This is because the action space is a lossy 7-dimensional projection of the 4096-dimensional embedding.
+
+---
+
+## Finding 131: Hidden State Norm Analysis (Experiment 137)
+
+### Research Question
+Can the L2 norm of hidden state vectors (without centroid reference) distinguish ID from OOD? How does norm discrimination vary across layers?
+
+### Setup
+- **Model**: OpenVLA-7B (bfloat16, NVIDIA A40)
+- **Data**: 20 ID + 40 OOD across 6 categories
+- **Layers**: 0, 3, 8, 16, 24, 28, 32
+- **Methods**: Single-layer norm, multi-layer norm vector, layer 3/32 norm ratio
+
+### Results
+
+| Layer | ID Norm | OOD Norm | AUROC | D-prime | Direction |
+|-------|---------|----------|-------|---------|-----------|
+| 0 | 0.9±0.0 | 0.9±0.0 | 0.500 | 0.00 | — |
+| 3 | 8.0±0.0 | 8.0±0.1 | 0.506 | 0.05 | — |
+| 8 | 19.3±0.3 | 19.4±0.5 | 0.500 | 0.49 | — |
+| 16 | 47.2±0.4 | 47.9±0.8 | 0.761 | 1.80 | Higher |
+| 24 | 85.3±1.1 | 85.3±0.9 | 0.530 | 0.05 | — |
+| 28 | 112.8±3.4 | 111.7±2.6 | 0.601 | 0.35 | Lower |
+| **32** | **75.5±4.1** | **86.1±4.7** | **0.963** | **2.60** | **Higher** |
+
+**Multi-layer methods:**
+| Method | AUROC | D-prime |
+|--------|-------|---------|
+| Best single layer (L32) | 0.963 | 2.60 |
+| Multi-layer norm vector | 0.914 | 3.54 |
+| L3/L32 norm ratio | 0.943 | 2.17 |
+| **Cosine distance (baseline)** | **1.000** | **52.0** |
+
+### Key Insights
+
+1. **Norms grow monotonically with depth**: From 0.9 (layer 0) to 112.8 (layer 28), then drop to 75.5 at the final layer — a characteristic pattern of transformer norm dynamics.
+
+2. **Layer 32 norm is the best single scalar OOD signal**: AUROC=0.963, d=2.60. OOD inputs have 14% larger norms at the final layer (86.1 vs 75.5).
+
+3. **Most layers are norm-uninformative**: Layers 0-8 are at chance. Only layers 16 and 32 show meaningful separation, with a curious pattern: layer 16 has OOD slightly higher, layer 28 slightly lower, then layer 32 sharply higher.
+
+4. **Multi-layer norm vector doesn't help**: AUROC=0.914 is actually worse than layer 32 alone (0.963). The uninformative layers add noise.
+
+5. **Norms are weak compared to cosine distance**: Even the best norm-based method (d=2.60) is 20× weaker than cosine distance (d=52.0). The OOD signal is primarily directional, not in the magnitude. Norms capture only the magnitude component.
