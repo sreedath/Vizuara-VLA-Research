@@ -6679,4 +6679,25 @@ We compute deployment-ready safety bounds using conformal prediction, concentrat
 
 \textbf{Finding 863}: \textbf{Fog on white IS detectable ($d = 6.8 \times 10^{-5}$), correcting a previously assumed limitation.} The 60\% intensity cap in the fog model prevents true convergence to white.
 
+%% ============================================================
+\subsection{Experiment 353: Metric Space Geometry}
+\label{sec:exp353}
+
+We analyze the geometric structure of the embedding space: metric properties, norm distributions, corruption directions, and the geometry of the clean region.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig362_geometry.png}
+\caption{\textbf{Experiment 353}: Metric space geometry. Top-left: corruption direction angles (fog$\leftrightarrow$blur closest at 62°). Top-right: norms nearly unchanged by corruption. Bottom-left: clean diameter exceeds noise minimum by $3\times$. Bottom-right: cosine and Euclidean are highly correlated ($\rho > 0.95$).}
+\label{fig:exp353}
+\end{figure}
+
+\textbf{Finding 864}: \textbf{Cosine distance violates the triangle inequality in 2\% of triples --- not a proper metric.} While detection uses only pairwise distances (unaffected), geometric reasoning about transitivity can fail in this space.
+
+\textbf{Finding 865}: \textbf{Corruption preserves norms (ratio 0.994--1.010) --- the signal is purely directional.} Cosine distance is optimal because corruption \emph{rotates} embeddings on the hypersphere, not rescales them.
+
+\textbf{Finding 866}: \textbf{Clean diameter ($2.3 \times 10^{-4}$) is $3\times$ the minimum noise distance --- noise falls within the clean region.} This is the geometric origin of noise's weak detection margin. All other corruption types are cleanly separated (ratio $< 1$).
+
+\textbf{Finding 867}: \textbf{Corruption directions are near-orthogonal (80--115°) except fog$\leftrightarrow$blur at 62°.} This angular separation enables perfect multiclass classification and validates PCA-based compression.
+
 \end{document}

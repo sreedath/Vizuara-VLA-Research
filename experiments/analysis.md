@@ -14504,3 +14504,58 @@ Rigorous statistical analysis: bootstrap AUROC CIs, detection power vs severity,
 **Finding 610**: **Identified 7 failure modes: fog/blur vanish at micro-severity (< 0.01), night/blur on black produce d=0.** These are principled limitations: when the corruption endpoint IS the clean image (black→night, black→blur, white→fog at extreme), detection is impossible. All failures occur at ≤ 1% severity.
 
 **Finding 611**: **Fog on white IS detectable (d=6.8e-5) — correcting a previously assumed limitation.** While fog at near-white was thought undetectable, the formal test shows it produces a non-zero signal, likely due to the 60% intensity cap in our fog model.
+
+---
+
+## Experiment 353: Metric Space Geometry
+
+**Date**: 2026-03-15
+**Script**: `scripts/real_vla_metric_geometry.py`
+**Status**: Complete
+
+### Setup
+- 20 scenes, 4 corruption types at severity 0.5
+- Triangle inequality verification (150 triples)
+- Embedding norm analysis
+- Corruption direction angles (pairwise)
+- Euclidean vs cosine comparison
+- Clean region geometry (diameter, centroid)
+
+### Results
+
+#### Triangle Inequality
+- **3/150 violations (2%)** — cosine distance is NOT a proper metric!
+- This is a known property: cosine distance only satisfies triangle inequality for non-negative vectors
+
+#### Embedding Norms
+- Clean: 8.295 ± 0.015
+- Corruption barely changes norms (ratio 0.994-1.010)
+- Signal is PURELY directional, not magnitude-based
+
+#### Corruption Directions
+- **fog↔blur: 62.3°** (closest pair)
+- night↔blur: 81.6°
+- night↔noise: 94.3° (near-orthogonal)
+- fog↔noise: 114.2° (near-obtuse)
+- noise↔blur: 106.9°
+- fog↔night: 107.6°
+
+#### Euclidean vs Cosine
+- Spearman ρ = 0.953-0.999 (nearly identical rankings)
+- Cosine is preferred: smaller, more interpretable values
+
+#### Clean Region Geometry
+- Clean diameter: 0.000229
+- Mean pairwise: 0.000083
+- **Noise is problematic: clean diameter (0.000229) is 3.08× the min noise corruption distance (7.4e-5)!**
+- Fog: 0.27× (safely separated), Night: 0.13×, Blur: 0.05×
+
+### Key Findings
+
+**Finding 612**: **Cosine distance violates the triangle inequality in 2% of triples — it is NOT a proper metric.** While this doesn't affect binary detection (which only uses pairwise distances), it means geometric reasoning (e.g., "if A is far from B and B is far from C, then A is far from C") can fail.
+
+**Finding 613**: **Corruption preserves embedding norms (ratio 0.994-1.010) — the signal is purely directional.** This confirms cosine distance is the optimal metric: corruption ROTATES embeddings on the hypersphere rather than rescaling them. L2 norm carries essentially zero corruption information.
+
+**Finding 614**: **The clean diameter (0.000229) is 3.08× the minimum noise corruption distance — noise falls WITHIN the clean region for per-centroid detection.** This is the geometric explanation for why noise has the smallest detection margin. All other corruptions have diameter ratios < 1 (cleanly separated).
+
+**Finding 615**: **Fog and blur directions are closest at 62.3°; most corruption pairs are near-orthogonal (80-115°).** This angular structure enables the 100% multiclass classification accuracy — the corruptions are geometrically well-separated in direction space.
