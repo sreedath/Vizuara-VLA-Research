@@ -6302,4 +6302,27 @@ We derive formal statistical guarantees using 15 scenes, computing PAC bounds, H
 
 \textbf{Finding 795}: \textbf{SPRT decides OOD in 1 frame: log-LR $= 269$--$476{,}000$ vs threshold $4.6$.} The Sequential Probability Ratio Test rejects $H_0$ (clean) in a single observation for all 20 test cases. The log-likelihood ratios exceed the Wald threshold by $58$--$103{,}000\times$ --- the statistical evidence is overwhelming from frame one.
 
+%% ============================================================
+\subsection{Experiment 336: Deployment Stress Testing}
+\label{sec:exp336}
+
+We simulate extreme deployment scenarios: rapid corruption switching, gradual degradation, intermittent corruption, multi-type combinations, adversarial orderings, and latency benchmarks.
+
+\textbf{Setup.} We run 14-frame rapid switching sequences, 20-step gradual degradation, 30-frame intermittent corruption (30\% random rate), 6 multi-type combinations, 4 corruption orderings, and 20-trial latency benchmarks.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{fig345_stress.png}
+\caption{\textbf{Figure~345: Deployment stress testing.} (A)~14/14 rapid switching correct with zero latency. (B)~Gradual degradation detected at 5.3\% severity. (C)~30-frame intermittent: TP=12, FP=0, FN=0, TN=18. (D)~All multi-corruption combinations detected. (E)~Ordering varies distance 12$\times$ but all detected. (F)~7.2 FPS with $<$1ms overhead.}
+\label{fig:stress}
+\end{figure}
+
+\textbf{Finding 796}: \textbf{14/14 rapid-switching frames correctly classified with zero latency.} The detector responds instantaneously to corruption onset and offset. Clean$\to$corrupt and corrupt$\to$clean transitions are detected in the \emph{same frame}, confirming the zero-hysteresis property (Experiment~325).
+
+\textbf{Finding 797}: \textbf{100\% sensitivity and specificity on 30-frame intermittent sequence.} Under realistic intermittent conditions (30\% random corruption rate, varying types and severities), the detector achieves TP=12, FP=0, FN=0, TN=18 --- zero errors across 30 decisions.
+
+\textbf{Finding 798}: \textbf{All multi-corruption combinations detected; ordering varies distance 12$\times$.} Applying corruptions in different orders changes cosine distance by up to 12$\times$ (consistent with non-commutative algebra), but every combination produces $d > 0$. The detector is robust to composition and ordering.
+
+\textbf{Finding 799}: \textbf{Full pipeline at 7.2 FPS; detection overhead $<$1ms.} The bottleneck is model inference (139.8ms). The distance computation adds $<$1ms, confirming negligible cost. The P95 latency of 193.1ms supports real-time deployment for manipulation tasks.
+
 \end{document}

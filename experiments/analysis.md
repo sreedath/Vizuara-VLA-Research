@@ -13609,3 +13609,57 @@ Severity channel capacity: Blur=7.1 bits (128+ levels), Night=5.7, Fog=5.5, Nois
 **Finding 542**: **Severity estimation channel capacity: 4.0-7.1 bits (16-128+ distinguishable levels).** The distance-to-severity mapping carries substantial information: blur supports 7.1 bits (128+ severity levels), while noise supports 4.0 bits (16 levels). This enables fine-grained severity estimation beyond binary detection.
 
 **Finding 543**: **SPRT decides OOD in 1 frame for all 20 test cases (log LR = 269-476k).** The Sequential Probability Ratio Test, which balances Type I and Type II errors, rejects the clean hypothesis in a single observation. The log-likelihood ratios exceed the threshold by 58-103,000× — the statistical evidence is overwhelming from a single frame.
+
+---
+
+## Experiment 336: Deployment Stress Testing (Real OpenVLA-7B)
+
+**Date:** 2025-03-15
+**Script:** `scripts/real_vla_deployment_stress.py`
+**Results:** `experiments/deploy_stress_20260315_131546.json`
+**Figure:** `paper/latex/fig345_stress.png`
+
+Simulates extreme deployment scenarios with rapid switching, gradual degradation, intermittent corruption, and multi-type combinations.
+
+### Rapid Corruption Switching
+
+14/14 frames correctly classified. Clean frames produce d=0.0; corrupt frames produce d>0. The detector exhibits ZERO switching latency — it responds instantaneously to corruption onset and offset.
+
+### Gradual Degradation
+
+Fog first detected at 5.3% severity. All corruption types detectable before they cause significant action changes.
+
+### Intermittent Corruption
+
+30-frame sequence with 30% random corruption rate:
+- TP=12, FP=0, FN=0, TN=18
+- Sensitivity=1.000, Specificity=1.000
+- PERFECT detection under random intermittent corruption.
+
+### Multi-Type Simultaneous
+
+ALL combinations detected (d>0):
+- Night+blur strongest (d=6.59e-3)
+- Fog+noise weakest but still detected (d=2.41e-4)
+- All 4 simultaneously: d=5.67e-3
+
+### Corruption Ordering
+
+Order of application matters (12× distance variation):
+- noise→fog→blur→night: d=5.01e-3 (strongest)
+- night→blur→fog→noise: d=4.16e-4 (weakest)
+But ALL orderings detected.
+
+### Latency
+
+Mean=139.8ms (7.2 FPS), P95=193.1ms. The detection computation adds <1ms overhead; bottleneck is model inference.
+
+### Key Findings
+
+**Finding 544**: **14/14 rapid-switching frames correctly classified with zero latency.** The detector responds instantaneously to corruption onset and offset. Clean→corrupt and corrupt→clean transitions are detected in the same frame, with no hysteresis or adaptation delay.
+
+**Finding 545**: **100% sensitivity and specificity on 30-frame intermittent corruption sequence.** Under realistic intermittent conditions (30% random corruption rate with varying types and severities), the detector achieves TP=12, FP=0, FN=0, TN=18 — zero errors of any kind.
+
+**Finding 546**: **All multi-corruption combinations detected; ordering produces 12× distance variation but no false negatives.** Applying corruptions in different orders changes the cosine distance by up to 12×, consistent with the non-commutative corruption algebra (Experiment 323), but the detector catches every combination regardless of order.
+
+**Finding 547**: **Full pipeline runs at 7.2 FPS with <1ms detection overhead.** The bottleneck is model inference (139.8ms mean). The actual distance computation adds <1ms, confirming negligible computational cost for real-time deployment.
