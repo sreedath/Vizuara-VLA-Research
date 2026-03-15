@@ -1,0 +1,369 @@
+{
+  "n_scenes": 8,
+  "emb_dim": 4096,
+  "metric_comparison": {
+    "0.001": {
+      "fog": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.002986726044154578,
+        "mean_euclidean_ood": 0.6548161896464466,
+        "mean_mahal_ood": 17.877673668450463
+      },
+      "night": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.00840618264442304,
+        "mean_euclidean_ood": 1.1179130198303464,
+        "mean_mahal_ood": 31.384351840342198
+      },
+      "noise": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.0001967353000634775,
+        "mean_euclidean_ood": 0.16669881673587322,
+        "mean_mahal_ood": 4.747684436459343
+      },
+      "blur": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.006799003484314628,
+        "mean_euclidean_ood": 0.9698501029026863,
+        "mean_mahal_ood": 29.645496427116967
+      }
+    },
+    "0.01": {
+      "fog": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.002986726044154578,
+        "mean_euclidean_ood": 0.6548161896464466,
+        "mean_mahal_ood": 6.2863933556780855
+      },
+      "night": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.00840618264442304,
+        "mean_euclidean_ood": 1.1179130198303464,
+        "mean_mahal_ood": 10.803070879152035
+      },
+      "noise": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.0001967353000634775,
+        "mean_euclidean_ood": 0.16669881673587322,
+        "mean_mahal_ood": 1.6313035639491018
+      },
+      "blur": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.006799003484314628,
+        "mean_euclidean_ood": 0.9698501029026863,
+        "mean_mahal_ood": 9.615661521048514
+      }
+    },
+    "0.1": {
+      "fog": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.002986726044154578,
+        "mean_euclidean_ood": 0.6548161896464466,
+        "mean_mahal_ood": 2.060298210442289
+      },
+      "night": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.00840618264442304,
+        "mean_euclidean_ood": 1.1179130198303464,
+        "mean_mahal_ood": 3.5201113538605466
+      },
+      "noise": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.0001967353000634775,
+        "mean_euclidean_ood": 0.16669881673587322,
+        "mean_mahal_ood": 0.5258329786010221
+      },
+      "blur": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.006799003484314628,
+        "mean_euclidean_ood": 0.9698501029026863,
+        "mean_mahal_ood": 3.063707307380226
+      }
+    },
+    "1.0": {
+      "fog": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.002986726044154578,
+        "mean_euclidean_ood": 0.6548161896464466,
+        "mean_mahal_ood": 0.6544780962819563
+      },
+      "night": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.00840618264442304,
+        "mean_euclidean_ood": 1.1179130198303464,
+        "mean_mahal_ood": 1.1174243565529198
+      },
+      "noise": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.0001967353000634775,
+        "mean_euclidean_ood": 0.16669881673587322,
+        "mean_mahal_ood": 0.16665649518557912
+      },
+      "blur": {
+        "cosine_auroc": 1.0,
+        "euclidean_auroc": 1.0,
+        "mahalanobis_auroc": 1.0,
+        "mean_cosine_ood": 0.006799003484314628,
+        "mean_euclidean_ood": 0.9698501029026863,
+        "mean_mahal_ood": 0.9697455009815442
+      }
+    }
+  },
+  "dimension_analysis": {
+    "total_variance": 0.007351192661840145,
+    "mean_variance": 1.7947247709570666e-06,
+    "max_variance_dim": 1512,
+    "max_variance": 0.0005950927734375,
+    "min_variance_dim": 706,
+    "min_variance": 7.165363058447838e-08,
+    "top20_var_dims": [
+      1512,
+      1076,
+      339,
+      2393,
+      2298,
+      2158,
+      3135,
+      3431,
+      2533,
+      588,
+      490,
+      3209,
+      575,
+      2350,
+      4071,
+      2789,
+      1404,
+      1415,
+      216,
+      2927
+    ],
+    "variance_fog_shift_correlation": 0.3048478646309378,
+    "variance_night_shift_correlation": 0.391796646820979,
+    "pct_variance_top10": 16.31037424071026,
+    "pct_variance_top50": 21.751315465130737
+  },
+  "pca_detection": {
+    "2": {
+      "auroc_per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.578125,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.89453125,
+      "variance_explained": 0.5762380269902
+    },
+    "5": {
+      "auroc_per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 0.6875,
+        "blur": 1.0
+      },
+      "mean_auroc": 0.921875,
+      "variance_explained": 0.8728545518943738
+    }
+  },
+  "svd_spectrum": {
+    "singular_values": [
+      0.1541986598083108,
+      0.10055380329549779,
+      0.08022421973527004,
+      0.07932199073712234,
+      0.06867297957286905,
+      0.06602432051101913,
+      0.055840438589447684,
+      6.981615409229941e-17
+    ],
+    "explained_variance_ratio": [
+      0.4043089975403946,
+      0.17192902944980537,
+      0.10943675618688403,
+      0.1069890714326129,
+      0.08019069728467686,
+      0.07412421187058416,
+      0.053021236235042145,
+      8.288273067481345e-32
+    ],
+    "cumulative_variance": [
+      0.4043089975403946,
+      0.5762380269902,
+      0.685674783177084,
+      0.7926638546096969,
+      0.8728545518943738,
+      0.9469787637649579,
+      1.0,
+      1.0
+    ],
+    "effective_rank": 7,
+    "top1_pct": 40.43089975403946
+  },
+  "severity_comparison": {
+    "0.1": {
+      "per_corruption": {
+        "fog": {
+          "cosine_auroc": 0.859375,
+          "euclidean_auroc": 0.859375,
+          "mahalanobis_auroc": 0.921875
+        },
+        "night": {
+          "cosine_auroc": 0.984375,
+          "euclidean_auroc": 0.984375,
+          "mahalanobis_auroc": 1.0
+        },
+        "noise": {
+          "cosine_auroc": 0.5625,
+          "euclidean_auroc": 0.546875,
+          "mahalanobis_auroc": 0.578125
+        },
+        "blur": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        }
+      },
+      "mean_cosine": 0.8515625,
+      "mean_euclidean": 0.84765625,
+      "mean_mahalanobis": 0.875
+    },
+    "0.25": {
+      "per_corruption": {
+        "fog": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "night": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "noise": {
+          "cosine_auroc": 0.609375,
+          "euclidean_auroc": 0.625,
+          "mahalanobis_auroc": 0.65625
+        },
+        "blur": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        }
+      },
+      "mean_cosine": 0.90234375,
+      "mean_euclidean": 0.90625,
+      "mean_mahalanobis": 0.9140625
+    },
+    "0.5": {
+      "per_corruption": {
+        "fog": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "night": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "noise": {
+          "cosine_auroc": 0.703125,
+          "euclidean_auroc": 0.6875,
+          "mahalanobis_auroc": 0.75
+        },
+        "blur": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        }
+      },
+      "mean_cosine": 0.92578125,
+      "mean_euclidean": 0.921875,
+      "mean_mahalanobis": 0.9375
+    },
+    "0.75": {
+      "per_corruption": {
+        "fog": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "night": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "noise": {
+          "cosine_auroc": 0.921875,
+          "euclidean_auroc": 0.921875,
+          "mahalanobis_auroc": 0.953125
+        },
+        "blur": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        }
+      },
+      "mean_cosine": 0.98046875,
+      "mean_euclidean": 0.98046875,
+      "mean_mahalanobis": 0.98828125
+    },
+    "1.0": {
+      "per_corruption": {
+        "fog": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "night": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "noise": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        },
+        "blur": {
+          "cosine_auroc": 1.0,
+          "euclidean_auroc": 1.0,
+          "mahalanobis_auroc": 1.0
+        }
+      },
+      "mean_cosine": 1.0,
+      "mean_euclidean": 1.0,
+      "mean_mahalanobis": 1.0
+    }
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "n_scenes_per_set": 5,
+  "cross_set_transfer": {
+    "calib_A_test_A": {
+      "auroc_per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0,
+      "mean_clean_dist": 5.809217572343428e-05
+    },
+    "calib_A_test_B": {
+      "auroc_per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0,
+      "mean_clean_dist": 5.115440470790933e-05
+    },
+    "calib_A_test_C": {
+      "auroc_per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0,
+      "mean_clean_dist": 4.2182289153736006e-05
+    },
+    "calib_B_test_A": {
+      "auroc_per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0,
+      "mean_clean_dist": 7.53001673480913e-05
+    },
+    "calib_B_test_B": {
+      "auroc_per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0,
+      "mean_clean_dist": 3.3973365225992144e-05
+    },
+    "calib_B_test_C": {
+      "auroc_per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0,
+      "mean_clean_dist": 4.831170810242203e-05
+    },
+    "calib_C_test_A": {
+      "auroc_per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0,
+      "mean_clean_dist": 7.004104920969035e-05
+    },
+    "calib_C_test_B": {
+      "auroc_per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0,
+      "mean_clean_dist": 5.204698026026744e-05
+    },
+    "calib_C_test_C": {
+      "auroc_per_corruption": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "mean_auroc": 1.0,
+      "mean_clean_dist": 3.023144885341278e-05
+    }
+  },
+  "loo_cv": {
+    "per_scene_auroc": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_auroc": 1.0,
+    "min_auroc": 1.0,
+    "pct_perfect": 100.0
+  },
+  "centroid_drift": {
+    "A_B_cosine_dist": 1.7189411199547422e-05,
+    "A_C_cosine_dist": 1.1955007287678399e-05,
+    "B_C_cosine_dist": 1.8081870042929715e-05,
+    "A_B_cosine_sim": 0.9999828105888005,
+    "A_centroid_norm": 8.246315002441406,
+    "B_centroid_norm": 8.251237869262695,
+    "C_centroid_norm": 8.259516716003418
+  },
+  "calib_size_transfer": {
+    "1": {
+      "mean_auroc": 0.9986111111111111,
+      "std_auroc": 0.00605402631047316,
+      "min_auroc": 0.9722222222222222
+    },
+    "2": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "min_auroc": 1.0
+    },
+    "3": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "min_auroc": 1.0
+    },
+    "5": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "min_auroc": 1.0
+    },
+    "10": {
+      "mean_auroc": 1.0,
+      "std_auroc": 0.0,
+      "min_auroc": 1.0
+    }
+  },
+  "universal_centroid": {
+    "fog": 1.0,
+    "night": 1.0,
+    "noise": 1.0,
+    "blur": 1.0
+  }
+}

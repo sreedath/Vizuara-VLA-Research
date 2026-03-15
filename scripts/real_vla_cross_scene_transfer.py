@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Experiment 408: Cross-Scene Transfer Analysis
+"""Experiment 438: Cross-Scene Transfer Analysis
 
-Tests whether a corruption detector calibrated on one scene generalizes to
-entirely different scenes. This is critical for real-world deployment where
-the detector must work on never-before-seen environments.
+Tests whether a centroid calibrated on one set of scenes generalizes
+to completely different scenes. This is critical for deployment —
+we can't recalibrate for every new environment.
 
 Tests:
-1. Train centroid on scene A, test on scenes B-E (leave-one-out)
-2. N-scene calibration: how many scenes needed for robust detection?
-3. Scene-difficulty ranking: which scenes are easiest/hardest to transfer to?
-4. Cross-scene threshold stability: does optimal threshold vary across scenes?
-5. Scene-diversity impact: how different must training scenes be?
+1. Calibrate on scenes A, test on disjoint scenes B
+2. Leave-one-out cross-validation AUROC
+3. Centroid drift across scene sets
+4. Scene diversity vs detection quality
+5. Mixed-scene calibration robustness
 """
 
 import json, time, os, sys
@@ -65,233 +65,148 @@ def main():
     prompt = "In: What action should the robot take to pick up the object?\nOut:"
     corruptions = ['fog', 'night', 'noise', 'blur']
 
-    # Generate 8 diverse scenes
-    seeds = [42, 123, 456, 789, 999, 1234, 5678, 9999]
-    scenes = []
-    for seed in seeds:
-        scenes.append(Image.fromarray(
-            np.random.RandomState(seed).randint(0, 255, (224, 224, 3), dtype=np.uint8)))
+    # Create three disjoint scene sets
+    seeds_A = [42, 123, 456, 789, 999]
+    seeds_B = [1111, 2222, 3333, 4444, 5555]
+    seeds_C = [6666, 7777, 8888, 9999, 10000]
 
-    # Extract all embeddings
-    print("Extracting embeddings for 8 scenes...")
-    clean_embeddings = []
-    corrupt_embeddings = {c: [] for c in corruptions}
+    scenes_A = [Image.fromarray(np.random.RandomState(s).randint(0, 255, (224, 224, 3), dtype=np.uint8)) for s in seeds_A]
+    scenes_B = [Image.fromarray(np.random.RandomState(s).randint(0, 255, (224, 224, 3), dtype=np.uint8)) for s in seeds_B]
+    scenes_C = [Image.fromarray(np.random.RandomState(s).randint(0, 255, (224, 224, 3), dtype=np.uint8)) for s in seeds_C]
 
-    for si, scene in enumerate(scenes):
-        print(f"  Scene {si+1}/8")
-        clean_emb = extract_hidden(model, processor, scene, prompt)
-        clean_embeddings.append(clean_emb)
+    print("Extracting embeddings for 3 scene sets (5 each)...")
+    embs_A = [extract_hidden(model, processor, s, prompt) for s in scenes_A]
+    embs_B = [extract_hidden(model, processor, s, prompt) for s in scenes_B]
+    embs_C = [extract_hidden(model, processor, s, prompt) for s in scenes_C]
 
-        for c in corruptions:
-            corrupted = apply_corruption(scene, c)
-            corrupt_emb = extract_hidden(model, processor, corrupted, prompt)
-            corrupt_embeddings[c].append(corrupt_emb)
+    centroid_A = np.mean(embs_A, axis=0)
+    centroid_B = np.mean(embs_B, axis=0)
+    centroid_C = np.mean(embs_C, axis=0)
 
-    results = {}
+    results = {"n_scenes_per_set": 5}
 
-    # === Test 1: Leave-one-out cross-scene transfer ===
-    print("\n=== Leave-One-Out Transfer ===")
-    loo_results = {}
-    for test_idx in range(len(scenes)):
-        train_indices = [i for i in range(len(scenes)) if i != test_idx]
-        centroid = np.mean([clean_embeddings[i] for i in train_indices], axis=0)
-
-        # ID scores: clean test scene
-        id_score = cosine_dist(clean_embeddings[test_idx], centroid)
-
-        # OOD scores: corrupted test scene
-        for c in corruptions:
-            ood_score = cosine_dist(corrupt_embeddings[c][test_idx], centroid)
-            key = f"scene{test_idx}_{c}"
-            auroc = compute_auroc([id_score], [ood_score])
-            loo_results[key] = {
-                "id_score": float(id_score),
-                "ood_score": float(ood_score),
-                "auroc": float(auroc),
-                "margin": float(ood_score - id_score)
-            }
-
-        # Also test all corruptions together
-        ood_scores = [cosine_dist(corrupt_embeddings[c][test_idx], centroid) for c in corruptions]
-        auroc_all = compute_auroc([id_score], ood_scores)
-        loo_results[f"scene{test_idx}_all"] = {
-            "id_score": float(id_score),
-            "ood_scores": [float(s) for s in ood_scores],
-            "auroc": float(auroc_all)
-        }
-        print(f"  Scene {test_idx} (test): id={id_score:.6f}, auroc_all={auroc_all:.4f}")
-
-    results["leave_one_out"] = loo_results
-
-    # === Test 2: N-scene calibration ===
-    print("\n=== N-Scene Calibration ===")
-    n_scene_results = {}
-    for n_train in [1, 2, 3, 4, 5, 6, 7]:
-        aurocs_per_trial = []
-        margins_per_trial = []
-
-        # Try multiple combinations
-        rng = np.random.RandomState(42)
-        from math import factorial
-        n_trials = min(20, max(5, int(factorial(8) / (factorial(n_train) * factorial(8 - n_train)))))
-
-        for trial in range(n_trials):
-            train_indices = sorted(rng.choice(8, n_train, replace=False).tolist())
-            test_indices = [i for i in range(8) if i not in train_indices]
-
-            centroid = np.mean([clean_embeddings[i] for i in train_indices], axis=0)
-
-            id_scores = [cosine_dist(clean_embeddings[i], centroid) for i in test_indices]
-            ood_scores = []
+    # === Test 1: Cross-set transfer ===
+    print("\n=== Cross-Set Transfer ===")
+    transfer_results = {}
+    for calib_name, calib_embs, calib_centroid in [("A", embs_A, centroid_A),
+                                                     ("B", embs_B, centroid_B),
+                                                     ("C", embs_C, centroid_C)]:
+        for test_name, test_embs, test_scenes in [("A", embs_A, scenes_A),
+                                                    ("B", embs_B, scenes_B),
+                                                    ("C", embs_C, scenes_C)]:
+            clean_dists = [cosine_dist(e, calib_centroid) for e in test_embs]
+            per_corr = {}
             for c in corruptions:
-                for ti in test_indices:
-                    ood_scores.append(cosine_dist(corrupt_embeddings[c][ti], centroid))
+                ood_dists = []
+                for s in test_scenes:
+                    emb = extract_hidden(model, processor, apply_corruption(s, c), prompt)
+                    ood_dists.append(float(cosine_dist(emb, calib_centroid)))
+                auroc = float(compute_auroc(clean_dists, ood_dists))
+                per_corr[c] = auroc
 
-            auroc = compute_auroc(id_scores, ood_scores)
-            margin = np.min(ood_scores) - np.max(id_scores)
-            aurocs_per_trial.append(auroc)
-            margins_per_trial.append(margin)
+            key = f"calib_{calib_name}_test_{test_name}"
+            transfer_results[key] = {
+                "auroc_per_corruption": per_corr,
+                "mean_auroc": float(np.mean(list(per_corr.values()))),
+                "mean_clean_dist": float(np.mean(clean_dists)),
+            }
+            print(f"  Calib {calib_name} -> Test {test_name}: mean={np.mean(list(per_corr.values())):.4f}")
+    results["cross_set_transfer"] = transfer_results
 
-        n_scene_results[str(n_train)] = {
-            "mean_auroc": float(np.mean(aurocs_per_trial)),
-            "min_auroc": float(np.min(aurocs_per_trial)),
-            "max_auroc": float(np.max(aurocs_per_trial)),
-            "std_auroc": float(np.std(aurocs_per_trial)),
-            "mean_margin": float(np.mean(margins_per_trial)),
-            "n_trials": n_trials
-        }
-        print(f"  {n_train} scenes: AUROC={np.mean(aurocs_per_trial):.4f} ± {np.std(aurocs_per_trial):.4f}")
+    # === Test 2: Leave-one-out cross-validation ===
+    print("\n=== Leave-One-Out Cross-Validation ===")
+    all_seeds = seeds_A + seeds_B + seeds_C
+    all_scenes = scenes_A + scenes_B + scenes_C
+    all_embs = embs_A + embs_B + embs_C
+    n_total = len(all_embs)
 
-    results["n_scene_calibration"] = n_scene_results
-
-    # === Test 3: Scene difficulty ranking ===
-    print("\n=== Scene Difficulty ===")
-    scene_difficulty = {}
-    global_centroid = np.mean(clean_embeddings, axis=0)
-
-    for si in range(len(scenes)):
-        id_dist = cosine_dist(clean_embeddings[si], global_centroid)
-        ood_dists = {}
+    loo_results = []
+    for i in range(n_total):
+        calib_embs = [all_embs[j] for j in range(n_total) if j != i]
+        loo_centroid = np.mean(calib_embs, axis=0)
+        clean_dist_i = cosine_dist(all_embs[i], loo_centroid)
+        ood_dists = []
         for c in corruptions:
-            ood_dists[c] = cosine_dist(corrupt_embeddings[c][si], global_centroid)
+            emb = extract_hidden(model, processor, apply_corruption(all_scenes[i], c), prompt)
+            ood_dists.append(float(cosine_dist(emb, loo_centroid)))
+        auroc = float(compute_auroc([clean_dist_i], ood_dists))
+        loo_results.append(auroc)
 
-        min_margin = min(ood_dists[c] - id_dist for c in corruptions)
-        scene_difficulty[f"scene{si}"] = {
-            "id_dist": float(id_dist),
-            "ood_dists": {c: float(v) for c, v in ood_dists.items()},
-            "min_margin": float(min_margin),
-            "difficulty_rank": 0  # filled below
-        }
-
-    # Rank by margin (smaller margin = harder)
-    ranked = sorted(scene_difficulty.keys(), key=lambda s: scene_difficulty[s]["min_margin"])
-    for rank, scene in enumerate(ranked):
-        scene_difficulty[scene]["difficulty_rank"] = rank + 1
-        print(f"  Rank {rank+1}: {scene}, min_margin={scene_difficulty[scene]['min_margin']:.6f}")
-
-    results["scene_difficulty"] = scene_difficulty
-
-    # === Test 4: Threshold stability ===
-    print("\n=== Threshold Stability ===")
-    threshold_results = {}
-    for si in range(len(scenes)):
-        train_indices = [i for i in range(len(scenes)) if i != si]
-        centroid = np.mean([clean_embeddings[i] for i in train_indices], axis=0)
-
-        # Find optimal threshold (midpoint between max ID and min OOD)
-        id_scores = [cosine_dist(clean_embeddings[i], centroid) for i in train_indices]
-        ood_scores = []
-        for c in corruptions:
-            for ti in train_indices:
-                ood_scores.append(cosine_dist(corrupt_embeddings[c][ti], centroid))
-
-        max_id = max(id_scores)
-        min_ood = min(ood_scores)
-        optimal_thresh = (max_id + min_ood) / 2
-
-        # Test on held-out scene
-        test_id = cosine_dist(clean_embeddings[si], centroid)
-        test_ood = [cosine_dist(corrupt_embeddings[c][si], centroid) for c in corruptions]
-
-        fp = 1 if test_id > optimal_thresh else 0
-        fn = sum(1 for s in test_ood if s <= optimal_thresh)
-
-        threshold_results[f"scene{si}"] = {
-            "optimal_thresh": float(optimal_thresh),
-            "test_id_score": float(test_id),
-            "test_ood_scores": [float(s) for s in test_ood],
-            "false_positive": fp,
-            "false_negatives": fn,
-            "thresh_margin_id": float(optimal_thresh - test_id),
-            "thresh_margin_ood": float(min(test_ood) - optimal_thresh)
-        }
-        print(f"  Scene {si}: thresh={optimal_thresh:.6f}, FP={fp}, FN={fn}")
-
-    all_thresholds = [threshold_results[f"scene{si}"]["optimal_thresh"] for si in range(len(scenes))]
-    threshold_results["summary"] = {
-        "mean_threshold": float(np.mean(all_thresholds)),
-        "std_threshold": float(np.std(all_thresholds)),
-        "cv_threshold": float(np.std(all_thresholds) / np.mean(all_thresholds)) if np.mean(all_thresholds) > 0 else 0,
-        "total_fp": sum(threshold_results[f"scene{si}"]["false_positive"] for si in range(len(scenes))),
-        "total_fn": sum(threshold_results[f"scene{si}"]["false_negatives"] for si in range(len(scenes)))
+    results["loo_cv"] = {
+        "per_scene_auroc": loo_results,
+        "mean_auroc": float(np.mean(loo_results)),
+        "min_auroc": float(np.min(loo_results)),
+        "pct_perfect": float(np.mean(np.array(loo_results) >= 1.0) * 100),
     }
-    print(f"  Threshold: {np.mean(all_thresholds):.6f} ± {np.std(all_thresholds):.6f}")
-    print(f"  Total FP={threshold_results['summary']['total_fp']}, FN={threshold_results['summary']['total_fn']}")
+    print(f"  LOO mean AUROC: {np.mean(loo_results):.4f}, min: {np.min(loo_results):.4f}, "
+          f"perfect: {np.mean(np.array(loo_results) >= 1.0)*100:.0f}%")
 
-    results["threshold_stability"] = threshold_results
-
-    # === Test 5: Scene diversity impact ===
-    print("\n=== Scene Diversity Impact ===")
-    diversity_results = {}
-
-    # Measure inter-scene distances
-    inter_scene_dists = []
-    for i in range(len(scenes)):
-        for j in range(i+1, len(scenes)):
-            d = cosine_dist(clean_embeddings[i], clean_embeddings[j])
-            inter_scene_dists.append((i, j, d))
-
-    inter_scene_dists.sort(key=lambda x: x[2])
-    diversity_results["inter_scene_distances"] = {
-        f"scene{i}_scene{j}": float(d) for i, j, d in inter_scene_dists
+    # === Test 3: Centroid drift ===
+    print("\n=== Centroid Drift Between Scene Sets ===")
+    drift_results = {
+        "A_B_cosine_dist": float(cosine_dist(centroid_A, centroid_B)),
+        "A_C_cosine_dist": float(cosine_dist(centroid_A, centroid_C)),
+        "B_C_cosine_dist": float(cosine_dist(centroid_B, centroid_C)),
+        "A_B_cosine_sim": float(1 - cosine_dist(centroid_A, centroid_B)),
+        "A_centroid_norm": float(np.linalg.norm(centroid_A)),
+        "B_centroid_norm": float(np.linalg.norm(centroid_B)),
+        "C_centroid_norm": float(np.linalg.norm(centroid_C)),
     }
+    print(f"  A<->B: dist={drift_results['A_B_cosine_dist']:.6f}")
+    print(f"  A<->C: dist={drift_results['A_C_cosine_dist']:.6f}")
+    print(f"  B<->C: dist={drift_results['B_C_cosine_dist']:.6f}")
+    results["centroid_drift"] = drift_results
 
-    # Most similar pair vs most different pair as training sets
-    most_similar = inter_scene_dists[0]
-    most_different = inter_scene_dists[-1]
+    # === Test 4: Calibration set size vs transfer ===
+    print("\n=== Calibration Set Size vs Transfer ===")
+    rng = np.random.RandomState(42)
+    size_results = {}
+    for n_calib in [1, 2, 3, 5, 10]:
+        if n_calib >= n_total:
+            continue
+        trial_aurocs = []
+        for trial in range(20):
+            idx = rng.choice(n_total, n_calib, replace=False)
+            sub_embs = [all_embs[i] for i in idx]
+            sub_centroid = np.mean(sub_embs, axis=0)
+            test_idx = [i for i in range(n_total) if i not in idx]
+            if len(test_idx) == 0:
+                continue
+            test_clean_dists = [cosine_dist(all_embs[i], sub_centroid) for i in test_idx]
+            test_ood_dists = []
+            for i in test_idx[:3]:
+                for c in corruptions:
+                    emb = extract_hidden(model, processor, apply_corruption(all_scenes[i], c), prompt)
+                    test_ood_dists.append(float(cosine_dist(emb, sub_centroid)))
+            auroc = float(compute_auroc(test_clean_dists[:3], test_ood_dists))
+            trial_aurocs.append(auroc)
 
-    for label, pair in [("most_similar", most_similar), ("most_different", most_different)]:
-        train_indices = [pair[0], pair[1]]
-        centroid = np.mean([clean_embeddings[i] for i in train_indices], axis=0)
-        test_indices = [i for i in range(len(scenes)) if i not in train_indices]
-
-        id_scores = [cosine_dist(clean_embeddings[i], centroid) for i in test_indices]
-        ood_scores = []
-        for c in corruptions:
-            for ti in test_indices:
-                ood_scores.append(cosine_dist(corrupt_embeddings[c][ti], centroid))
-
-        auroc = compute_auroc(id_scores, ood_scores)
-        margin = float(np.min(ood_scores) - np.max(id_scores))
-
-        diversity_results[label] = {
-            "scenes": train_indices,
-            "inter_scene_dist": float(pair[2]),
-            "auroc": float(auroc),
-            "margin": margin,
-            "max_id_score": float(np.max(id_scores)),
-            "min_ood_score": float(np.min(ood_scores))
+        if len(trial_aurocs) == 0:
+            continue
+        size_results[str(n_calib)] = {
+            "mean_auroc": float(np.mean(trial_aurocs)),
+            "std_auroc": float(np.std(trial_aurocs)),
+            "min_auroc": float(np.min(trial_aurocs)),
         }
-        print(f"  {label} pair ({pair[0]},{pair[1]}): dist={pair[2]:.6f}, auroc={auroc:.4f}, margin={margin:.6f}")
+        print(f"  n={n_calib}: mean={np.mean(trial_aurocs):.4f} +/- {np.std(trial_aurocs):.4f}")
+    results["calib_size_transfer"] = size_results
 
-    results["scene_diversity"] = diversity_results
+    # === Test 5: Universal centroid (all 15 scenes) ===
+    print("\n=== Universal Centroid ===")
+    universal_centroid = np.mean(all_embs, axis=0)
+    universal_clean_dists = [cosine_dist(e, universal_centroid) for e in all_embs]
 
-    # Summary statistics
-    results["n_scenes"] = len(scenes)
-    results["n_corruptions"] = len(corruptions)
-    results["seeds"] = seeds
+    universal_results = {}
+    for c in corruptions:
+        ood_dists = []
+        for s in all_scenes:
+            emb = extract_hidden(model, processor, apply_corruption(s, c), prompt)
+            ood_dists.append(float(cosine_dist(emb, universal_centroid)))
+        auroc = float(compute_auroc(universal_clean_dists, ood_dists))
+        universal_results[c] = auroc
+        print(f"  {c}: AUROC={auroc:.4f}")
+    results["universal_centroid"] = universal_results
 
-    # Save
     out_path = "/workspace/Vizuara-VLA-Research/experiments/cross_scene_transfer_" + \
                time.strftime("%Y%m%d_%H%M%S") + ".json"
     with open(out_path, 'w') as f:

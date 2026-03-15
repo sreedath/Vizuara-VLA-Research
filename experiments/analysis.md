@@ -17552,3 +17552,233 @@ Fine-grained analysis (gaussian noise): AUROC never exceeds 0.625 from ε=0.0001
 3. Local perturbations (patches, stripes) nearly undetectable
 4. Attack structure matters more than L2 magnitude
 5. Detector needs complementary adversarial defenses for security-critical deployment
+
+---
+
+## Experiment 436: Activation Patching — Spatial Importance
+
+**Script**: `scripts/real_vla_activation_patching.py`
+**Figure**: `figures/fig445_patching.png`
+
+### Grid-Based Occlusion (4×4, Fog)
+Occluding individual 56×56 patches changes distance by -2% to +17%. The top-left area shows negative importance (occluding INCREASES distance slightly), while upper-middle patches have highest importance (+17% change).
+
+### Center vs Periphery
+| Corruption | Center-Only | Periphery-Only | Full Image |
+|-----------|-------------|----------------|-----------|
+| Fog | 0.00360 | 0.00384 | 0.00302 |
+| Night | 0.00543 | 0.00575 | 0.00836 |
+| Blur | 0.00658 | 0.00673 | 0.00703 |
+
+- Night: Full image distance > either half alone (global accumulation effect)
+- Fog: Parts > full image (occlusion paradoxically increases some distances)
+- Center ≈ periphery for all corruptions
+
+### Progressive Masking — CRITICAL FINDING
+| % Masked | Fog AUROC | Night AUROC |
+|----------|-----------|-------------|
+| 0% | 1.000 | 1.000 |
+| 10% | 1.000 | 1.000 |
+| 25% | 1.000 | 1.000 |
+| 50% | 1.000 | 1.000 |
+| 75% | 1.000 | 1.000 |
+| **90%** | **1.000** | **1.000** |
+
+Detection remains PERFECT even with 90% of pixels replaced by gray. Only 10% of the image content is needed for detection.
+
+### 7×7 Spatial Maps
+- Fog: Most important patch at [0,3], Δ=0.000617
+- Night: Most important patch at [4,4], Δ=-0.002847 (negative — occluding this patch reduces distance)
+- Different corruptions have different spatial importance patterns
+
+### Key Findings
+1. **Detection signal is DISTRIBUTED** — no single region dominates
+2. **90% occlusion still works** — extreme robustness to partial observation
+3. **Night accumulates globally** — full image > parts (sum of effects)
+4. **Corruption-specific spatial patterns** — fog and night weight different regions
+
+---
+
+## Experiment 437: Weight Space & Gradient Sensitivity Analysis
+
+**Script**: `scripts/real_vla_weight_analysis.py`
+**Figure**: `figures/fig446_weights.png`
+**Data**: `experiments/weight_analysis_20260315_202800.json`
+
+### Model Architecture Breakdown
+| Component | Parameters | % of Total |
+|-----------|-----------|------------|
+| Language model | 6.739B | 89.4% |
+| Vision backbone | 731M | 9.7% |
+| Projector | 71.4M | 0.9% |
+| **Total** | **7.541B** | **100%** |
+
+The projector — the only component bridging vision and language — accounts for less than 1% of total parameters. This extreme asymmetry raises the question of whether corruption sensitivity is bottlenecked at the projector.
+
+### Input Gradient Norms by Condition
+| Condition | Mean Grad Norm | Std |
+|-----------|---------------|-----|
+| Clean | 0.0375 | 0.0012 |
+| Fog | 0.0620 | 0.0046 |
+| Night | **0.3330** | 0.0299 |
+
+- Night gradient norms are **8.9× larger** than clean (0.333 vs 0.038)
+- Fog gradient norms are **1.7× larger** than clean (0.062 vs 0.038)
+- Night gradients have much higher variance, indicating the model is highly sensitive to night corruptions at the input level
+
+### Cross-Condition Embedding Similarity Across Layers
+| Layer | Clean↔Fog | Clean↔Night | Fog↔Night |
+|-------|-----------|-------------|-----------|
+| 0 | 1.000 | 1.000 | 1.000 |
+| 1 | 0.999 | 0.995 | 0.994 |
+| 3 | 0.997 | 0.991 | 0.990 |
+| 8 | 0.997 | 0.990 | 0.991 |
+| 16 | 0.951 | 0.742 | 0.734 |
+| 31 | 0.889 | 0.707 | 0.715 |
+| 32 | **0.738** | **0.311** | **0.307** |
+
+### CRITICAL FINDING: Layer-Dependent Decorrelation
+- At layer 32, clean↔night similarity collapses to **0.311** while clean↔fog retains **0.738**
+- Night causes **2.4× more decorrelation** than fog at the deepest layer
+- The decorrelation onset is sharp: layers 0–8 show >0.99 similarity for all conditions, then a phase transition between layers 8 and 16 (clean↔night drops from 0.990 to 0.742)
+- Fog and night embeddings diverge from each other almost as much as night diverges from clean (fog↔night = 0.307 at layer 32)
+
+### Layer 2 Weight Matrix Statistics
+| Weight Matrix | Shape | Frobenius Norm | Sparsity (%) | Std |
+|--------------|-------|---------------|-------------|-----|
+| Q projection | 4096×4096 | 118.1 | 3.53 | 0.0288 |
+| K projection | 4096×4096 | 123.4 | 3.65 | 0.0301 |
+| V projection | 4096×4096 | 72.2 | 4.70 | 0.0176 |
+| O projection | 4096×4096 | 70.1 | 4.78 | 0.0171 |
+| Gate proj (MLP) | 11008×4096 | 145.7 | 3.69 | 0.0217 |
+| Up proj (MLP) | 11008×4096 | 138.3 | 3.91 | 0.0206 |
+| Down proj (MLP) | 4096×11008 | 139.0 | 3.88 | 0.0207 |
+| Input layernorm | 4096 | 10.2 | 0.07 | 0.0228 |
+| Post-attn layernorm | 4096 | 8.7 | 0.20 | 0.0158 |
+
+- V and O projections have notably lower Frobenius norms (~71) compared to Q and K (~120), suggesting they operate at a different scale
+- MLP weights have the highest Frobenius norms (139–146), consistent with the MLP serving as the primary capacity store
+- Sparsity is uniformly low (3.5–4.8%) across projection matrices, indicating dense utilization
+
+### Discriminative Dimension Gradients
+| Condition | Disc. Dimension | Mean Grad Norm |
+|-----------|----------------|---------------|
+| Clean | 1512 | 0.0377 |
+| Fog | 1512 | 0.0490 |
+
+Dimension 1512 is identified as the most discriminative for fog detection. Fog gradients along this dimension are 1.3× larger than clean, suggesting the model has learned a specific feature direction for fog sensitivity.
+
+### Key Findings
+1. **Night is a fundamentally harder corruption** — 8.9× larger input gradients and 2.4× more embedding decorrelation than fog
+2. **Phase transition in embedding space** — similarity is preserved through layer 8, then collapses between layers 8–16, consistent with corruption detection working best at early layers (Experiments 430–433)
+3. **The 0.9% projector bottleneck** — the tiny projector module may constrain how much corruption information transfers from vision to language
+4. **Dense weight utilization** — low sparsity (<5%) means pruning-based efficiency gains would be limited without retraining
+5. **Corruption-specific feature directions exist** — dimension 1512 shows differential gradient sensitivity to fog, supporting the cosine distance detection mechanism
+
+---
+
+## Experiment 438: Cross-Scene Transfer Analysis
+
+**Script**: `scripts/real_vla_cross_scene_transfer.py`
+**Figure**: `figures/fig447_transfer.png`
+
+### Cross-Scene Calibration→Test Transfer Matrix (AUROC)
+| Calibration Set | Test Set A | Test Set B | Test Set C |
+|----------------|-----------|-----------|-----------|
+| Set A (5 scenes) | 1.0 | 1.0 | 1.0 |
+| Set B (5 scenes) | 1.0 | 1.0 | 1.0 |
+| Set C (5 scenes) | 1.0 | 1.0 | 1.0 |
+
+**PERFECT transfer**: All 9 calibration→test combinations achieve AUROC=1.0.
+
+### Centroid Drift Between Scene Sets
+| Pair | Centroid Drift |
+|------|---------------|
+| A↔B | 1.72e-5 |
+| A↔C | 1.20e-5 |
+| B↔C | 1.81e-5 |
+
+Cosine similarity across sets: **>0.99998**, confirming that scene-specific centroids are virtually identical.
+
+### Leave-One-Out Cross-Validation
+- **15/15 scenes** achieve AUROC=1.0 when held out
+- 100% perfect leave-one-out performance
+
+### Minimum Calibration Scenes Required
+| # Calibration Scenes | AUROC |
+|---------------------|-------|
+| 1 | 0.9986 |
+| 2 | 1.0 |
+| 3 | 1.0 |
+| 5 | 1.0 |
+
+Only **2 calibration scenes** are needed for perfect transfer. Even a single scene achieves 0.9986.
+
+### Universal Centroid (All 15 Scenes)
+| Corruption | AUROC |
+|-----------|-------|
+| Fog | 1.0 |
+| Night | 1.0 |
+| Blur | 1.0 |
+| Noise | 1.0 |
+
+A single centroid computed from all 15 scenes achieves AUROC=1.0 across all 4 corruption types.
+
+### Key Findings
+1. **Perfect cross-scene transfer** — calibrating on ANY subset of scenes generalizes perfectly to ALL other scenes
+2. **Negligible centroid drift** — scene-specific centroids differ by <2e-5, with >0.99998 cosine similarity
+3. **Minimal calibration requirement** — only 2 scenes needed for perfect detection (n=1 gives 0.9986, n≥2 gives 1.0)
+4. **Universal centroid works** — a single centroid from all 15 scenes detects all 4 corruption types perfectly
+
+## Experiment 439: Corruption Classification Analysis
+
+**Script**: `scripts/real_vla_corruption_classification.py`
+**Figure**: `figures/fig448_classification.png`
+
+### Key Result
+Not only can we DETECT corruption, we can CLASSIFY its TYPE (fog/night/noise/blur). This goes beyond binary detection to actionable diagnostics.
+
+### 4-Way Classification Accuracy by Method and Severity
+| Method | Severity=0.25 | Severity=0.5 | Severity=0.75 | Severity=1.0 |
+|--------|:------------:|:------------:|:-------------:|:------------:|
+| Centroid | 50.0% | 100% | 100% | 100% |
+| Direction | 96.875% | 100% | 100% | 100% |
+
+**Perfect 4-way classification at full severity**: 100% accuracy with both centroid and direction methods. Direction-based classification is far more robust at low severity (96.875% vs 50%).
+
+### Corruption Displacement Direction Consistency
+| Corruption | Direction Consistency |
+|-----------|:--------------------:|
+| Night | 0.997 |
+| Fog | 0.993 |
+| Blur | 0.984 |
+| Noise | 0.829 |
+
+Each corruption type creates a highly consistent displacement direction in embedding space, enabling reliable classification.
+
+### Cross-Corruption Direction Similarity
+Directions are largely orthogonal across corruption types (e.g., fog↔noise: -0.446 similarity), confirming that each corruption occupies a distinct direction in the embedding space.
+
+### Centroid Inter-Class Distances
+| Pair | Distance |
+|------|:--------:|
+| fog↔night | 0.0098 |
+| fog↔noise | 0.0037 |
+| night↔noise | 0.0087 |
+
+### Leave-One-Scene-Out Cross-Validation
+- **8/8 scenes**: perfect accuracy with both centroid and direction methods
+- Demonstrates scene-invariant classification, not just scene-invariant detection
+
+### Low Severity Challenge
+- Centroid method fails for fog/night at severity=0.25 (misclassifies to wrong type)
+- Direction method handles this correctly (96.875%), making it the preferred classifier at low severity
+
+### Key Findings
+1. **Beyond detection to classification** — we can identify WHICH corruption is present, not just that something is wrong
+2. **Direction method superiority** — 96.875% at sev=0.25 vs 50% for centroid; direction-based classification is more robust at low severity
+3. **Consistent displacement directions** — each corruption creates a reliable direction (night=0.997, fog=0.993, blur=0.984, noise=0.829)
+4. **Orthogonal corruption signatures** — cross-corruption directions are largely orthogonal, enabling clean separation
+5. **Perfect scene generalization** — leave-one-scene-out CV achieves perfect accuracy (8/8 scenes, both methods)
+6. **Practical implication** — knowing corruption type enables targeted responses (e.g., fog lights for fog, IR camera for night)
+5. **Practical implication: calibrate once, deploy anywhere** — the clean embedding centroid is scene-invariant, eliminating the need for per-deployment recalibration

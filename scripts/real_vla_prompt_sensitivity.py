@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Experiment 423: Prompt Sensitivity Analysis
+"""Experiment 441: Prompt Sensitivity Analysis
 
-Studies how different text prompts affect the model's OOD detection capability.
-The standard prompt is fixed, but does the specific wording matter? Are some
-prompts more sensitive to visual corruption than others?
+Tests how different action prompts affect OOD detection quality.
+VLA models condition on language — does the choice of prompt matter
+for corruption detection? Can we ensemble multiple prompts?
 
 Tests:
-1. Multiple prompt variants with the same image
-2. Per-prompt OOD detection AUROC
-3. Prompt-agnostic vs prompt-specific centroids
-4. Cross-prompt embedding similarity
-5. Prompt length effects on detection
+1. Detection AUROC across different prompts
+2. Embedding similarity across prompts (same image, different prompts)
+3. Prompt ensemble detection (average distances from multiple prompts)
+4. Prompt-specific failure modes
+5. Prompt length vs detection quality
 """
 
 import json, time, os, sys
@@ -45,6 +45,9 @@ def cosine_dist(a, b):
         return 1.0
     return 1.0 - np.dot(a, b) / (na * nb)
 
+def cosine_sim(a, b):
+    return 1.0 - cosine_dist(a, b)
+
 def compute_auroc(id_scores, ood_scores):
     id_s = np.asarray(id_scores, dtype=np.float64)
     ood_s = np.asarray(ood_scores, dtype=np.float64)
@@ -62,115 +65,155 @@ def main():
     processor = AutoProcessor.from_pretrained("openvla/openvla-7b", trust_remote_code=True)
     model.eval()
 
-    # Multiple prompt variants
-    prompts = {
-        "standard": "In: What action should the robot take to pick up the object?\nOut:",
-        "short": "In: Pick up the object.\nOut:",
-        "verbose": "In: What is the next action the robot arm should execute in order to successfully grasp and pick up the target object from the table?\nOut:",
-        "different_task": "In: What action should the robot take to push the block?\nOut:",
-        "minimal": "In: Act.\nOut:",
-        "place": "In: What action should the robot take to place the object?\nOut:",
-    }
-
     corruptions = ['fog', 'night', 'noise', 'blur']
 
-    seeds = [42, 123, 456]
+    prompts = {
+        "pick": "In: What action should the robot take to pick up the object?\nOut:",
+        "place": "In: What action should the robot take to place the object?\nOut:",
+        "move": "In: What action should the robot take to move forward?\nOut:",
+        "push": "In: What action should the robot take to push the object?\nOut:",
+        "stack": "In: What action should the robot take to stack the blocks?\nOut:",
+        "open": "In: What action should the robot take to open the drawer?\nOut:",
+        "close": "In: What action should the robot take to close the drawer?\nOut:",
+        "minimal": "In: Act.\nOut:",
+    }
+
+    seeds = [42, 123, 456, 789, 999, 1111, 2222, 3333]
     scenes = [Image.fromarray(np.random.RandomState(s).randint(0, 255, (224, 224, 3), dtype=np.uint8)) for s in seeds]
 
-    results = {"n_prompts": len(prompts), "n_scenes": len(scenes)}
+    results = {"n_scenes": len(scenes), "n_prompts": len(prompts)}
 
-    # === Test 1: Per-prompt embeddings ===
-    print("Extracting embeddings for all prompts...")
-    prompt_embs = {}  # {prompt_name: {scene_idx: embedding}}
+    # === Test 1: Per-prompt detection AUROC ===
+    print("\n=== Per-Prompt Detection AUROC ===")
+    prompt_results = {}
+    prompt_centroids = {}
+    prompt_clean_embs = {}
+
     for pname, prompt in prompts.items():
-        embs = [extract_hidden(model, processor, s, prompt) for s in scenes]
-        prompt_embs[pname] = embs
-        print(f"  {pname}: done")
+        print(f"  Processing prompt: {pname}")
+        clean_embs = [extract_hidden(model, processor, s, prompt) for s in scenes]
+        centroid = np.mean(clean_embs, axis=0)
+        clean_dists = [cosine_dist(e, centroid) for e in clean_embs]
 
-    # === Test 2: Cross-prompt similarity ===
-    print("\n=== Cross-Prompt Similarity ===")
-    cross_sim = {}
-    for p1 in prompts:
-        for p2 in prompts:
-            if p1 >= p2:
-                continue
-            dists = []
-            for s in range(len(scenes)):
-                d = cosine_dist(prompt_embs[p1][s], prompt_embs[p2][s])
-                dists.append(float(d))
-            key = f"{p1}_vs_{p2}"
-            cross_sim[key] = {
-                "mean_dist": float(np.mean(dists)),
-                "max_dist": float(np.max(dists)),
-            }
-            print(f"  {key}: mean_dist={np.mean(dists):.6f}")
-    results["cross_prompt_similarity"] = cross_sim
-
-    # === Test 3: Per-prompt OOD detection ===
-    print("\n=== Per-Prompt OOD Detection ===")
-    detection = {}
-    for pname, prompt in prompts.items():
-        centroid = np.mean(prompt_embs[pname], axis=0)
-        clean_dists = [cosine_dist(e, centroid) for e in prompt_embs[pname]]
+        prompt_centroids[pname] = centroid
+        prompt_clean_embs[pname] = clean_embs
 
         per_corr = {}
-        all_ood = []
         for c in corruptions:
             ood_dists = []
             for s in scenes:
                 emb = extract_hidden(model, processor, apply_corruption(s, c), prompt)
-                d = cosine_dist(emb, centroid)
-                ood_dists.append(float(d))
-                all_ood.append(float(d))
-            per_corr[c] = {
-                "auroc": float(compute_auroc(clean_dists, ood_dists)),
-                "mean_dist": float(np.mean(ood_dists)),
-            }
+                ood_dists.append(cosine_dist(emb, centroid))
+            auroc = float(compute_auroc(clean_dists, ood_dists))
+            per_corr[c] = auroc
 
-        overall = float(compute_auroc(clean_dists, all_ood))
-        detection[pname] = {
-            "overall_auroc": overall,
-            "clean_mean_dist": float(np.mean(clean_dists)),
-            "per_corruption": per_corr,
+        mean_auroc = float(np.mean(list(per_corr.values())))
+        prompt_results[pname] = {
+            "auroc_per_corruption": per_corr,
+            "mean_auroc": mean_auroc,
+            "mean_clean_dist": float(np.mean(clean_dists)),
+            "std_clean_dist": float(np.std(clean_dists)),
+            "prompt_length": len(prompt),
         }
-        print(f"  {pname}: AUROC={overall:.4f}")
-    results["per_prompt_detection"] = detection
+        print(f"    mean AUROC={mean_auroc:.4f}, per-corr: {per_corr}")
+    results["per_prompt_detection"] = prompt_results
 
-    # === Test 4: Prompt-agnostic centroid ===
-    print("\n=== Prompt-Agnostic Centroid ===")
-    # Build centroid from ALL prompts' clean embeddings
-    all_clean = []
-    for pname in prompts:
-        all_clean.extend(prompt_embs[pname])
-    agnostic_centroid = np.mean(all_clean, axis=0)
-
-    agnostic_detection = {}
+    # === Test 2: Cross-prompt embedding similarity ===
+    print("\n=== Cross-Prompt Embedding Similarity ===")
+    cross_prompt_sim = {}
+    scene0 = scenes[0]
+    pnames = list(prompts.keys())
+    embs_scene0 = {}
     for pname, prompt in prompts.items():
-        clean_dists = [cosine_dist(e, agnostic_centroid) for e in prompt_embs[pname]]
-        all_ood = []
+        embs_scene0[pname] = extract_hidden(model, processor, scene0, prompt)
+
+    for i, p1 in enumerate(pnames):
+        for j, p2 in enumerate(pnames):
+            if j <= i:
+                continue
+            sim = cosine_sim(embs_scene0[p1], embs_scene0[p2])
+            cross_prompt_sim[f"{p1}_vs_{p2}"] = float(sim)
+
+    results["cross_prompt_similarity"] = cross_prompt_sim
+    sims = list(cross_prompt_sim.values())
+    print(f"  Mean cross-prompt similarity: {np.mean(sims):.6f}")
+    print(f"  Min: {np.min(sims):.6f}, Max: {np.max(sims):.6f}")
+
+    # === Test 3: Prompt ensemble detection ===
+    print("\n=== Prompt Ensemble Detection ===")
+    ensemble_configs = {
+        "single_pick": ["pick"],
+        "pair_pick_place": ["pick", "place"],
+        "triple_pick_place_move": ["pick", "place", "move"],
+        "quad_pick_place_move_push": ["pick", "place", "move", "push"],
+        "all_8": list(prompts.keys()),
+        "diverse_3": ["pick", "minimal", "stack"],
+    }
+
+    ensemble_results = {}
+    for ename, prompt_subset in ensemble_configs.items():
+        clean_avg_dists = []
+        for s_idx, s in enumerate(scenes):
+            dists = []
+            for pname in prompt_subset:
+                emb = prompt_clean_embs[pname][s_idx]
+                dists.append(cosine_dist(emb, prompt_centroids[pname]))
+            clean_avg_dists.append(float(np.mean(dists)))
+
+        per_corr_ens = {}
         for c in corruptions:
+            ood_avg_dists = []
             for s in scenes:
-                emb = extract_hidden(model, processor, apply_corruption(s, c), prompt)
-                all_ood.append(float(cosine_dist(emb, agnostic_centroid)))
-        auroc = float(compute_auroc(clean_dists, all_ood))
-        agnostic_detection[pname] = {"auroc": auroc}
-        print(f"  {pname}: agnostic AUROC={auroc:.4f}")
-    results["agnostic_detection"] = agnostic_detection
+                dists = []
+                for pname in prompt_subset:
+                    emb = extract_hidden(model, processor, apply_corruption(s, c), prompts[pname])
+                    dists.append(cosine_dist(emb, prompt_centroids[pname]))
+                ood_avg_dists.append(float(np.mean(dists)))
+            auroc = float(compute_auroc(clean_avg_dists, ood_avg_dists))
+            per_corr_ens[c] = auroc
 
-    # === Test 5: Prompt length effect ===
-    print("\n=== Prompt Length Effects ===")
-    length_data = {}
-    for pname, prompt in prompts.items():
-        # Tokenize to get length
-        inputs = processor(prompt, scenes[0])
-        seq_len = inputs['input_ids'].shape[1]
-        length_data[pname] = {
-            "token_length": int(seq_len),
-            "char_length": len(prompt),
-            "auroc": detection[pname]["overall_auroc"],
+        mean_ens = float(np.mean(list(per_corr_ens.values())))
+        ensemble_results[ename] = {
+            "n_prompts": len(prompt_subset),
+            "auroc_per_corruption": per_corr_ens,
+            "mean_auroc": mean_ens,
         }
-        print(f"  {pname}: {seq_len} tokens, {len(prompt)} chars, AUROC={detection[pname]['overall_auroc']:.4f}")
-    results["prompt_length"] = length_data
+        print(f"  {ename} ({len(prompt_subset)} prompts): mean={mean_ens:.4f}")
+    results["ensemble_detection"] = ensemble_results
+
+    # === Test 4: Centroid distance across prompts ===
+    print("\n=== Centroid Geometry Across Prompts ===")
+    centroid_geometry = {}
+    for i, p1 in enumerate(pnames):
+        for j, p2 in enumerate(pnames):
+            if j <= i:
+                continue
+            dist = cosine_dist(prompt_centroids[p1], prompt_centroids[p2])
+            centroid_geometry[f"{p1}_vs_{p2}"] = float(dist)
+
+    results["centroid_distances"] = centroid_geometry
+    cdists = list(centroid_geometry.values())
+    print(f"  Mean centroid distance: {np.mean(cdists):.6f}")
+    print(f"  Min: {np.min(cdists):.6f}, Max: {np.max(cdists):.6f}")
+
+    # === Test 5: Prompt length vs detection quality ===
+    print("\n=== Prompt Length vs Detection Quality ===")
+    length_vs_quality = {}
+    for pname, pdata in prompt_results.items():
+        length_vs_quality[pname] = {
+            "prompt_length": pdata["prompt_length"],
+            "mean_auroc": pdata["mean_auroc"],
+        }
+    results["length_vs_quality"] = length_vs_quality
+
+    lengths = [v["prompt_length"] for v in length_vs_quality.values()]
+    aurocs = [v["mean_auroc"] for v in length_vs_quality.values()]
+    if len(set(lengths)) > 1:
+        corr = float(np.corrcoef(lengths, aurocs)[0, 1])
+    else:
+        corr = 0.0
+    results["length_auroc_correlation"] = corr
+    print(f"  Length-AUROC correlation: {corr:.4f}")
 
     out_path = "/workspace/Vizuara-VLA-Research/experiments/prompt_sensitivity_" + \
                time.strftime("%Y%m%d_%H%M%S") + ".json"

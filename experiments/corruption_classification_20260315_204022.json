@@ -1,0 +1,387 @@
+{
+  "experiment": "corruption_classification",
+  "experiment_number": 439,
+  "timestamp": "20260315_204022",
+  "config": {
+    "n_scenes": 8,
+    "seeds": [
+      42,
+      123,
+      456,
+      789,
+      999,
+      1111,
+      2222,
+      3333
+    ],
+    "corruptions": [
+      "fog",
+      "night",
+      "noise",
+      "blur"
+    ],
+    "severities": [
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "layer": 3,
+    "image_size": 224,
+    "model": "openvla/openvla-7b"
+  },
+  "results": {
+    "test1_nearest_centroid": {
+      "accuracy_cosine": 1.0,
+      "accuracy_euclidean": 1.0,
+      "n_samples": 32,
+      "centroid_distances": {
+        "fog_vs_night": {
+          "cosine_dist": 0.009810203307690335,
+          "euclidean_dist": 1.1899279356002808
+        },
+        "fog_vs_noise": {
+          "cosine_dist": 0.003703279546429794,
+          "euclidean_dist": 0.7334431409835815
+        },
+        "fog_vs_blur": {
+          "cosine_dist": 0.006005389719969556,
+          "euclidean_dist": 0.9486550688743591
+        },
+        "night_vs_noise": {
+          "cosine_dist": 0.0086934545862698,
+          "euclidean_dist": 1.140862226486206
+        },
+        "night_vs_blur": {
+          "cosine_dist": 0.006026695023865436,
+          "euclidean_dist": 1.0023741722106934
+        },
+        "noise_vs_blur": {
+          "cosine_dist": 0.006949042519599269,
+          "euclidean_dist": 0.9695417881011963
+        }
+      },
+      "mean_classification_cosine_dist": 7.004457162592195e-05
+    },
+    "test2_direction_classification": {
+      "accuracy": 1.0,
+      "direction_consistency": {
+        "fog": {
+          "mean_sim": 0.9933010715118407,
+          "std_sim": 0.002040358183218421
+        },
+        "night": {
+          "mean_sim": 0.9966024202147148,
+          "std_sim": 0.0011073315552127844
+        },
+        "noise": {
+          "mean_sim": 0.8289075489762214,
+          "std_sim": 0.06000773823979479
+        },
+        "blur": {
+          "mean_sim": 0.9839148040586561,
+          "std_sim": 0.0031618693793226283
+        }
+      },
+      "cross_corruption_direction_similarity": {
+        "fog_vs_night": 0.16008560095992808,
+        "fog_vs_noise": -0.44638263334788064,
+        "fog_vs_blur": 0.3358658206647648,
+        "night_vs_noise": -0.1364555700297556,
+        "night_vs_blur": 0.5321194412251373,
+        "noise_vs_blur": -0.08531005844976303
+      },
+      "mean_alignment_score": 0.9506814611972393,
+      "n_samples": 32
+    },
+    "test3_confusion_matrix": {
+      "centroid": {
+        "confusion_matrix": {
+          "fog": {
+            "fog": 8,
+            "night": 0,
+            "noise": 0,
+            "blur": 0
+          },
+          "night": {
+            "fog": 0,
+            "night": 8,
+            "noise": 0,
+            "blur": 0
+          },
+          "noise": {
+            "fog": 0,
+            "night": 0,
+            "noise": 8,
+            "blur": 0
+          },
+          "blur": {
+            "fog": 0,
+            "night": 0,
+            "noise": 0,
+            "blur": 8
+          }
+        },
+        "overall_accuracy": 1.0,
+        "per_class_accuracy": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "most_confused_pairs": []
+      },
+      "direction": {
+        "confusion_matrix": {
+          "fog": {
+            "fog": 8,
+            "night": 0,
+            "noise": 0,
+            "blur": 0
+          },
+          "night": {
+            "fog": 0,
+            "night": 8,
+            "noise": 0,
+            "blur": 0
+          },
+          "noise": {
+            "fog": 0,
+            "night": 0,
+            "noise": 8,
+            "blur": 0
+          },
+          "blur": {
+            "fog": 0,
+            "night": 0,
+            "noise": 0,
+            "blur": 8
+          }
+        },
+        "overall_accuracy": 1.0,
+        "per_class_accuracy": {
+          "fog": 1.0,
+          "night": 1.0,
+          "noise": 1.0,
+          "blur": 1.0
+        },
+        "most_confused_pairs": []
+      }
+    },
+    "test4_multi_severity": {
+      "severity_results": {
+        "0.25": {
+          "centroid_accuracy": 0.5,
+          "direction_accuracy": 0.96875,
+          "per_corruption_centroid": {
+            "fog": 0.0,
+            "night": 0.0,
+            "noise": 1.0,
+            "blur": 1.0
+          },
+          "per_corruption_direction": {
+            "fog": 1.0,
+            "night": 1.0,
+            "noise": 0.875,
+            "blur": 1.0
+          },
+          "n_samples": 32
+        },
+        "0.5": {
+          "centroid_accuracy": 0.75,
+          "direction_accuracy": 0.96875,
+          "per_corruption_centroid": {
+            "fog": 1.0,
+            "night": 0.0,
+            "noise": 1.0,
+            "blur": 1.0
+          },
+          "per_corruption_direction": {
+            "fog": 1.0,
+            "night": 1.0,
+            "noise": 0.875,
+            "blur": 1.0
+          },
+          "n_samples": 32
+        },
+        "0.75": {
+          "centroid_accuracy": 1.0,
+          "direction_accuracy": 1.0,
+          "per_corruption_centroid": {
+            "fog": 1.0,
+            "night": 1.0,
+            "noise": 1.0,
+            "blur": 1.0
+          },
+          "per_corruption_direction": {
+            "fog": 1.0,
+            "night": 1.0,
+            "noise": 1.0,
+            "blur": 1.0
+          },
+          "n_samples": 32
+        },
+        "1.0": {
+          "centroid_accuracy": 1.0,
+          "direction_accuracy": 1.0,
+          "per_corruption_centroid": {
+            "fog": 1.0,
+            "night": 1.0,
+            "noise": 1.0,
+            "blur": 1.0
+          },
+          "per_corruption_direction": {
+            "fog": 1.0,
+            "night": 1.0,
+            "noise": 1.0,
+            "blur": 1.0
+          },
+          "n_samples": 32
+        }
+      },
+      "severities_tested": [
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "training_severity": 1.0,
+      "note": "Centroids trained at severity=1.0, tested at all severities"
+    },
+    "test5_leave_one_scene_out": {
+      "centroid_accuracy": 1.0,
+      "direction_accuracy": 1.0,
+      "per_scene": {
+        "scene_0_seed_42": {
+          "centroid_accuracy": 1.0,
+          "direction_accuracy": 1.0,
+          "n_corruptions_tested": 4
+        },
+        "scene_1_seed_123": {
+          "centroid_accuracy": 1.0,
+          "direction_accuracy": 1.0,
+          "n_corruptions_tested": 4
+        },
+        "scene_2_seed_456": {
+          "centroid_accuracy": 1.0,
+          "direction_accuracy": 1.0,
+          "n_corruptions_tested": 4
+        },
+        "scene_3_seed_789": {
+          "centroid_accuracy": 1.0,
+          "direction_accuracy": 1.0,
+          "n_corruptions_tested": 4
+        },
+        "scene_4_seed_999": {
+          "centroid_accuracy": 1.0,
+          "direction_accuracy": 1.0,
+          "n_corruptions_tested": 4
+        },
+        "scene_5_seed_1111": {
+          "centroid_accuracy": 1.0,
+          "direction_accuracy": 1.0,
+          "n_corruptions_tested": 4
+        },
+        "scene_6_seed_2222": {
+          "centroid_accuracy": 1.0,
+          "direction_accuracy": 1.0,
+          "n_corruptions_tested": 4
+        },
+        "scene_7_seed_3333": {
+          "centroid_accuracy": 1.0,
+          "direction_accuracy": 1.0,
+          "n_corruptions_tested": 4
+        }
+      },
+      "per_class_centroid": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "per_class_direction": {
+        "fog": 1.0,
+        "night": 1.0,
+        "noise": 1.0,
+        "blur": 1.0
+      },
+      "confusion_matrix_centroid": {
+        "fog": {
+          "fog": 8,
+          "night": 0,
+          "noise": 0,
+          "blur": 0
+        },
+        "night": {
+          "fog": 0,
+          "night": 8,
+          "noise": 0,
+          "blur": 0
+        },
+        "noise": {
+          "fog": 0,
+          "night": 0,
+          "noise": 8,
+          "blur": 0
+        },
+        "blur": {
+          "fog": 0,
+          "night": 0,
+          "noise": 0,
+          "blur": 8
+        }
+      },
+      "confusion_matrix_direction": {
+        "fog": {
+          "fog": 8,
+          "night": 0,
+          "noise": 0,
+          "blur": 0
+        },
+        "night": {
+          "fog": 0,
+          "night": 8,
+          "noise": 0,
+          "blur": 0
+        },
+        "noise": {
+          "fog": 0,
+          "night": 0,
+          "noise": 8,
+          "blur": 0
+        },
+        "blur": {
+          "fog": 0,
+          "night": 0,
+          "noise": 0,
+          "blur": 8
+        }
+      },
+      "n_folds": 8,
+      "n_total_predictions": 32
+    },
+    "summary": {
+      "test1_centroid_accuracy_cosine": 1.0,
+      "test1_centroid_accuracy_euclidean": 1.0,
+      "test2_direction_accuracy": 1.0,
+      "test3_centroid_overall_accuracy": 1.0,
+      "test3_direction_overall_accuracy": 1.0,
+      "test4_severity_centroid_accuracies": {
+        "0.25": 0.5,
+        "0.5": 0.75,
+        "0.75": 1.0,
+        "1.0": 1.0
+      },
+      "test4_severity_direction_accuracies": {
+        "0.25": 0.96875,
+        "0.5": 0.96875,
+        "0.75": 1.0,
+        "1.0": 1.0
+      },
+      "test5_loso_centroid_accuracy": 1.0,
+      "test5_loso_direction_accuracy": 1.0
+    },
+    "classifiable": true,
+    "best_method": "centroid"
+  }
+}

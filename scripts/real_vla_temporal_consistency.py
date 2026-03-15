@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-"""Experiment 422: Temporal Consistency Analysis
+"""Experiment 442: Temporal Consistency Analysis
 
-Studies how corruption affects the temporal consistency of predicted actions
-and embeddings across sequential frames. In a real robot deployment, the
-model receives a stream of frames — does corruption cause sudden jumps
-in the embedding/action space, or gradual drift?
+Simulates sequential frame processing to test detection stability over time.
+In real deployment, the robot processes frames continuously — does detection
+remain stable? Can we use temporal smoothing to improve detection?
 
 Tests:
-1. Frame-to-frame embedding stability (clean sequence vs corrupted)
-2. Action prediction stability across sequential frames
-3. Sudden vs gradual corruption onset detection
-4. Temporal smoothing effects on OOD detection
-5. Embedding velocity (rate of change) as OOD signal
+1. Frame-to-frame embedding stability (clean sequences)
+2. Detection during gradual corruption onset
+3. Temporal smoothing (exponential moving average) vs single-frame
+4. Detection latency (frames until corruption is flagged)
+5. False alarm rate under natural frame variation
 """
 
 import json, time, os, sys
@@ -38,13 +37,6 @@ def extract_hidden(model, processor, image, prompt, layer=3):
     with torch.no_grad():
         fwd = model(**inputs, output_hidden_states=True)
     return fwd.hidden_states[layer][0, -1, :].float().cpu().numpy()
-
-def get_action_tokens(model, processor, image, prompt):
-    inputs = processor(prompt, image).to(model.device, dtype=torch.bfloat16)
-    with torch.no_grad():
-        gen = model.generate(**inputs, max_new_tokens=7, do_sample=False)
-    new_tokens = gen[0, inputs['input_ids'].shape[1]:]
-    return new_tokens.cpu().numpy()
 
 def cosine_dist(a, b):
     a, b = np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64)
@@ -73,181 +65,182 @@ def main():
     prompt = "In: What action should the robot take to pick up the object?\nOut:"
     corruptions = ['fog', 'night', 'noise', 'blur']
 
-    # Generate a "video sequence" by creating slightly different frames
-    base_seed = 42
-    rng = np.random.RandomState(base_seed)
-    base_arr = rng.randint(0, 255, (224, 224, 3), dtype=np.uint8).astype(np.float32)
+    # Create base scenes
+    seeds = [42, 123, 456, 789, 999, 1111, 2222, 3333]
+    scenes = [Image.fromarray(np.random.RandomState(s).randint(0, 255, (224, 224, 3), dtype=np.uint8)) for s in seeds]
 
-    # Create 10 sequential frames with small perturbations
-    n_frames = 10
-    frames = []
-    for i in range(n_frames):
-        noise = rng.randn(224, 224, 3) * 3.0
-        frame_arr = np.clip(base_arr + noise * i, 0, 255).astype(np.uint8)
-        frames.append(Image.fromarray(frame_arr))
-
-    print(f"Generated {n_frames} sequential frames")
-
-    print("Extracting clean frame embeddings...")
-    clean_embs = [extract_hidden(model, processor, f, prompt) for f in frames]
+    print("Extracting calibration embeddings...")
+    clean_embs = [extract_hidden(model, processor, s, prompt) for s in scenes]
     centroid = np.mean(clean_embs, axis=0)
+    clean_dists = [cosine_dist(e, centroid) for e in clean_embs]
+    threshold_3sigma = np.mean(clean_dists) + 3 * np.std(clean_dists)
 
-    results = {"n_frames": n_frames}
+    results = {"n_scenes": len(scenes), "threshold_3sigma": float(threshold_3sigma)}
 
-    # === Test 1: Frame-to-frame embedding stability ===
-    print("\n=== Frame-to-Frame Embedding Stability ===")
-    stability = {}
+    # === Test 1: Frame-to-frame stability ===
+    print("\n=== Frame-to-Frame Stability ===")
+    # Simulate slight variations by adding tiny noise to each frame
+    stability_results = {}
+    for s_idx in range(3):
+        base = scenes[s_idx]
+        base_emb = clean_embs[s_idx]
+        frame_dists = []
+        frame_to_frame = []
+        prev_emb = base_emb
+        for frame in range(10):
+            # Small random perturbation (simulating camera noise, slight motion)
+            arr = np.array(base).astype(np.float32)
+            arr += np.random.RandomState(frame * 100 + s_idx).randn(*arr.shape) * 2.0  # tiny noise
+            arr = np.clip(arr, 0, 255).astype(np.uint8)
+            frame_img = Image.fromarray(arr)
+            emb = extract_hidden(model, processor, frame_img, prompt)
+            d = cosine_dist(emb, centroid)
+            f2f = cosine_dist(emb, prev_emb)
+            frame_dists.append(float(d))
+            frame_to_frame.append(float(f2f))
+            prev_emb = emb
 
-    clean_consecutive = []
-    for i in range(n_frames - 1):
-        d = cosine_dist(clean_embs[i], clean_embs[i+1])
-        clean_consecutive.append(float(d))
-    stability["clean"] = {
-        "consecutive_dists": clean_consecutive,
-        "mean": float(np.mean(clean_consecutive)),
-        "max": float(np.max(clean_consecutive)),
-    }
-    print(f"  Clean: mean consecutive dist={np.mean(clean_consecutive):.6f}")
-
-    for c in corruptions:
-        corrupt_embs = [extract_hidden(model, processor, apply_corruption(f, c), prompt) for f in frames]
-        consec = []
-        for i in range(n_frames - 1):
-            d = cosine_dist(corrupt_embs[i], corrupt_embs[i+1])
-            consec.append(float(d))
-        centroid_dists = [float(cosine_dist(e, centroid)) for e in corrupt_embs]
-        stability[c] = {
-            "consecutive_dists": consec,
-            "mean": float(np.mean(consec)),
-            "max": float(np.max(consec)),
-            "centroid_dists": centroid_dists,
-            "mean_centroid_dist": float(np.mean(centroid_dists)),
+        stability_results[f"scene_{s_idx}"] = {
+            "frame_dists": frame_dists,
+            "frame_to_frame_dists": frame_to_frame,
+            "mean_dist": float(np.mean(frame_dists)),
+            "std_dist": float(np.std(frame_dists)),
+            "mean_f2f": float(np.mean(frame_to_frame)),
+            "max_f2f": float(np.max(frame_to_frame)),
         }
-        print(f"  {c}: mean consecutive={np.mean(consec):.6f}, mean centroid={np.mean(centroid_dists):.6f}")
-    results["frame_stability"] = stability
+        print(f"  Scene {s_idx}: mean_dist={np.mean(frame_dists):.6f}, std={np.std(frame_dists):.6f}, mean_f2f={np.mean(frame_to_frame):.6f}")
+    results["frame_stability"] = stability_results
 
-    # === Test 2: Action prediction stability ===
-    print("\n=== Action Prediction Stability ===")
-    action_stability = {}
-
-    clean_actions = [get_action_tokens(model, processor, f, prompt) for f in frames]
-    clean_action_changes = sum(1 for i in range(n_frames-1) if not np.array_equal(clean_actions[i], clean_actions[i+1]))
-    action_stability["clean"] = {
-        "n_action_changes": int(clean_action_changes),
-        "unique_actions": int(len(set(tuple(a.tolist()) for a in clean_actions))),
-    }
-    print(f"  Clean: {clean_action_changes} action changes across {n_frames} frames, {action_stability['clean']['unique_actions']} unique")
-
-    for c in corruptions:
-        corrupt_actions = [get_action_tokens(model, processor, apply_corruption(f, c), prompt) for f in frames]
-        changes = sum(1 for i in range(n_frames-1) if not np.array_equal(corrupt_actions[i], corrupt_actions[i+1]))
-        unique = len(set(tuple(a.tolist()) for a in corrupt_actions))
-        matches_clean = sum(1 for i in range(n_frames) if np.array_equal(corrupt_actions[i], clean_actions[i]))
-        action_stability[c] = {
-            "n_action_changes": int(changes),
-            "unique_actions": int(unique),
-            "matches_clean": int(matches_clean),
-        }
-        print(f"  {c}: {changes} changes, {unique} unique, {matches_clean}/{n_frames} match clean")
-    results["action_stability"] = action_stability
-
-    # === Test 3: Sudden vs gradual corruption onset ===
-    print("\n=== Corruption Onset Detection ===")
+    # === Test 2: Gradual corruption onset ===
+    print("\n=== Gradual Corruption Onset ===")
     onset_results = {}
+    severity_steps = [0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.7, 1.0]
+
     for c in corruptions:
-        mixed_embs = []
-        mixed_dists = []
-        for i in range(n_frames):
-            if i < 5:
-                emb = clean_embs[i]
+        per_step = []
+        for sev in severity_steps:
+            dists = []
+            for s in scenes[:4]:
+                if sev == 0.0:
+                    emb = extract_hidden(model, processor, s, prompt)
+                else:
+                    emb = extract_hidden(model, processor, apply_corruption(s, c, severity=sev), prompt)
+                dists.append(cosine_dist(emb, centroid))
+            per_step.append({
+                "severity": sev,
+                "mean_dist": float(np.mean(dists)),
+                "std_dist": float(np.std(dists)),
+                "above_threshold": float(np.mean(np.array(dists) > threshold_3sigma)),
+            })
+        onset_results[c] = per_step
+        # Find detection onset severity
+        first_detect = next((s["severity"] for s in per_step if s["above_threshold"] > 0.5), None)
+        print(f"  {c}: detection onset at severity={first_detect}")
+    results["gradual_onset"] = onset_results
+
+    # === Test 3: Temporal smoothing (EMA) ===
+    print("\n=== Temporal Smoothing (EMA) ===")
+    ema_results = {}
+    alphas = [0.1, 0.3, 0.5, 0.7, 1.0]  # 1.0 = no smoothing
+
+    for c in ['fog', 'night']:
+        per_alpha = {}
+        # Simulate: 5 clean frames, then 10 corrupted frames
+        base = scenes[0]
+        clean_frames = [base] * 5
+        corr_frames = [apply_corruption(base, c)] * 10
+        all_frames = clean_frames + corr_frames
+
+        frame_embs = [extract_hidden(model, processor, f, prompt) for f in all_frames]
+        raw_dists = [cosine_dist(e, centroid) for e in frame_embs]
+
+        for alpha in alphas:
+            ema_dists = []
+            ema = raw_dists[0]
+            for d in raw_dists:
+                ema = alpha * d + (1 - alpha) * ema
+                ema_dists.append(float(ema))
+
+            # Frames to detect (first frame above threshold after corruption starts at frame 5)
+            detect_frame = None
+            for i in range(5, len(ema_dists)):
+                if ema_dists[i] > threshold_3sigma:
+                    detect_frame = i - 5  # frames after corruption onset
+                    break
+
+            per_alpha[str(alpha)] = {
+                "ema_dists": ema_dists,
+                "raw_dists": raw_dists,
+                "detect_frame_after_onset": detect_frame,
+                "final_ema": float(ema_dists[-1]),
+            }
+        ema_results[c] = per_alpha
+        print(f"  {c}: detect frames after onset = " +
+              ", ".join(f"α={a}: {per_alpha[str(a)]['detect_frame_after_onset']}" for a in alphas))
+    results["temporal_smoothing"] = ema_results
+
+    # === Test 4: False alarm rate ===
+    print("\n=== False Alarm Rate Under Natural Variation ===")
+    n_trials = 50
+    rng = np.random.RandomState(42)
+    false_alarms = 0
+    all_clean_dists = []
+
+    for trial in range(n_trials):
+        # Random scene with tiny noise
+        s_idx = rng.randint(0, len(scenes))
+        arr = np.array(scenes[s_idx]).astype(np.float32)
+        arr += rng.randn(*arr.shape) * 3.0  # natural camera noise
+        arr = np.clip(arr, 0, 255).astype(np.uint8)
+        emb = extract_hidden(model, processor, Image.fromarray(arr), prompt)
+        d = cosine_dist(emb, centroid)
+        all_clean_dists.append(float(d))
+        if d > threshold_3sigma:
+            false_alarms += 1
+
+    results["false_alarm_rate"] = {
+        "n_trials": n_trials,
+        "false_alarms": false_alarms,
+        "false_alarm_rate": float(false_alarms / n_trials),
+        "mean_dist": float(np.mean(all_clean_dists)),
+        "max_dist": float(np.max(all_clean_dists)),
+        "threshold": float(threshold_3sigma),
+    }
+    print(f"  False alarm rate: {false_alarms}/{n_trials} = {false_alarms/n_trials:.4f}")
+
+    # === Test 5: Detection with intermittent corruption ===
+    print("\n=== Intermittent Corruption Detection ===")
+    intermittent = {}
+    for c in ['fog', 'night']:
+        # Pattern: clean, corrupt, clean, corrupt, clean...
+        base = scenes[0]
+        pattern = [0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1]  # 0=clean, 1=corrupt
+        frame_dists = []
+        for p in pattern:
+            if p == 0:
+                emb = extract_hidden(model, processor, base, prompt)
             else:
-                emb = extract_hidden(model, processor, apply_corruption(frames[i], c), prompt)
-            mixed_embs.append(emb)
-            mixed_dists.append(float(cosine_dist(emb, centroid)))
+                emb = extract_hidden(model, processor, apply_corruption(base, c), prompt)
+            frame_dists.append(float(cosine_dist(emb, centroid)))
 
-        velocities = []
-        for i in range(n_frames - 1):
-            velocities.append(float(cosine_dist(mixed_embs[i], mixed_embs[i+1])))
+        detected = [1 if d > threshold_3sigma else 0 for d in frame_dists]
+        tp = sum(1 for p, d in zip(pattern, detected) if p == 1 and d == 1)
+        fp = sum(1 for p, d in zip(pattern, detected) if p == 0 and d == 1)
+        fn = sum(1 for p, d in zip(pattern, detected) if p == 1 and d == 0)
+        tn = sum(1 for p, d in zip(pattern, detected) if p == 0 and d == 0)
+        n_corrupt = sum(pattern)
+        n_clean = len(pattern) - n_corrupt
 
-        if velocities:
-            max_vel_idx = int(np.argmax(velocities))
-            onset_velocity = velocities[max_vel_idx]
-        else:
-            max_vel_idx = -1
-            onset_velocity = 0.0
-
-        onset_results[c] = {
-            "centroid_dists": mixed_dists,
-            "velocities": velocities,
-            "onset_frame": max_vel_idx,
-            "onset_velocity": float(onset_velocity),
-            "pre_onset_mean_vel": float(np.mean(velocities[:4])) if len(velocities) >= 4 else 0.0,
-            "post_onset_mean_vel": float(np.mean(velocities[5:])) if len(velocities) > 5 else 0.0,
+        intermittent[c] = {
+            "pattern": pattern,
+            "frame_dists": frame_dists,
+            "detected": detected,
+            "tp": tp, "fp": fp, "fn": fn, "tn": tn,
+            "precision": float(tp / (tp + fp)) if (tp + fp) > 0 else 0,
+            "recall": float(tp / (tp + fn)) if (tp + fn) > 0 else 0,
         }
-        print(f"  {c}: onset detected at frame {max_vel_idx} (velocity={onset_velocity:.6f})")
-    results["corruption_onset"] = onset_results
-
-    # === Test 4: Temporal smoothing ===
-    print("\n=== Temporal Smoothing for Detection ===")
-    smoothing = {}
-    for c in corruptions:
-        single_frame_ood = [float(cosine_dist(
-            extract_hidden(model, processor, apply_corruption(f, c), prompt), centroid))
-            for f in frames]
-
-        if len(single_frame_ood) >= 3:
-            smoothed_3 = [float(np.mean(single_frame_ood[max(0,i-1):i+2])) for i in range(len(single_frame_ood))]
-        else:
-            smoothed_3 = single_frame_ood
-
-        if len(single_frame_ood) >= 5:
-            smoothed_5 = [float(np.mean(single_frame_ood[max(0,i-2):i+3])) for i in range(len(single_frame_ood))]
-        else:
-            smoothed_5 = single_frame_ood
-
-        clean_dists = [float(cosine_dist(e, centroid)) for e in clean_embs]
-
-        auroc_single = float(compute_auroc(clean_dists, single_frame_ood))
-        auroc_3 = float(compute_auroc(clean_dists, smoothed_3))
-        auroc_5 = float(compute_auroc(clean_dists, smoothed_5))
-
-        smoothing[c] = {
-            "single_auroc": auroc_single,
-            "smooth_3_auroc": auroc_3,
-            "smooth_5_auroc": auroc_5,
-            "single_mean": float(np.mean(single_frame_ood)),
-            "single_std": float(np.std(single_frame_ood)),
-        }
-        print(f"  {c}: single={auroc_single:.4f}, 3-frame={auroc_3:.4f}, 5-frame={auroc_5:.4f}")
-    results["temporal_smoothing"] = smoothing
-
-    # === Test 5: Embedding velocity as OOD signal ===
-    print("\n=== Embedding Velocity as OOD Signal ===")
-    velocity_detection = {}
-
-    clean_vels = [float(cosine_dist(clean_embs[i], clean_embs[i+1])) for i in range(n_frames-1)]
-
-    for c in corruptions:
-        mixed_embs = []
-        for i in range(n_frames):
-            if i < 5:
-                mixed_embs.append(clean_embs[i])
-            else:
-                mixed_embs.append(extract_hidden(model, processor, apply_corruption(frames[i], c), prompt))
-        mixed_vels = [float(cosine_dist(mixed_embs[i], mixed_embs[i+1])) for i in range(n_frames-1)]
-
-        onset_vel = mixed_vels[4] if len(mixed_vels) > 4 else 0.0
-        max_clean_vel = max(clean_vels) if clean_vels else 0.0
-
-        velocity_detection[c] = {
-            "clean_velocities": clean_vels,
-            "mixed_velocities": mixed_vels,
-            "onset_velocity": float(onset_vel),
-            "max_clean_velocity": float(max_clean_vel),
-            "velocity_ratio": float(onset_vel / max_clean_vel) if max_clean_vel > 1e-12 else float('inf'),
-        }
-        print(f"  {c}: onset_vel={onset_vel:.6f}, max_clean_vel={max_clean_vel:.6f}, ratio={velocity_detection[c]['velocity_ratio']:.2f}")
-    results["velocity_detection"] = velocity_detection
+        print(f"  {c}: TP={tp}/{n_corrupt}, FP={fp}/{n_clean}, precision={tp/(tp+fp) if tp+fp > 0 else 0:.4f}, recall={tp/(tp+fn) if tp+fn > 0 else 0:.4f}")
+    results["intermittent_detection"] = intermittent
 
     out_path = "/workspace/Vizuara-VLA-Research/experiments/temporal_consistency_" + \
                time.strftime("%Y%m%d_%H%M%S") + ".json"
