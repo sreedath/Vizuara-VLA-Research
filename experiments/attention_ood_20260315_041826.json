@@ -1,0 +1,67 @@
+{
+  "experiment": "attention_ood",
+  "experiment_number": 192,
+  "timestamp": "20260315_041826",
+  "n_cal": 6,
+  "n_test": 4,
+  "attn_layers": [
+    1,
+    3,
+    16,
+    31
+  ],
+  "results": {
+    "L1": {
+      "cosine_auroc": 1.0,
+      "attention_entropy_auroc": 0.578125,
+      "id_entropy": {
+        "mean": 3.321049937978387,
+        "std": 0.03473565783393053
+      },
+      "ood_entropy": {
+        "mean": 3.354185400530696,
+        "std": 0.09833083980999342
+      },
+      "concentration_auroc": 0.546875
+    },
+    "L3": {
+      "cosine_auroc": 1.0,
+      "attention_entropy_auroc": 0.265625,
+      "id_entropy": {
+        "mean": 1.0415556272491813,
+        "std": 0.005818533493584104
+      },
+      "ood_entropy": {
+        "mean": 1.0186005420982838,
+        "std": 0.03207702411746823
+      },
+      "concentration_auroc": 0.796875
+    },
+    "L16": {
+      "cosine_auroc": 0.9375,
+      "attention_entropy_auroc": 0.625,
+      "id_entropy": {
+        "mean": 1.628516213502735,
+        "std": 0.07917446372026374
+      },
+      "ood_entropy": {
+        "mean": 1.6539365531643853,
+        "std": 0.1020974724693017
+      },
+      "concentration_auroc": 0.546875
+    },
+    "L31": {
+      "cosine_auroc": 1.0,
+      "attention_entropy_auroc": 0.078125,
+      "id_entropy": {
+        "mean": 2.4573081005364656,
+        "std": 0.07139545100514359
+      },
+      "ood_entropy": {
+        "mean": 2.1984373374143615,
+        "std": 0.1948631068732694
+      },
+      "concentration_auroc": 0.9375
+    }
+  }
+}

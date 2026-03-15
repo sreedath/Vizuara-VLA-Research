@@ -7643,3 +7643,34 @@ Already documented as Finding 168. Additional spatial resolution data at 8×8 gr
 
 **Finding**: L1 cosine distance achieves perfect per-category AUROC, confirming the layer sweep result. Logit distribution features (std, range, top-k gap) achieve only 0.58-0.72 AUROC. Critically, **combining cosine + logit features degrades performance** from 1.0 to 0.90-0.92. Feature combination is counterproductive when one feature is already perfect. Cosine distance alone is the optimal approach.
 
+---
+
+### Finding 187: Attention Pattern OOD Analysis (Experiment 192)
+
+**Experiment**: Extract attention weights and test whether attention entropy and concentration can detect OOD inputs.
+
+**Results**:
+| Layer | Cosine AUROC | Attn Entropy AUROC | Concentration AUROC |
+|-------|-------------|-------------------|-------------------|
+| L1 | 1.000 | 0.578 | 0.547 |
+| L3 | 1.000 | 0.266 | 0.797 |
+| L16 | 0.938 | 0.625 | 0.547 |
+| L31 | 1.000 | 0.078 | 0.938 |
+
+**Attention Entropy (ID vs OOD)**:
+| Layer | ID Entropy | OOD Entropy |
+|-------|-----------|------------|
+| L1 | 3.321 ± 0.035 | 3.354 ± 0.098 |
+| L3 | 1.042 ± 0.006 | 1.019 ± 0.032 |
+| L16 | 1.629 ± 0.079 | 1.654 ± 0.102 |
+| L31 | 2.457 ± 0.071 | 2.198 ± 0.195 |
+
+**Key Findings**:
+1. **Attention patterns are near-invariant under OOD conditions**: Entropy differences are tiny (0.02-0.26 nats), heavily overlapping.
+2. **Attention entropy is a poor OOD detector**: AUROC 0.08-0.63, near random at most layers.
+3. **OOD corruptions change VALUES, not PATTERNS**: The model attends to the same positions regardless of input corruption, but the information flowing through those attention connections changes (captured by hidden-state geometry).
+4. **L31 concentration shows some OOD signal**: AUROC 0.938 — the last layer slightly redistributes attention under OOD, but this is still weaker than cosine distance.
+5. **This explains why hidden states work and attention doesn't**: The OOD signal is in the representation values, not the attention routing.
+
+**Finding**: Attention patterns are **largely invariant** under OOD conditions — the model routes information through the same attention paths regardless of input corruption. Attention entropy achieves only 0.08-0.63 AUROC. This reveals that OOD detection depends on **what information flows through attention** (captured by hidden-state geometry), not **how attention is distributed** (attention pattern shape).
+

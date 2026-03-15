@@ -3580,4 +3580,12 @@ We compare our hidden-state cosine distance approach against four standard logit
 
 \textbf{Finding 346}: Layer 1 achieves \textbf{perfect per-category AUROC} (1.0 for fog, night, blur, and noise), validating the layer sweep finding. Cosine distance alone at L1 is the optimal single-feature OOD detector for VLA models.
 
+\subsection{Attention Pattern Invariance}
+
+We extract attention weights and test whether attention entropy and concentration metrics can detect OOD inputs.
+
+\textbf{Finding 347}: Attention patterns are \textbf{largely invariant} under OOD conditions. Attention entropy AUROC ranges from 0.08 to 0.63, near random at most layers. The model routes information through the \textbf{same attention paths} regardless of input corruption.
+
+\textbf{Finding 348}: This reveals a fundamental decomposition: OOD detection depends on \textbf{what information flows through attention} (captured by hidden-state values, AUROC = 1.0), not \textbf{how attention is distributed} (attention weights, AUROC $\approx$ 0.5). The corruption signal is encoded in representation values, not routing patterns.
+
 \end{document}
