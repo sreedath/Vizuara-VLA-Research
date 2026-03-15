@@ -7955,4 +7955,25 @@ We test the detector against adversarial-like perturbations: $L_\infty$ uniform 
 
 \textbf{Finding 1116}: \textbf{The frequency selectivity aligns with driving domain threats.} Weather/lighting corruptions are inherently low-frequency, global changes---exactly what the detector captures. Adversarial pixel perturbations are high-frequency and local---outside the detector's band but also outside the natural corruption distribution.
 
+\subsection{Experiment 404: Input Resolution Sensitivity}
+
+We test detection across 6 resolutions (56--448), 7 aspect ratios (1:1 to 4:1), 5 crop regions, and cross-resolution embedding stability.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig413_resolution.png}
+\caption{Experiment 404: Resolution sensitivity. (A) AUROC=1.0 for fog/night/blur at all resolutions (56--448). (B) Lower resolutions produce larger distances. (C) All 7 aspect ratios achieve AUROC=1.0. (D) Crop position has minimal effect. (E) Resolution change is smaller than corruption distance.}
+\label{fig:resolution}
+\end{figure}
+
+\textbf{Finding 1117}: \textbf{Detection achieves AUROC=1.0 for fog, night, and blur at ALL resolutions from 56$\times$56 to 448$\times$448.} The detector is resolution-invariant across an $8\times$ range. No input preprocessing constraints.
+
+\textbf{Finding 1118}: \textbf{ALL 7 aspect ratios achieve AUROC=1.0}, including extreme configurations (wide 448$\times$112, tall 112$\times$448). The detector imposes no aspect ratio requirements.
+
+\textbf{Finding 1119}: \textbf{Lower resolutions produce LARGER corruption distances} (56$\times$56 fog=0.0067 vs 448$\times$448=0.0031). Downsampling amplifies the relative corruption impact on embeddings, providing larger detection margins.
+
+\textbf{Finding 1120}: \textbf{Cross-resolution embedding change (0.0004--0.002) is always smaller than corruption distance (0.003+).} Resolution changes do not cross the detection threshold---the detector tolerates preprocessing variability.
+
+\textbf{Finding 1121}: \textbf{Crop position has minimal effect ($\pm 0.0003$) on detection distances.} The fog signal is uniformly distributed spatially, consistent with fog being a global illumination change.
+
 \end{document}

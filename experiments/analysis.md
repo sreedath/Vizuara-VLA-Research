@@ -16572,3 +16572,21 @@ Midpoints are always closest to one parent — the corruption with LARGER embedd
 **Finding 863**: Low-frequency perturbations (smooth gradients) achieve AUROC=1.0 with 5/5 detection, while high-frequency perturbations (checkerboard at ±0.2) achieve only AUROC=0.80 with 0/5 detected. The detector operates as a LOW-FREQUENCY FILTER — it responds to global illumination/contrast changes but not texture changes.
 
 **Finding 864**: The detector's frequency selectivity aligns with the driving domain threat model. Weather/lighting corruptions (fog, night, rain) are inherently low-frequency, global changes — exactly what the detector captures. Adversarial pixel perturbations are high-frequency and local — outside the detector's sensitivity band but also outside the natural driving corruption distribution.
+
+---
+
+## Experiment 404: Input Resolution Sensitivity
+
+**Objective**: Test whether detection performance depends on input image resolution or aspect ratio.
+
+**Method**: Test 6 resolutions (56-448), 7 aspect ratios (1:1 to 4:1), 5 crop regions, and cross-resolution embedding stability.
+
+**Finding 865**: Detection achieves AUROC=1.0 for fog, night, and blur at ALL resolutions from 56×56 to 448×448 (8× range). Noise slightly degrades at extreme resolutions (0.92 at 56×56, 0.96 at 320-448). The detector is resolution-invariant for all practical purposes.
+
+**Finding 866**: ALL 7 aspect ratios (1:1, 4:3, 16:9, 3:4, 9:16, wide 4:1, tall 1:4) achieve AUROC=1.0. Even extreme aspect ratios with 4× width/height imbalance maintain perfect detection. No aspect ratio constraint exists.
+
+**Finding 867**: Lower resolutions produce LARGER corruption distances (56×56 fog=0.0067 vs 448×448 fog=0.0031). Downsampling amplifies the relative impact of corruption on the embedding, providing larger detection margins despite lower information content.
+
+**Finding 868**: Cross-resolution embedding stability shows that resizing from 224 to other resolutions produces distances of 0.0004-0.002 — always smaller than corruption distances (0.003+). Resolution change does not cross the detection threshold, confirming the detector tolerates preprocessing variability.
+
+**Finding 869**: Crop position has minimal effect on detection distances (±0.0003 across center, corners). The fog detection signal is uniformly distributed across spatial regions, consistent with fog being a global illumination change.
