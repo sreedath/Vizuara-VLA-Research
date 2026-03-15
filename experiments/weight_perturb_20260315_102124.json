@@ -1,0 +1,500 @@
+{
+  "experiment": "weight_perturbation",
+  "experiment_number": 293,
+  "timestamp": "20260315_102124",
+  "baseline_distances": {
+    "fog": 0.0027054548263549805,
+    "night": 0.007991313934326172,
+    "blur": 0.006263315677642822,
+    "noise": 0.0005123615264892578
+  },
+  "layer_perturbation": {
+    "layer_0": {
+      "param_norm": 62.8247184753418,
+      "results": [
+        {
+          "noise_scale": 1e-06,
+          "relative_noise": 1.5917301728817012e-08,
+          "clean_shift": 1.0132789611816406e-06,
+          "corruption_distances": {
+            "fog": 0.0027014613151550293,
+            "night": 0.00799328088760376,
+            "blur": 0.006271421909332275,
+            "noise": 0.0005171895027160645
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 1e-05,
+          "relative_noise": 1.591730172881701e-07,
+          "clean_shift": 1.3113021850585938e-06,
+          "corruption_distances": {
+            "fog": 0.0027015209197998047,
+            "night": 0.00798112154006958,
+            "blur": 0.006258070468902588,
+            "noise": 0.0005157589912414551
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.0001,
+          "relative_noise": 1.5917301728817013e-06,
+          "clean_shift": 1.9073486328125e-06,
+          "corruption_distances": {
+            "fog": 0.002700984477996826,
+            "night": 0.007984638214111328,
+            "blur": 0.006254673004150391,
+            "noise": 0.0005105733871459961
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.001,
+          "relative_noise": 1.591730172881701e-05,
+          "clean_shift": 1.2516975402832031e-06,
+          "corruption_distances": {
+            "fog": 0.002690911293029785,
+            "night": 0.007956266403198242,
+            "blur": 0.006261587142944336,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.01,
+          "relative_noise": 0.0001591730172881701,
+          "clean_shift": 4.076957702636719e-05,
+          "corruption_distances": {
+            "fog": 0.002772390842437744,
+            "night": 0.007891178131103516,
+            "blur": 0.006318151950836182,
+            "noise": 0.0005051493644714355
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        }
+      ]
+    },
+    "layer_3": {
+      "param_norm": 112.57476806640625,
+      "results": [
+        {
+          "noise_scale": 1e-06,
+          "relative_noise": 8.882985212193502e-09,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 1e-05,
+          "relative_noise": 8.882985212193503e-08,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.0001,
+          "relative_noise": 8.882985212193503e-07,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.001,
+          "relative_noise": 8.882985212193502e-06,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.01,
+          "relative_noise": 8.882985212193502e-05,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        }
+      ]
+    },
+    "layer_15": {
+      "param_norm": 108.09513854980469,
+      "results": [
+        {
+          "noise_scale": 1e-06,
+          "relative_noise": 9.251109840978198e-09,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 1e-05,
+          "relative_noise": 9.251109840978199e-08,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.0001,
+          "relative_noise": 9.251109840978199e-07,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.001,
+          "relative_noise": 9.251109840978198e-06,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.01,
+          "relative_noise": 9.251109840978199e-05,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        }
+      ]
+    },
+    "layer_31": {
+      "param_norm": 100.49227142333984,
+      "results": [
+        {
+          "noise_scale": 1e-06,
+          "relative_noise": 9.951014001736903e-09,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 1e-05,
+          "relative_noise": 9.951014001736903e-08,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.0001,
+          "relative_noise": 9.951014001736903e-07,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.001,
+          "relative_noise": 9.951014001736902e-06,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        },
+        {
+          "noise_scale": 0.01,
+          "relative_noise": 9.951014001736902e-05,
+          "clean_shift": 0.0,
+          "corruption_distances": {
+            "fog": 0.0027054548263549805,
+            "night": 0.007991313934326172,
+            "blur": 0.006263315677642822,
+            "noise": 0.0005123615264892578
+          },
+          "aurocs": {
+            "fog": 1.0,
+            "night": 1.0,
+            "blur": 1.0,
+            "noise": 1.0
+          },
+          "detection_preserved": true
+        }
+      ]
+    }
+  },
+  "global_perturbation": [
+    {
+      "noise_scale": 1e-07,
+      "clean_shift": 1.7881393432617188e-06,
+      "corruption_distances": {
+        "fog": 0.002685844898223877,
+        "night": 0.007982611656188965,
+        "blur": 0.0062596797943115234,
+        "noise": 0.0005173683166503906
+      },
+      "auroc": 1.0,
+      "all_detected": true
+    },
+    {
+      "noise_scale": 1e-06,
+      "clean_shift": 8.940696716308594e-07,
+      "corruption_distances": {
+        "fog": 0.002688586711883545,
+        "night": 0.008009195327758789,
+        "blur": 0.006243288516998291,
+        "noise": 0.0005138516426086426
+      },
+      "auroc": 1.0,
+      "all_detected": true
+    },
+    {
+      "noise_scale": 1e-05,
+      "clean_shift": 2.8014183044433594e-06,
+      "corruption_distances": {
+        "fog": 0.0026993751525878906,
+        "night": 0.00792306661605835,
+        "blur": 0.006265103816986084,
+        "noise": 0.000513911247253418
+      },
+      "auroc": 1.0,
+      "all_detected": true
+    },
+    {
+      "noise_scale": 0.0001,
+      "clean_shift": 2.282857894897461e-05,
+      "corruption_distances": {
+        "fog": 0.002830803394317627,
+        "night": 0.008068978786468506,
+        "blur": 0.006301283836364746,
+        "noise": 0.0004984140396118164
+      },
+      "auroc": 1.0,
+      "all_detected": true
+    }
+  ],
+  "quantization": [
+    {
+      "bits": 16,
+      "clean_shift": 1.7881393432617188e-06,
+      "corruption_distances": {
+        "fog": 0.0026946067810058594,
+        "night": 0.007972419261932373,
+        "blur": 0.006270170211791992,
+        "noise": 0.0005121827125549316
+      },
+      "all_detected": true
+    },
+    {
+      "bits": 12,
+      "clean_shift": 0.00010478496551513672,
+      "corruption_distances": {
+        "fog": 0.0027132034301757812,
+        "night": 0.006422579288482666,
+        "blur": 0.004891812801361084,
+        "noise": 0.0004934072494506836
+      },
+      "all_detected": true
+    },
+    {
+      "bits": 8,
+      "clean_shift": 0.002155125141143799,
+      "corruption_distances": {
+        "fog": 0.003924846649169922,
+        "night": 0.007469832897186279,
+        "blur": 0.005786418914794922,
+        "noise": 0.0006163716316223145
+      },
+      "all_detected": false
+    },
+    {
+      "bits": 6,
+      "clean_shift": 0.027251243591308594,
+      "corruption_distances": {
+        "fog": 0.011900603771209717,
+        "night": 0.017275631427764893,
+        "blur": 0.011479020118713379,
+        "noise": 0.0016635656356811523
+      },
+      "all_detected": false
+    },
+    {
+      "bits": 4,
+      "clean_shift": 0.18676769733428955,
+      "corruption_distances": {
+        "fog": 0.02920442819595337,
+        "night": 0.13063377141952515,
+        "blur": 0.16737186908721924,
+        "noise": 0.022122323513031006
+      },
+      "all_detected": false
+    }
+  ]
+}

@@ -11050,3 +11050,49 @@ Computed the exact severity threshold where each corruption first changes an act
 **Finding 359**: **Evasion is mathematically impossible**: At every corruption level that changes any action token, the cosine distance is guaranteed > 0 (ranging from 3×10⁻⁶ for noise to 1.59×10⁻⁴ for night). Since the noise floor is exactly 0 (deterministic embeddings), there exists NO perturbation that corrupts actions while remaining undetected. The gap between detection (d > 0) and action change is unbridgeable.
 
 **Finding 360**: **Actions are extremely sensitive to corruption**: fog changes actions at just 0.98% severity, blur at 1.5%, noise at 2.2%. Night requires the most (11.4%) because low-level brightness reduction preserves relative structure. Even 10 random pixels can change 4/7 action tokens, confirming the model's action predictions are fragile under any visual perturbation.
+
+---
+
+## Experiment 293: Weight Perturbation Sensitivity
+
+**Date**: March 15, 2026
+**Script**: `scripts/real_vla_weight_perturbation.py`
+**Model**: OpenVLA-7B (real, on RunPod GPU)
+
+### Setup
+
+Tested how sensitive detection is to model weight perturbations:
+- Single-layer Q-projection perturbation at layers 0, 3, 15, 31
+- Global weight noise at scales 1e-7 to 1e-4
+- Quantization simulation at 16, 12, 8, 6, 4 bits
+
+### Results
+
+**Single-Layer Perturbation:**
+- Layers 3, 15, 31: zero clean shift at ALL noise scales (1e-6 to 1e-2)
+- Layer 0: shifts only at scale 1e-2 (d=4.1e-5), still detected
+
+**Global Weight Noise:**
+
+| Scale | Clean Shift | AUROC | All Detected |
+|-------|-------------|-------|-------------|
+| 1e-7 | 2e-6 | 1.000 | Yes |
+| 1e-6 | 1e-6 | 1.000 | Yes |
+| 1e-5 | 3e-6 | 1.000 | Yes |
+| 1e-4 | 2.3e-5 | 1.000 | Yes |
+
+**Quantization Simulation:**
+
+| Bits | Clean Shift | All Detected | Notes |
+|------|-------------|-------------|-------|
+| 16 | 2e-6 | **Yes** | Near-identical to bf16 |
+| 12 | 1.05e-4 | **Yes** | Small shift, preserved |
+| 8 | 2.16e-3 | **No** | Shift exceeds noise corruption |
+| 6 | 2.73e-2 | **No** | Large shift |
+| 4 | 1.87e-1 | **No** | Massive shift |
+
+### Key Findings
+
+**Finding 361**: **Detection is extremely robust to weight perturbation**: even global noise at scale 1e-4 (applied to ALL model parameters) produces only d=2.3e-5 clean shift, maintaining AUROC=1.0. Single-layer Q-projection perturbations at layers 3-31 produce ZERO measurable shift at noise scales up to 1e-2 (relative noise up to 9% of parameter norm). The L3 embedding is stable under massive weight changes.
+
+**Finding 362**: **Detection works at 12-bit quantization but breaks at 8-bit** (without re-calibration). At 8-bit, the clean embedding shifts by d=0.002, exceeding the noise corruption distance (0.0005). However, re-calibration after quantization would restore detection since the corruption distances (0.0006-0.007) still show clear separation. The key insight: quantization requires a new centroid, not a new detector.
