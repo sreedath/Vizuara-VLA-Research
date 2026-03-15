@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Experiment 355: Calibration Set Size Analysis
+"""Experiment 376: Calibration Set Size Sensitivity
 
-How many calibration images are needed?
-1. Detection with 1, 2, 5, 10, 20 calibration images
-2. Centroid stability vs calibration set size
-3. Random vs diverse calibration strategies
-4. One-shot vs multi-shot calibration comparison
-5. Calibration efficiency: performance per image
+How many clean calibration images are needed for reliable detection?
+1. AUROC as function of N (1, 2, 3, 5, 10, 15, 20 calibration images)
+2. Threshold stability: how much does threshold vary with N?
+3. Leave-one-out cross-validation at each N
+4. Bootstrap confidence intervals for threshold
+5. Minimum calibration set for guaranteed AUROC
 """
 
 import json, time, os, sys
@@ -62,172 +62,162 @@ def main():
     results = {}
     ctypes = ['fog', 'night', 'noise', 'blur']
 
-    # Generate 30 scenes for calibration pool and 10 for testing
-    print("Generating scenes...")
-    cal_seeds = list(range(0, 3000, 100))[:30]
-    test_seeds = list(range(5000, 6000, 100))[:10]
-
-    cal_images = {}
-    cal_embs = {}
-    for seed in cal_seeds:
+    # Generate images (large pool for calibration experiments)
+    print("Generating images...")
+    all_seeds = list(range(0, 3000, 100))[:30]
+    images = {}
+    all_embs = {}
+    for seed in all_seeds:
         rng = np.random.RandomState(seed)
         px = rng.randint(50, 200, (224, 224, 3), dtype=np.uint8)
-        cal_images[seed] = Image.fromarray(px)
-        cal_embs[seed] = extract_hidden(model, processor, cal_images[seed], prompt)
+        images[seed] = Image.fromarray(px)
+        all_embs[seed] = extract_hidden(model, processor, images[seed], prompt)
 
-    test_images = {}
-    test_embs = {}
-    for seed in test_seeds:
-        rng = np.random.RandomState(seed)
-        px = rng.randint(50, 200, (224, 224, 3), dtype=np.uint8)
-        test_images[seed] = Image.fromarray(px)
-        test_embs[seed] = extract_hidden(model, processor, test_images[seed], prompt)
+    # Corrupt embeddings (test set: last 10 seeds)
+    test_seeds = all_seeds[20:]  # 10 test scenes
+    cal_pool = all_seeds[:20]    # 20 calibration pool
+    corrupt_embs = {ct: {} for ct in ctypes}
+    for ct in ctypes:
+        for seed in test_seeds:
+            corrupt_img = apply_corruption(images[seed], ct, 0.5)
+            corrupt_embs[ct][seed] = extract_hidden(model, processor, corrupt_img, prompt)
 
-    # ========== 1. Per-scene calibration (one-shot) ==========
-    print("\n=== One-Shot Per-Scene Calibration ===")
+    print(f"  {len(cal_pool)} calibration pool, {len(test_seeds)} test scenes")
 
-    oneshot_results = {}
-    for test_seed in test_seeds:
-        cal = test_embs[test_seed]
+    # ========== 1. AUROC vs Calibration Set Size ==========
+    print("\n=== AUROC vs Calibration Size ===")
 
-        emb = extract_hidden(model, processor, test_images[test_seed], prompt)
-        id_dist = float(cosine_dist(cal, emb))
+    cal_sizes = [1, 2, 3, 5, 7, 10, 15, 20]
+    auroc_vs_n = {}
 
-        per_type = {}
-        for ct in ctypes:
-            img = apply_corruption(test_images[test_seed], ct, 0.5)
-            emb = extract_hidden(model, processor, img, prompt)
-            ood_dist = float(cosine_dist(cal, emb))
-            per_type[ct] = {'distance': ood_dist, 'detected': ood_dist > id_dist}
-
-        oneshot_results[str(test_seed)] = {
-            'id_dist': id_dist,
-            'per_type': per_type,
-        }
-
-    all_detected_oneshot = all(
-        oneshot_results[str(s)]['per_type'][ct]['detected']
-        for s in test_seeds for ct in ctypes
-    )
-    results['oneshot'] = {
-        'per_scene': oneshot_results,
-        'all_detected': all_detected_oneshot,
-    }
-    print(f"  One-shot all detected: {all_detected_oneshot}")
-
-    # ========== 2. Centroid calibration with varying set sizes ==========
-    print("\n=== Centroid Calibration vs Set Size ===")
-
-    cal_size_results = {}
-    rng = np.random.RandomState(42)
-
-    for n_cal in [1, 2, 3, 5, 10, 15, 20, 30]:
-        n_trials = 10 if n_cal < 30 else 1
+    for n in cal_sizes:
+        n_trials = min(20, max(5, 30 // n))
         trial_aurocs = {ct: [] for ct in ctypes}
+        trial_thresholds = []
 
         for trial in range(n_trials):
-            if n_cal >= len(cal_seeds):
-                subset = cal_seeds
-            else:
-                subset = rng.choice(cal_seeds, n_cal, replace=False).tolist()
+            rng = np.random.RandomState(trial * 100 + n)
+            cal_seeds = list(rng.choice(cal_pool, size=min(n, len(cal_pool)), replace=False))
 
-            centroid = np.mean([cal_embs[s] for s in subset], axis=0)
+            centroid = np.mean([all_embs[s] for s in cal_seeds], axis=0)
+            cal_dists = [cosine_dist(centroid, all_embs[s]) for s in cal_seeds]
+            threshold = max(cal_dists)
+            trial_thresholds.append(threshold)
 
             for ct in ctypes:
-                id_dists = []
-                ood_dists = []
-                for test_seed in test_seeds:
-                    id_dists.append(float(cosine_dist(centroid, test_embs[test_seed])))
-                    img = apply_corruption(test_images[test_seed], ct, 0.5)
-                    emb = extract_hidden(model, processor, img, prompt)
-                    ood_dists.append(float(cosine_dist(centroid, emb)))
+                test_clean_dists = [cosine_dist(centroid, all_embs[s]) for s in test_seeds]
+                test_corrupt_dists = [cosine_dist(centroid, corrupt_embs[ct][s]) for s in test_seeds]
+                auroc = compute_auroc(test_clean_dists, test_corrupt_dists)
+                trial_aurocs[ct].append(auroc)
 
-                auroc = compute_auroc(id_dists, ood_dists)
-                trial_aurocs[ct].append(float(auroc))
-
-        per_type = {}
-        for ct in ctypes:
-            per_type[ct] = {
-                'mean_auroc': float(np.mean(trial_aurocs[ct])),
-                'std_auroc': float(np.std(trial_aurocs[ct])),
-                'min_auroc': float(min(trial_aurocs[ct])),
-                'all_perfect': all(a == 1.0 for a in trial_aurocs[ct]),
-            }
-
-        cal_size_results[str(n_cal)] = {
+        auroc_vs_n[str(n)] = {
             'n_trials': n_trials,
-            'per_type': per_type,
+            'threshold_mean': float(np.mean(trial_thresholds)),
+            'threshold_std': float(np.std(trial_thresholds)),
+            'threshold_max': float(max(trial_thresholds)),
         }
-        auroc_str = ', '.join(ct + '=' + format(per_type[ct]['mean_auroc'], '.3f') for ct in ctypes)
-        print(f"  n_cal={n_cal}: {auroc_str}")
-
-    results['calibration_size'] = cal_size_results
-
-    # ========== 3. Centroid stability ==========
-    print("\n=== Centroid Stability ===")
-
-    stability = {}
-    for n_cal in [1, 2, 5, 10, 20]:
-        centroids = []
-        for trial in range(20):
-            if n_cal >= len(cal_seeds):
-                subset = cal_seeds
-            else:
-                subset = rng.choice(cal_seeds, n_cal, replace=False).tolist()
-            centroid = np.mean([cal_embs[s] for s in subset], axis=0)
-            centroids.append(centroid)
-
-        pairwise = []
-        for i in range(len(centroids)):
-            for j in range(i+1, len(centroids)):
-                pairwise.append(float(cosine_dist(centroids[i], centroids[j])))
-
-        stability[str(n_cal)] = {
-            'mean_centroid_dist': float(np.mean(pairwise)),
-            'max_centroid_dist': float(max(pairwise)),
-            'std_centroid_dist': float(np.std(pairwise)),
-        }
-        print(f"  n_cal={n_cal}: centroid var={np.mean(pairwise):.6f} (max={max(pairwise):.6f})")
-
-    results['stability'] = stability
-
-    # ========== 4. Nearest-centroid vs single-centroid ==========
-    print("\n=== Nearest vs Single Centroid ===")
-
-    global_centroid = np.mean([cal_embs[s] for s in cal_seeds], axis=0)
-
-    comparison = {}
-    for test_seed in test_seeds:
-        nearest_seed = min(cal_seeds, key=lambda s: cosine_dist(cal_embs[s], test_embs[test_seed]))
-        nearest_cal = cal_embs[nearest_seed]
-
         for ct in ctypes:
-            img = apply_corruption(test_images[test_seed], ct, 0.5)
-            emb = extract_hidden(model, processor, img, prompt)
+            auroc_vs_n[str(n)][f'{ct}_auroc_mean'] = float(np.mean(trial_aurocs[ct]))
+            auroc_vs_n[str(n)][f'{ct}_auroc_min'] = float(min(trial_aurocs[ct]))
+            auroc_vs_n[str(n)][f'{ct}_auroc_std'] = float(np.std(trial_aurocs[ct]))
 
-            d_nearest = float(cosine_dist(nearest_cal, emb))
-            d_global = float(cosine_dist(global_centroid, emb))
-            d_self = float(cosine_dist(test_embs[test_seed], emb))
+        print(f"  N={n}: thresh={np.mean(trial_thresholds):.6f}+/-{np.std(trial_thresholds):.6f}, "
+              f"fog={np.mean(trial_aurocs['fog']):.4f}, noise={np.mean(trial_aurocs['noise']):.4f}")
 
-            key = str(test_seed) + '_' + ct
-            comparison[key] = {
-                'nearest': d_nearest,
-                'global_centroid': d_global,
-                'self_cal': d_self,
-                'best_method': 'self' if d_self >= d_nearest and d_self >= d_global
-                    else ('nearest' if d_nearest >= d_global else 'global'),
-            }
+    results['auroc_vs_n'] = auroc_vs_n
 
-    best_counts = {}
-    for v in comparison.values():
-        m = v['best_method']
-        best_counts[m] = best_counts.get(m, 0) + 1
+    # ========== 2. Leave-One-Out Cross-Validation ==========
+    print("\n=== Leave-One-Out (N=20) ===")
 
-    results['nearest_vs_centroid'] = {
-        'comparisons': comparison,
-        'best_counts': best_counts,
-    }
-    print(f"  Best method counts: {best_counts}")
+    loo_results = {}
+    full_centroid = np.mean([all_embs[s] for s in cal_pool], axis=0)
+    full_dists = [cosine_dist(full_centroid, all_embs[s]) for s in cal_pool]
+    full_threshold = max(full_dists)
+
+    for ct in ctypes:
+        loo_aurocs = []
+        loo_thresholds = []
+        for leave_out_seed in cal_pool:
+            remaining = [s for s in cal_pool if s != leave_out_seed]
+            loo_centroid = np.mean([all_embs[s] for s in remaining], axis=0)
+            loo_cal_dists = [cosine_dist(loo_centroid, all_embs[s]) for s in remaining]
+            loo_threshold = max(loo_cal_dists)
+            loo_thresholds.append(loo_threshold)
+
+            test_clean = [cosine_dist(loo_centroid, all_embs[s]) for s in test_seeds]
+            test_corrupt = [cosine_dist(loo_centroid, corrupt_embs[ct][s]) for s in test_seeds]
+            loo_aurocs.append(compute_auroc(test_clean, test_corrupt))
+
+        loo_results[ct] = {
+            'mean_auroc': float(np.mean(loo_aurocs)),
+            'min_auroc': float(min(loo_aurocs)),
+            'std_auroc': float(np.std(loo_aurocs)),
+            'threshold_mean': float(np.mean(loo_thresholds)),
+            'threshold_std': float(np.std(loo_thresholds)),
+        }
+        print(f"  {ct}: LOO AUROC={np.mean(loo_aurocs):.4f}+/-{np.std(loo_aurocs):.4f}")
+
+    results['leave_one_out'] = loo_results
+
+    # ========== 3. Bootstrap Confidence Intervals ==========
+    print("\n=== Bootstrap CI (N=10, 1000 resamples) ===")
+
+    bootstrap = {}
+    n_boot = 1000
+    cal_10 = cal_pool[:10]
+
+    for ct in ctypes:
+        boot_aurocs = []
+        boot_thresholds = []
+
+        for b in range(n_boot):
+            rng = np.random.RandomState(b)
+            boot_idx = rng.choice(len(cal_10), size=len(cal_10), replace=True)
+            boot_seeds = [cal_10[i] for i in boot_idx]
+
+            boot_centroid = np.mean([all_embs[s] for s in boot_seeds], axis=0)
+            boot_cal_dists = [cosine_dist(boot_centroid, all_embs[s]) for s in boot_seeds]
+            boot_threshold = max(boot_cal_dists)
+            boot_thresholds.append(boot_threshold)
+
+            test_clean = [cosine_dist(boot_centroid, all_embs[s]) for s in test_seeds]
+            test_corrupt = [cosine_dist(boot_centroid, corrupt_embs[ct][s]) for s in test_seeds]
+            boot_aurocs.append(compute_auroc(test_clean, test_corrupt))
+
+        bootstrap[ct] = {
+            'auroc_mean': float(np.mean(boot_aurocs)),
+            'auroc_ci_lower': float(np.percentile(boot_aurocs, 2.5)),
+            'auroc_ci_upper': float(np.percentile(boot_aurocs, 97.5)),
+            'threshold_ci_lower': float(np.percentile(boot_thresholds, 2.5)),
+            'threshold_ci_upper': float(np.percentile(boot_thresholds, 97.5)),
+        }
+        print(f"  {ct}: AUROC={np.mean(boot_aurocs):.4f} "
+              f"[{np.percentile(boot_aurocs, 2.5):.4f}, {np.percentile(boot_aurocs, 97.5):.4f}]")
+
+    results['bootstrap'] = bootstrap
+
+    # ========== 4. Centroid Convergence ==========
+    print("\n=== Centroid Convergence ===")
+
+    convergence = {}
+    full_centroid_20 = np.mean([all_embs[s] for s in cal_pool], axis=0)
+
+    for n in cal_sizes:
+        dists_to_full = []
+        for trial in range(10):
+            rng = np.random.RandomState(trial * 200 + n)
+            subset = list(rng.choice(cal_pool, size=min(n, len(cal_pool)), replace=False))
+            sub_centroid = np.mean([all_embs[s] for s in subset], axis=0)
+            dists_to_full.append(cosine_dist(sub_centroid, full_centroid_20))
+
+        convergence[str(n)] = {
+            'mean_dist_to_full': float(np.mean(dists_to_full)),
+            'max_dist_to_full': float(max(dists_to_full)),
+            'std_dist_to_full': float(np.std(dists_to_full)),
+        }
+        print(f"  N={n}: dist_to_full={np.mean(dists_to_full):.8f}")
+
+    results['centroid_convergence'] = convergence
 
     # Save
     ts = time.strftime("%Y%m%d_%H%M%S")

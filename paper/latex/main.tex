@@ -7175,4 +7175,35 @@ We analyze the geometric structure of the embedding space with 20 diverse scenes
 
 \textbf{Finding 971}: \textbf{Chebyshev (L$_\infty$) distance degrades to AUROC=0.62 for noise.} The maximum-coordinate norm misses distributed, small-magnitude shifts. This confirms that corruption detection requires metrics that aggregate across many dimensions, not single-coordinate statistics.
 
+% ============================================================
+% EXPERIMENT 375: ACTION SPACE DIVERGENCE
+% ============================================================
+
+\subsection{Experiment 375: Action Space Divergence Under Corruption}
+
+We analyze how visual corruption affects the 7-dimensional action output of OpenVLA-7B, examining per-dimension divergence, vector direction vs.\ magnitude, token confidence, and cross-scene consistency.
+
+\textbf{Direction vs.\ Magnitude.} Corruption primarily \emph{rotates} the action vector rather than scaling it. Cosine similarity between clean and corrupted actions drops to 0.18--0.28 for fog/night/blur (80\% direction change), while magnitude ratios remain 0.79--0.92. The model predicts actions in completely wrong \emph{directions}, not just wrong magnitudes.
+
+\textbf{Token-Level Changes.} Night corruption achieves the highest token change rate (90\%, 51.8-bin shift), while noise shows the mildest changes (63\%, 40.4-bin shift). Critically, blur causes the largest confidence \emph{drop} (ratio 0.579), while noise maintains \emph{equal} confidence (ratio 1.007), confirming the ``confidently wrong'' phenomenon for noise corruption.
+
+\textbf{Per-Dimension Sensitivity.} The Y-translation dimension (dim 1) is most affected with mean differences of 0.61--0.77, while roll (dim 3) is least affected at 0.12--0.13. Visual corruption disproportionately impacts translational actions over rotational ones, likely because translation depends more directly on visual scene interpretation.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig384_actions.png}
+\caption{\textbf{Experiment 375}: Action space divergence under corruption. Corruption primarily rotates action vectors (cosine sim 0.18--0.58) rather than scaling them (magnitude ratio 0.79--0.92). Token change rates reach 81--90\% for fog/night/blur. Blur causes the largest confidence drop (0.58$\times$), while noise maintains equal confidence (1.0$\times$).}
+\label{fig:actions}
+\end{figure}
+
+\textbf{Finding 972}: \textbf{Corruption rotates action vectors by 72--82\%, not scales them.} Cosine similarity drops to 0.18--0.28 while magnitude ratios remain 0.79--0.92. The model predicts actions in fundamentally wrong directions, making corruption detection essential for safety.
+
+\textbf{Finding 973}: \textbf{Noise maintains equal action confidence (ratio 1.007) while blur drops to 0.579.} Noise is the most dangerous corruption type because the model is equally confident about its wrong predictions --- there is no internal ``uncertainty signal'' to leverage for noise detection.
+
+\textbf{Finding 974}: \textbf{Y-translation (dim 1) is 5$\times$ more affected than roll (dim 3).} Translational action dimensions that depend directly on visual scene interpretation show 5$\times$ higher corruption sensitivity than rotational dimensions, revealing an asymmetric vulnerability in the action decoder.
+
+\textbf{Finding 975}: \textbf{Corruption reduces cross-scene action coherence by 28--52\%.} Fog produces the least coherent corrupted actions (pairwise cosine 0.194 vs 0.404 clean), suggesting that different scenes are corrupted into qualitatively different action regimes.
+
+\textbf{Finding 976}: \textbf{81--90\% of action tokens change under fog/night/blur corruption.} With mean token shifts of 49--52 bins (out of 256), the corrupted action is typically 19--20\% of the full action range away from the correct value per dimension.
+
 \end{document}

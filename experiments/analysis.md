@@ -15520,3 +15520,46 @@ The LM head in OpenVLA-7B requires the final RMS layer normalization to produce 
 
 **Finding 719**: Chebyshev (L-inf) distance degrades catastrophically for noise detection (AUROC=0.62 vs 0.98 for cosine). The L-inf norm is dominated by a single dimension, making it vulnerable to the small, distributed shifts that characterize noise corruption.
 
+---
+
+## Experiment 375: Action Space Divergence Under Corruption
+
+**Objective**: Detailed analysis of how corruption affects the 7-dimensional action output space of OpenVLA-7B: per-dimension divergence, vector direction vs magnitude, token change patterns, and cross-scene consistency.
+
+**Setup**: 10 scenes, 4 corruptions at severity 0.5, 7 action dimensions (dx, dy, dz, droll, dpitch, dyaw, gripper).
+
+### Results
+
+**Action Vector Analysis**:
+| Corruption | Cosine Sim | Mag Ratio | L2 Distance | Direction Change |
+|-----------|-----------|-----------|-------------|-----------------|
+| Fog | 0.183 | 0.790 | 1.136 | 82% |
+| Night | 0.196 | 0.906 | 1.274 | 80% |
+| Noise | 0.579 | 0.811 | 0.731 | 42% |
+| Blur | 0.281 | 0.922 | 1.213 | 72% |
+
+**Token-Level Changes**:
+| Corruption | Token Change Rate | Mean Token Shift | Confidence Ratio |
+|-----------|------------------|-----------------|-----------------|
+| Fog | 81.4% | 49.5 bins | 0.909 |
+| Night | 90.0% | 51.8 bins | 0.873 |
+| Noise | 62.9% | 40.4 bins | 1.007 |
+| Blur | 88.6% | 50.4 bins | 0.579 |
+
+**Cross-Scene Consistency**:
+- Clean pairwise action cosine: 0.404
+- Corrupt pairwise: fog=0.194, night=0.234, noise=0.212, blur=0.292
+- Corruption reduces action coherence by 28-52%
+
+### Findings
+
+**Finding 720**: Corruption primarily ROTATES the action vector rather than scaling it. Cosine similarity drops to 0.18-0.28 (fog/night/blur) while magnitude ratios remain 0.79-0.92. The model predicts actions in completely wrong DIRECTIONS, not just wrong magnitudes.
+
+**Finding 721**: Night corruption produces the highest token change rate (90%) and largest mean token shift (51.8 bins), yet noise produces the SMALLEST changes (63% change rate, 40.4 bins). This mirrors the embedding space finding: noise is the mildest corruption at the action level too.
+
+**Finding 722**: Blur corruption causes the largest confidence DROP (confidence ratio 0.579), meaning the model becomes genuinely uncertain. Noise maintains EQUAL confidence (ratio 1.007), confirming the "confidently wrong" phenomenon: noise corruption produces equally confident but different action predictions.
+
+**Finding 723**: Corruption reduces cross-scene action consistency by 28-52% (pairwise cosine drops from 0.404 to 0.194-0.292). Fog produces the least coherent corrupt actions, suggesting different scenes are corrupted into qualitatively different action regimes.
+
+**Finding 724**: The most affected action dimension is dim 1 (dy, Y-translation) with mean differences of 0.61-0.77 across corruptions, while dim 3 (droll) is least affected (0.12-0.13). Visual corruption disproportionately impacts translational actions over rotational ones.
+

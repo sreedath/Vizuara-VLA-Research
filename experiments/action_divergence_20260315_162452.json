@@ -1,0 +1,350 @@
+{
+  "per_dim_divergence": {
+    "fog": [
+      {
+        "mean_diff": 0.23984375,
+        "max_diff": 0.5234375,
+        "std_diff": 0.1674155133240719,
+        "token_changed_rate": 0.9
+      },
+      {
+        "mean_diff": 0.6140625,
+        "max_diff": 1.078125,
+        "std_diff": 0.3910653767674275,
+        "token_changed_rate": 0.9
+      },
+      {
+        "mean_diff": 0.35390625,
+        "max_diff": 0.9921875,
+        "std_diff": 0.3109345555765112,
+        "token_changed_rate": 0.9
+      },
+      {
+        "mean_diff": 0.12421875,
+        "max_diff": 0.421875,
+        "std_diff": 0.12848890774717675,
+        "token_changed_rate": 0.7
+      },
+      {
+        "mean_diff": 0.36875,
+        "max_diff": 1.6796875,
+        "std_diff": 0.4863718918559131,
+        "token_changed_rate": 0.9
+      },
+      {
+        "mean_diff": 0.34453125,
+        "max_diff": 0.7578125,
+        "std_diff": 0.262119562488309,
+        "token_changed_rate": 0.9
+      },
+      {
+        "mean_diff": 0.16015625,
+        "max_diff": 0.5390625,
+        "std_diff": 0.21970355782351933,
+        "token_changed_rate": 0.5
+      }
+    ],
+    "night": [
+      {
+        "mean_diff": 0.45,
+        "max_diff": 0.953125,
+        "std_diff": 0.3047916488664839,
+        "token_changed_rate": 0.9
+      },
+      {
+        "mean_diff": 0.7734375,
+        "max_diff": 1.9921875,
+        "std_diff": 0.5484686600834636,
+        "token_changed_rate": 0.9
+      },
+      {
+        "mean_diff": 0.43125,
+        "max_diff": 1.125,
+        "std_diff": 0.3484900464862662,
+        "token_changed_rate": 0.9
+      },
+      {
+        "mean_diff": 0.13046875,
+        "max_diff": 0.3828125,
+        "std_diff": 0.10405886348751123,
+        "token_changed_rate": 1.0
+      },
+      {
+        "mean_diff": 0.2921875,
+        "max_diff": 0.6484375,
+        "std_diff": 0.19412765613121694,
+        "token_changed_rate": 1.0
+      },
+      {
+        "mean_diff": 0.2828125,
+        "max_diff": 1.046875,
+        "std_diff": 0.3124179579805713,
+        "token_changed_rate": 1.0
+      },
+      {
+        "mean_diff": 0.190625,
+        "max_diff": 0.7890625,
+        "std_diff": 0.28157966790057837,
+        "token_changed_rate": 0.6
+      }
+    ],
+    "noise": [
+      {
+        "mean_diff": 0.13125,
+        "max_diff": 0.46875,
+        "std_diff": 0.17930666163377756,
+        "token_changed_rate": 0.5
+      },
+      {
+        "mean_diff": 0.30234375,
+        "max_diff": 1.09375,
+        "std_diff": 0.3482316165845119,
+        "token_changed_rate": 0.6
+      },
+      {
+        "mean_diff": 0.24921875,
+        "max_diff": 0.9140625,
+        "std_diff": 0.3268100512075975,
+        "token_changed_rate": 0.6
+      },
+      {
+        "mean_diff": 0.11640625,
+        "max_diff": 0.4453125,
+        "std_diff": 0.13560708767082383,
+        "token_changed_rate": 0.6
+      },
+      {
+        "mean_diff": 0.18828125,
+        "max_diff": 0.6875,
+        "std_diff": 0.2020539672069383,
+        "token_changed_rate": 0.9
+      },
+      {
+        "mean_diff": 0.2453125,
+        "max_diff": 0.875,
+        "std_diff": 0.2631827059644117,
+        "token_changed_rate": 0.9
+      },
+      {
+        "mean_diff": 0.1546875,
+        "max_diff": 1.0,
+        "std_diff": 0.3074950774504366,
+        "token_changed_rate": 0.3
+      }
+    ],
+    "blur": [
+      {
+        "mean_diff": 0.48125,
+        "max_diff": 1.09375,
+        "std_diff": 0.33833086385593025,
+        "token_changed_rate": 1.0
+      },
+      {
+        "mean_diff": 0.35078125,
+        "max_diff": 0.6640625,
+        "std_diff": 0.21476418981422973,
+        "token_changed_rate": 0.9
+      },
+      {
+        "mean_diff": 0.4015625,
+        "max_diff": 1.140625,
+        "std_diff": 0.3297245239874492,
+        "token_changed_rate": 1.0
+      },
+      {
+        "mean_diff": 0.2109375,
+        "max_diff": 0.671875,
+        "std_diff": 0.17237144213152014,
+        "token_changed_rate": 1.0
+      },
+      {
+        "mean_diff": 0.496875,
+        "max_diff": 1.28125,
+        "std_diff": 0.36262457449992275,
+        "token_changed_rate": 1.0
+      },
+      {
+        "mean_diff": 0.36640625,
+        "max_diff": 1.3125,
+        "std_diff": 0.36671262510862984,
+        "token_changed_rate": 1.0
+      },
+      {
+        "mean_diff": 0.134375,
+        "max_diff": 0.6015625,
+        "std_diff": 0.21429048078776153,
+        "token_changed_rate": 0.3
+      }
+    ]
+  },
+  "vector_analysis": {
+    "fog": {
+      "clean_magnitude_mean": 1.069337321376012,
+      "corrupt_magnitude_mean": 0.84452924971702,
+      "magnitude_ratio": 0.7897687968379227,
+      "cosine_similarity_mean": 0.18268163601360102,
+      "cosine_similarity_min": -0.6813485297159011,
+      "l2_distance_mean": 1.1363447352013951,
+      "l2_distance_max": 1.7940875118009154,
+      "direction_change": 0.817318363986399
+    },
+    "night": {
+      "clean_magnitude_mean": 1.069337321376012,
+      "corrupt_magnitude_mean": 0.9687397466318405,
+      "magnitude_ratio": 0.9059253121225362,
+      "cosine_similarity_mean": 0.1956572741473916,
+      "cosine_similarity_min": -0.6769253254288576,
+      "l2_distance_mean": 1.2737774267921333,
+      "l2_distance_max": 2.141223684528896,
+      "direction_change": 0.8043427258526084
+    },
+    "noise": {
+      "clean_magnitude_mean": 1.069337321376012,
+      "corrupt_magnitude_mean": 0.867506905227659,
+      "magnitude_ratio": 0.8112565491601474,
+      "cosine_similarity_mean": 0.5784969733601211,
+      "cosine_similarity_min": -0.22829456787622754,
+      "l2_distance_mean": 0.730933424761706,
+      "l2_distance_max": 1.4932710398442408,
+      "direction_change": 0.42150302663987893
+    },
+    "blur": {
+      "clean_magnitude_mean": 1.069337321376012,
+      "corrupt_magnitude_mean": 0.9854047948561118,
+      "magnitude_ratio": 0.9215097754075423,
+      "cosine_similarity_mean": 0.2812719776535552,
+      "cosine_similarity_min": -0.21544261853261978,
+      "l2_distance_mean": 1.2130524340553053,
+      "l2_distance_max": 1.7182350080733282,
+      "direction_change": 0.7187280223464447
+    }
+  },
+  "token_analysis": {
+    "fog": {
+      "token_change_rate": 0.8142857142857143,
+      "mean_token_shift": 49.526315789473685,
+      "max_token_shift": 215,
+      "clean_top1_conf_mean": 0.6899998422179904,
+      "corrupt_top1_conf_mean": 0.626993032012667,
+      "confidence_ratio": 0.908685761430337
+    },
+    "night": {
+      "token_change_rate": 0.9,
+      "mean_token_shift": 51.82539682539682,
+      "max_token_shift": 255,
+      "clean_top1_conf_mean": 0.6899998422179904,
+      "corrupt_top1_conf_mean": 0.6021651193499565,
+      "confidence_ratio": 0.8727032710823659
+    },
+    "noise": {
+      "token_change_rate": 0.6285714285714286,
+      "mean_token_shift": 40.36363636363637,
+      "max_token_shift": 140,
+      "clean_top1_conf_mean": 0.6899998422179904,
+      "corrupt_top1_conf_mean": 0.694614512366908,
+      "confidence_ratio": 1.0066879292813804
+    },
+    "blur": {
+      "token_change_rate": 0.8857142857142857,
+      "mean_token_shift": 50.41935483870968,
+      "max_token_shift": 168,
+      "clean_top1_conf_mean": 0.6899998422179904,
+      "corrupt_top1_conf_mean": 0.39970879437667983,
+      "confidence_ratio": 0.5792882402578877
+    }
+  },
+  "cross_scene_consistency": {
+    "fog": {
+      "clean_pairwise_cos_mean": 0.4040327912640847,
+      "corrupt_pairwise_cos_mean": 0.1939496365795253,
+      "clean_per_dim_var": [
+        0.06993957519531249,
+        0.23633056640625,
+        0.1108642578125,
+        0.021738281250000005,
+        0.06495117187499999,
+        0.06652893066406249,
+        0.014853515624999997
+      ],
+      "corrupt_per_dim_var": [
+        0.03857666015625,
+        0.15432373046875,
+        0.17249084472656248,
+        0.0039361572265625006,
+        0.12336181640624999,
+        0.05528564453125,
+        0.05719543457031251
+      ],
+      "variance_ratio": 1.034114446986969
+    },
+    "night": {
+      "clean_pairwise_cos_mean": 0.4040327912640847,
+      "corrupt_pairwise_cos_mean": 0.23430539439846823,
+      "clean_per_dim_var": [
+        0.06993957519531249,
+        0.23633056640625,
+        0.1108642578125,
+        0.021738281250000005,
+        0.06495117187499999,
+        0.06652893066406249,
+        0.014853515624999997
+      ],
+      "corrupt_per_dim_var": [
+        0.1881622314453125,
+        0.2378173828125,
+        0.18031982421875004,
+        0.0042901611328124995,
+        0.06519531250000002,
+        0.040552368164062505,
+        0.07845703125
+      ],
+      "variance_ratio": 1.3581438086278503
+    },
+    "noise": {
+      "clean_pairwise_cos_mean": 0.4040327912640847,
+      "corrupt_pairwise_cos_mean": 0.21179578911293612,
+      "clean_per_dim_var": [
+        0.06993957519531249,
+        0.23633056640625,
+        0.1108642578125,
+        0.021738281250000005,
+        0.06495117187499999,
+        0.06652893066406249,
+        0.014853515624999997
+      ],
+      "corrupt_per_dim_var": [
+        0.04036193847656249,
+        0.22849182128906254,
+        0.1918243408203125,
+        0.0104791259765625,
+        0.006336059570312501,
+        0.0348516845703125,
+        0.08896728515625
+      ],
+      "variance_ratio": 1.027521844969034
+    },
+    "blur": {
+      "clean_pairwise_cos_mean": 0.4040327912640847,
+      "corrupt_pairwise_cos_mean": 0.2921966571699059,
+      "clean_per_dim_var": [
+        0.06993957519531249,
+        0.23633056640625,
+        0.1108642578125,
+        0.021738281250000005,
+        0.06495117187499999,
+        0.06652893066406249,
+        0.014853515624999997
+      ],
+      "corrupt_per_dim_var": [
+        0.1130401611328125,
+        0.0972076416015625,
+        0.16802001953125,
+        0.0183740234375,
+        0.16267333984375001,
+        0.0998193359375,
+        0.03868408203125
+      ],
+      "variance_ratio": 1.1924318055239767
+    }
+  }
+}
