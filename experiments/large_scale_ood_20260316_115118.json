@@ -1,0 +1,81 @@
+{
+  "experiment": "large_scale_ood_detection",
+  "timestamp": "2026-03-16T11:51:18.061850",
+  "n_calibration": 50,
+  "n_test_clean": 150,
+  "n_test_ood_per_type": 200,
+  "severity": 1.0,
+  "threshold_3sigma": 0.0004444013466127217,
+  "fpr_on_clean": 0.05333333333333334,
+  "cosine_distance": {
+    "fog": {
+      "auroc": 1.0,
+      "auroc_ci_lower": 0.9999999999999999,
+      "auroc_ci_upper": 1.0,
+      "fpr_at_95tpr": 0.0,
+      "d_prime": 16.28634262084961,
+      "ood_mean_dist": 0.003003425896167755,
+      "ood_std_dist": 0.0002169411163777113,
+      "clean_mean_conf": 0.648113419637084,
+      "ood_mean_conf": 0.47356736339628697,
+      "n_clean": 150,
+      "n_ood": 200
+    },
+    "night": {
+      "auroc": 1.0,
+      "auroc_ci_lower": 0.9999999999999999,
+      "auroc_ci_upper": 1.0,
+      "fpr_at_95tpr": 0.0,
+      "d_prime": 25.01129150390625,
+      "ood_mean_dist": 0.0068383170291781425,
+      "ood_std_dist": 0.00035871114232577384,
+      "clean_mean_conf": 0.648113419637084,
+      "ood_mean_conf": 0.05599424349144101,
+      "n_clean": 150,
+      "n_ood": 200
+    },
+    "noise": {
+      "auroc": 1.0,
+      "auroc_ci_lower": 0.9999999999999999,
+      "auroc_ci_upper": 1.0,
+      "fpr_at_95tpr": 0.0,
+      "d_prime": 13.526378631591797,
+      "ood_mean_dist": 0.0034002778120338917,
+      "ood_std_dist": 0.0003137788735330105,
+      "clean_mean_conf": 0.648113419637084,
+      "ood_mean_conf": 0.45751420699059964,
+      "n_clean": 150,
+      "n_ood": 200
+    },
+    "blur": {
+      "auroc": 1.0,
+      "auroc_ci_lower": 0.9999999999999999,
+      "auroc_ci_upper": 1.0,
+      "fpr_at_95tpr": 0.0,
+      "d_prime": 15.317447662353516,
+      "ood_mean_dist": 0.004378041718155146,
+      "ood_std_dist": 0.0003677462518680841,
+      "clean_mean_conf": 0.648113419637084,
+      "ood_mean_conf": 0.32247783556580545,
+      "n_clean": 150,
+      "n_ood": 200
+    }
+  },
+  "feature_norm": {
+    "fog": 0.5789666666666666,
+    "night": 1.0,
+    "noise": 0.9284333333333334,
+    "blur": 0.13713333333333333
+  },
+  "msp": {
+    "fog": 0.7093999999999999,
+    "night": 1.0,
+    "noise": 0.726,
+    "blur": 0.8696
+  },
+  "clean_dist_stats": {
+    "mean": 0.0002472615160513669,
+    "std": 0.00010007623495766893,
+    "max": 0.0005887746810913086
+  }
+}

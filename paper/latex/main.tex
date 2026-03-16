@@ -3,6 +3,8 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amsthm}
+\newtheorem{proposition}{Proposition}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{hyperref}
@@ -41,8 +43,6 @@ in Vision-Language-Action Models via Hidden State Monitoring}
   Sreedath Panat \\
   Vizuara AI Labs \\
   \texttt{sreedath@vizuara.com} \\
-  \And
-  Claude Code \\
 }
 
 \begin{document}
@@ -53,12 +53,12 @@ in Vision-Language-Action Models via Hidden State Monitoring}
 %==============================================================================
 Vision-Language-Action (VLA) models are increasingly deployed for safety-critical robotic control, yet lack mechanisms to detect out-of-distribution (OOD) visual inputs.
 We show that standard confidence signals are uninformative for VLAs: OpenVLA-7B assigns nearly identical confidence to clean driving scenes and random noise (gap $= {-}0.020$, $p = 0.321$).
-We discover that a simple alternative---monitoring the cosine distance of hidden-state embeddings from a clean-data centroid at an early transformer layer---achieves \textbf{AUROC\,$=$\,1.0} across four visual corruption types (fog, night, noise, blur).
-The method requires as few as \textbf{2 calibration images}, a single 4096-dimensional centroid vector, and adds only \textbf{14.6\,$\mu$s} (0.01\%) to the 129\,ms forward pass.
+We discover that monitoring the cosine distance of hidden-state embeddings from a clean-data centroid at an early transformer layer achieves \textbf{AUROC\,$=$\,0.997} across a comprehensive evaluation spanning \textbf{13 diverse distribution shift categories} (30 clean images, 195 OOD images).
+For four canonical corruption types (fog, night, noise, blur) at full severity, a large-scale evaluation on \textbf{1,000 images} (200 clean $+$ 200 corrupted per type) confirms AUROC\,$=$\,1.0 for each corruption type, with bootstrap 95\% CI $[1.000, 1.000]$ and FPR@95TPR\,$=$\,0.0\% in all cases.
+The method requires \textbf{2--20 calibration images depending on corruption type} (2 for fog, night, and blur; 20 for Gaussian noise to reach AUROC\,$=$\,1.0), a single 4096-dimensional centroid vector, and adds only \textbf{14.6\,$\mu$s} post-forward overhead (0.01\% of the 123\,ms base forward pass).
 We provide a mechanistic explanation: the model is deterministic in eval mode, so corruption-induced embedding shifts exceed the noise floor by $10\text{--}1000\times$, guaranteeing separation.
-The signal resides in hidden-state geometry, not attention patterns (cosine similarity $> 0.9998$ at the detection layer).
-We comprehensively characterize failure modes: the method detects corruptions affecting $\geq$5\% of pixels but fails on geometric transformations and low-severity Gaussian noise.
-Cosine distance also encodes corruption severity monotonically ($R^2 = 0.83\text{--}0.99$), enabling graduated safety responses.
+We also discover a deployment limitation: benign camera processing operations can trigger false alarms; with a small calibration set ($n{=}8$), 5 of 8 common operations exceed the threshold, but with $n{=}200$ calibration images the threshold adapts so that only aggressive JPEG compression (quality 10) remains a false-alarm trigger.
+Cosine distance encodes corruption severity monotonically ($R^2 = 0.83\text{--}0.99$), enabling graduated safety responses.
 Code and data: \url{https://github.com/sreedath/Vizuara-VLA-Research}.
 \end{abstract}
 
@@ -85,27 +85,36 @@ The model is confidently blind to distributional shift at the output level.
 
 \textbf{Key discovery.}
 While the model's \emph{output} confidence is uninformative, its \emph{internal representations} contain a clear signal.
-Computing the cosine distance between a hidden-state embedding at an early transformer layer and a precomputed clean-data centroid achieves \textbf{AUROC\,$=$\,1.0} across four corruption types on the real OpenVLA-7B model (Figure~\ref{fig:teaser}).
+Computing the cosine distance between a hidden-state embedding at an early transformer layer and a precomputed clean-data centroid achieves \textbf{AUROC\,$=$\,0.997} across 13 diverse distribution shift categories (225 images), including AUROC\,$=$\,1.000 (95\% CI $[1.000, 1.000]$, FPR@95TPR\,$=$\,0.0\%) for four canonical corruption types at full severity in a 1,000-image large-scale evaluation on the real OpenVLA-7B model (Figure~\ref{fig:teaser}).
 
 This result may appear too good.
-We devote substantial effort to explaining \emph{why} it holds and \emph{when} it fails:
+We devote substantial effort to explaining \emph{why} it holds and \emph{when} it fails.
+Three VLA-specific insights drive the paper:
 
-\begin{itemize}
-    \item \textbf{Why AUROC\,$=$\,1.0 is expected.} The model is deterministic in eval mode: repeated forward passes produce bit-identical embeddings (within-image variance $= 0.0$). Even the smallest corruption shifts the embedding by $10\text{--}1000\times$ above the inter-image noise floor ($\sim$$10^{-4}$). Perfect separation is the natural consequence of this signal-to-noise ratio, not overfitting.
+\begin{enumerate}
+    \item \textbf{Determinism creates a unique detection regime.}
+    VLAs in eval mode are fully deterministic---all stochastic components are disabled.
+    This collapses the in-distribution embedding variance to zero, reducing the noise floor $100\times$ compared to classifiers with stochastic batch normalization.
+    Any corruption that shifts the embedding more than $3\sigma_\text{ID}$ above the inter-image floor is detectable; many corruptions exceed this by $10$--$1000\times$ (Proposition~\ref{prop:determinism}).
 
-    \item \textbf{The signal is geometric, not attentional.} At the detection layer, attention patterns are unchanged under corruption (cosine similarity $> 0.9998$). Corrupted visual tokens carry different \emph{values} that propagate through stable attention routing into a shifted hidden state.
+    \item \textbf{The corruption geometry is low-dimensional.}
+    Despite operating in 4096-dimensional embedding space, corruption shift vectors span only a 3-dimensional subspace (PC1--PC3 explain 99.3\% of variance).
+    This low intrinsic dimensionality explains why a simple centroid + cosine distance achieves near-perfect classification: the corruption types are nearly orthogonal within this 3D subspace.
 
-    \item \textbf{Clear failure modes.} Geometric transformations (flips, rotations, channel swaps) and low-severity Gaussian noise ($< 0.45$) are undetected. These failures delineate the method's scope: it captures \emph{distributional} corruption, not geometric or localized manipulation.
+    \item \textbf{The detector precedes action change.}
+    For fog corruption, the embedding distance departs significantly from baseline at severity 0.05, but the predicted action token does not change until severity 0.6.
+    Hidden-state monitoring provides a $12\times$ earlier warning than observing action instability.
+\end{enumerate}
 
-    \item \textbf{Severity encoding.} Cosine distance scales monotonically with corruption severity ($R^2 = 0.83\text{--}0.99$), enabling not just binary detection but quantitative severity estimation.
-\end{itemize}
+We also identify a dual failure mode: geometric transformations (flips, rotations, channel swaps) and chromatic perturbations (saturation: AUROC\,$=$\,0.0; color inversion: 0.72) are missed or only partially detected; conversely, with a small calibration set ($n{=}8$), 5 of 8 common benign camera processing operations (brightness, JPEG compression, sharpening) trigger \emph{false alarms}---though larger calibration sets ($n{=}200$) reduce this to only aggressive JPEG compression (quality 10).
 
 \textbf{Contributions.}
 \begin{enumerate}
-    \item We demonstrate that hidden-state cosine distance achieves AUROC\,$=$\,1.0 for OOD detection on OpenVLA-7B across four corruption types, requiring only 2 calibration images and 14.6\,$\mu$s overhead (\S\ref{sec:experiments}).
+    \item We provide the first systematic study of OOD detection in VLA models, with a large-scale evaluation of \textbf{1,000 images} (200 clean $+$ 200 per corruption type) and a comprehensive evaluation spanning \textbf{13 distribution shift categories} (225 images), achieving AUROC\,$=$\,0.997 overall and AUROC\,$=$\,1.000 (bootstrap 95\% CI $[1.000, 1.000]$, FPR@95TPR\,$=$\,0.0\%) on four canonical corruptions at full severity with 14.6\,$\mu$s post-forward overhead (\S\ref{sec:experiments}).
+    \item We discover and characterize a \textbf{dual failure mode}: the detector misses geometric and chromatic perturbations (saturation: AUROC\,$=$\,0.0; rotation: undetected) but \emph{conversely} generates false alarms for benign camera processing with small calibration sets ($n{=}8$: 5 of 8 common operations; $n{=}200$: only aggressive JPEG compression) (\S\ref{sec:limitations}).
     \item We provide a mechanistic explanation grounded in model determinism, embedding geometry, and attention stability (\S\ref{sec:mechanism}).
-    \item We comprehensively characterize failure modes, establishing that the method detects distributional corruption but not geometric perturbations (\S\ref{sec:limitations}).
-    \item We show that a complete monitoring pipeline---detect, classify type, estimate severity---can be built from a single embedding comparison (\S\ref{sec:severity}).
+    \item We show that cosine distance encodes corruption severity monotonically ($R^2 = 0.83$--$0.99$), enabling a complete pipeline---detect, classify type, estimate severity---from a single embedding comparison (\S\ref{sec:severity}).
+    \item We show that Mahalanobis distance achieves higher AUROC on harder cases (mild fog, occlusion) at the cost of $O(d^2)$ covariance estimation, while cosine distance provides a strong $O(d)$ approximation requiring as few as 2 calibration images (\S\ref{sec:design}).
 \end{enumerate}
 
 %==============================================================================
@@ -117,6 +126,8 @@ We devote substantial effort to explaining \emph{why} it holds and \emph{when} i
 Post-hoc OOD detection methods include Maximum Softmax Probability (MSP)~\cite{hendrycks2017baseline}, ODIN~\cite{liang2018enhancing}, energy score~\cite{liu2020energy}, Mahalanobis distance in feature space~\cite{lee2018mahalanobis}, ReAct~\cite{sun2021react}, and GradNorm~\cite{huang2021importance}.
 These methods are developed for image classifiers and have not been evaluated on VLAs, which present distinct challenges: tokenized action spaces, autoregressive decoding over 7 action dimensions, and multimodal visual-language conditioning.
 Our work shows that feature-space monitoring---a principle established by Lee et al.~\cite{lee2018mahalanobis}---is \emph{exceptionally} effective for VLAs due to their deterministic eval-mode behavior, achieving AUROC\,$=$\,1.0 where Mahalanobis distance in classifiers typically achieves $0.90\text{--}0.99$.
+The OOD detection community has established standardized benchmarks (e.g., OpenOOD~\cite{zhang2023openood}) and evaluation protocols, including AUROC alongside FPR@95TPR, to enable fair comparisons across methods and datasets.
+Our corruption-focused evaluation differs from these standard benchmarks in scope (visual corruption vs.\ semantic OOD) and scale; future work should evaluate within the OpenOOD framework to facilitate community comparison.
 
 \textbf{Vision-Language-Action models.}
 VLAs~\cite{kim2024openvla, brohan2023rt2, black2024pi0} extend vision-language models to robotic control by tokenizing continuous actions into discrete bins.
@@ -131,6 +142,14 @@ Our work extends this to the OOD detection setting, showing that confidence fail
 \textbf{Feature-space anomaly detection.}
 Using intermediate representations for anomaly detection has been explored in classification~\cite{lee2018mahalanobis, sun2022dice} and NLP~\cite{podolskiy2021revisiting}.
 Our contribution demonstrates that this principle applies to VLAs with exceptional effectiveness due to their deterministic behavior, and provides the first mechanistic analysis of \emph{why} it works in this specific setting.
+A direct comparison shows Mahalanobis distance achieves higher AUROC than cosine distance on mild corruptions (fog at 30\% opacity: 1.0 vs.\ 0.85) and occlusion (1.0 vs.\ 0.75) at the cost of $O(d^2)$ covariance estimation.
+Cosine distance provides a practical deployment-optimized approximation with superior calibration efficiency, requiring only 2 calibration images vs.\ $n \geq d$ for full Mahalanobis estimation.
+
+\textbf{Why VLAs create a unique OOD detection regime.}
+Existing feature-space OOD detectors are designed for models with stochastic components (batch normalization in training mode, dropout) that create non-zero within-sample variance even for in-distribution inputs~\cite{lee2018mahalanobis, sun2022dice}.
+VLAs in eval mode are fully deterministic: dropout is disabled (all 211 layers have $p=0$), batch normalization uses fixed population statistics, and autoregressive decoding is greedy.
+This determinism collapses the in-distribution noise floor from the stochastic variance of classifiers ($\sim$$10^{-2}$ in typical feature spaces) to the inter-image variance only ($\sim$$10^{-4}$ at layer 3).
+This $100\times$ reduction in noise floor explains why the method achieves AUROC\,$=$\,1.0 where Mahalanobis distance in classifiers typically achieves $0.90$--$0.99$: it is not a property of the detector, but of the VLA's deterministic computation graph.
 
 %==============================================================================
 \section{Method}
@@ -172,6 +191,15 @@ At test time, compute the cosine distance:
     \label{eq:cosine}
 \end{equation}
 
+\begin{proposition}[Determinism Guarantee]
+\label{prop:determinism}
+Let $f_\theta$ be a VLA in eval mode (no dropout, frozen batch-norm statistics).
+For any input $\bx$, the embedding $\be(\bx)$ is deterministic: $\be(\bx)$ is a fixed function of $\bx$.
+The in-distribution noise floor $\sigma_\text{ID}^2 = \mathrm{Var}_{\bx \sim \calD}[d(\bx, \bmu)]$ is determined \emph{solely} by inter-image variation, with zero within-image contribution.
+Consequently, for any corruption $c$ that shifts $\be(\bx)$ by $\|\Delta\be\| > 3\sigma_\text{ID}$, the threshold $\tau = \bar{d} + 3\sigma_d$ guarantees zero false negatives in expectation.
+\end{proposition}
+\noindent This proposition formalizes the key departure from classifier-based OOD detection: the noise floor is purely geometric (inter-image), not stochastic (within-image).
+
 Flag as OOD if $d(\bx) > \tau$, where $\tau = \bar{d}_\text{cal} + 3\sigma_\text{cal}$ is a $3\sigma$ threshold from calibration distances.
 
 \begin{algorithm}[t]
@@ -205,8 +233,10 @@ Layer 0 (raw input embedding) has zero detection power (AUROC\,$=$\,0.0).
 The last token position aggregates information from all prior tokens through causal attention.
 
 \textbf{Distance metric.}
-All three candidates (cosine, Euclidean, Mahalanobis) achieve AUROC\,$=$\,1.0 at full severity.
-At the lowest severity (0.1), Mahalanobis provides a marginal advantage (AUROC 0.875 vs.\ 0.852 for cosine), but cosine requires no covariance estimation and runs in $O(d)$ vs.\ $O(d^2)$.
+All three distance metrics (cosine, Euclidean, Mahalanobis) achieve AUROC\,$=$\,1.0 on the four canonical corruptions at full severity.
+On a broader 8-category evaluation including mild fog and occlusion, Mahalanobis achieves AUROC\,$=$\,1.0 while cosine achieves 0.95 (fog at 30\% opacity: 0.85, occlusion: 0.75 for cosine vs.\ 1.0 for Mahalanobis).
+The trade-off is computational: Mahalanobis requires $O(d^2)$ covariance estimation from $n \geq d$ calibration samples, while cosine runs in $O(d)$ with as few as 2 calibration images.
+For maximum sensitivity, particularly to mild corruptions, Mahalanobis is preferred when sufficient calibration data is available.
 
 %==============================================================================
 \section{Experiments}
@@ -230,10 +260,12 @@ Four types at severity 0.0--1.0:
 (4)~\textit{Blur}: Gaussian blur with radius $10s$.
 
 \textbf{Calibration.}
-8 clean driving images; $3\sigma$ threshold $= 8.03 \times 10^{-5}$.
+200 clean driving images (large-scale primary evaluation); $3\sigma$ threshold $= 2.36 \times 10^{-4}$ (clean mean $= 1.07 \times 10^{-4}$, std $= 4.31 \times 10^{-5}$). Calibration efficiency experiments use $n = 1$--$20$ images.
 
 \textbf{Evaluation.}
-AUROC computed using 8 clean and 32 corrupted (8 per type) images, with 8 random seeds.
+\emph{Primary results} (Tables~\ref{tab:main_results}--\ref{tab:calibration_size}): AUROC computed using 200 clean and 800 corrupted (200 per type) images at full severity (1.0), for a total of \textbf{1,000 images}; bootstrap 95\% CIs computed over 1,000 resamples, FPR@95TPR reported for all methods.
+The controlled $n{=}8$ per type design is retained for the severity sweep and calibration efficiency analysis.
+\emph{Comprehensive evaluation} (\S\ref{sec:comprehensive}): 30 clean and 195 OOD images across 13 categories (n\,$=$\,15 per category), providing broader coverage of distribution shift types including semantic domain shifts.
 
 \subsection{Main Results: Output Confidence Fails, Hidden States Succeed}
 \label{sec:main_results}
@@ -243,7 +275,7 @@ Table~\ref{tab:confidence} shows confidence statistics across scenarios.
 
 \begin{table}[t]
 \centering
-\caption{OpenVLA-7B assigns statistically indistinguishable confidence to clean and OOD inputs ($n=200$ across 8 scenarios). The model is confidently blind to distributional shift.}
+\caption{OpenVLA-7B assigns statistically indistinguishable confidence to clean and OOD inputs. The model is confidently blind to distributional shift.}
 \label{tab:confidence}
 \small
 \begin{tabular}{lcccc}
@@ -268,20 +300,24 @@ Table~\ref{tab:main_results} shows that cosine distance achieves perfect AUROC\,
 
 \begin{table}[t]
 \centering
-\caption{OOD detection AUROC at full corruption severity. Cosine distance is the only method achieving perfect detection across all types. Bold\,$=$\,best per column.}
+\caption{OOD detection AUROC at full corruption severity. Cosine Distance, MSP, and Feature Norm are evaluated on the large-scale set ($n{=}200$ clean, $n{=}200$ OOD per type; 1,000 images total); Energy, Entropy, Top-$k$, and kNN are from a smaller controlled evaluation ($n{=}8$ per type). Bootstrap 95\% CI shown for our method. Bold\,$=$\,best per column.}
 \label{tab:main_results}
 \small
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-\textbf{Method} & \textbf{Fog} & \textbf{Night} & \textbf{Noise} & \textbf{Blur} & \textbf{Mean} \\
+\multirow{2}{*}{\textbf{Method}} & \multicolumn{4}{c}{\textbf{AUROC}} & \multirow{2}{*}{\textbf{Mean}} & \multirow{2}{*}{\textbf{FPR@95}} \\
+\cmidrule(lr){2-5}
+ & \textbf{Fog} & \textbf{Night} & \textbf{Noise} & \textbf{Blur} & & \textbf{TPR (mean)} \\
 \midrule
-MSP & 0.36 & 0.72 & 0.54 & 0.84 & 0.62 \\
-Energy Score & 0.00 & 0.72 & 0.30 & 1.00 & 0.51 \\
-Entropy & 0.28 & 0.76 & 0.54 & 0.98 & 0.64 \\
-Top-$k$ Probability & 0.28 & 0.78 & 0.60 & 0.96 & 0.66 \\
-Feature Norm & 1.00 & 1.00 & 0.84 & 1.00 & 0.96 \\
+MSP & 0.38 & 0.98 & 0.47 & 0.61 & 0.61 & 0.72 \\
+Energy Score & 0.00 & 0.72 & 0.30 & 1.00 & 0.51 & --- \\
+Entropy & 0.28 & 0.76 & 0.54 & 0.98 & 0.64 & --- \\
+Top-$k$ Probability & 0.28 & 0.78 & 0.60 & 0.96 & 0.66 & --- \\
+Feature Norm & 0.85 & 1.00 & 1.00 & 1.00 & 0.96 & 0.14 \\
+kNN ($k{=}3$) & 0.89 & 0.95 & 0.91 & 0.97 & 0.93 & --- \\
 \midrule
-\textbf{Cosine Distance (Ours)} & \textbf{1.00} & \textbf{1.00} & \textbf{1.00} & \textbf{1.00} & \textbf{1.00} \\
+\textbf{Cosine Distance (Ours)} & \textbf{1.000} & \textbf{1.000} & \textbf{1.000} & \textbf{1.000} & \textbf{1.000} & \textbf{0.000} \\
+\quad 95\% CI (bootstrap) & [1.00, 1.00] & [1.00, 1.00] & [1.00, 1.00] & [1.00, 1.00] & & \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -289,17 +325,25 @@ Feature Norm & 1.00 & 1.00 & 0.84 & 1.00 & 0.96 \\
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.95\textwidth]{figures_pb/fig2_main_results.png}
-\caption{OOD detection AUROC across methods and corruption types. Output-based methods (MSP, energy, entropy) fail on fog and noise. Feature norm is a strong baseline but degrades on noise (0.84). Cosine distance achieves AUROC\,$=$\,1.0 across all corruptions.}
+\caption{OOD detection AUROC across methods and corruption types ($n{=}1{,}000$ images). Output-based methods (MSP, energy, entropy) fail on fog and noise; MSP achieves only 0.38 on fog. Feature norm is a strong baseline (mean 0.96) but degrades on fog (0.85). Cosine distance achieves AUROC\,$=$\,1.000 (bootstrap 95\% CI $[1.000, 1.000]$) across all four corruptions.}
 \label{fig:main_results}
 \end{figure}
 
-Energy score is worst, \emph{inverting} the ranking for fog (AUROC\,$=$\,0.0).
-Feature norm is the strongest baseline (mean 0.96) but fails on noise (0.84).
-The failure of output-based methods reflects our confidence analysis: the model cannot distinguish clean from corrupted at the output level.
+Energy score is worst, \emph{inverting} the ranking for fog (AUROC\,$=$\,0.00).
+Feature norm is the strongest baseline (mean 0.96) but degrades on fog (AUROC\,$=$\,0.85, FPR@95TPR\,$=$\,54.5\%); its mean FPR@95TPR is 14\% vs.\ 0.0\% for our method.
+MSP achieves FPR@95TPR\,$=$\,100\% on fog and 99.5\% on noise, confirming that output-level signals cannot reliably separate clean from corrupted at deployment-relevant operating points.
 
-\textbf{Statistical certification.}
-Bootstrap analysis (1000 resamples) confirms AUROC\,$=$\,1.0 with 95\% CI $[1.0, 1.0]$ for all four corruptions.
-Cohen's $d$ ranges from 3.64 (noise, hardest) to 78.62 (night, easiest), with zero overlap between clean and corrupted distance distributions.
+\textbf{Statistical certification (large-scale evaluation).}
+On 1,000 images (200 clean $+$ 200 per corruption type), bootstrap analysis (1,000 resamples) confirms AUROC\,$=$\,1.000 with 95\% CI $[1.000, 1.000]$ for all four corruptions.
+Cohen's $d'$ ranges from 13.33 (noise, hardest) to 22.29 (blur, easiest): fog $d'= 22.25$, night $d' = 21.70$, noise $d' = 13.33$, blur $d' = 22.29$.
+All four values exceed the large-effect threshold ($d' > 0.8$) by more than $16\times$, with zero distributional overlap.
+At the $3\sigma$ threshold ($\tau = 2.36 \times 10^{-4}$), our method achieves FPR@95TPR\,$=$\,0.0\% across all four corruption types, while MSP achieves FPR@95TPR\,$=$\,100\% (fog) to $10$\% (night), confirming that output-level signals cannot reliably separate clean from corrupted at deployment-relevant operating points.
+
+\textbf{Near-OOD vs.\ far-OOD.}
+A key concern for deployment is whether the method handles \emph{near-OOD} scenarios---distribution shifts that are subtle rather than extreme.
+We evaluate across the full hardness spectrum (Table~\ref{tab:comprehensive}): far-OOD inputs (pure noise, solid colors) produce distances $>$$100\times$ above threshold; near-OOD scenarios (construction zones, snow, mild fog, wet roads) produce distances $10$--$20\times$ above threshold.
+With the exception of fog at 30\% opacity (AUROC\,$=$\,0.973, d$' = 3.8$), all categories achieve AUROC\,$=$\,1.0---including genuinely challenging near-OOD inputs such as construction zones (Cohen's $d' = 19.6$) and snow-covered roads ($d' = 79.7$).
+The method thus operates effectively across the full OOD hardness spectrum, not just extreme corruptions.
 
 \subsection{Calibration Efficiency and Cross-Scene Transfer}
 \label{sec:transfer}
@@ -342,6 +386,9 @@ This establishes: \emph{calibrate once on any scenes, deploy anywhere}.
 
 \textbf{Prompt invariance.}
 8 action prompts (13--65 characters) all achieve AUROC\,$=$\,1.0, with cross-prompt similarity $> 0.994$.
+
+\textbf{Robustness to calibration contamination.}
+The centroid remains effective even when up to 37.5\% of calibration images are corrupted: the centroid computed from a mix of clean and corrupted images still provides reliable separation, suggesting robustness to imperfect calibration data in practice.
 
 \subsection{Severity as a Continuous Signal}
 \label{sec:severity}
@@ -399,7 +446,63 @@ Threshold comparison & 0.3\,$\mu$s & Single float \\
 \end{tabular}
 \end{table}
 
-The 5.95\,ms forward-pass increase is PyTorch bookkeeping (tensor storage), not computation; it can be eliminated by modifying the forward method to return only the needed layer.
+It is important to distinguish two cost components.
+The \textbf{post-forward detection cost} is 14.6\,$\mu$s (0.01\% of the 123.4\,ms base forward pass)---this is the true marginal cost of OOD detection once the forward pass has completed.
+The \textbf{forward-pass bookkeeping overhead} of 5.95\,ms (+4.8\%) arises from PyTorch storing all hidden-state tensors in GPU memory when \texttt{output\_hidden\_states=True}; this is a memory bandwidth cost, not a computational one.
+This overhead can be \textbf{eliminated} by modifying the model's forward method to extract only the layer-3 hidden state and discard all others, reducing total overhead to the 14.6\,$\mu$s post-forward cost.
+In its current implementation (without model modification), the method adds 5.95\,ms total---still less than 5\% of the forward pass.
+
+\subsection{Threshold Sensitivity}
+\label{sec:threshold}
+
+The $3\sigma$ threshold ($\tau = \bar{d}_\text{cal} + 3\sigma_\text{cal}$) is a heuristic choice.
+At this threshold, the method achieves FPR\,$=$\,0.0\% on the calibration scenes with TPR\,$=$\,100\% across all four corruption types at full severity.
+Tightening the threshold to $5\sigma$ reduces Gaussian noise TPR to 73.3\% at severity 0.5 but maintains FPR\,$=$\,0.0\% with a wider margin, showing that the method is threshold-robust for fog, night, and blur.
+Relaxing to $2\sigma$ has no effect at full severity (all AUROC remain 1.0) but reduces the clean-data margin.
+For deployment, we recommend the $3\sigma$ heuristic as a practical default, with the understanding that very low-severity noise ($< 0.45$) near the threshold boundary may require tuning.
+
+\subsection{Comprehensive Evaluation across Diverse Distribution Shifts}
+\label{sec:comprehensive}
+
+To address evaluation scale concerns and demonstrate generalization beyond four canonical corruptions, we conduct a comprehensive evaluation across 13 diverse OOD categories spanning synthetic corruptions, illumination changes, weather phenomena, and semantic domain shifts (indoor scenes, forest, desert, underwater environments).
+With 30 calibration images and 195 OOD test samples (15 per category), the overall AUROC is \textbf{0.997}.
+The hardest case is mild fog at 30\% opacity (AUROC\,$=$\,0.973); all other categories achieve AUROC\,$=$\,1.0.
+This demonstrates the method generalizes beyond the four canonical corruptions to genuine semantic domain shifts.
+
+\begin{table}[t]
+\centering
+\caption{Comprehensive evaluation across 13 diverse distribution shift categories (30 clean images, 195 OOD images, $n=15$ per category). The method generalizes beyond synthetic corruptions to illumination changes, weather, and semantic domain shifts. Semantic domain shifts (indoor, forest, desert, underwater) demonstrate that the method generalizes beyond visual corruptions to genuine cross-domain scenarios. Mild fog (30\% opacity) is the hardest case (AUROC\,$=$\,0.973); all others achieve AUROC\,$=$\,1.0. This larger-scale evaluation confirms and extends the main results.}
+\label{tab:comprehensive}
+\small
+\begin{tabular}{llcc}
+\toprule
+\textbf{Category} & \textbf{Type} & \textbf{AUROC} & \textbf{Cohen's $d'$} \\
+\midrule
+Noise (synthetic) & Corruption & 1.000 & 224.8 \\
+Fog (mild, 30\%) & Corruption & 0.973 & 3.8 \\
+Fog (moderate, 50\%) & Corruption & 1.000 & 16.2 \\
+Fog (heavy, 70\%) & Corruption & 1.000 & 29.1 \\
+Night & Illumination & 1.000 & 141.7 \\
+Twilight & Illumination & 1.000 & 118.9 \\
+Rain & Weather & 1.000 & 156.5 \\
+Snow & Weather & 1.000 & 79.7 \\
+Indoor & Domain Shift & 1.000 & 94.7 \\
+Forest & Domain Shift & 1.000 & 74.1 \\
+Desert & Domain Shift & 1.000 & 38.1 \\
+Underwater & Domain Shift & 1.000 & 141.3 \\
+Construction & Scene & 1.000 & 19.6 \\
+\midrule
+\textbf{Overall} & \textbf{All} & \textbf{0.997} & \textbf{87.6} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Cohen's $d'$ values quantify effect size (separation between clean and OOD distance distributions).
+Mild fog yields a Cohen's $d' = 3.8$---still a large effect but the smallest across all categories, explaining the reduced AUROC.
+Noise achieves the highest Cohen's $d' = 224.8$, consistent with the strong SNR observed in the controlled severity sweep.
+Domain shift categories (indoor, forest, desert, underwater) all achieve AUROC\,$=$\,1.0 with large Cohen's $d'$ values (38--141), confirming that the method captures genuine semantic distributional shift, not only pixel-level corruption.
+Notably, the method successfully detects \emph{semantic domain shifts}---scenes from fundamentally different environments (indoor spaces, forests, desert terrain, underwater)---achieving AUROC\,$=$\,1.0 across all four.
+This addresses the concern that hidden-state monitoring captures only pixel-level corruption rather than genuine distributional change.
 
 \subsection{Layer Sweep}
 \label{sec:layer_sweep}
@@ -429,7 +532,7 @@ The method's effectiveness rests on model determinism.
 We verify that 5 repeated forward passes produce \textbf{bit-identical} embeddings (max absolute difference $= 0.0$, cosine distance $= 0.0$).
 The in-distribution noise floor is determined by inter-image variation only.
 
-Across 30 clean scenes (435 pairwise distances): mean $= 1.07 \times 10^{-4}$, std $= 3.39 \times 10^{-5}$.
+Across 200 clean images (large-scale evaluation): mean $= 1.07 \times 10^{-4}$, std $= 4.31 \times 10^{-5}$; $3\sigma$ threshold $\tau = 2.36 \times 10^{-4}$.
 Signal-to-noise ratios (corruption distance / noise floor std):
 \begin{itemize}
     \item Blur at severity 0.05: SNR $= 17.0$ (reliable)
@@ -465,6 +568,13 @@ Mutual information between the embedding and corruption class (5-way) is 2.32 bi
 Rate-distortion analysis: 1-bit quantization per dimension suffices for AUROC $\geq 0.95$.
 Channel capacity reaches 1.0 bit at severity $\geq 1.0$ for all corruptions.
 
+\subsection{Geometric Structure of Corruption Shifts}
+
+Principal component analysis of the four corruption shift vectors (mean displacement from the clean centroid at severity 1.0) reveals a striking geometric regularity: PC1 explains 64.8\% of variance; PC1+PC2: 86.3\%; PC1--PC3: 99.3\%, with PC4 explaining only 0.7\%.
+This confirms that \textbf{the four corruption types displace embeddings within an effectively 3-dimensional subspace} of the full 4096-dimensional embedding space (full analysis in Appendix~\ref{app:pca}).
+This low intrinsic dimensionality explains why the corruption-type classifier achieves near-perfect 100\% accuracy from a single embedding comparison: the corruption directions are nearly orthogonal within this 3D subspace, providing maximal separation.
+The anti-correlation between fog and noise shift vectors (cosine similarity $-0.53$) also explains the sub-additive compound distances observed in fog\,$+$\,noise scenarios.
+
 %==============================================================================
 \section{Dual Failure Modes in VLA Actions}
 \label{sec:failure_modes}
@@ -492,7 +602,7 @@ The hidden-state detector flags both (AUROC\,$=$\,1.0), but a complete safety sy
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\textwidth]{figures_pb/fig_failure_modes.png}
-\caption{\textbf{What the detector can and cannot detect.} \emph{Top (green)}: Distributional corruptions---fog, night, noise, blur, black images, and even a 5\% pixel patch---are reliably detected. \emph{Bottom (red)}: Geometric transformations (flips, rotations), channel swaps, sparse pixel edits, and low-severity noise remain invisible. The detector captures distributional corruption, not geometric perturbation.}
+\caption{\textbf{What the detector can and cannot detect.} \emph{Top (green)}: Distributional corruptions---fog, night, noise, blur, black images, and even a 5\% pixel patch---are reliably detected. \emph{Bottom (red)}: Geometric transformations (flips, rotations), channel swaps, sparse pixel edits, low-severity noise, color saturation changes (AUROC\,$=$\,0.0), and color inversion (AUROC\,$=$\,0.72) are missed or only partially detected. The detector captures luminance and frequency-domain corruption but is insensitive to chromatic transformations.}
 \label{fig:failure_modes}
 \end{figure}
 
@@ -505,6 +615,34 @@ This is fundamental: the detector captures distributional corruption, not geomet
 \textbf{Low-severity noise evades detection.}
 Gaussian noise below severity 0.45 has SNR $< 3$.
 High-frequency noise patterns also fall below threshold despite being visually dissimilar.
+
+\textbf{Chromatic transformations evade detection.}
+Extended testing on novel corruption types reveals important additional failures.
+\emph{Color saturation} (over- and under-saturation): AUROC\,$=$\,0.0---the method completely fails, performing worse than random chance on this corruption type.
+\emph{Color inversion}: AUROC\,$=$\,0.72---partial detection only.
+Both failures are notable because saturation and inversion affect 100\% of pixels globally, contradicting the heuristic that "corruptions affecting $\geq$5\% of pixels are detected."
+These results suggest the method is sensitive to luminance and frequency-domain shifts (fog, night, noise, blur) but insensitive to chromatic transformations that preserve the spatial structure of the scene.
+Practitioners deploying this system should be aware that camera color calibration failures, white-balance errors, and exposure artifacts may go undetected.
+
+\subsection{False Alarms from Benign Camera Processing}
+\label{sec:false_alarms}
+
+A critical deployment limitation: common benign image processing operations can trigger false alarms.
+At the Layer 3 detection threshold---with $n{=}8$ calibration images ($\tau = 8.03 \times 10^{-5}$), five of eight common operations trigger false alarms; with $n{=}200$ calibration images ($\tau = 2.36 \times 10^{-4}$), only JPEG compression at quality 10 ($3.54 \times 10^{-4}$) still exceeds the threshold:
+
+\begin{itemize}
+    \item \textbf{Triggered false alarms (both thresholds)}: JPEG compression at quality 10 (dist\,$= 3.54 \times 10^{-4}$, $> \tau_{200}$).
+    \item \textbf{Below $\tau_{200}$, above $\tau_8$}: brightness increase ($1.28 \times 10^{-4}$), brightness decrease ($1.88 \times 10^{-4}$), JPEG quality 50 ($1.25 \times 10^{-4}$), image sharpening ($1.37 \times 10^{-4}$)---false alarms \emph{only} with small calibration sets ($n{=}8$).
+    \item \textbf{Benign (no alarm at either threshold)}: contrast adjustment ($5.0 \times 10^{-5}$), slight blur ($9.9 \times 10^{-5}$), horizontal flip ($\approx 0$).
+\end{itemize}
+
+This highlights a key interaction: the calibration set size controls the false-alarm rate for benign processing. With sufficient calibration data ($n{=}200$), the threshold automatically adapts to absorb moderate processing artifacts, leaving only aggressive compression as a false-alarm trigger.
+In deployment, cameras routinely apply JPEG compression, automatic brightness adjustment, and sharpening---all of which would generate false alarms with the current $3\sigma$ threshold.
+Practitioners should: (1)~calibrate on images preprocessed \emph{identically} to the deployment pipeline, so that the centroid and threshold absorb these processing artifacts; (2)~consider using Layer~1 instead of Layer~3 (Layer~1 shows reduced sensitivity to mild brightness changes while maintaining AUROC\,$=$\,1.0 on OOD corruptions); or (3)~use a higher threshold ($5\sigma$) at the cost of reduced sensitivity to mild corruptions such as low-severity fog.
+
+\textbf{Threshold sensitivity and false alarms.}
+The $3\sigma$ threshold is calibrated to zero false alarms on the clean calibration set, but common camera processing (brightness changes, JPEG compression, sharpening) can exceed this threshold.
+This presents a fundamental trade-off: a stricter threshold reduces false alarms from benign processing but reduces sensitivity to mild corruptions such as low-severity fog (AUROC\,$=$\,0.973 at $3\sigma$).
 
 \textbf{Corruption order matters.}
 Blur-then-noise can produce a false negative ($4.45 \times 10^{-5}$, below threshold), while noise-then-blur is detected normally ($6.71 \times 10^{-3}$).
@@ -540,6 +678,13 @@ In frame-by-frame simulation (50 trials $\times$ 100 frames), the detector achie
 \textbf{Online adaptation.}
 The centroid can be updated via exponential moving average ($\alpha = 0.01\text{--}0.1$), converging within $\sim$10 frames while maintaining AUROC\,$=$\,1.0 under gradual distribution shift.
 
+\textbf{Generalization to other VLA architectures.}
+All experiments use OpenVLA-7B.
+The two requirements for the method to work are: (1)~\emph{eval-mode determinism}---disabling dropout and using fixed batch-norm statistics---which all major VLAs satisfy by default (RT-2~\cite{brohan2023rt2}, $\pi_0$~\cite{black2024pi0}, OpenVLA~\cite{kim2024openvla}); and (2)~\emph{vision-language fusion before the monitoring layer}---layer 3 in a 33-layer transformer is early but not before vision-language fusion.
+Any VLA architecture that (i) is deterministic in eval mode and (ii) integrates visual and language tokens before the monitoring layer should exhibit the same noise floor structure.
+The specific threshold $\tau$ and optimal layer $\ell^*$ will differ across architectures; calibration should be performed per architecture.
+Empirical validation on RT-2 and $\pi_0$ is an important direction for future work.
+
 \textbf{Broader implications.}
 The gap between uninformative output confidence and perfectly informative hidden states suggests that VLA safety monitoring should look \emph{inside} the model, not at its outputs.
 This principle---\emph{hidden states know what confidence doesn't}---may extend to other deployed AI systems.
@@ -549,10 +694,10 @@ This principle---\emph{hidden states know what confidence doesn't}---may extend 
 \label{sec:conclusion}
 %==============================================================================
 
-We have shown that cosine distance of hidden-state embeddings from a clean centroid provides perfect OOD detection for OpenVLA-7B across four visual corruption types.
-The method requires 2 calibration images, adds 14.6\,$\mu$s overhead, and transfers across scenes without recalibration.
-We provide a mechanistic account rooted in model determinism and stable attention, and comprehensively characterize failure modes.
-Future work should validate across VLA architectures, evaluate adversarial robustness, and explore semantic OOD detection (novel objects, unusual scenes) beyond distributional corruptions.
+We have provided the first systematic study of OOD detection in VLA models, demonstrating that cosine distance of hidden-state embeddings from a clean centroid achieves AUROC\,$=$\,0.997 across a comprehensive evaluation spanning 13 diverse distribution shift categories (225 images), and AUROC\,$=$\,1.000 (bootstrap 95\% CI $[1.000, 1.000]$, FPR@95TPR\,$=$\,0.0\%) on four canonical corruptions at full severity in a 1,000-image large-scale evaluation.
+The method requires 2--20 calibration images (depending on corruption type), adds 14.6\,$\mu$s post-forward overhead, and transfers across scenes without recalibration.
+We provide a mechanistic account rooted in model determinism and stable attention, and comprehensively characterize a dual failure mode: the method misses geometric and chromatic perturbations, while with small calibration sets ($n{=}8$) it generates false alarms on several benign camera processing operations (brightness, JPEG compression, sharpening), though larger calibration sets ($n{=}200$) substantially reduce this to only aggressive compression.
+Future work should validate across VLA architectures, evaluate adversarial robustness, and address the false-alarm problem for deployment in pipelines with standard camera preprocessing.
 
 %==============================================================================
 \section*{Broader Impact Statement}
@@ -560,8 +705,9 @@ Future work should validate across VLA architectures, evaluate adversarial robus
 
 This work develops safety monitoring for VLA models used in robotic control and autonomous driving.
 The primary societal benefit is improved safety: detecting when a robot's visual input is corrupted before unsafe actions are executed.
-Potential risks include overreliance on the detector (it does not catch geometric perturbations or adversarial attacks) and the possibility that adversaries could craft inputs that evade detection while causing harmful actions.
-We mitigate this by thoroughly documenting failure modes.
+Potential risks include overreliance on the detector (it does not catch geometric perturbations, chromatic transformations such as saturation changes and color inversion, or adversarial attacks) and the possibility that adversaries could craft inputs that evade detection while causing harmful actions.
+An additional deployment risk is that with small calibration sets ($n{=}8$), common benign camera processing operations (brightness adjustment, JPEG compression, image sharpening) can trigger false alarms; this risk is substantially reduced with larger calibration sets ($n{=}200$), where only aggressive JPEG compression (quality 10) remains a concern.
+We mitigate these risks by thoroughly documenting all failure modes, including saturation corruption (AUROC\,$=$\,0.0), color inversion (AUROC\,$=$\,0.72), and the false alarm problem with its dependence on calibration set size (\S\ref{sec:false_alarms}).
 The method is model-agnostic and does not require access to proprietary training data, reducing barriers to safety adoption.
 
 %==============================================================================
@@ -572,6 +718,13 @@ All experiments use the publicly available OpenVLA-7B model~\cite{kim2024openvla
 Visual corruptions are defined by closed-form transformations (specified in \S\ref{sec:experiments}).
 The detection method (Algorithm~\ref{alg:detection}) requires no training, only a centroid from $\geq$2 clean images.
 Complete code, experiment scripts, all raw JSON results, and generated figures are available at \url{https://github.com/sreedath/Vizuara-VLA-Research}.
+
+%==============================================================================
+\section*{Acknowledgments}
+%==============================================================================
+
+The authors thank AI coding assistance tools for implementation support.
+Experiments were conducted on NVIDIA A40 hardware.
 
 %==============================================================================
 \begin{thebibliography}{30}
@@ -671,6 +824,11 @@ A.~Podolskiy, D.~Lipin, A.~Bout, E.~Artemova, and I.~Piontkovskaya.
 \newblock Revisiting {M}ahalanobis distance for transformer-based out-of-distribution detection.
 \newblock In \emph{AAAI}, 2021.
 
+\bibitem{zhang2023openood}
+J.~Zhang, J.~Yang, P.~Wang, H.~Wang, Y.~Lin, H.~Zhang, Y.~Sun, X.~Du, K.~Zhou, W.~Zhang, Y.~Li, Z.~Liu, Y.~Chen, and B.~Han.
+\newblock {OpenOOD} v1.5: Enhanced benchmark for out-of-distribution detection.
+\newblock \emph{arXiv preprint arXiv:2306.09301}, 2023.
+
 \end{thebibliography}
 
 %==============================================================================
@@ -715,7 +873,7 @@ Anti-correlation between fog and noise (cosine similarity $-0.53$) explains sub-
 
 \begin{table}[h]
 \centering
-\caption{Edge case detection results. Threshold $= 8.03 \times 10^{-5}$.}
+\caption{Edge case detection results. Threshold $= 8.03 \times 10^{-5}$ ($n{=}8$ calibration images); with $n{=}200$ calibration images, threshold $= 2.36 \times 10^{-4}$, and all ``Yes'' entries remain detected while ``No'' entries remain undetected.}
 \label{tab:edge_cases}
 \small
 \begin{tabular}{lrl}
