@@ -1,0 +1,7 @@
+Method,Fog,Night,Noise,Blur,Mean
+MSP (Max Softmax Prob.),0.36,0.72,0.54,0.84,0.62
+Energy Score,0.00,0.72,0.30,1.00,0.51
+Entropy,0.28,0.76,0.54,0.98,0.64
+Top-k Probability,0.28,0.78,0.60,0.96,0.66
+Feature Norm,1.00,1.00,0.84,1.00,0.96
+Cosine Distance (Ours),1.00,1.00,1.00,1.00,1.00

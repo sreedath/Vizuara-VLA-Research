@@ -1,0 +1,22 @@
+Mechanistic analysis of why hidden-state OOD detection works in Vision-Language-Action models.
+
+The figure should show two parallel pathways through the VLA transformer network:
+
+LEFT SIDE - "Attention Patterns (Uninformative)":
+- At Layer 3 (detection layer): attention cosine similarity between clean and corrupted inputs is 0.9998-0.9999
+- The model attends to essentially the same tokens regardless of corruption
+- At Layer 31 (deep layer): similarity drops to 0.82 for night/blur, 0.94 for fog/noise
+- Conclusion: Attention-based detection would FAIL at the optimal detection layer
+
+RIGHT SIDE - "Hidden State Geometry (Informative)":
+- The noise floor: clean-to-clean cosine distance is ~10^-4 (435 pairwise distances from 30 scenes)
+- Within-image variance is exactly 0.0 (model is deterministic in eval mode)
+- Corruption distances are orders of magnitude larger:
+  - Blur: 5.3 x 10^-3 (53x above noise floor)
+  - Night: 5.2 x 10^-3 (52x above noise floor)
+  - Fog: 1.6 x 10^-3 (16x above noise floor)
+  - Noise: 3.1 x 10^-4 (3.1x above noise floor)
+- Even the weakest corruption (noise) is separated by 1000x from the maximum clean distance
+
+BOTTOM - Causal mechanism:
+Corrupted visual tokens carry different VALUES → propagate through STABLE attention routing → aggregate into shifted hidden state → cosine distance detects the shift

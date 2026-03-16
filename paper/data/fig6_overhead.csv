@@ -1,0 +1,6 @@
+Operation,Time_ms,Category
+Forward Pass (baseline),123.4,Baseline
+Forward Pass (with hidden states),129.4,With Detection
+Hidden State Extraction,0.0067,Detection Pipeline
+Cosine Distance Computation,0.0076,Detection Pipeline
+Threshold Comparison,0.0003,Detection Pipeline

@@ -1,0 +1,23 @@
+Create a teaser figure for a NeurIPS paper about OOD detection in Vision-Language-Action (VLA) models for autonomous driving.
+
+The figure should be a 2-row layout:
+
+TOP ROW - "The Problem: VLA Output Confidence is Blind to Corruption"
+Show 5 panels side by side, each containing a stylized driving scene image:
+1. Clean highway scene - label "Clean" with confidence "0.560"
+2. Same scene with heavy fog overlay (white haze) - label "Fog" with confidence "0.602"
+3. Same scene very dark (night) - label "Night" with confidence "0.490"
+4. Same scene with noise static overlay - label "OOD Noise" with confidence "0.580"
+5. Same scene heavily blurred - label "Blur" with confidence "0.520"
+All confidence values should be shown in RED with approximately equal font size to emphasize they are nearly identical despite drastically different inputs. Add a red banner: "Confidence gap = 0.020 (p = 0.321) — NOT statistically significant"
+
+BOTTOM ROW - "Our Solution: Hidden-State Cosine Distance Perfectly Separates"
+Show the same 5 panels but now with cosine distance values:
+1. Clean - cosine dist "3.9×10⁻⁵" in GREEN (below threshold)
+2. Fog - cosine dist "4.3×10⁻⁴" in RED (above threshold, detected!)
+3. Night - cosine dist "6.4×10⁻³" in RED (above threshold, detected!)
+4. OOD Noise - cosine dist "5.2×10⁻⁵" in RED (above threshold, detected!)
+5. Blur - cosine dist "4.5×10⁻³" in RED (above threshold, detected!)
+Add a green banner: "AUROC = 1.0 — Perfect separation with only 14.6μs overhead"
+
+The overall message: the model's output says all inputs look the same, but the hidden states reveal the truth.

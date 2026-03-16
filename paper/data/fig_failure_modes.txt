@@ -1,0 +1,27 @@
+Create a visual figure for a NeurIPS paper showing what the hidden-state OOD detector CAN and CANNOT detect.
+
+Layout: Two rows of image panels.
+
+TOP ROW - "Detected (AUROC = 1.0)" with green border:
+Show 6 panels of driving scenes with visual corruptions:
+1. Dense fog (white haze over road scene) - "Fog, d=4.3×10⁻⁴"
+2. Extreme darkness/night - "Night, d=6.4×10⁻³"
+3. Gaussian noise/static overlay - "Noise, d=5.2×10⁻⁵"
+4. Heavy Gaussian blur - "Blur, d=4.5×10⁻³"
+5. All-black image - "Black, d=8.7×10⁻³"
+6. Small 50×50 fog patch on image - "5% patch, d=6.1×10⁻⁴"
+Each panel has a green "DETECTED" checkmark and the cosine distance value.
+
+BOTTOM ROW - "Not Detected (cosine dist < threshold)" with red border:
+Show 6 panels of driving scenes with geometric perturbations:
+1. Horizontally flipped image - "H-Flip, d=3.0×10⁻⁵"
+2. 90-degree rotated image - "Rotate 90°, d=5.4×10⁻⁵"
+3. Channel-swapped (GBR colors) - "Ch. Swap, d=4.6×10⁻⁵"
+4. 1000 random pixels changed - "1000 px, d=5.6×10⁻⁵"
+5. High-frequency noise pattern - "HF Noise, d=3.0×10⁻⁵"
+6. Low-severity Gaussian noise (sev=0.25) - "Low noise, d=1.4×10⁻⁵"
+Each panel has a red "MISSED" X mark and the cosine distance.
+
+Bottom annotation: "Threshold τ = 8.03×10⁻⁵. The detector captures distributional corruption but not geometric or localized perturbations."
+
+This figure honestly shows the method's capabilities AND limitations.

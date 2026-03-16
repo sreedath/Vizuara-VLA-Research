@@ -34,15 +34,11 @@
   \begin{center}%
     {\LARGE \bf \@title \par}%
     \vskip 0.3in
-    \if@neuripsfinal
-      {\large
-        \lineskip .5em%
-        \begin{tabular}[t]{c}%
-          \@author
-        \end{tabular}\par}%
-    \else
-      {\large Anonymous Authors\par}%
-    \fi
+    {\large
+      \lineskip .5em%
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
     \vskip 0.3in
   \end{center}%
   \par
@@ -79,6 +75,12 @@
   \kern -3pt
   \hrule width 2in height 0.4pt
   \kern 2.6pt
+}
+
+% Author separator
+\renewcommand{\And}{%
+  \end{tabular}\hfil\linebreak[0]\hfil%
+  \begin{tabular}[t]{c}%
 }
 
 % No page numbers for submission

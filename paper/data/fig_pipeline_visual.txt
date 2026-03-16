@@ -1,0 +1,25 @@
+Create a visual pipeline diagram for a NeurIPS paper about hidden-state OOD detection in VLA models.
+
+The figure shows two parallel paths through a VLA (Vision-Language-Action) model:
+
+CENTER: A large box representing "OpenVLA-7B (7B params)" with internal structure showing:
+- Vision Encoder (processes the input image)
+- Language tokens (instruction: "drive forward")
+- 32 Transformer layers stacked vertically (labeled Layer 0 through Layer 32)
+- Action Decoder outputting 7 action dimensions (x, y, z, roll, pitch, yaw, gripper)
+
+LEFT PATH (fails) — labeled "Output Confidence" with a red X:
+- Arrow from Action Decoder to "Softmax Probabilities"
+- Shows confidence = 0.56 for clean AND 0.58 for noise
+- Big red X mark: "Cannot distinguish clean from OOD"
+
+RIGHT PATH (succeeds) — labeled "Hidden-State Monitor" with a green checkmark:
+- Arrow from Layer 3 (highlighted in yellow) to "Extract 4096-D embedding"
+- Arrow to "Cosine distance from centroid μ"
+- Shows clean distance = 10⁻⁵ (green, safe) vs corrupted distance = 10⁻³ (red, OOD)
+- Green checkmark: "Perfect detection (AUROC = 1.0)"
+- Small text: "Only 14.6 μs additional cost"
+
+BOTTOM: A small box showing "Calibration: Just 2 clean images → centroid μ"
+
+The key visual insight: the signal is INSIDE the model (hidden states), not at the OUTPUT.
